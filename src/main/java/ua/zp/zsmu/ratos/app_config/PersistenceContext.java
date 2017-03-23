@@ -1,6 +1,7 @@
 package ua.zp.zsmu.ratos.app_config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -18,6 +19,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"ua.zp.zsmu.ratos.learning_session.dao"})
 public class PersistenceContext {
 
         @Bean
@@ -34,7 +36,6 @@ public class PersistenceContext {
         }
         Properties additionalProperties() {
                 Properties properties = new Properties();
-                //properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
                 properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
                 return properties;
         }

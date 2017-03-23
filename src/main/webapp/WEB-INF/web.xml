@@ -6,39 +6,23 @@
     <display-name>Spring MVC Java Config App</display-name>
 
     <servlet>
-        <servlet-name>springDispatcherServlet</servlet-name>
+        <servlet-name>mvc</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-
         <init-param>
             <param-name>contextClass</param-name>
-            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+            <param-value>
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            </param-value>
         </init-param>
-
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>
                 ua.zp.zsmu.ratos.app_config.WebContext
-                ua.zp.zsmu.ratos.app_config.PersistenceContext
             </param-value>
         </init-param>
-
-       <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>springDispatcherServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
-    <!--<servlet>
-        <servlet-name>mvc</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>mvc</servlet-name>
         <url-pattern>/</url-pattern>
@@ -55,7 +39,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             ua.zp.zsmu.ratos.app_config.PersistenceContext
-            ua.zp.zsmu.ratos.app_config.WebContext
+            ua.zp.zsmu.ratos.learning_session.config.SessionConfig
         </param-value>
     </context-param>
 
@@ -63,6 +47,6 @@
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
-    </listener>-->
+    </listener>
 
 </web-app>
