@@ -50,7 +50,9 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
         private ITemplateResolver templateResolver() {
                 SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
                 resolver.setApplicationContext(applicationContext);
-                resolver.setPrefix("/WEB-INF/templates/");
+                resolver.setPrefix("/WEB-INF/views/");
+                resolver.setSuffix(".html");
+                resolver.setCacheable(false);
                 resolver.setTemplateMode(TemplateMode.HTML);
                 return resolver;
         }
