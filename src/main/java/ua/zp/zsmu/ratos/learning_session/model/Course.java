@@ -2,21 +2,19 @@ package ua.zp.zsmu.ratos.learning_session.model;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import ua.zp.zsmu.ratos.learning_session.model.Answer;
+
 import javax.persistence.*;
 import java.util.Set;
 
 /**
- * Created by Andrey on 24.03.2017.
+ * Created by Andrey on 31.03.2017.
  */
 @Data
 @Getter
-@Setter
 @Entity
-@Table(name = "theme")
-public class Theme {
+@Table(name = "course")
+public class Course {
 
         @Id
         @GeneratedValue(generator = "increment")
@@ -28,7 +26,6 @@ public class Theme {
         private String title;
 
         @OneToMany(fetch = FetchType.EAGER)
-        @JoinColumn(name = "theme")
-        private Set<ua.zp.zsmu.ratos.learning_session.model.Answer> answers;
-
+        @JoinColumn(name = "course")
+        private Set<Theme> themes;
 }

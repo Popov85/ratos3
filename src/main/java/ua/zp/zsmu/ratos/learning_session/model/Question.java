@@ -3,8 +3,8 @@ package ua.zp.zsmu.ratos.learning_session.model;
 import lombok.Data;
 import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by Andrey on 23.03.2017.
@@ -43,4 +43,8 @@ public class Question {
 
         @Column(name = "help")
         private String help;
+
+        @OneToMany(fetch = FetchType.EAGER)
+        @JoinColumn(name = "qid")
+        private Set<Answer> answers;
 }

@@ -42,9 +42,9 @@ public class QuestionController {
                 ModelAndView modelAndView = new ModelAndView();
                 Question question = questionService.findOne(id);
                 Theme theme = new Theme();
-                theme.setId(1l);
+                /*theme.setId(1l);
                 theme.setCourse(2l);
-                theme.setTitle("Белки и углеводы");
+                theme.setTitle("Белки и углеводы");*/
                 LOGGER.info("findOneObject: "+theme);
                 modelAndView.setViewName("question");
                 modelAndView.addObject(question);
