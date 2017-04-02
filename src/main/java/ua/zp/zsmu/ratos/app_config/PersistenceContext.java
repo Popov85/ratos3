@@ -34,9 +34,10 @@ public class PersistenceContext {
 
                 return em;
         }
-        Properties additionalProperties() {
+        private Properties additionalProperties() {
                 Properties properties = new Properties();
                 properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+                //properties.setProperty("hibernate.connection.characterEncoding","UTF-8");
                 return properties;
         }
 

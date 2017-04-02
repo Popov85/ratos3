@@ -45,10 +45,10 @@ public class QuestionController {
                 /*theme.setId(1l);
                 theme.setCourse(2l);
                 theme.setTitle("Белки и углеводы");*/
-                LOGGER.info("findOneObject: "+theme);
+                //LOGGER.info("findOneObject: "+theme);
                 modelAndView.setViewName("question");
                 modelAndView.addObject(question);
-                modelAndView.addObject(theme);
+                //modelAndView.addObject(theme);
                 return modelAndView;
         }
 }

@@ -2,10 +2,8 @@ package ua.zp.zsmu.ratos.learning_session.model;
 
 import lombok.Data;
 import lombok.Getter;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by Andrey on 31.03.2017.
@@ -73,23 +71,28 @@ public class Scheme {
         @Column(name="enabled")
         private boolean isEnabled;
 
-        @OneToOne(fetch = FetchType.LAZY)
+        /*@OneToOne(fetch = FetchType.LAZY)
         @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-        @JoinColumn(name="user", unique=true, nullable=false, updatable=false)
-        private User owner;
+        @JoinColumn(name="user", unique=true, nullable=false, updatable=false)*/
+        @Column(name="owner")
+        private String owner;
 
         @Column(name="anonymous")
         private boolean isAvailableForAnonymousUser;
 
         // String
-        @OneToMany(fetch = FetchType.LAZY)
+        @Column(name = "groups")
+        private String studentGroups;
+        /*@OneToMany(fetch = FetchType.LAZY)
         @JoinColumn(name = "scheme")
-        private Set<Group> studentGroups;
+        private Set<Group> studentGroups;*/
 
         // String
-        @OneToMany(fetch = FetchType.LAZY)
+        @Column(name = "students")
+        private String classRooms;
+        /*@OneToMany(fetch = FetchType.LAZY)
         @JoinColumn(name = "scheme")
-        private Set<ClassRoom> classRooms;
+        private Set<ClassRoom> classRooms;*/
 
         @Column(name="hint_after")
         private boolean isHintAfterAnswerEnabled;
