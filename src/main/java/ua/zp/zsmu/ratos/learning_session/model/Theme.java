@@ -1,11 +1,13 @@
 package ua.zp.zsmu.ratos.learning_session.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import ua.zp.zsmu.ratos.learning_session.model.Answer;
 import javax.persistence.*;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -13,8 +15,8 @@ import java.util.Set;
  */
 @Data
 @Getter
-@Setter
 @Entity
+//@ToString(exclude="questions")
 @Table(name = "theme")
 public class Theme {
 
@@ -27,8 +29,9 @@ public class Theme {
         @Column(name = "title")
         private String title;
 
+        //@JsonIgnore
         @OneToMany(fetch = FetchType.EAGER)
         @JoinColumn(name = "theme")
-        private Set<ua.zp.zsmu.ratos.learning_session.model.Answer> answers;
+        private Set<Question> questions;
 
 }

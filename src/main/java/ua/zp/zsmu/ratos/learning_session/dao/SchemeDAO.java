@@ -10,5 +10,6 @@ import java.util.List;
  */
 
 public interface SchemeDAO extends CrudRepository<Scheme, Long> {
+
         List<Scheme> findAll();
 }

@@ -1,17 +1,16 @@
 package ua.zp.zsmu.ratos.learning_session.model;
 
 import lombok.Data;
-import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by Andrey on 23.03.2017.
  */
 @Data
-@Getter
 @Entity
+@ToString(exclude="answers")
 @Table(name = "quest")
 public class Question {
         @Id
@@ -44,7 +43,7 @@ public class Question {
         @Column(name = "help")
         private String help;
 
-        @OneToMany(fetch = FetchType.EAGER)
+        /*@OneToMany(fetch = FetchType.LAZY)
         @JoinColumn(name = "qid")
-        private Set<Answer> answers;
+        private Set<Answer> answers;*/
 }

@@ -10,7 +10,6 @@ import javax.persistence.*;
  * Created by Andrey on 31.03.2017.
  */
 @Data
-@Getter
 @Entity
 @Table(name = "answer")
 public class Answer {
