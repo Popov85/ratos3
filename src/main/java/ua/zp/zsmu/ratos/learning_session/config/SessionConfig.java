@@ -38,5 +38,4 @@ public class SessionConfig {
         public ThemeDAOJPA themeDAOJPA() {
                 return new ThemeDAOJPA();
         }
-
 }

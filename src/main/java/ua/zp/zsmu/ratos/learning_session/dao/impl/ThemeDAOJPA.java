@@ -2,7 +2,6 @@ package ua.zp.zsmu.ratos.learning_session.dao.impl;
 
 import org.springframework.stereotype.Repository;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
