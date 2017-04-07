@@ -66,4 +66,6 @@ public class SchemeController {
                         return new ResponseEntity<SchemeTheme>(HttpStatus.BAD_REQUEST);
                 }
         }
+
+
 }

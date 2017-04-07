@@ -2,6 +2,7 @@ package ua.zp.zsmu.ratos.learning_session.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ua.zp.zsmu.ratos.learning_session.dao.ThemeDAORAND;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
 import ua.zp.zsmu.ratos.learning_session.service.QuestionService;
@@ -37,5 +38,10 @@ public class SessionConfig {
         @Bean
         public ThemeDAOJPA themeDAOJPA() {
                 return new ThemeDAOJPA();
+        }
+
+        @Bean
+        public ThemeDAORAND themeDAORAND() {
+                return new ThemeDAORAND();
         }
 }
