@@ -13,9 +13,13 @@ public interface ThemeDAO extends CrudRepository<Theme, Long> {
 
         List<Theme> findAll();
 
-        @Query("SELECT t FROM Theme t LEFT JOIN FETCH t.questions")
-        List<Theme> getThemeWithQuestions();
+        @Query("SELECT t.title FROM Theme t")
+        List<String> findAllTitles();
 
         @Query("SELECT t FROM Theme t LEFT JOIN FETCH t.questions WHERE t.id=?1")
-        Theme findOneThemeWithQuestions(Long id);
+        Theme findOneWithQuestions(Long id);
+
+        //@Query(value = "SELECT t FROM Theme t LEFT JOIN FETCH t.questions WHERE t.id=?1 ORDER BY RAND() LIMIT ?2", nativeQuery = true)
+        //Theme findOneWithNRandomQuestions(Long id, Integer quantity);
+
 }

@@ -3,6 +3,7 @@ package ua.zp.zsmu.ratos.learning_session.service;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import ua.zp.zsmu.ratos.learning_session.dao.ThemeDAO;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
@@ -14,9 +15,10 @@ import java.util.List;
 /**
  * Created by Andrey on 03.04.2017.
  */
+@Transactional
 public class ThemeService {
 
-        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(QuestionService.class);
+        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ThemeService.class);
 
         @Autowired
         private ThemeDAO themeDAO;
@@ -27,22 +29,31 @@ public class ThemeService {
         @Autowired
         private ThemeDAOJPA themeDAOJPA;
 
+
         public List<Theme> findAll() {
-                LOGGER.info("findAll Themes: "+ themeDAO.findAll());
-                return themeDAO.findAll();
+                List<Theme> themes = null;
+                try {
+                        themes = themeDAO.findAll();
+                        LOGGER.info("OK");
+                } catch (Exception e) {
+                        LOGGER.error("ERR: "+e.getMessage());
+                }
+                return themes;
         }
 
         public Theme findOne(Long id) {
-                //LOGGER.info("findOne Theme: "+ themeDAO.findOne(id));
                 return themeDAO.findOne(id);
         }
 
-        public List<Theme> getThemeWithQuestions() {
-                return themeDAO.getThemeWithQuestions();
-        }
 
-        public Theme findOneThemeWithQuestions(Long id) {
-                return themeDAO.findOneThemeWithQuestions(id);
+        public Theme findOneWithQuestions(Long id) {
+                Theme theme = themeDAO.findOneWithQuestions(id);
+                try {
+                        LOGGER.info("theme's questions: " + theme.getQuestions());
+                } catch (Exception e) {
+                        LOGGER.error("ERR: "+e.getMessage());
+                }
+                return theme;
         }
 
         public List<Question> findQuestionsByTheme(Long id) {
@@ -64,12 +75,10 @@ public class ThemeService {
                 }
                 return theme;
         }
-        /*public Set<Question> getThemeQuestions(Theme theme) {
-                try {
-                        Hibernate.initialize(theme.getQuestions());
-                } catch (Exception e) {
-                        LOGGER.error("ERROR "+e.getMessage());
-                }
-                return theme.getQuestions();
-        }*/
+
+        public List<String> findAllThemeTitles() {
+                List<String> titles = themeDAO.findAllTitles();
+                LOGGER.info("All titles "+titles);
+                return titles;
+        }
 }
