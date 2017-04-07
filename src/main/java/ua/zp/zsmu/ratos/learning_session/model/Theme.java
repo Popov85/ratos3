@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @Getter
 @Entity
-//@ToString(exclude="questions")
+@ToString(exclude="questions")
 @Table(name = "theme")
 public class Theme {
 
@@ -30,7 +30,7 @@ public class Theme {
         private String title;
 
         //@JsonIgnore
-        @OneToMany(fetch = FetchType.EAGER)
+        @OneToMany(fetch = FetchType.LAZY)
         @JoinColumn(name = "theme")
         private Set<Question> questions;
 

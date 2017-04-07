@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Andrey on 23.03.2017.
@@ -43,7 +44,7 @@ public class Question {
         @Column(name = "help")
         private String help;
 
-        /*@OneToMany(fetch = FetchType.LAZY)
+        @OneToMany(fetch = FetchType.LAZY)
         @JoinColumn(name = "qid")
-        private Set<Answer> answers;*/
+        private List<Answer> answers;
 }

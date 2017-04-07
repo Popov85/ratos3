@@ -5,6 +5,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,6 +18,8 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import java.util.List;
 
 /**
  * Created by Andrey on 23.03.2017.
@@ -29,6 +33,12 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
 
         public void setApplicationContext(ApplicationContext applicationContext) {
                 this.applicationContext = applicationContext;
+        }
+
+        @Override
+        public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+                converters.add(new MappingJackson2HttpMessageConverter(new HibernateAwareObjectMapper()));
+                super.configureMessageConverters(converters);
         }
 
         @Bean
