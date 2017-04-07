@@ -1,15 +1,22 @@
 package ua.zp.zsmu.ratos.learning_session.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Andrey on 31.03.2017.
  */
 @Data
 @Getter
+@ToString(exclude="themes")
 @Entity
 @Table(name = "scheme")
 public class Scheme {
@@ -22,6 +29,11 @@ public class Scheme {
 
         @Column(name = "title")
         private String title;
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @OneToMany(mappedBy = "scheme")
+        private List<SchemeTheme> themes = new ArrayList<>();
+        //private Set<SchemeTheme> themes = new HashSet<>();
 
         @Column(name = "mode")
         private Integer mode;

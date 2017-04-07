@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +25,9 @@ public class Theme {
         @Column(name = "title")
         private String title;
 
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @OneToMany // LAZY by default
         @JoinColumn(name = "theme")
         private List<Question> questions;// = new ArrayList<>();
+
 }
