@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.service.QuestionService;
 
+import java.util.List;
+
 /**
  * Created by Andrey on 23.03.2017.
  */
@@ -60,5 +62,12 @@ public class QuestionController {
         public ResponseEntity<Question> findOne1Query(@RequestParam Long id) throws JsonProcessingException {
                 Question question = questionService.findOneWithAnswers(id);
                 return new ResponseEntity<Question>(question, HttpStatus.OK);
+        }
+
+        @GetMapping("/findQuestionsByTheme/nativeQuery")
+        @ResponseBody
+        public ResponseEntity<List<Question>> findQuestionsByTheme(@RequestParam Long id) {
+                List<Question> questions = questionService.findNRandomByTheme(id, 10);
+                return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
         }
 }

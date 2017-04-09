@@ -26,8 +26,7 @@ public class Theme {
         private String title;
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        @OneToMany // LAZY by default
-        @JoinColumn(name = "theme")
+        @OneToMany(mappedBy = "theme") // LAZY by default
         private List<Question> questions;// = new ArrayList<>();
 
 }

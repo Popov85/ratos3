@@ -26,6 +26,10 @@ public class QuestionService {
                 return questionDAO.findAll();
         }
 
+        public List<Question> findNRandomByTheme(Long themeId, int quantity) {
+                return questionDAO.findNRandomByTheme(themeId, quantity);
+        }
+
         public Question findOne(Long id) {
                 LOGGER.info("findOne: "+questionDAO.findOne(id));
                 return questionDAO.findOne(id);

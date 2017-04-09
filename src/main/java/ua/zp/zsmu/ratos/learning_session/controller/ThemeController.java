@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.app_config.HibernateAwareObjectMapper;
-import ua.zp.zsmu.ratos.learning_session.dao.ThemeDAORAND;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.ThemeService;
@@ -29,9 +28,6 @@ public class ThemeController {
 
         @Autowired
         private ThemeService themeService;
-
-        @Autowired
-        private ThemeDAORAND themeDAORAND;
 
         @GetMapping("/th/findTheme/query")
         @ResponseBody
@@ -115,11 +111,5 @@ public class ThemeController {
         @ResponseBody
         public ResponseEntity<Theme> findOneWithQ(@RequestParam Long id) {
                 return new ResponseEntity<Theme>(themeService.findOneWithQuestions(id), HttpStatus.OK);
-        }
-
-        @GetMapping("/findNRandomQuestions")
-        @ResponseBody
-        public ResponseEntity<List<Question>> findNRandomQuestions(@RequestParam Long id) {
-                return new ResponseEntity<List<Question>>(themeDAORAND.findOneThemeWithNRandomQuestions(id, 5), HttpStatus.OK);
         }
 }

@@ -1,5 +1,6 @@
 package ua.zp.zsmu.ratos.learning_session.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.Getter;
@@ -29,8 +30,10 @@ public class Question {
         @Column(name = "title")
         private String title;
 
-        @Column(name = "theme")
-        private Long theme;
+        @JsonIgnore
+        @ManyToOne
+        @JoinColumn(name = "theme")
+        private Theme theme;
 
         @Column(name = "concept")
         private String concept;
