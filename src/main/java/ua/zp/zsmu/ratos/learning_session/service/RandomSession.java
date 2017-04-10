@@ -1,10 +1,6 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
 import ch.qos.logback.classic.Logger;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.zp.zsmu.ratos.learning_session.dao.QuestionDAO;
 import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.*;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -62,7 +57,9 @@ public class RandomSession implements ISession {
         }
 
         @Override
-        public void populatePersonalQuestionSequence(Scheme scheme) {
+        public void populatePersonalQuestionSequence() {
+                LOGGER.info("sessionDAO "+sessionDAO);
+                LOGGER.info("questionDAO "+questionDAO);
                 questionSequence = questionDAO.findNRandomByTheme(123l,5);
                 LOGGER.info("Sequence HashCode: "+questionSequence.hashCode());
         }

@@ -11,7 +11,7 @@ public interface ISession extends Serializable {
 
         Long getSID();
 
-        void populatePersonalQuestionSequence(Scheme scheme);
+        void populatePersonalQuestionSequence();
 
         void startSession() throws IllegalStateException;
 

@@ -14,10 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
-import ua.zp.zsmu.ratos.learning_session.service.ISession;
-import ua.zp.zsmu.ratos.learning_session.service.RandomSession;
-import ua.zp.zsmu.ratos.learning_session.service.SessionService;
-import ua.zp.zsmu.ratos.learning_session.service.Student;
+import ua.zp.zsmu.ratos.learning_session.service.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +31,9 @@ public class SessionController {
 
         @Autowired
         private SessionService sessionService;
+
+        @Autowired
+        private SchemeService schemeService;
 
         @GetMapping("/findOneSession")
         @ResponseBody
@@ -53,23 +53,23 @@ public class SessionController {
         @GetMapping("/start")
         @ResponseBody
         public String startNewSession(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+
+                // If session was already opened do not launch "start" - just continue with next question
+                if (!session.isNew()) return "We already created session for you!";
+
                 // 0. Instantiate Student (by all fields) and Scheme objects (by selected id)
 
                 // WARN! Prevent two different session to launch from one PC!
+                // If we already have SID in cookies - we must check the possibility to continue the previous session
 
                 // Normally SID should be absent in cookies. If not,
                 // then a session was interrupted due the problems with server (sudden stop e.g.)
                 // In this case, we should try to retrieve the saved session from DB and continue (return next question)
 
-                /*if (isInterrupted(request.getCookies())) {
-                        // Retrieve existing ISession from DB
-                        // Repeat steps to produce next question
-                }*/
-
                 // 1. Launch start at SessionService
                 ISession iSession = null;
                 try {
-                        iSession = new RandomSession(); //sessionService.start(new Student(), new Scheme());
+                        iSession = sessionService.start(new Student(), schemeService.findOne(53l));
                 } catch (Exception e) {
                         LOGGER.error("ERROR: "+e.getMessage());
                         return "Error";
@@ -77,18 +77,22 @@ public class SessionController {
                 // 2. Save the produced ISession to a session variable
                 session.setAttribute("session", iSession);
                 // 2.1. From produced ISession retrieve sid and send it to cookies
-                response.addCookie(new Cookie("SID", Long.toString(123)));
+                Cookie cookie = new Cookie("SID", Long.toString(123));
                 //response.addCookie(new Cookie("SID", Long.toString(iSession.getSID())));
+                // Calculate TODO
+                cookie.setMaxAge(60*60);
+                cookie.setSecure(true);
+                cookie.isHttpOnly();
+                response.addCookie(cookie);
                 // 3. Obtained ISession use to return first question
-                // Question question = iSession.provideNextQuestion();
-
-                //if (!session.isNew()) return "We already created session for you!"; // do not launch start - just continue with next question
-
-
+                Question question = iSession.provideNextQuestion();
+                // 3.1 Add Question to model
+                // 4. Return model and view
+                LOGGER.info("QuestionIs: "+question);
                 //session.setMaxInactiveInterval(30);
                 LOGGER.info("ISessionIs: "+iSession.hashCode());
                 LOGGER.info("ControllerIs: "+this.hashCode());
-                return Integer.toString(iSession.hashCode());
+                return Integer.toString(iSession.hashCode())+question;
         }
 
         private boolean isInterrupted(Cookie[] cookies) {
@@ -106,6 +110,10 @@ public class SessionController {
         @GetMapping("/next")
         @ResponseBody
         public String provideNextQuestion(HttpSession session) {
+                        /*if (isInterrupted(request.getCookies())) {
+                        // Retrieve existing ISession from DB
+                        // Repeat steps to produce next question
+                }*/
                 // Check if we already have smth. in session
                 if (session.isNew()) return "New";
                 ISession iSession = (ISession) session.getAttribute("s");

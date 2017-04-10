@@ -1,8 +1,11 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
+import ch.qos.logback.classic.Logger;
 import org.apache.commons.lang3.SerializationUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import ua.zp.zsmu.ratos.learning_session.controller.SessionController;
 import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
@@ -15,17 +18,28 @@ import java.util.Date;
 @Transactional
 public class SessionService {
 
+        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SessionService.class);
+
         @Autowired
         private SessionDAO sessionDAO;
 
+        @Autowired
+        private ISession sessionFactory;
+
         public ISession start(Student student, Scheme scheme) {
                 // Create Session object
+                Session session = create(scheme);
+                LOGGER.info("Serializable Session created: "+session);
                 // Create corresponding ISession object
-                ISession iSession = SessionFactory.getSession(scheme);
+                ISession iSession = sessionFactory; //SessionFactory.getSession(scheme);
+                LOGGER.info("Learning Session created: "+iSession);
                 // At ISession populate questions
+                iSession.populatePersonalQuestionSequence();
+                LOGGER.info("Questions populated!");
                 // Update Session
-                // Return first question
-                return new RandomSession();
+                update(session.getSid(), iSession);
+                LOGGER.info("Session updated!");
+                return iSession;
         }
 
         public Session create(Scheme scheme) {

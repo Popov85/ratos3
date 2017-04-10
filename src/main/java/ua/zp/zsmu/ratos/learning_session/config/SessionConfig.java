@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
+import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.service.*;
 
 /**
@@ -44,9 +45,16 @@ public class SessionConfig {
         }
 
         @Bean
-        @Scope("prototype")
-        public ISession randomSession() {
+        //@Scope("prototype") <bean id="p" class="com.javatpoint.PrintableFactory" factory-method="getPrintable"></bean>
+        public ISession sessionFactory() {
+                return SessionFactory.getSession(new Scheme());
+                //return new RandomSession();
+        }
+
+        @Bean
+        public RandomSession randomSession() {
                 return new RandomSession();
         }
+
 
 }
