@@ -3,20 +3,22 @@ package ua.zp.zsmu.ratos.learning_session.controller;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
-import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
+import org.springframework.web.servlet.ModelAndView;
+import ua.zp.zsmu.ratos.learning_session.model.Question;
+import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.service.ISession;
 import ua.zp.zsmu.ratos.learning_session.service.RandomSession;
+import ua.zp.zsmu.ratos.learning_session.service.SessionService;
+import ua.zp.zsmu.ratos.learning_session.service.Student;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,43 +28,82 @@ import javax.servlet.http.HttpSession;
  * Created by Andrey on 4/8/2017.
  */
 @Controller
-//@Scope("prototype")
 public class SessionController {
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SessionController.class);
 
         @Autowired
-        private SessionDAO sessionDAO;
-
-        /*@Autowired
-        private ISession session;*/
+        private SessionService sessionService;
 
         @GetMapping("/findOneSession")
         @ResponseBody
         public ResponseEntity<Session> findOneSession(@RequestParam Long id) {
-                return new ResponseEntity<Session>(sessionDAO.findOne(id), HttpStatus.OK);
+                return new ResponseEntity<Session>(sessionService.findOne(id), HttpStatus.OK);
         }
 
-        @GetMapping("/startNewSession")
+        @GetMapping("/index")
+        public ModelAndView index() {
+                // 1. Fill faculties, courses and specialisations
+                // 2. Fill schemes (filter by IP)
+                // 3. Return view
+                return new ModelAndView();
+        }
+
+        // @PostMapping
+        @GetMapping("/start")
         @ResponseBody
         public String startNewSession(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-                Cookie[] cookies = request.getCookies();
-                if (cookies.length!=0) {
-                        for (Cookie cookie : cookies) {
-                                LOGGER.info("Name: "+cookie.getName()+" Value: "+cookie.getValue());
-                        }
+                // 0. Instantiate Student (by all fields) and Scheme objects (by selected id)
+
+                // WARN! Prevent two different session to launch from one PC!
+
+                // Normally SID should be absent in cookies. If not,
+                // then a session was interrupted due the problems with server (sudden stop e.g.)
+                // In this case, we should try to retrieve the saved session from DB and continue (return next question)
+
+                /*if (isInterrupted(request.getCookies())) {
+                        // Retrieve existing ISession from DB
+                        // Repeat steps to produce next question
+                }*/
+
+                // 1. Launch start at SessionService
+                ISession iSession = null;
+                try {
+                        iSession = new RandomSession(); //sessionService.start(new Student(), new Scheme());
+                } catch (Exception e) {
+                        LOGGER.error("ERROR: "+e.getMessage());
+                        return "Error";
                 }
-                //response.addCookie(new Cookie("COOKIENAME", "The cookie's value"));
-                if (!session.isNew()) return "We already created session for you!";
-                ISession iSession = new RandomSession();
-                session.setAttribute("s", iSession);
+                // 2. Save the produced ISession to a session variable
+                session.setAttribute("session", iSession);
+                // 2.1. From produced ISession retrieve sid and send it to cookies
+                response.addCookie(new Cookie("SID", Long.toString(123)));
+                //response.addCookie(new Cookie("SID", Long.toString(iSession.getSID())));
+                // 3. Obtained ISession use to return first question
+                // Question question = iSession.provideNextQuestion();
+
+                //if (!session.isNew()) return "We already created session for you!"; // do not launch start - just continue with next question
+
+
                 //session.setMaxInactiveInterval(30);
                 LOGGER.info("ISessionIs: "+iSession.hashCode());
                 LOGGER.info("ControllerIs: "+this.hashCode());
                 return Integer.toString(iSession.hashCode());
         }
 
-        @GetMapping("/provideNextQuestion")
+        private boolean isInterrupted(Cookie[] cookies) {
+                // If current JSESSIONID is not associated with any object
+                if (cookies.length!=0) {
+                        for (Cookie cookie : cookies) {
+                                if (cookie.getName().equals("SID")) return true;
+                                LOGGER.info("Name: "+cookie.getName()+" Value: "+cookie.getValue());
+                        }
+                }
+                return false;
+        }
+
+
+        @GetMapping("/next")
         @ResponseBody
         public String provideNextQuestion(HttpSession session) {
                 // Check if we already have smth. in session
@@ -73,7 +114,7 @@ public class SessionController {
                 return Integer.toString(iSession.hashCode());
         }
 
-        @GetMapping("/finishSession")
+        @GetMapping("/finish")
         @ResponseBody
         public String finishSession(HttpSession session) {
                 session.invalidate();

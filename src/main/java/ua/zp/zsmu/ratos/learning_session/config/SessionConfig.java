@@ -39,6 +39,11 @@ public class SessionConfig {
         }
 
         @Bean
+        public SessionService sessionService() {
+                return new SessionService();
+        }
+
+        @Bean
         @Scope("prototype")
         public ISession randomSession() {
                 return new RandomSession();

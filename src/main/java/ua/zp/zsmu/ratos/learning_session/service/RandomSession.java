@@ -23,7 +23,7 @@ import java.util.*;
 @Setter*/
 @Component
 @Transactional
-public class RandomSession implements ISession, Serializable {
+public class RandomSession implements ISession {
 
         private static final long serialVersionUID = 1L;
 
@@ -39,9 +39,9 @@ public class RandomSession implements ISession, Serializable {
          * Session object is created as the first request is obtained to begin a learning session
          * and is sent/updated into DB every time a response from student is obtained
          */
+        private Long sid;
         private Student student;
         private Scheme scheme;
-        private Session session;
         private List<Question> questionSequence = new ArrayList<>();
         private Map<Question, Answer> studentAnswers = new HashMap<>();
 
@@ -57,16 +57,8 @@ public class RandomSession implements ISession, Serializable {
 
 
         @Override
-        public Session createSerializableSession(Scheme scheme) {
-                Session session = new Session();
-                Date date = new Date();
-                session.setBeginTime(date);
-                session.setLastSerialisationTime(date);
-                session.setScheme(scheme);
-                session.setSession(SerializationUtils.serialize(this));
-                // YourObject yourObject = (YourObject) SerializationUtils.deserialize(byte[] data)
-                this.session = session;
-                return sessionDAO.save(session);
+        public Long getSID() {
+                return this.sid;
         }
 
         @Override
