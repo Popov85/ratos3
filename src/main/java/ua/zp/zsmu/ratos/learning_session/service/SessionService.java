@@ -4,17 +4,19 @@ import ch.qos.logback.classic.Logger;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.zp.zsmu.ratos.learning_session.controller.SessionController;
 import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
+import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
-
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Andrey on 4/9/2017.
  */
+@Service
 @Transactional
 public class SessionService {
 
@@ -24,18 +26,19 @@ public class SessionService {
         private SessionDAO sessionDAO;
 
         @Autowired
-        private ISession sessionFactory;
+        private QuestionSequenceProducer questionSequenceProducer;
 
-        public ISession start(Student student, Scheme scheme) {
+        //@Transactional//(rollbackFor=Exception.class)
+        public ISession start(Student student, Scheme scheme) throws RuntimeException {
                 // Create Session object
                 Session session = create(scheme);
                 LOGGER.info("Serializable Session created: "+session);
+                // Produce questions
+                List<Question> questions = questionSequenceProducer.producePersonalQuestionSequence(scheme);
+                LOGGER.info("Questions generated: "+questions);
                 // Create corresponding ISession object
-                ISession iSession = sessionFactory; //SessionFactory.getSession(scheme);
+                ISession iSession = LearningSessionFactory.getSession(student, scheme, questions);
                 LOGGER.info("Learning Session created: "+iSession);
-                // At ISession populate questions
-                iSession.populatePersonalQuestionSequence();
-                LOGGER.info("Questions populated!");
                 // Update Session
                 update(session.getSid(), iSession);
                 LOGGER.info("Session updated!");
@@ -50,9 +53,11 @@ public class SessionService {
                 return sessionDAO.save(session);
         }
 
-        public void update(Long sid, ISession iSession) {
+        public void update(Long sid, ISession iSession) throws RuntimeException {
+                LOGGER.info("iSession to be serialized is: "+iSession);
                 byte[] backup = SerializationUtils.serialize(iSession);
-                sessionDAO.updateSessionInfoById(backup, new Date(), sid);
+                throw new RuntimeException();
+                //sessionDAO.updateSessionInfoById(backup, new Date(), sid);
         }
 
         public ISession restore(Long sid) {

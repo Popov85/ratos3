@@ -2,66 +2,38 @@ package ua.zp.zsmu.ratos.learning_session.service;
 
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import ua.zp.zsmu.ratos.learning_session.dao.QuestionDAO;
-import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.*;
 import java.util.*;
 
 /**
  * Created by Andrey on 4/8/2017.
  */
-/*@Data
-@Getter
-@Setter*/
-@Component
-@Transactional
 public class RandomSession implements ISession {
 
         private static final long serialVersionUID = 1L;
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomSession.class);
 
-        @Autowired
-        private SessionDAO sessionDAO;
-
-        @Autowired
-        private QuestionDAO questionDAO;
-
         /**
-         * Session object is created as the first request is obtained to begin a learning session
-         * and is sent/updated into DB every time a response from student is obtained
+         * ID of the stored backup (in form of byte[]) of this class in a database
          */
         private Long sid;
         private Student student;
         private Scheme scheme;
         private List<Question> questionSequence = new ArrayList<>();
-        private Map<Question, Answer> studentAnswers = new HashMap<>();
+        private Map<Question, List<Answer>> studentAnswers = new HashMap<>();
 
         private int currentQuestionNumber = 0;
 
-        public RandomSession() {
-        }
-
-        public RandomSession(Student student, Scheme scheme) {
+        public RandomSession(Student student, Scheme scheme, List<Question> questionSequence) {
                 this.student = student;
                 this.scheme = scheme;
+                this.questionSequence = questionSequence;
         }
 
-
         @Override
-        public Long getSID() {
+        public Long getStoredSessionID() {
                 return this.sid;
-        }
-
-        @Override
-        public void populatePersonalQuestionSequence() {
-                LOGGER.info("sessionDAO "+sessionDAO);
-                LOGGER.info("questionDAO "+questionDAO);
-                questionSequence = questionDAO.findNRandomByTheme(123l,5);
-                LOGGER.info("Sequence HashCode: "+questionSequence.hashCode());
         }
 
         @Override
@@ -85,7 +57,9 @@ public class RandomSession implements ISession {
 
         @Override
         public void obtainStudentAnswer(Question question, Answer answer) {
-                studentAnswers.put(question, answer);
+                List<Answer> answers = new ArrayList<>();
+                answers.add(answer);
+                studentAnswers.put(question, answers);
         }
 
         @Override

@@ -9,9 +9,7 @@ import java.io.Serializable;
  */
 public interface ISession extends Serializable {
 
-        Long getSID();
-
-        void populatePersonalQuestionSequence();
+        Long getStoredSessionID();
 
         void startSession() throws IllegalStateException;
 

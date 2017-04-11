@@ -14,7 +14,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework" level="DEBUG"/>
 
     <!--<logger name="org.springframework.web.client.RestTemplate" level="OFF" />
     <logger name="org.springframework.web.servlet" level="OFF" />
@@ -27,11 +27,11 @@
     <logger name="org.springframework.cache" level="OFF" />
     <logger name="org.springframework.jndi" level="OFF" />-->
 
-    <logger name = "org.hibernate.SQL" level="INFO"/>
+    <logger name = "org.hibernate.SQL" level="DEBUG"/>
 
     <!--<statusListener class="ch.qos.logback.core.status.NopStatusListener" />-->
 
-    <root level = "INFO">
+    <root level = "DEBUG">
         <appender-ref ref = "STDOUT"/>
     </root>
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +15,9 @@ import java.util.List;
 @Entity
 @ToString(exclude="questions")
 @Table(name = "theme")
-public class Theme {
+public class Theme implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         @Id
         @GeneratedValue(generator = "increment")

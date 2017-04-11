@@ -78,7 +78,7 @@ public class SessionController {
                 session.setAttribute("session", iSession);
                 // 2.1. From produced ISession retrieve sid and send it to cookies
                 Cookie cookie = new Cookie("SID", Long.toString(123));
-                //response.addCookie(new Cookie("SID", Long.toString(iSession.getSID())));
+                //response.addCookie(new Cookie("SID", Long.toString(iSession.getStoredSessionID())));
                 // Calculate TODO
                 cookie.setMaxAge(60*60);
                 cookie.setSecure(true);

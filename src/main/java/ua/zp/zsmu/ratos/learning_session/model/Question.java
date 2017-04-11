@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,10 @@ import java.util.List;
 @Setter
 @ToString(exclude="answers")
 @Table(name = "quest")
-public class Question {
+public class Question implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")

@@ -1,15 +1,18 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
 import org.springframework.stereotype.Component;
+import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
+
+import java.util.List;
 
 /**
  * Created by Andrey on 10.04.2017.
  */
 @Component
-public class SessionFactory {
-        public static ISession getSession(Scheme scheme) {
+public class LearningSessionFactory {
+        public static ISession getSession(Student student, Scheme scheme, List<Question> questions) {
                 // Create a different session depending on the type
-                return new RandomSession();
+                return new RandomSession(student, scheme, questions);
         }
 }

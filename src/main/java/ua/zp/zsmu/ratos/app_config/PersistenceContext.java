@@ -56,6 +56,7 @@ public class PersistenceContext {
         public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
                 JpaTransactionManager transactionManager = new JpaTransactionManager();
                 transactionManager.setEntityManagerFactory(emf);
+                transactionManager.setDataSource(dataSource());
                 return transactionManager;
         }
 }

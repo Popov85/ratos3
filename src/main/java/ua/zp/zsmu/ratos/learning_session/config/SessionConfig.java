@@ -2,11 +2,12 @@ package ua.zp.zsmu.ratos.learning_session.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
-import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.service.*;
+
+import java.util.List;
 
 /**
  * Created by Andrey on 3/23/2017.
@@ -45,15 +46,8 @@ public class SessionConfig {
         }
 
         @Bean
-        //@Scope("prototype") <bean id="p" class="com.javatpoint.PrintableFactory" factory-method="getPrintable"></bean>
-        public ISession sessionFactory() {
-                return SessionFactory.getSession(new Scheme());
-                //return new RandomSession();
-        }
-
-        @Bean
-        public RandomSession randomSession() {
-                return new RandomSession();
+        public QuestionSequenceProducer questionSequenceProducer() {
+                return new QuestionSequenceProducer();
         }
 
 

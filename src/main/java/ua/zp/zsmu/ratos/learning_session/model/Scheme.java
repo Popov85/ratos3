@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,9 @@ import java.util.Set;
 @ToString(exclude="themes")
 @Entity
 @Table(name = "scheme")
-public class Scheme {
+public class Scheme implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         @Id
         @GeneratedValue(generator = "increment")

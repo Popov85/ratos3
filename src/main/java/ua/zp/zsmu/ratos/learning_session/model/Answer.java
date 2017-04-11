@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Andrey on 31.03.2017.
@@ -15,7 +16,10 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "answer")
-public class Answer {
+public class Answer implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")
