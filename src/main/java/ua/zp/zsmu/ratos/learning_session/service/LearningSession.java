@@ -8,14 +8,14 @@ import java.util.*;
 /**
  * Created by Andrey on 4/8/2017.
  */
-public class RandomSession implements ISession {
+public class LearningSession implements ISession {
 
         private static final long serialVersionUID = 1L;
 
-        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomSession.class);
+        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
 
         /**
-         * ID of the stored backup (in form of byte[]) of this class in a database
+         * ID of the stored backup (in a form of byte[]) of this class in a database
          */
         private Long sid;
         private Student student;
@@ -25,7 +25,11 @@ public class RandomSession implements ISession {
 
         private int currentQuestionNumber = 0;
 
-        public RandomSession(Student student, Scheme scheme, List<Question> questionSequence) {
+        private boolean isInterruptedByUser;
+        private boolean isInterruptedByTimeout;
+
+        public LearningSession(Long sid, Student student, Scheme scheme, List<Question> questionSequence) {
+                this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
                 this.questionSequence = questionSequence;
@@ -45,14 +49,20 @@ public class RandomSession implements ISession {
 
         @Override
         public void interruptSession() {
-
+                this.isInterruptedByUser=true;
         }
 
         @Override
         public Question provideNextQuestion() {
-                currentQuestionNumber++;
-                if (currentQuestionNumber>=questionSequence.size()) finishSession();
-                return questionSequence.get(currentQuestionNumber);
+                if (currentQuestionNumber<=questionSequence.size()-1) {
+                        Question nextQuestion = questionSequence.get(currentQuestionNumber);
+                        currentQuestionNumber++;
+                        return nextQuestion;
+
+                } else {
+                        finishSession();
+                        return null;
+                }
         }
 
         @Override
@@ -60,15 +70,16 @@ public class RandomSession implements ISession {
                 List<Answer> answers = new ArrayList<>();
                 answers.add(answer);
                 studentAnswers.put(question, answers);
+                // return right answer if needed
         }
 
         @Override
-        public void finishSession() {
-                calculateResult();
+        public Result finishSession() {
+                return calculateResult();
         }
 
         @Override
         public Result calculateResult() {
-                return new Result();
+                return new Result("Your result is:");
         }
 }
