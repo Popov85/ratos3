@@ -25,7 +25,7 @@ public class SessionService {
         private SessionDAO sessionDAO;
 
         @Autowired
-        private QuestionSequenceProducer questionSequenceProducer;
+        private RandomQuestionProvider randomQuestionProvider;
 
         @Transactional
         public ISession start(Student student, Scheme scheme) throws RuntimeException {
@@ -33,7 +33,7 @@ public class SessionService {
                 Session session = create(scheme);
                 LOGGER.info("Serializable Session created: "+session);
                 // Produce questions
-                List<Question> questions = questionSequenceProducer.producePersonalQuestionSequence(scheme);
+                List<Question> questions = randomQuestionProvider.produceQuestionSequence(scheme, false);
                 LOGGER.info("Questions generated: "+questions);
                 // Create corresponding ISession object
                 ISession iSession = LearningSessionFactory.getSession(session.getSid(), student, scheme, questions);

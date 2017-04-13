@@ -10,6 +10,9 @@ import java.util.List;
  */
 @Component
 public class LearningSessionFactory {
+
+        private LearningSessionFactory() {}
+
         public static ISession getSession(Long sid, Student student, Scheme scheme, List<Question> questions) {
                 // Create a different session depending on the type
                 return new LearningSession(sid, student, scheme, questions);
