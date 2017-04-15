@@ -29,7 +29,8 @@ public class PersistenceContext {
         public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
                 LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
                 em.setDataSource(dataSource());
-                em.setPackagesToScan(new String[] { "ua.zp.zsmu.ratos" });
+                em.setPackagesToScan(new String[] {"ua.zp.zsmu.ratos"});
+
                 JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
                 em.setJpaVendorAdapter(vendorAdapter);
                 em.setJpaProperties(additionalProperties());
@@ -58,7 +59,6 @@ public class PersistenceContext {
         public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
                 JpaTransactionManager transactionManager = new JpaTransactionManager();
                 transactionManager.setEntityManagerFactory(emf);
-                //transactionManager.setDataSource(dataSource());
                 return transactionManager;
         }
 }

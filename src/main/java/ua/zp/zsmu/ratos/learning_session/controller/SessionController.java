@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
-import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.service.*;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,13 +51,12 @@ public class SessionController {
         @ResponseBody
         public String startNewSession(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
+                // WARN! Prevent two different session to launch from one PC!
+                // If we already have SID in cookies - we must check the possibility to continue the previous session
                 // If session was already opened do not launch "start" - just continue with next question
                 if (!session.isNew()) return "We already created session for you!";
 
                 // 0. Instantiate Student (by all fields) and Scheme objects (by selected id)
-
-                // WARN! Prevent two different session to launch from one PC!
-                // If we already have SID in cookies - we must check the possibility to continue the previous session
 
                 // Normally SID should be absent in cookies. If not,
                 // then a session was interrupted due the problems with server (sudden stop e.g.)
@@ -77,8 +73,7 @@ public class SessionController {
                 // 2. Save the produced ISession to a session variable
                 session.setAttribute("session", iSession);
                 // 2.1. From produced ISession retrieve sid and send it to cookies
-                Cookie cookie = new Cookie("SID", Long.toString(123));
-                //response.addCookie(new Cookie("SID", Long.toString(iSession.getStoredSessionID())));
+                Cookie cookie = new Cookie("SID", Long.toString(iSession.getStoredSessionID()));
                 // Calculate TODO
                 cookie.setMaxAge(60*60);
                 cookie.setSecure(true);
@@ -88,11 +83,7 @@ public class SessionController {
                 Question question = iSession.provideNextQuestion();
                 // 3.1 Add Question to model
                 // 4. Return model and view
-                LOGGER.info("QuestionIs: "+question);
-                //session.setMaxInactiveInterval(30);
-                LOGGER.info("ISessionIs: "+iSession.hashCode());
-                LOGGER.info("ControllerIs: "+this.hashCode());
-                return Integer.toString(iSession.hashCode())+question;
+                return question.toString();
         }
 
         private boolean isInterrupted(Cookie[] cookies) {
@@ -110,16 +101,26 @@ public class SessionController {
         @GetMapping("/next")
         @ResponseBody
         public String provideNextQuestion(HttpSession session) {
-                        /*if (isInterrupted(request.getCookies())) {
-                        // Retrieve existing ISession from DB
-                        // Repeat steps to produce next question
+                /*if (isInterrupted(request.getCookies())) {
+                // Retrieve existing ISession from DB
+                // Repeat steps to produce next question
                 }*/
                 // Check if we already have smth. in session
-                if (session.isNew()) return "New";
-                ISession iSession = (ISession) session.getAttribute("s");
-                LOGGER.info("ISessionIs: "+iSession.hashCode());
-                LOGGER.info("ControllerIs: "+this.hashCode());
-                return Integer.toString(iSession.hashCode());
+
+                ISession iSession = null;
+                Question question = null;
+                try {
+                        iSession = (ISession) session.getAttribute("session");
+                        if (iSession==null) throw new Exception("Cannot retrieve JSESSIONID from cookies");
+                } catch (Throwable e) {
+                        LOGGER.error("Cannot find session: possible reasons 1) cookies JSESSIONID was deleted 2) Server restart");
+                        // 1. Try to restore session from DB if SID was not deleted
+                        // if fail:
+                        // 2. Begin again, sorry
+                        return "Error";
+                }
+                question = iSession.provideNextQuestion();
+                return question+"";
         }
 
         @GetMapping("/finish")

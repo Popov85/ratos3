@@ -3,7 +3,6 @@ package ua.zp.zsmu.ratos.learning_session.service;
 import org.springframework.stereotype.Component;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
-
 import java.util.List;
 
 /**
@@ -11,8 +10,11 @@ import java.util.List;
  */
 @Component
 public class LearningSessionFactory {
-        public static ISession getSession(Student student, Scheme scheme, List<Question> questions) {
+
+        private LearningSessionFactory() {}
+
+        public static ISession getSession(Long sid, Student student, Scheme scheme, List<Question> questions) {
                 // Create a different session depending on the type
-                return new RandomSession(student, scheme, questions);
+                return new LearningSession(sid, student, scheme, questions);
         }
 }

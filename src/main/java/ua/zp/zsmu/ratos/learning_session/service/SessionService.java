@@ -17,7 +17,6 @@ import java.util.List;
  * Created by Andrey on 4/9/2017.
  */
 @Service
-//@Transactional
 public class SessionService {
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SessionService.class);
@@ -26,18 +25,18 @@ public class SessionService {
         private SessionDAO sessionDAO;
 
         @Autowired
-        private QuestionSequenceProducer questionSequenceProducer;
+        private RandomQuestionProvider randomQuestionProvider;
 
-        @Transactional//(rollbackFor=Exception.class)
-        public ISession start(Student student, Scheme scheme) {
+        @Transactional
+        public ISession start(Student student, Scheme scheme) throws RuntimeException {
                 // Create Session object
                 Session session = create(scheme);
                 LOGGER.info("Serializable Session created: "+session);
                 // Produce questions
-                List<Question> questions = questionSequenceProducer.producePersonalQuestionSequence(scheme);
+                List<Question> questions = randomQuestionProvider.produceQuestionSequence(scheme, false);
                 LOGGER.info("Questions generated: "+questions);
                 // Create corresponding ISession object
-                ISession iSession = LearningSessionFactory.getSession(student, scheme, questions);
+                ISession iSession = LearningSessionFactory.getSession(session.getSid(), student, scheme, questions);
                 LOGGER.info("Learning Session created: "+iSession);
                 // Update Session
                 update(session.getSid(), iSession);
@@ -46,7 +45,7 @@ public class SessionService {
                 return iSession;
         }
 
-        public Session create(Scheme scheme) {
+        private Session create(Scheme scheme) {
                 Session session = new Session();
                 Date date = new Date();
                 session.setBeginTime(date);
@@ -57,7 +56,6 @@ public class SessionService {
         public void update(Long sid, ISession iSession) {
                 LOGGER.info("iSession to be serialized is: "+iSession);
                 byte[] backup = SerializationUtils.serialize(iSession);
-                //throw new RuntimeException();
                 sessionDAO.updateSessionInfoById(backup, new Date(), sid);
         }
 
@@ -66,7 +64,6 @@ public class SessionService {
                 ISession iSession = (ISession) SerializationUtils.deserialize(session.getSession());
                 return iSession;
         }
-
 
         public Session findOne(Long sid) {
                 return sessionDAO.findOne(sid);

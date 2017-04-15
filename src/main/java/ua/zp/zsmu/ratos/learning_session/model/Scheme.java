@@ -34,10 +34,11 @@ public class Scheme implements Serializable {
         private String title;
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @OneToMany(mappedBy = "scheme")
+        @OneToMany(fetch = FetchType.EAGER, mappedBy = "scheme")
         private List<SchemeTheme> themes = new ArrayList<>();
         //private Set<SchemeTheme> themes = new HashSet<>();
 
+        // Seems to be: random/sequence/happy - 0/1/2
         @Column(name = "mode")
         private Integer mode;
 
