@@ -19,7 +19,10 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"ua.zp.zsmu.ratos.learning_session.dao"})
+@EnableJpaRepositories(
+        entityManagerFactoryRef = "entityManagerFactory",
+        transactionManagerRef = "transactionManager",
+        basePackages = {"ua.zp.zsmu.ratos.learning_session.dao"})
 public class PersistenceContext {
 
         @Bean
@@ -27,13 +30,12 @@ public class PersistenceContext {
                 LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
                 em.setDataSource(dataSource());
                 em.setPackagesToScan(new String[] { "ua.zp.zsmu.ratos" });
-
                 JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
                 em.setJpaVendorAdapter(vendorAdapter);
                 em.setJpaProperties(additionalProperties());
-
                 return em;
         }
+
         private Properties additionalProperties() {
                 Properties properties = new Properties();
                 properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
@@ -56,7 +58,7 @@ public class PersistenceContext {
         public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
                 JpaTransactionManager transactionManager = new JpaTransactionManager();
                 transactionManager.setEntityManagerFactory(emf);
-                transactionManager.setDataSource(dataSource());
+                //transactionManager.setDataSource(dataSource());
                 return transactionManager;
         }
 }

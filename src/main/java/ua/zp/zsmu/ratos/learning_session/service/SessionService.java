@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Andrey on 4/9/2017.
  */
 @Service
-@Transactional
+//@Transactional
 public class SessionService {
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SessionService.class);
@@ -28,8 +28,8 @@ public class SessionService {
         @Autowired
         private QuestionSequenceProducer questionSequenceProducer;
 
-        //@Transactional//(rollbackFor=Exception.class)
-        public ISession start(Student student, Scheme scheme) throws RuntimeException {
+        @Transactional//(rollbackFor=Exception.class)
+        public ISession start(Student student, Scheme scheme) {
                 // Create Session object
                 Session session = create(scheme);
                 LOGGER.info("Serializable Session created: "+session);
@@ -42,6 +42,7 @@ public class SessionService {
                 // Update Session
                 update(session.getSid(), iSession);
                 LOGGER.info("Session updated!");
+                if (0==0) throw new RuntimeException();
                 return iSession;
         }
 
@@ -53,11 +54,11 @@ public class SessionService {
                 return sessionDAO.save(session);
         }
 
-        public void update(Long sid, ISession iSession) throws RuntimeException {
+        public void update(Long sid, ISession iSession) {
                 LOGGER.info("iSession to be serialized is: "+iSession);
                 byte[] backup = SerializationUtils.serialize(iSession);
-                throw new RuntimeException();
-                //sessionDAO.updateSessionInfoById(backup, new Date(), sid);
+                //throw new RuntimeException();
+                sessionDAO.updateSessionInfoById(backup, new Date(), sid);
         }
 
         public ISession restore(Long sid) {
