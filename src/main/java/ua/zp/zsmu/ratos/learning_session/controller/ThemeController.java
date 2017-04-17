@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.app_config.HibernateAwareObjectMapper;
+import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.ThemeService;
@@ -28,6 +29,15 @@ public class ThemeController {
 
         @Autowired
         private ThemeService themeService;
+
+        @Autowired
+        private ThemeDAOJDBC themeDAOJDBC;
+
+        @GetMapping("/theme")
+        @ResponseBody
+        public String getOneTheme() {
+                return themeDAOJDBC.getOneTheme(1L).toString();
+        }
 
         @GetMapping("/th/findTheme/query")
         @ResponseBody

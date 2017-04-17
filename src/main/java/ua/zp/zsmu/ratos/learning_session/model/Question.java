@@ -19,11 +19,11 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString(exclude="answers")
+@ToString(exclude={"answers","resources"})
 @Table(name = "quest")
 public class Question implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -5996578036570248337L;
 
         @Id
         @GeneratedValue(generator = "increment")
@@ -57,10 +57,12 @@ public class Question implements Serializable {
         @Column(name = "help")
         private String help;
 
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @OneToMany
+        @OneToMany(fetch = FetchType.EAGER)
         @JoinColumn(name = "qid")
         private List<Answer> answers = new ArrayList<>();
 
-
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @OneToMany
+        @JoinColumn(name = "qid")
+        private List<Resource> resources = new ArrayList<>();
 }

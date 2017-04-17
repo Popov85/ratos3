@@ -1,6 +1,7 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
 import ch.qos.logback.classic.Logger;
+import com.sun.istack.internal.NotNull;
 import org.slf4j.LoggerFactory;
 import ua.zp.zsmu.ratos.learning_session.model.*;
 import java.util.*;
@@ -10,7 +11,7 @@ import java.util.*;
  */
 public class LearningSession implements ISession {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 8762633453287052372L;
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
 
@@ -20,15 +21,27 @@ public class LearningSession implements ISession {
         private Long sid;
         private Student student;
         private Scheme scheme;
+        // Key - the ID of a Theme, Value - List of question on this theme
+        private Map<Theme, List<Question>> sequences = new HashMap<>();
         private List<Question> questionSequence = new ArrayList<>();
+
+        private Map<Theme, List<QuestionAndAnswer>> answers = new HashMap<>();
+
         private Map<Question, List<Answer>> studentAnswers = new HashMap<>();
 
         private int currentQuestionNumber = 0;
 
+        private double currentResult = 0d;
+
         private boolean isInterruptedByUser;
         private boolean isInterruptedByTimeout;
 
-        public LearningSession(Long sid, Student student, Scheme scheme, List<Question> questionSequence) {
+        private boolean isFinished;
+
+        public LearningSession(@NotNull Long sid, @NotNull Student student, @NotNull Scheme scheme,
+                               @NotNull List<Question> questionSequence) {
+                if (questionSequence.isEmpty())
+                        throw new RuntimeException("Question list cannot be empty!");
                 this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
@@ -42,8 +55,6 @@ public class LearningSession implements ISession {
 
         @Override
         public void startSession() {
-                if (questionSequence.isEmpty())
-                        throw new IllegalStateException("Question list cannot be empty!");
                 provideNextQuestion();
         }
 
@@ -73,13 +84,17 @@ public class LearningSession implements ISession {
                 // return right answer if needed
         }
 
-        @Override
-        public Result finishSession() {
+
+        private Result finishSession() {
+                this.isFinished = true;
                 return calculateResult();
         }
 
-        @Override
-        public Result calculateResult() {
+        private Result calculateResult() {
                 return new Result("Your result is:");
+        }
+
+        public void provideResult(int number) {
+
         }
 }

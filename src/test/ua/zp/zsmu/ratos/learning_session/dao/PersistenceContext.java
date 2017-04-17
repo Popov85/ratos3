@@ -1,6 +1,7 @@
-package ua.zp.zsmu.ratos.app_config;
+package ua.zp.zsmu.ratos.learning_session.dao;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -9,7 +10,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.context.annotation.Configuration;
+import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -19,10 +21,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerFactory",
-        transactionManagerRef = "transactionManager",
-        basePackages = {"ua.zp.zsmu.ratos.learning_session.dao"})
+@EnableJpaRepositories(basePackages = {"ua.zp.zsmu.ratos.learning_session.dao"})
 public class PersistenceContext {
 
         @Bean
@@ -60,5 +59,10 @@ public class PersistenceContext {
                 JpaTransactionManager transactionManager = new JpaTransactionManager();
                 transactionManager.setEntityManagerFactory(emf);
                 return transactionManager;
+        }
+
+        @Bean
+        public ThemeDAOJDBC themeDAOJDBC() {
+                return new ThemeDAOJDBC();
         }
 }

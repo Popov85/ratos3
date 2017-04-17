@@ -1,5 +1,6 @@
 package ua.zp.zsmu.ratos.learning_session.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,9 +33,11 @@ public class Answer implements Serializable {
         @Column(name = "required")
         private boolean isRequired;
 
+        @JsonIgnore
         @Column(name="pr")
-        private short percentage;
+        private int percentage;
 
+        // null
         @Column(name="context_hint")
         private String contextHint;
 
