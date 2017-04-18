@@ -17,15 +17,16 @@ public class Cache {
 
         //private Map<Scheme, Map<Theme, List<Question>>> cache = new ConcurrentHashMap<>();
 
+            /*public Map<Theme, List<Question>> getCache(Scheme scheme) {
+                return this.cache.get(scheme);
+        }*/
+
         private Map<Scheme, Map<Theme, Map<Integer, List<Question>>>> cache = new ConcurrentHashMap<>();
 
         public Map<Theme, Map<Integer, List<Question>>> getCache(Scheme scheme) {
                 return this.cache.get(scheme);
         }
 
-        /*public Map<Theme, List<Question>> getCache(Scheme scheme) {
-                return this.cache.get(scheme);
-        }*/
 
         public Map<Theme, Map<Integer, List<Question>>> addScheme(Scheme scheme, Map<Theme, Map<Integer, List<Question>>> themes) {
                 return this.cache.putIfAbsent(scheme, themes);

@@ -10,8 +10,11 @@ import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
+import ua.zp.zsmu.ratos.learning_session.model.Theme;
+
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 4/9/2017.
@@ -33,7 +36,7 @@ public class SessionService {
                 Session session = create(scheme);
                 LOGGER.info("Serializable Session created: "+session);
                 // Produce questions
-                List<Question> questions = randomQuestionProvider.produceQuestionSequence(scheme, false);
+                Map<Theme, List<Question>> questions = randomQuestionProvider.produceQuestionSequence(scheme, false);
                 LOGGER.info("Questions generated: "+questions);
                 // Create corresponding ISession object
                 ISession iSession = LearningSessionFactory.getSession(session.getSid(), student, scheme, questions);
@@ -41,7 +44,6 @@ public class SessionService {
                 // Update Session
                 update(session.getSid(), iSession);
                 LOGGER.info("Session updated!");
-                if (0==0) throw new RuntimeException();
                 return iSession;
         }
 

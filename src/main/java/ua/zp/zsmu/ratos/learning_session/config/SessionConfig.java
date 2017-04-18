@@ -65,7 +65,7 @@ public class SessionConfig {
         }
 
         @Bean
-        public Cache questionContainer() {
+        public Cache cache() {
                 return new Cache();
         }
 

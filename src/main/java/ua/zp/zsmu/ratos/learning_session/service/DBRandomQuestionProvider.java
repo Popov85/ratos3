@@ -42,31 +42,4 @@ public class DBRandomQuestionProvider {
                 }
                 return questionSequences;
         }
-
-        /**
-         * Produces a map with key - Theme and value - Map with Key - level and list of questions from the database
-         * @param scheme
-         * @return a randomized rated list of Questions on every Theme from DB
-         */
-        /*
-        public Map<Theme, Map<Integer, List<Question>>> produceQuestionSequenceFromDB2(Scheme scheme) {
-                Map<Theme, Map<Integer, List<Question>>> ratedQuestionSequences = new HashMap<>();
-                List<SchemeTheme> themes = scheme.getThemes();
-                for (SchemeTheme theme : themes) {
-                        Theme nextTheme = theme.getTheme();
-                        Map<Integer, List<Question>> subset = new HashMap<>();
-                        // Fetch questions on this given next Theme from DB
-                        subset.put(1, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
-                        if (theme.getQuantityOf2stLevelQuestions()!=0) {
-                                subset.put(2, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
-                        }
-                        if (theme.getQuantityOf3stLevelQuestions()!=0) {
-                                subset.put(3, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
-                        }
-                        ratedQuestionSequences.put(nextTheme, subset);
-                }
-                return ratedQuestionSequences;
-        }
-        */
-
 }

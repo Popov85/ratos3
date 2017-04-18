@@ -11,8 +11,6 @@ import ua.zp.zsmu.ratos.learning_session.model.SchemeTheme;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.cache.Cache;
 import ua.zp.zsmu.ratos.learning_session.service.util.Shuffler;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,24 +39,9 @@ public class CachedRandomQuestionProvider {
         public Map<Theme, List<Question>> produceQuestionSequenceFromCache(Scheme scheme) {
                 Map<Theme, Map<Integer, List<Question>>> data = getEntireCachedQuestionSequences(scheme);
                 // Filter needed number of 1-st level, 2-level and 3-level questions
-                Map<Theme, List<Question>> result = getRandomizedCachedQuestionSequences(data, scheme);
-                return result;
-        }
-
-        private Map<Theme,List<Question>> getRandomizedCachedQuestionSequences(Map<Theme, Map<Integer, List<Question>>> data, Scheme scheme) {
-                Map<Theme, List<Question>> subCache = new HashMap<>();
-                Map<Theme, Map<Integer, List<Question>>> allCache = data;
-                List<SchemeTheme> themes = scheme.getThemes();
-                for (SchemeTheme theme : themes) {
-                        subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(1), theme.getQuantityOf1stLevelQuestions()));
-                        if (theme.getQuantityOf2stLevelQuestions()!=0) {
-                                subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(2), theme.getQuantityOf2stLevelQuestions()));
-                        }
-                        if (theme.getQuantityOf3stLevelQuestions()!=0) {
-                                subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(3), theme.getQuantityOf3stLevelQuestions()));
-                        }
-                }
-                return subCache;
+                Map<Theme, List<Question>> randomizedCachedQuestionSequences =
+                        getRandomizedCachedQuestionSequences(data, scheme);
+                return randomizedCachedQuestionSequences;
         }
 
         private Map<Theme, Map<Integer, List<Question>>> getEntireCachedQuestionSequences(Scheme scheme) {
@@ -72,6 +55,25 @@ public class CachedRandomQuestionProvider {
                         }
                 }
                 return result;
+        }
+
+        private Map<Theme,List<Question>> getRandomizedCachedQuestionSequences(Map<Theme, Map<Integer, List<Question>>> data, Scheme scheme) {
+                Map<Theme, List<Question>> subCache = new HashMap<>();
+                Map<Theme, Map<Integer, List<Question>>> allCache = data;
+                List<SchemeTheme> themes = scheme.getThemes();
+                for (SchemeTheme theme : themes) {
+                        subCache.put(theme.getTheme(),
+                                Shuffler.shuffle(allCache.get(theme).get(1), theme.getQuantityOf1stLevelQuestions()));
+                        if (allCache.get(theme).containsKey(2)) {
+                                subCache.put(theme.getTheme(),
+                                        Shuffler.shuffle(allCache.get(theme).get(2), theme.getQuantityOf2stLevelQuestions()));
+                        }
+                        if (allCache.get(theme).containsKey(3)) {
+                                subCache.put(theme.getTheme(),
+                                        Shuffler.shuffle(allCache.get(theme).get(3), theme.getQuantityOf3stLevelQuestions()));
+                        }
+                }
+                return subCache;
         }
 
         private Map<Theme, Map<Integer, List<Question>>> fillCache(Scheme scheme) {
