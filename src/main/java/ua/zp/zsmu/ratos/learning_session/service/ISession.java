@@ -23,7 +23,7 @@ public interface ISession extends Serializable {
 
         void obtainStudentAnswer(Question question, Answer answer);
 
-        Result finishSession();
+        //Result finishSession();
 
-        Result calculateResult();
+        //Result calculateResult();
 }

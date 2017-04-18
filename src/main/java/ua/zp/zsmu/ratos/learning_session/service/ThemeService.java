@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import ua.zp.zsmu.ratos.learning_session.dao.ThemeDAO;
-import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
+import ua.zp.zsmu.ratos.learning_session.dao.impl.QuestionDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
@@ -24,7 +24,7 @@ public class ThemeService {
         private ThemeDAO themeDAO;
 
         @Autowired
-        private ThemeDAOJDBC themeDAOJDBC;
+        private QuestionDAOJDBC questionDAOJDBC;
 
         @Autowired
         private ThemeDAOJPA themeDAOJPA;
@@ -59,7 +59,7 @@ public class ThemeService {
         public List<Question> findQuestionsByTheme(Long id) {
                 List<Question> questions = null;
                 try {
-                        questions = themeDAOJDBC.getAllQuestions(id);
+                        questions = questionDAOJDBC.getAllQuestions(id);
                 } catch (Exception e) {
                         LOGGER.error("ERRoR: "+e.getMessage());
                 }

@@ -41,6 +41,7 @@ public class SessionService {
                 // Update Session
                 update(session.getSid(), iSession);
                 LOGGER.info("Session updated!");
+                if (0==0) throw new RuntimeException();
                 return iSession;
         }
 
@@ -52,7 +53,7 @@ public class SessionService {
                 return sessionDAO.save(session);
         }
 
-        public void update(Long sid, ISession iSession) throws RuntimeException {
+        public void update(Long sid, ISession iSession) {
                 LOGGER.info("iSession to be serialized is: "+iSession);
                 byte[] backup = SerializationUtils.serialize(iSession);
                 sessionDAO.updateSessionInfoById(backup, new Date(), sid);
