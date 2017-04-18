@@ -45,28 +45,19 @@ public class CachedRandomQuestionProvider {
                 return result;
         }
 
-        // TODO to complete
         private Map<Theme,List<Question>> getRandomizedCachedQuestionSequences(Map<Theme, Map<Integer, List<Question>>> data, Scheme scheme) {
                 Map<Theme, List<Question>> subCache = new HashMap<>();
                 Map<Theme, Map<Integer, List<Question>>> allCache = data;
-                for (Map.Entry<Theme, Map<Integer, List<Question>>> themeMapEntry : allCache.entrySet()) {
-                        Theme nextTheme = themeMapEntry.getKey();
-                        Map<Integer, List<Question>> nextQuestions = themeMapEntry.getValue();
-                        List<Question> nextThemeQuestions = new ArrayList<>();
-                        for (Map.Entry<Integer, List<Question>> integerListEntry : nextQuestions.entrySet()) {
-                                //Integer level = integerListEntry.getKey();
-                                nextThemeQuestions.addAll(Shuffler.shuffle(integerListEntry.getValue(), 10));
-
+                List<SchemeTheme> themes = scheme.getThemes();
+                for (SchemeTheme theme : themes) {
+                        subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(1), theme.getQuantityOf1stLevelQuestions()));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0) {
+                                subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(2), theme.getQuantityOf2stLevelQuestions()));
                         }
-                        /*List<Question> nextThemeQuestions = new ArrayList<>();
-                        // Fetch questions on this given next Theme from DB
-                        nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
-                        if (theme.getQuantityOf2stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
-                        if (theme.getQuantityOf3stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
-                        questionSequences.put(nextTheme, nextThemeQuestions);*/
-                        subCache.put(nextTheme, nextThemeQuestions);
+                        if (theme.getQuantityOf3stLevelQuestions()!=0) {
+                                subCache.put(theme.getTheme(), Shuffler.shuffle(allCache.get(theme).get(3), theme.getQuantityOf3stLevelQuestions()));
+                        }
                 }
-
                 return subCache;
         }
 
@@ -82,19 +73,6 @@ public class CachedRandomQuestionProvider {
                 }
                 return result;
         }
-
-        /*private Map<Theme, List<Question>> fillCache(Scheme scheme) {
-                Map<Theme, List<Question>> questionSequences = new HashMap<>();
-                List<SchemeTheme> themes = scheme.getThemes();
-                for (SchemeTheme theme : themes) {
-                        Theme nextTheme = theme.getTheme();
-                        List<Question> nextThemeQuestions = new ArrayList<>();
-                        // Fetch all existing questions on this given next Theme from DB
-                        nextThemeQuestions.addAll(questionDAO.findByTheme(nextTheme));
-                        questionSequences.put(nextTheme, nextThemeQuestions);
-                }
-                return questionSequences;
-        }*/
 
         private Map<Theme, Map<Integer, List<Question>>> fillCache(Scheme scheme) {
                 Map<Theme, Map<Integer, List<Question>>> ratedQuestionSequences = new HashMap<>();
