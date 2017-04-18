@@ -80,6 +80,7 @@ public class LearningSession implements ISession {
 
         @Override
         public Result calculateResult() {
+                StringBuilder sb = new StringBuilder();
                 return new Result("Your result is:");
         }
 }
