@@ -10,7 +10,9 @@ import ua.zp.zsmu.ratos.learning_session.model.SchemeTheme;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 13.04.2017.
@@ -22,20 +24,49 @@ public class DBRandomQuestionProvider {
         private QuestionDAO questionDAO;
 
         /**
-         * Produces a list of questions from the database that belong to the given Scheme
+         * Produces a map with key - Theme and value - lists of questions from the database that belong to the given Scheme
          * @param scheme
-         * @return a randomized list of Questions from DB
+         * @return a randomized list of Questions on every Theme from DB
          */
-        public List<Question> produceQuestionSequenceFromDB(Scheme scheme) {
-                List<Question> questions = new ArrayList<>();
+        public Map<Theme, List<Question>> produceQuestionSequenceFromDB(Scheme scheme) {
+                Map<Theme, List<Question>> questionSequences = new HashMap<>();
                 List<SchemeTheme> themes = scheme.getThemes();
                 for (SchemeTheme theme : themes) {
                         Theme nextTheme = theme.getTheme();
-                        // Fetch questions on this given Theme from DB
-                        questions.addAll(questionDAO.findNRandomByTheme(nextTheme.getId(),theme.getQuantityOf1stLevelQuestions()));
-                        if (theme.getQuantityOf2stLevelQuestions()!=0) questions.addAll(questionDAO.findNRandomByTheme(nextTheme.getId(),theme.getQuantityOf2stLevelQuestions()));
-                        if (theme.getQuantityOf3stLevelQuestions()!=0) questions.addAll(questionDAO.findNRandomByTheme(nextTheme.getId(),theme.getQuantityOf3stLevelQuestions()));
+                        List<Question> nextThemeQuestions = new ArrayList<>();
+                        // Fetch questions on this given next Theme from DB
+                        nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
+                        if (theme.getQuantityOf3stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
+                        questionSequences.put(nextTheme, nextThemeQuestions);
                 }
-                return questions;
+                return questionSequences;
         }
+
+        /**
+         * Produces a map with key - Theme and value - Map with Key - level and list of questions from the database
+         * @param scheme
+         * @return a randomized rated list of Questions on every Theme from DB
+         */
+        /*
+        public Map<Theme, Map<Integer, List<Question>>> produceQuestionSequenceFromDB2(Scheme scheme) {
+                Map<Theme, Map<Integer, List<Question>>> ratedQuestionSequences = new HashMap<>();
+                List<SchemeTheme> themes = scheme.getThemes();
+                for (SchemeTheme theme : themes) {
+                        Theme nextTheme = theme.getTheme();
+                        Map<Integer, List<Question>> subset = new HashMap<>();
+                        // Fetch questions on this given next Theme from DB
+                        subset.put(1, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0) {
+                                subset.put(2, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
+                        }
+                        if (theme.getQuantityOf3stLevelQuestions()!=0) {
+                                subset.put(3, questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
+                        }
+                        ratedQuestionSequences.put(nextTheme, subset);
+                }
+                return ratedQuestionSequences;
+        }
+        */
+
 }

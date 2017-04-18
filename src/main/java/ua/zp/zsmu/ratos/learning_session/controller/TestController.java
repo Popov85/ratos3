@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ua.zp.zsmu.ratos.learning_session.dao.TestDAO;
 import ua.zp.zsmu.ratos.learning_session.dao.ThemeDAO;
-import ua.zp.zsmu.ratos.learning_session.model.Test;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
-import ua.zp.zsmu.ratos.learning_session.service.RandomQuestionProvider;
 
 /**
  * Created by Andrey on 14.04.2017.

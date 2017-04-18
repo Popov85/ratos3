@@ -8,9 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Andrey on 31.03.2017.
@@ -22,7 +20,7 @@ import java.util.Set;
 @Table(name = "scheme")
 public class Scheme implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 7737781206445619941L;
 
         @Id
         @GeneratedValue(generator = "increment")
@@ -36,7 +34,6 @@ public class Scheme implements Serializable {
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @OneToMany(fetch = FetchType.EAGER, mappedBy = "scheme")
         private List<SchemeTheme> themes = new ArrayList<>();
-        //private Set<SchemeTheme> themes = new HashSet<>();
 
         // Seems to be: random/sequence/happy - 0/1/2
         @Column(name = "mode")
@@ -87,28 +84,17 @@ public class Scheme implements Serializable {
         @Column(name="enabled")
         private boolean isEnabled;
 
-        /*@OneToOne(fetch = FetchType.LAZY)
-        @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-        @JoinColumn(name="user", unique=true, nullable=false, updatable=false)*/
         @Column(name="owner")
         private String owner;
 
         @Column(name="anonymous")
         private boolean isAvailableForAnonymousUser;
 
-        // String
         @Column(name = "groups")
         private String studentGroups;
-        /*@OneToMany(fetch = FetchType.LAZY)
-        @JoinColumn(name = "scheme")
-        private Set<Group> studentGroups;*/
 
-        // String
         @Column(name = "students")
         private String classRooms;
-        /*@OneToMany(fetch = FetchType.LAZY)
-        @JoinColumn(name = "scheme")
-        private Set<ClassRoom> classRooms;*/
 
         @Column(name="hint_after")
         private boolean isHintAfterAnswerEnabled;

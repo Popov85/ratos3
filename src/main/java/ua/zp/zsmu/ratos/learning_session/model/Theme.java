@@ -2,6 +2,7 @@ package ua.zp.zsmu.ratos.learning_session.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @ToString(exclude="questions")
+@EqualsAndHashCode(exclude={"title", "questions"})
 @Table(name = "theme")
 public class Theme implements Serializable {
 

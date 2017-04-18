@@ -6,7 +6,7 @@ import ua.zp.zsmu.ratos.learning_session.dao.impl.QuestionDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
 import ua.zp.zsmu.ratos.learning_session.service.*;
-import ua.zp.zsmu.ratos.learning_session.service.cache.QuestionContainer;
+import ua.zp.zsmu.ratos.learning_session.service.cache.Cache;
 
 /**
  * Created by Andrey on 3/23/2017.
@@ -65,8 +65,8 @@ public class SessionConfig {
         }
 
         @Bean
-        public QuestionContainer questionContainer() {
-                return new QuestionContainer();
+        public Cache questionContainer() {
+                return new Cache();
         }
 
 }

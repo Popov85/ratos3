@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 @Data
 @Getter
 @Setter
-public class QuestionAndAnswer implements Serializable {
+public class QuestionResult implements Serializable {
 
-        private static final long serialVersionUID = -2519867348184892371L;
+        private static final long serialVersionUID = -7700771560941493985L;
 
-        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(QuestionAndAnswer.class);
+        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(QuestionResult.class);
 
         private Question question;
         /**
@@ -43,7 +43,7 @@ public class QuestionAndAnswer implements Serializable {
         private int skipped = 0;
         private int result = 0;
 
-        public QuestionAndAnswer(final Question question, final List<Long> answers) {
+        public QuestionResult(final Question question, final List<Long> answers) {
                 this.question = question;
                 this.answers = answers;
         }

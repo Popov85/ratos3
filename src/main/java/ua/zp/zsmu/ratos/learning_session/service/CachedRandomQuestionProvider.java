@@ -4,12 +4,18 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.zp.zsmu.ratos.learning_session.dao.QuestionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
-import ua.zp.zsmu.ratos.learning_session.service.cache.QuestionContainer;
+import ua.zp.zsmu.ratos.learning_session.model.SchemeTheme;
+import ua.zp.zsmu.ratos.learning_session.model.Theme;
+import ua.zp.zsmu.ratos.learning_session.service.cache.Cache;
+import ua.zp.zsmu.ratos.learning_session.service.util.Shuffler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 13.04.2017.
@@ -20,15 +26,92 @@ public class CachedRandomQuestionProvider {
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(CachedRandomQuestionProvider.class);
 
         @Autowired
-        private QuestionContainer questionContainer;
+        private Cache cache;
 
-        // TODO
-        public List<Question> produceQuestionSequenceFromCache(Scheme scheme) {
-                // Get List<Question> from in-memory cache: QuestionContainer
-                LOGGER.info("Look up this Scheme in the cache." +
-                        "1) if present - return List<Question>" +
-                        "2) if not - request DB and put List<Question> to cache, then return it");
-                if (questionContainer.containsScheme(scheme.getId())) return questionContainer.getQuestions(scheme.getId());
-                return new ArrayList<>();
+        @Autowired
+        private QuestionDAO questionDAO;
+
+        /**
+         * Look up this Scheme in the cache.
+         * 1) if present - return List<Question>
+         * 2) if not - request DB and put List<Question> to cache, then return it
+         * @param scheme
+         * @return
+         */
+        public Map<Theme, List<Question>> produceQuestionSequenceFromCache(Scheme scheme) {
+                Map<Theme, Map<Integer, List<Question>>> data = getEntireCachedQuestionSequences(scheme);
+                // Filter needed number of 1-st level, 2-level and 3-level questions
+                Map<Theme, List<Question>> result = getRandomizedCachedQuestionSequences(data, scheme);
+                return result;
+        }
+
+        // TODO to complete
+        private Map<Theme,List<Question>> getRandomizedCachedQuestionSequences(Map<Theme, Map<Integer, List<Question>>> data, Scheme scheme) {
+                Map<Theme, List<Question>> subCache = new HashMap<>();
+                Map<Theme, Map<Integer, List<Question>>> allCache = data;
+                for (Map.Entry<Theme, Map<Integer, List<Question>>> themeMapEntry : allCache.entrySet()) {
+                        Theme nextTheme = themeMapEntry.getKey();
+                        Map<Integer, List<Question>> nextQuestions = themeMapEntry.getValue();
+                        List<Question> nextThemeQuestions = new ArrayList<>();
+                        for (Map.Entry<Integer, List<Question>> integerListEntry : nextQuestions.entrySet()) {
+                                //Integer level = integerListEntry.getKey();
+                                nextThemeQuestions.addAll(Shuffler.shuffle(integerListEntry.getValue(), 10));
+
+                        }
+                        /*List<Question> nextThemeQuestions = new ArrayList<>();
+                        // Fetch questions on this given next Theme from DB
+                        nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
+                        if (theme.getQuantityOf3stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
+                        questionSequences.put(nextTheme, nextThemeQuestions);*/
+                        subCache.put(nextTheme, nextThemeQuestions);
+                }
+
+                return subCache;
+        }
+
+        private Map<Theme, Map<Integer, List<Question>>> getEntireCachedQuestionSequences(Scheme scheme) {
+                Map<Theme, Map<Integer, List<Question>>> result = cache.getCache(scheme);
+                if(result == null) {
+                        Map<Theme, Map<Integer, List<Question>>> putResult = cache.addScheme(scheme, fillCache(scheme));
+                        if(putResult != null) {
+                                result = putResult;
+                        } else {
+                                result = cache.getCache(scheme);
+                        }
+                }
+                return result;
+        }
+
+        /*private Map<Theme, List<Question>> fillCache(Scheme scheme) {
+                Map<Theme, List<Question>> questionSequences = new HashMap<>();
+                List<SchemeTheme> themes = scheme.getThemes();
+                for (SchemeTheme theme : themes) {
+                        Theme nextTheme = theme.getTheme();
+                        List<Question> nextThemeQuestions = new ArrayList<>();
+                        // Fetch all existing questions on this given next Theme from DB
+                        nextThemeQuestions.addAll(questionDAO.findByTheme(nextTheme));
+                        questionSequences.put(nextTheme, nextThemeQuestions);
+                }
+                return questionSequences;
+        }*/
+
+        private Map<Theme, Map<Integer, List<Question>>> fillCache(Scheme scheme) {
+                Map<Theme, Map<Integer, List<Question>>> ratedQuestionSequences = new HashMap<>();
+                List<SchemeTheme> themes = scheme.getThemes();
+                for (SchemeTheme theme : themes) {
+                        Theme nextTheme = theme.getTheme();
+                        Map<Integer, List<Question>> nextThemeRatedQuestions = new HashMap<>();
+                        // Fetch all existing questions on this given next Theme from DB
+                        nextThemeRatedQuestions.put(1, questionDAO.findByThemeAndLevel(nextTheme, (short) 1));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0) {
+                                nextThemeRatedQuestions.put(2, questionDAO.findByThemeAndLevel(nextTheme, (short) 2));
+                        }
+                        if (theme.getQuantityOf3stLevelQuestions()!=0) {
+                                nextThemeRatedQuestions.put(3, questionDAO.findByThemeAndLevel(nextTheme, (short) 3));
+                        }
+                        ratedQuestionSequences.put(nextTheme, nextThemeRatedQuestions);
+                }
+                return ratedQuestionSequences;
         }
 }

@@ -9,8 +9,16 @@ public class Shuffler {
 
         private Shuffler() {}
 
-        public static <T> Set<T> shuffle(List<T> items, int m){
-                HashSet<T> res = new HashSet<T>(m);
+        /**
+         * Produces a subset of the original array by randomly selecting m elements
+         * using the algorithm
+         * @param items
+         * @param m - how many values shall be selected randomly
+         * @param <T>
+         * @return
+         */
+        public static <T> List<T> shuffle(List<T> items, int m){
+                List<T> res = new ArrayList<T>(m);
                 Random rnd = new Random();
                 int n = items.size();
                 for(int i=n-m;i<n;i++){
@@ -24,13 +32,26 @@ public class Shuffler {
                 return res;
         }
 
-        public static <T> Set<T> shuffleComposite(HashMap<Integer, List<T>> items, int m, int n){
-                HashSet<T> res = new HashSet<T>(n);
+    /*    public static <T> List<T> shuffleComposite(Map<Integer, List<T>> items, int m, int n){
+                List<T> res = new ArrayList<T>(n);
                 for (List<T> ts : items.values()) {
-                        Set<T> subset = shuffle(ts, m);
+                        List<T> subset = shuffle(ts, m);
                         res.addAll(subset);
                 }
                 return res;
-        }
+        }*/
+
+        /*public static <T> Map<Integer, List<T>> shuffleComposite(Map<Integer, List<T>> items, int m, int n){
+                Map<Integer, List<T>> res = new HashMap<>(n);
+                for (List<T> ts : res.values()) {
+                        List<T> subset = shuffle(ts, m);
+                }
+                /*for (List<T> ts : items.values()) {
+                        List<T> subset = shuffle(ts, m);
+                        res.addAll(subset);
+                }
+
+                return res;
+        }*/
 
 }

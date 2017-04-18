@@ -21,13 +21,16 @@ public class LearningSession implements ISession {
         private Long sid;
         private Student student;
         private Scheme scheme;
-        // Key - the ID of a Theme, Value - List of question on this theme
-        private Map<Theme, List<Question>> sequences = new HashMap<>();
-        private List<Question> questionSequence = new ArrayList<>();
+        // Key - a Theme, Value - List of question on this theme
+        private Map<Theme, List<Question>> questionSequences = new HashMap<>();
+        //private List<Question> questionSequence = new ArrayList<>();
 
-        private Map<Theme, List<QuestionAndAnswer>> answers = new HashMap<>();
+        // Key - a Theme, Value - list of results (answers)
+        private Map<Theme, List<QuestionResult>> resultSequences = new HashMap<>();
 
-        private Map<Question, List<Answer>> studentAnswers = new HashMap<>();
+        //private Map<Question, List<Answer>> studentAnswers = new HashMap<>();
+
+        private Theme currentTheme;
 
         private int currentQuestionNumber = 0;
 
@@ -39,13 +42,13 @@ public class LearningSession implements ISession {
         private boolean isFinished;
 
         public LearningSession(@NotNull Long sid, @NotNull Student student, @NotNull Scheme scheme,
-                               @NotNull List<Question> questionSequence) {
-                if (questionSequence.isEmpty())
+                               @NotNull Map<Theme, List<Question>> questionSequences) {
+                if (questionSequences.isEmpty())
                         throw new RuntimeException("Question list cannot be empty!");
                 this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
-                this.questionSequence = questionSequence;
+                //this.questionSequence = questionSequence;
         }
 
         @Override
@@ -65,7 +68,7 @@ public class LearningSession implements ISession {
 
         @Override
         public Question provideNextQuestion() {
-                if (currentQuestionNumber<=questionSequence.size()-1) {
+                /*if (currentQuestionNumber<=questionSequence.size()-1) {
                         Question nextQuestion = questionSequence.get(currentQuestionNumber);
                         currentQuestionNumber++;
                         return nextQuestion;
@@ -73,17 +76,17 @@ public class LearningSession implements ISession {
                 } else {
                         finishSession();
                         return null;
-                }
+                }*/
+                return new Question();
         }
 
         @Override
         public void obtainStudentAnswer(Question question, Answer answer) {
                 List<Answer> answers = new ArrayList<>();
                 answers.add(answer);
-                studentAnswers.put(question, answers);
+                //studentAnswers.put(question, answers);
                 // return right answer if needed
         }
-
 
         private Result finishSession() {
                 this.isFinished = true;
