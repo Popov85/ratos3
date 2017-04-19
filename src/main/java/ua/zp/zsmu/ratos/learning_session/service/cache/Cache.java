@@ -1,6 +1,7 @@
 package ua.zp.zsmu.ratos.learning_session.service.cache;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache of questions for better performance
  * Created by Andrey on 13.04.2017.
  */
-@Component
+@Service
 public class Cache {
 
         //private Map<Scheme, Map<Theme, List<Question>>> cache = new ConcurrentHashMap<>();

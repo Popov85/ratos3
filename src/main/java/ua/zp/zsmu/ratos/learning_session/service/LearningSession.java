@@ -11,28 +11,27 @@ import java.util.*;
  */
 public class LearningSession implements ISession {
 
-        private static final long serialVersionUID = 8762633453287052372L;
+        private static final long serialVersionUID = -2956423932590303815L;
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
 
         /**
          * ID of the stored backup (in a form of byte[]) of this class in a database
          */
-        private Long sid;
-        private Student student;
-        private Scheme scheme;
-        // Key - a Theme, Value - List of question on this theme
-        private Map<Theme, List<Question>> questionSequences = new HashMap<>();
-        //private List<Question> questionSequence = new ArrayList<>();
+        private final Long sid;
+        private final Student student;
+        // Contains list of Theme(s) for  the report
+        private final Scheme scheme;
 
-        // Key - a Theme, Value - list of results (answers)
-        private Map<Theme, List<QuestionResult>> resultSequences = new HashMap<>();
+        private List<Question> questionSequence = new ArrayList<>();
 
-        //private Map<Question, List<Answer>> studentAnswers = new HashMap<>();
+        private Map<Theme, List<QuestionResult>> resultSequenceInMap = new HashMap<>();
 
-        private Theme currentTheme;
+        private List<QuestionResult> resultSequence = new ArrayList<>();
 
-        private int currentQuestionNumber = 0;
+        private Map<Question, QuestionStatistics> statistics = new HashMap<>();
+
+        private int currentQuestionIndex = 0;
 
         private double currentResult = 0d;
 
@@ -48,7 +47,14 @@ public class LearningSession implements ISession {
                 this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
-                //this.questionSequence = questionSequence;
+                this.questionSequence = createQuestionSequence(questionSequences);
+        }
+
+        // TODO: consider to move to a question provider
+        private List<Question> createQuestionSequence(Map<Theme, List<Question>> questionSequences) {
+                List<Question> resultingQuestionSequence = new ArrayList<>();
+                questionSequences.values().forEach(resultingQuestionSequence::addAll);
+                return resultingQuestionSequence;
         }
 
         @Override
@@ -81,11 +87,54 @@ public class LearningSession implements ISession {
         }
 
         @Override
-        public void obtainStudentAnswer(Question question, Answer answer) {
-                List<Answer> answers = new ArrayList<>();
-                answers.add(answer);
-                //studentAnswers.put(question, answers);
-                // return right answer if needed
+        public void obtainStudentAnswer(Question question, List<Long> answers) {
+                QuestionResult questionResult = new QuestionResult(question, answers);
+                questionResult.calculateResult();
+                resultSequence.add(questionResult);
+                // Check if there is such question in statistics
+                // Calculate the time before the right answer is provided
+                if (!statistics.containsKey(question)) {
+                        QuestionStatistics questionStatistics = new QuestionStatistics(123l);
+                        statistics.put(question, questionStatistics);
+                } else {
+                        // update time and everyting
+                }
+
+        }
+
+        @Override
+        public Question skipQuestion() {
+                return null;
+        }
+
+        @Override
+        public String provideHelp() {
+                return null;
+        }
+
+        @Override
+        public String provideHint() {
+                return null;
+        }
+
+        @Override
+        public SessionResult provideReport() {
+                List<ThemeResult> themeResults = new ArrayList<>();
+                for (SchemeTheme theme : scheme.getThemes()) {
+                        List<QuestionResult> themeQuestionResult = new ArrayList<>();
+                        int questionsInTheme=0;
+                        for (QuestionResult questionResult : resultSequence) {
+                                if (questionResult.getQuestion().getTheme().equals(theme.getTheme())) {
+                                        themeQuestionResult.add(questionResult);
+                                        questionsInTheme++;
+                                }
+                        }
+                        ThemeResult themeResult = new ThemeResult(theme.getTheme(), questionsInTheme, themeQuestionResult);
+                        themeResult.calculateResult();
+                        themeResults.add(themeResult);
+                }
+                SessionResult sessionResult = new SessionResult(currentResult, student, scheme, themeResults);
+                return sessionResult;
         }
 
         private Result finishSession() {
@@ -95,9 +144,5 @@ public class LearningSession implements ISession {
 
         private Result calculateResult() {
                 return new Result("Your result is:");
-        }
-
-        public void provideResult(int number) {
-
         }
 }

@@ -3,6 +3,7 @@ package ua.zp.zsmu.ratos.learning_session.service;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.stereotype.Service;
 import ua.zp.zsmu.ratos.learning_session.dao.QuestionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
@@ -10,10 +11,12 @@ import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.SchemeTheme;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.cache.Cache;
+import ua.zp.zsmu.ratos.learning_session.service.cache.ThemeAndRatedQuestions;
 import ua.zp.zsmu.ratos.learning_session.service.util.Shuffler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Andrey on 13.04.2017.
@@ -28,6 +31,12 @@ public class CachedRandomQuestionProvider {
 
         @Autowired
         private QuestionDAO questionDAO;
+
+        private Map<Theme, ThemeAndRatedQuestions> cache2 = new HashMap<>();
+
+        private Map<Theme, ThemeAndRatedQuestions> cache3 = new ConcurrentHashMap<>();
+
+        private ConcurrentMapCache cache4 = new ConcurrentMapCache("questions", new ConcurrentHashMap(), false);
 
         /**
          * Look up this Scheme in the cache.

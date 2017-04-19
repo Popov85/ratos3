@@ -20,6 +20,8 @@ public class ThemeAndRatedQuestions {
          */
         private Map<Integer, List<Question>> ratedQuestions;
 
+        public ThemeAndRatedQuestions() {}
+
         public ThemeAndRatedQuestions(Theme theme, Map<Integer, List<Question>> ratedQuestions) {
                 this.theme = theme;
                 this.ratedQuestions = ratedQuestions;

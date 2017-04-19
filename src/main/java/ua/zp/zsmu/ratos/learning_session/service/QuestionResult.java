@@ -20,28 +20,19 @@ import java.util.stream.Collectors;
 @Data
 @Getter
 @Setter
-public class QuestionResult implements Serializable {
+public final class QuestionResult implements Serializable {
 
-        private static final long serialVersionUID = -7700771560941493985L;
+        private static final long serialVersionUID = -3135632710599257031L;
 
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(QuestionResult.class);
 
-        private Question question;
+        private int result = 0;
+
+        private final Question question;
         /**
          * List of Answer IDs a user returned
          */
-        private List<Long> answers;
-        /**
-         * Time taken to answer this question (ms)
-         */
-        private long timeTaken;
-        private boolean isHintTaken;
-        private boolean isHelpTaken;
-        /**
-         * Number of occasions the question has been skipped by a student
-         */
-        private int skipped = 0;
-        private int result = 0;
+        private final List<Long> answers;
 
         public QuestionResult(final Question question, final List<Long> answers) {
                 this.question = question;
@@ -71,6 +62,7 @@ public class QuestionResult implements Serializable {
                                 if (userAnswer.equals(answer.getId())) result+=answer.getPercentage();
                         }
                 }
+                this.result = result;
                 return result;
         }
 

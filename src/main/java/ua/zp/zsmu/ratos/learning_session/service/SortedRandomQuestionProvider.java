@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
+import ua.zp.zsmu.ratos.learning_session.model.Theme;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 13.04.2017.
@@ -24,8 +28,8 @@ public class SortedRandomQuestionProvider implements IQuestionProvider {
         private DBRandomQuestionProvider dbRandomQuestionProvider;
 
         @Override
-        public List<Question> produceQuestionSequence(Scheme scheme, boolean isFromCache) {
-                List<Question> questions = new ArrayList<>();
+        public Map<Theme, List<Question>> produceQuestionSequence(Scheme scheme, boolean isFromCache) {
+                Map<Theme, List<Question>> questions = new HashMap<>();
                 if (isFromCache) {
                         questions =  cachedRandomQuestionProvider.produceQuestionSequenceFromCache(scheme);
                 } else {
