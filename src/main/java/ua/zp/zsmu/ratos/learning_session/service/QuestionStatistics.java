@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Getter
-public class QuestionStatistics implements Serializable {
+public final class QuestionStatistics implements Serializable {
 
         private static final long serialVersionUID = 4033815058841410998L;
         /**

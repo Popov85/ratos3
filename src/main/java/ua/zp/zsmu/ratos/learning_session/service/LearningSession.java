@@ -19,15 +19,15 @@ public class LearningSession implements ISession {
          * ID of the stored backup (in a form of byte[]) of this class in a database
          */
         private final Long sid;
+
         private final Student student;
-        // Contains list of Theme(s) for  the report
         private final Scheme scheme;
+
+        private final Map<Theme, List<Question>> questionSequences;
 
         private List<Question> questionSequence = new ArrayList<>();
 
-        private Map<Theme, List<QuestionResult>> resultSequenceInMap = new HashMap<>();
-
-        private List<QuestionResult> resultSequence = new ArrayList<>();
+        private Map<Theme, List<QuestionResult>> resultSequences = new HashMap<>();
 
         private Map<Question, QuestionStatistics> statistics = new HashMap<>();
 
@@ -40,13 +40,14 @@ public class LearningSession implements ISession {
 
         private boolean isFinished;
 
-        public LearningSession(@NotNull Long sid, @NotNull Student student, @NotNull Scheme scheme,
-                               @NotNull Map<Theme, List<Question>> questionSequences) {
+        public LearningSession(@NotNull final Long sid, @NotNull final Student student, @NotNull final Scheme scheme,
+                               @NotNull final Map<Theme, List<Question>> questionSequences) {
                 if (questionSequences.isEmpty())
                         throw new RuntimeException("Question list cannot be empty!");
                 this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
+                this.questionSequences = questionSequences;
                 this.questionSequence = createQuestionSequence(questionSequences);
         }
 
@@ -90,14 +91,21 @@ public class LearningSession implements ISession {
         public void obtainStudentAnswer(Question question, List<Long> answers) {
                 QuestionResult questionResult = new QuestionResult(question, answers);
                 questionResult.calculateResult();
-                resultSequence.add(questionResult);
+                //calculateCurrentResult(); increase counter and divide by the quantity
+                Theme theme = question.getTheme();
+                List<QuestionResult> results = resultSequences.get(theme);
+                if (results==null) results = new ArrayList<>();
+                results.add(questionResult);
+                resultSequences.put(theme, results);
+
                 // Check if there is such question in statistics
                 // Calculate the time before the right answer is provided
+
                 if (!statistics.containsKey(question)) {
                         QuestionStatistics questionStatistics = new QuestionStatistics(123l);
                         statistics.put(question, questionStatistics);
                 } else {
-                        // update time and everyting
+                        // update time and everything
                 }
 
         }
@@ -120,16 +128,11 @@ public class LearningSession implements ISession {
         @Override
         public SessionResult provideReport() {
                 List<ThemeResult> themeResults = new ArrayList<>();
-                for (SchemeTheme theme : scheme.getThemes()) {
-                        List<QuestionResult> themeQuestionResult = new ArrayList<>();
-                        int questionsInTheme=0;
-                        for (QuestionResult questionResult : resultSequence) {
-                                if (questionResult.getQuestion().getTheme().equals(theme.getTheme())) {
-                                        themeQuestionResult.add(questionResult);
-                                        questionsInTheme++;
-                                }
-                        }
-                        ThemeResult themeResult = new ThemeResult(theme.getTheme(), questionsInTheme, themeQuestionResult);
+                for (Map.Entry<Theme, List<QuestionResult>> themes : resultSequences.entrySet()) {
+                        Theme theme = themes.getKey();
+                        List<QuestionResult> results = themes.getValue();
+                        int questionsInTheme = questionSequences.get(theme).size();
+                        ThemeResult themeResult = new ThemeResult(theme, questionsInTheme, results);
                         themeResult.calculateResult();
                         themeResults.add(themeResult);
                 }
