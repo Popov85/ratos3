@@ -23,13 +23,9 @@ public class LearningSession implements ISession {
         private final Student student;
         private final Scheme scheme;
 
-        private final Map<Theme, List<Question>> questionSequences;
-
         private List<Question> questionSequence = new ArrayList<>();
 
-        private Map<Theme, List<QuestionResult>> resultSequences = new HashMap<>();
-
-        private Map<Question, QuestionStatistics> statistics = new HashMap<>();
+        private Report report;
 
         private int currentQuestionIndex = 0;
 
@@ -47,8 +43,8 @@ public class LearningSession implements ISession {
                 this.sid = sid;
                 this.student = student;
                 this.scheme = scheme;
-                this.questionSequences = questionSequences;
                 this.questionSequence = createQuestionSequence(questionSequences);
+                this.report = new Report(questionSequences);
         }
 
         // TODO: consider to move to a question provider
@@ -93,17 +89,17 @@ public class LearningSession implements ISession {
                 questionResult.calculateResult();
                 //calculateCurrentResult(); increase counter and divide by the quantity
                 Theme theme = question.getTheme();
-                List<QuestionResult> results = resultSequences.get(theme);
+                List<QuestionResult> results = report.resultSequences.get(theme);
                 if (results==null) results = new ArrayList<>();
                 results.add(questionResult);
-                resultSequences.put(theme, results);
+                report.resultSequences.put(theme, results);
 
                 // Check if there is such question in statistics
                 // Calculate the time before the right answer is provided
 
-                if (!statistics.containsKey(question)) {
+                if (!report.statistics.containsKey(question)) {
                         QuestionStatistics questionStatistics = new QuestionStatistics(123l);
-                        statistics.put(question, questionStatistics);
+                        report.statistics.put(question, questionStatistics);
                 } else {
                         // update time and everything
                 }
@@ -112,40 +108,44 @@ public class LearningSession implements ISession {
 
         @Override
         public Question skipQuestion() {
+                if (!scheme.isSkippingEnabled())
+                        throw new UnsupportedOperationException("This scheme does not allow skipping!");
+
+
                 return null;
         }
 
         @Override
         public String provideHelp() {
+                if (!scheme.isHelpAllowed())
+                        throw new UnsupportedOperationException("This scheme does not allow help!");
+
                 return null;
         }
 
         @Override
         public String provideHint() {
+                if (scheme.isHintAfterAnswerEnabled())
+                        throw new UnsupportedOperationException("This scheme does not allow hints!");
+
                 return null;
         }
 
         @Override
-        public SessionResult provideReport() {
-                List<ThemeResult> themeResults = new ArrayList<>();
-                for (Map.Entry<Theme, List<QuestionResult>> themes : resultSequences.entrySet()) {
-                        Theme theme = themes.getKey();
-                        List<QuestionResult> results = themes.getValue();
-                        int questionsInTheme = questionSequences.get(theme).size();
-                        ThemeResult themeResult = new ThemeResult(theme, questionsInTheme, results);
-                        themeResult.calculateResult();
-                        themeResults.add(themeResult);
-                }
-                SessionResult sessionResult = new SessionResult(currentResult, student, scheme, themeResults);
-                return sessionResult;
+        public SessionResult getSessionReport() {
+                return new SessionResult(currentResult, student, scheme, report.getThemeReport());
         }
 
-        private Result finishSession() {
+        private Report finishSession() {
                 this.isFinished = true;
-                return calculateResult();
+                return null;
         }
 
-        private Result calculateResult() {
-                return new Result("Your result is:");
+        public QuestionResult getQuestionResult(Long qid) {
+                if (!report.questionResult.containsKey(qid))
+                        throw new IllegalStateException("Report on this question is not yet available!");
+                return report.questionResult.get(qid);
         }
+
+
 }

@@ -26,5 +26,5 @@ public interface ISession extends Serializable {
 
         String provideHint();
 
-        SessionResult provideReport();
+        SessionResult getSessionReport();
 }

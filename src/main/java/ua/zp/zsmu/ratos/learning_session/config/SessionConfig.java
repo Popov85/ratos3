@@ -6,7 +6,7 @@ import ua.zp.zsmu.ratos.learning_session.dao.impl.QuestionDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
 import ua.zp.zsmu.ratos.learning_session.service.*;
-import ua.zp.zsmu.ratos.learning_session.service.cache.Cache;
+import ua.zp.zsmu.ratos.learning_session.service.cache.CacheGuava;
 
 /**
  * Created by Andrey on 3/23/2017.
@@ -55,18 +55,23 @@ public class SessionConfig {
         }
 
         @Bean
-        public CachedRandomQuestionProvider cachedRuestionSequenceProducer() {
+        public CachedRandomQuestionProvider cachedQuestionSequenceProvider() {
                 return new CachedRandomQuestionProvider();
         }
 
         @Bean
-        public DBRandomQuestionProvider dbRuestionSequenceProducer() {
+        public DBRandomQuestionProvider dbQuestionSequenceProvider() {
                 return new DBRandomQuestionProvider();
         }
 
         @Bean
-        public Cache cache() {
-                return new Cache();
+        public DBQuestionProvider dbQuestionProvider() {
+                return new DBQuestionProvider();
+        }
+
+        @Bean
+        public CacheGuava cache() {
+                return new CacheGuava();
         }
 
 }

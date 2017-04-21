@@ -18,6 +18,7 @@ import java.util.Map;
  * Created by Andrey on 13.04.2017.
  */
 public class DBRandomQuestionProvider {
+
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DBRandomQuestionProvider.class);
 
         @Autowired
@@ -35,9 +36,14 @@ public class DBRandomQuestionProvider {
                         Theme nextTheme = theme.getTheme();
                         List<Question> nextThemeQuestions = new ArrayList<>();
                         // Fetch questions on this given next Theme from DB
-                        nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1, theme.getQuantityOf1stLevelQuestions()));
-                        if (theme.getQuantityOf2stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2, theme.getQuantityOf2stLevelQuestions()));
-                        if (theme.getQuantityOf3stLevelQuestions()!=0) nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3, theme.getQuantityOf3stLevelQuestions()));
+                        nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 1,
+                                theme.getQuantityOf1stLevelQuestions()));
+                        if (theme.getQuantityOf2stLevelQuestions()!=0)
+                                nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 2,
+                                        theme.getQuantityOf2stLevelQuestions()));
+                        if (theme.getQuantityOf3stLevelQuestions()!=0)
+                                nextThemeQuestions.addAll(questionDAO.findNRandomByThemeAndLevel(nextTheme.getId(), 3,
+                                        theme.getQuantityOf3stLevelQuestions()));
                         questionSequences.put(nextTheme, nextThemeQuestions);
                 }
                 return questionSequences;

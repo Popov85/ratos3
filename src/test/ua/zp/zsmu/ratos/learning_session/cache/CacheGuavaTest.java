@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -15,22 +16,33 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Andrey on 20.04.2017.
  */
-public class ReferenceTest {
+public class CacheGuavaTest {
 
-        private final LoadingCache<String, List<Question>> cache = CacheBuilder.newBuilder().maximumSize(2).build(new CacheLoader<String, List<Question>>() {
+        private final LoadingCache<String, List<Question>> cache = CacheBuilder.newBuilder()
+                .maximumSize(2)
+                .expireAfterWrite(10, TimeUnit.SECONDS)
+                .build(new CacheLoader<String, List<Question>>() {
                 @Override
                 public List<Question> load(String key) throws Exception {
                         return updateCache();
                 }
         });
 
+        private final Cache<String, List<Question>> myCache =CacheBuilder.newBuilder()
+                .concurrencyLevel(4)
+                .expireAfterAccess(30, TimeUnit.MINUTES)
+                .build();
+
+
+
         @Before
         public void before() {
-                new ReferenceTest();
+                //new CacheGuavaTest();
         }
 
         private List<Question> updateCache() {
@@ -59,11 +71,11 @@ public class ReferenceTest {
 
         @Test
         public void emptyCache() {
-                cache.put("s1", new ArrayList<>());
-                System.out.println("cache: "+cache.getUnchecked("s1"));
+                //cache.put("s1", new ArrayList<>());
+                System.out.println("cache: "+cache.toString());
+                System.out.println("cache key s1: "+cache.getUnchecked("s1"));
 
                 MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-
                 MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
                 long usedMemory = heapUsage.getUsed() / 1000000;
                 long maxMemory = heapUsage.getMax() / 1000000;
