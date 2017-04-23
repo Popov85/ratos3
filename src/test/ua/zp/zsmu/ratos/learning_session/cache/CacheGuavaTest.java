@@ -1,9 +1,5 @@
 package ua.zp.zsmu.ratos.learning_session.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -33,7 +29,7 @@ public class CacheGuavaTest {
                 }
         });
 
-        private final Cache<String, List<Question>> myCache =CacheBuilder.newBuilder()
+        private final Cache<String, List<Question>> myCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(4)
                 .expireAfterAccess(30, TimeUnit.MINUTES)
                 .build();

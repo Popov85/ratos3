@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.service.*;
+import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,7 +83,14 @@ public class SessionController {
                 cookie.isHttpOnly();
                 response.addCookie(cookie);
                 // 3. Obtained ISession use to return first question
-                Question question = iSession.provideNextQuestion();
+                QuestionDTO question = null; //iSession.provideNextQuestion();
+                try {
+                        question = sessionService.provideNextQuestion(iSession);
+                } catch (TimeIsOverException e) {
+                        ResultDTO result = iSession.interruptSessionByTimeout();
+                        // return result.html
+                        return "redirect:";
+                }
                 // 3.1 Add Question to model
                 // 4. Return model and view
                 return question.toString();
@@ -108,7 +118,7 @@ public class SessionController {
                 // Check if we already have smth. in session
 
                 ISession iSession = null;
-                Question question = null;
+                QuestionDTO question = null;
                 try {
                         iSession = (ISession) session.getAttribute("session");
                         if (iSession==null) throw new Exception("Cannot retrieve JSESSIONID from cookies");
@@ -119,7 +129,11 @@ public class SessionController {
                         // 2. Begin again, sorry
                         return "Error";
                 }
-                question = iSession.provideNextQuestion();
+                try {
+                        question = sessionService.provideNextQuestion(iSession); //iSession.provideNextQuestion();
+                } catch (TimeIsOverException e) {
+                        e.printStackTrace();
+                }
                 return question+"";
         }
 

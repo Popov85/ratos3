@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  */
 @Data
 @Getter
-@Setter
 public final class QuestionResult implements Serializable {
 
         private static final long serialVersionUID = -3135632710599257031L;

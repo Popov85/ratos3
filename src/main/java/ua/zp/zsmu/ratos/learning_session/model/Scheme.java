@@ -37,7 +37,7 @@ public class Scheme implements Serializable {
 
         // Seems to be: random/sequence/happy - 0/1/2
         @Column(name = "mode")
-        private Integer mode;
+        private int mode;
 
         @Column(name="allow_help")
         private boolean isHelpAllowed;
@@ -49,28 +49,28 @@ public class Scheme implements Serializable {
         private boolean isPyramidModeEnabled;
 
         @Column(name = "duration")
-        private Integer duration;
+        private long duration;
 
         @Column(name = "m3")
-        private Integer grade3StartsFrom;
+        private int grade3StartsFrom;
 
         @Column(name = "m4")
-        private Integer grade4StartsFrom;
+        private int grade4StartsFrom;
 
         @Column(name = "m5")
-        private Integer grade5StartsFrom;
+        private int grade5StartsFrom;
 
         @Column(name = "n_hints")
-        private Integer hintsQuantity;
+        private int hintsQuantity;
 
         @Column(name = "k2")
-        private Double coefficientForLevel2;
+        private double coefficientForLevel2;
 
         @Column(name = "k3")
-        private Double coefficientForLevel3;
+        private double coefficientForLevel3;
 
         @Column(name = "timeleft")
-        private Long timeDuringWhichToKeepSessionInformation;
+        private long timeDuringWhichToKeepSessionInformation;
 
         @Column(name = "ip_mask")
         private String maskIPAddress;

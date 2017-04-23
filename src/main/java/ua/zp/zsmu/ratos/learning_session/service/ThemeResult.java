@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * Reflects results on a given theme
  * Created by Andrey on 19.04.2017.
  */
 @Data
@@ -17,10 +18,11 @@ public final class ThemeResult implements Serializable {
 
         private static final long serialVersionUID = -4516674989770605753L;
 
-        private double result;
         private final Theme theme;
-        private int questionsQuantity;
+        private final int questionsQuantity;
         private final List<QuestionResult> questionResults;
+
+        private double result;
 
         public ThemeResult(@NotNull final Theme theme, final int questionsQuantity,
                            @NotNull final List<QuestionResult> questionResults) {

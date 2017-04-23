@@ -11,6 +11,8 @@ import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
+import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 
 import java.util.Date;
 import java.util.List;
@@ -39,10 +41,10 @@ public class SessionService {
                 Map<Theme, List<Question>> questions = randomQuestionProvider.produceQuestionSequence(scheme, false);
                 LOGGER.info("Questions generated: "+questions);
                 // Create corresponding ISession object
-                ISession iSession = LearningSessionFactory.getSession(session.getSid(), student, scheme, questions);
+                ISession iSession = LearningSessionFactory.getSession(session.getSid(), session.getBeginTime(), student, scheme, questions);
                 LOGGER.info("Learning Session created: "+iSession);
                 // Update Session
-                update(session.getSid(), iSession);
+                update(iSession);
                 LOGGER.info("Session updated!");
                 return iSession;
         }
@@ -55,10 +57,10 @@ public class SessionService {
                 return sessionDAO.save(session);
         }
 
-        public void update(Long sid, ISession iSession) {
+        public void update(ISession iSession) {
                 LOGGER.info("iSession to be serialized is: "+iSession);
                 byte[] backup = SerializationUtils.serialize(iSession);
-                sessionDAO.updateSessionInfoById(backup, new Date(), sid);
+                sessionDAO.updateSessionInfoById(backup, new Date(), iSession.getStoredSessionID());
         }
 
         public ISession restore(Long sid) {
@@ -71,4 +73,10 @@ public class SessionService {
                 return sessionDAO.findOne(sid);
         }
 
+        public QuestionDTO provideNextQuestion(ISession iSession) throws TimeIsOverException {
+                QuestionDTO question  = iSession.provideNextQuestion();
+                // TODO: Check if the question has any resources?
+                return question;
+
+        }
 }
