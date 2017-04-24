@@ -11,14 +11,17 @@ import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Getter
 @ToString(exclude={"scheme", "theme"})
 @Entity
 @Table(name = "qids")
-public class SchemeTheme {
+public class SchemeTheme implements Serializable {
 
+
+        private static final long serialVersionUID = -6513338153377430851L;
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")

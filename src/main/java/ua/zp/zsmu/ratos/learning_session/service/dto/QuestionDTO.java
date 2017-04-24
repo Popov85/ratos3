@@ -3,6 +3,7 @@ package ua.zp.zsmu.ratos.learning_session.service.dto;
 import lombok.Data;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,9 @@ import java.util.List;
  */
 @Data
 @Getter
-public final class QuestionDTO {
+public final class QuestionDTO implements Serializable {
+
+        private static final long serialVersionUID = -6039208993180397074L;
         private final Long qid;
         private final String title;
         private final List<AnswerDTO> questions;

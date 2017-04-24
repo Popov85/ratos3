@@ -24,6 +24,8 @@ public final class QuestionStatistics implements Serializable {
          */
         private int skipped = 0;
 
+        public QuestionStatistics() {}
+
         public QuestionStatistics(long timeTaken) {
                 this.timeTaken = timeTaken;
         }

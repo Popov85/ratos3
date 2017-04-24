@@ -1,5 +1,6 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
+import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
@@ -23,6 +24,8 @@ public interface ISession extends Serializable {
         QuestionDTO provideNextQuestion() throws TimeIsOverException;
 
         void processStudentAnswer(List<Long> answers);
+
+        Question provideAnswers();
 
         QuestionDTO skipQuestion();
 

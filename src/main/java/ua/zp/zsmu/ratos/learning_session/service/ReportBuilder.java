@@ -17,7 +17,7 @@ import java.util.Map;
  */
 final class ReportBuilder implements Serializable {
 
-        private static final long serialVersionUID = -3447594255281334155L;
+        private static final long serialVersionUID = 2510401268464304735L;
 
         private final Map<Theme, List<Question>> questionSequences;
 
@@ -40,12 +40,47 @@ final class ReportBuilder implements Serializable {
                 resultSequences.put(theme, results);
         }
 
-        public void addStat(Question question, long timeTaken) {
+        public void addStatTime(Question question, long timeTaken) {
                 if (!statistics.containsKey(question)) {
                         QuestionStatistics questionStatistics = new QuestionStatistics(timeTaken);
                         statistics.put(question, questionStatistics);
                 } else {
-                        // update time and everything
+                        QuestionStatistics questionStatistics = statistics.get(question);
+                        questionStatistics.increaseTimeTaken(timeTaken);
+                }
+        }
+
+        public void addStatHelp(Question question) {
+                if (!statistics.containsKey(question)) {
+                        QuestionStatistics questionStatistics = new QuestionStatistics();
+                        questionStatistics.setHelpTaken(true);
+                        statistics.put(question, questionStatistics);
+                } else {
+                        QuestionStatistics questionStatistics = statistics.get(question);
+                        questionStatistics.setHelpTaken(true);
+                }
+        }
+
+        public void addStatHint(Question question) {
+                if (!statistics.containsKey(question)) {
+                        QuestionStatistics questionStatistics = new QuestionStatistics();
+                        questionStatistics.setHintTaken(true);
+                        statistics.put(question, questionStatistics);
+                } else {
+                        QuestionStatistics questionStatistics = statistics.get(question);
+                        questionStatistics.setHintTaken(true);
+                }
+        }
+
+        public void addStatSkip(Question question, long timeTaken) {
+                if (!statistics.containsKey(question)) {
+                        QuestionStatistics questionStatistics = new QuestionStatistics(timeTaken);
+                        questionStatistics.skipIt();
+                        statistics.put(question, questionStatistics);
+                } else {
+                        QuestionStatistics questionStatistics = statistics.get(question);
+                        questionStatistics.increaseTimeTaken(timeTaken);
+                        questionStatistics.skipIt();
                 }
         }
 

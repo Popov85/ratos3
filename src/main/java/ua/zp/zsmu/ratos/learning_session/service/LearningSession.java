@@ -89,6 +89,7 @@ public class LearningSession implements ISession {
         public QuestionDTO provideNextQuestion() throws TimeIsOverException {
                 if (isTimeOver()) throw new TimeIsOverException("Time is over!");
                 if (isQuestionsRunOut()) throw new IllegalStateException("No more questions!");
+                LOGGER.info("Current state: "+this);
                 // TODO: update timeLeft
                 // update current index
                 currentQuestionIndex++;
@@ -129,7 +130,14 @@ public class LearningSession implements ISession {
                 reportBuilder.addResult(theme, questionResult);
 
                 // Calculate the time before the right answer is provided
-                reportBuilder.addStat(question, calculateTime());
+                reportBuilder.addStatTime(question, calculateTime());
+        }
+
+        @Override
+        public Question provideAnswers() {
+                if (!scheme.isRightAnswerDisplayed())
+                        throw new UnsupportedOperationException("This scheme does not provide right answers!");
+                return questionSequence.get(currentQuestionIndex);
         }
 
         // TODO
@@ -144,7 +152,7 @@ public class LearningSession implements ISession {
                         throw new UnsupportedOperationException("This scheme does not allow skipping!");
                 // Update statistics
                 Question question = questionSequence.get(currentQuestionIndex);
-                reportBuilder.addStat(question, calculateTime());
+                reportBuilder.addStatSkip(question, calculateTime());
                 // Swap the current question and the last one
                 Collections.swap(questionSequence, currentQuestionIndex, questionSequence.size()-1);
                 Question q = questionSequence.get(currentQuestionIndex);
@@ -158,6 +166,7 @@ public class LearningSession implements ISession {
                 if (!scheme.isHelpAllowed())
                         throw new UnsupportedOperationException("This scheme does not allow help!");
                 Question question = questionSequence.get(currentQuestionIndex);
+                reportBuilder.addStatHelp(question);
                 return question.getHelpString();
         }
 
@@ -166,6 +175,7 @@ public class LearningSession implements ISession {
                 if (scheme.isHintAfterAnswerEnabled())
                         throw new UnsupportedOperationException("This scheme does not allow hints!");
                 Question question = questionSequence.get(currentQuestionIndex);
+                reportBuilder.addStatHint(question);
                 return question.getHelpTitle();
         }
 

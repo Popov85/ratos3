@@ -76,7 +76,15 @@ public class SessionService {
         public QuestionDTO provideNextQuestion(ISession iSession) throws TimeIsOverException {
                 QuestionDTO question  = iSession.provideNextQuestion();
                 // TODO: Check if the question has any resources?
+                // If so - enrich the question with specifications of how to represent this question on the web page
                 return question;
-
         }
+
+        public Question provideQuestionsAnswers(ISession iSession) throws TimeIsOverException {
+                Question question  = iSession.provideAnswers();
+                // TODO: Check if the question has any resources?
+                // If so, prepare this right answers to display correctly
+                return question;
+        }
+
 }
