@@ -1,7 +1,9 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
-import ua.zp.zsmu.ratos.learning_session.model.*;
-
+import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,19 +14,23 @@ public interface ISession extends Serializable {
 
         Long getStoredSessionID();
 
-        void startSession() throws IllegalStateException;
+        ResultDTO interruptSessionByStudent();
 
-        void interruptSession();
+        ResultDTO interruptSessionByTimeout();
 
-        Question provideNextQuestion();
+        ResultDTO finishSession();
 
-        void obtainStudentAnswer(Question question, List<Long> answers);
+        QuestionDTO provideNextQuestion() throws TimeIsOverException;
 
-        Question skipQuestion();
+        void processStudentAnswer(List<Long> answers);
+
+        QuestionDTO skipQuestion();
 
         String provideHelp();
 
         String provideHint();
 
-        SessionResult getSessionReport();
+        QuestionResult getQuestionResult(Long qid) throws IllegalAccessException;
+
+        DetailedReportDTO getSessionReport() throws IllegalAccessException;
 }

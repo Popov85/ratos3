@@ -9,10 +9,8 @@ import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.DBQuestionProvider;
-
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,14 +35,10 @@ public class CacheGuava {
                         .build(new CacheLoader<Scheme, Map<Theme, Map<Integer, List<Question>>>>() {
                          @Override
                          public Map<Theme, Map<Integer, List<Question>>> load(Scheme key) throws Exception {
-                                 return downloadScheme(key);
+                                 return dbQuestionProvider.produceRatedQuestionSequencesFromDB(key);
                          }
                  }
                 );
-        }
-
-        private Map<Theme, Map<Integer, List<Question>>> downloadScheme(Scheme scheme) {
-                return dbQuestionProvider.produceRatedQuestionSequencesFromDB(scheme);
         }
 
         public Map<Theme, Map<Integer, List<Question>>> getCachedScheme(Scheme scheme) {
@@ -56,7 +50,6 @@ public class CacheGuava {
         }
 
         public void removeCachedScheme(Scheme scheme) {
-                ConcurrentMap<Scheme, Map<Theme, Map<Integer, List<Question>>>> currentCache = cache.asMap();
-                currentCache.remove(scheme);
+                cache.asMap().remove(scheme);
         }
 }

@@ -31,27 +31,4 @@ public class Shuffler {
                 }
                 return res;
         }
-
-    /*    public static <T> List<T> shuffleComposite(Map<Integer, List<T>> items, int m, int n){
-                List<T> res = new ArrayList<T>(n);
-                for (List<T> ts : items.values()) {
-                        List<T> subset = shuffle(ts, m);
-                        res.addAll(subset);
-                }
-                return res;
-        }*/
-
-        /*public static <T> Map<Integer, List<T>> shuffleComposite(Map<Integer, List<T>> items, int m, int n){
-                Map<Integer, List<T>> res = new HashMap<>(n);
-                for (List<T> ts : res.values()) {
-                        List<T> subset = shuffle(ts, m);
-                }
-                /*for (List<T> ts : items.values()) {
-                        List<T> subset = shuffle(ts, m);
-                        res.addAll(subset);
-                }
-
-                return res;
-        }*/
-
 }
