@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Andrey on 21.04.2017.
  */
-class Report implements Serializable {
+class ReportBuilder implements Serializable {
 
         private static final long serialVersionUID = -3447594255281334155L;
 
@@ -24,7 +24,7 @@ class Report implements Serializable {
 
         Map<Question, QuestionStatistics> statistics = new HashMap<>();
 
-        public Report(Map<Theme, List<Question>> questionSequences) {
+        public ReportBuilder(Map<Theme, List<Question>> questionSequences) {
                 this.questionSequences = questionSequences;
         }
 

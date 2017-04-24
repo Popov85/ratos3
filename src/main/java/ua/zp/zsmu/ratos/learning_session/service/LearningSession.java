@@ -25,7 +25,7 @@ public class LearningSession implements ISession {
 
         private List<Question> questionSequence = new ArrayList<>();
 
-        private Report report;
+        private ReportBuilder reportBuilder;
 
         private int currentQuestionIndex = 0;
 
@@ -44,7 +44,7 @@ public class LearningSession implements ISession {
                 this.student = student;
                 this.scheme = scheme;
                 this.questionSequence = createQuestionSequence(questionSequences);
-                this.report = new Report(questionSequences);
+                this.reportBuilder = new ReportBuilder(questionSequences);
         }
 
         // TODO: consider to move to a question provider
@@ -89,17 +89,17 @@ public class LearningSession implements ISession {
                 questionResult.calculateResult();
                 //calculateCurrentResult(); increase counter and divide by the quantity
                 Theme theme = question.getTheme();
-                List<QuestionResult> results = report.resultSequences.get(theme);
+                List<QuestionResult> results = reportBuilder.resultSequences.get(theme);
                 if (results==null) results = new ArrayList<>();
                 results.add(questionResult);
-                report.resultSequences.put(theme, results);
+                reportBuilder.resultSequences.put(theme, results);
 
                 // Check if there is such question in statistics
                 // Calculate the time before the right answer is provided
 
-                if (!report.statistics.containsKey(question)) {
+                if (!reportBuilder.statistics.containsKey(question)) {
                         QuestionStatistics questionStatistics = new QuestionStatistics(123l);
-                        report.statistics.put(question, questionStatistics);
+                        reportBuilder.statistics.put(question, questionStatistics);
                 } else {
                         // update time and everything
                 }
@@ -133,18 +133,18 @@ public class LearningSession implements ISession {
 
         @Override
         public SessionResult getSessionReport() {
-                return new SessionResult(currentResult, student, scheme, report.getThemeReport());
+                return new SessionResult(currentResult, student, scheme, reportBuilder.getThemeReport());
         }
 
-        private Report finishSession() {
+        private ReportBuilder finishSession() {
                 this.isFinished = true;
                 return null;
         }
 
         public QuestionResult getQuestionResult(Long qid) {
-                if (!report.questionResult.containsKey(qid))
-                        throw new IllegalStateException("Report on this question is not yet available!");
-                return report.questionResult.get(qid);
+                if (!reportBuilder.questionResult.containsKey(qid))
+                        throw new IllegalStateException("ReportBuilder on this question is not yet available!");
+                return reportBuilder.questionResult.get(qid);
         }
 
 
