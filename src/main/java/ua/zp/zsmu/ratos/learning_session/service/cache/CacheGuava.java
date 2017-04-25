@@ -33,12 +33,11 @@ public class CacheGuava {
                         .maximumSize(MAX_SIZE)
                         .expireAfterWrite(TIME_LIMIT_HOURS, TimeUnit.HOURS)
                         .build(new CacheLoader<Scheme, Map<Theme, Map<Integer, List<Question>>>>() {
-                         @Override
-                         public Map<Theme, Map<Integer, List<Question>>> load(Scheme key) throws Exception {
-                                 return dbQuestionProvider.produceRatedQuestionSequencesFromDB(key);
-                         }
-                 }
-                );
+                                 @Override
+                                 public Map<Theme, Map<Integer, List<Question>>> load(Scheme key) throws Exception {
+                                         return dbQuestionProvider.produceRatedQuestionSequencesFromDB(key);
+                                 }
+                         });
         }
 
         public Map<Theme, Map<Integer, List<Question>>> getCachedScheme(Scheme scheme) {

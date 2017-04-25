@@ -49,7 +49,7 @@ public class Scheme implements Serializable {
         private boolean isPyramidModeEnabled;
 
         @Column(name = "duration")
-        private long duration;
+        private int duration;
 
         @Column(name = "m3")
         private int grade3StartsFrom;

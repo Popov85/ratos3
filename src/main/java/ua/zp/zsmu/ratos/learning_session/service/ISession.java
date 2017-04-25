@@ -27,11 +27,11 @@ public interface ISession extends Serializable {
 
         Question provideAnswers();
 
-        QuestionDTO skipQuestion();
+        QuestionDTO skipQuestion() throws TimeIsOverException;
 
-        String provideHelp();
+        String provideHelp() throws TimeIsOverException;
 
-        String provideHint();
+        String provideHint() throws TimeIsOverException;
 
         QuestionResult getQuestionResult(Long qid) throws IllegalAccessException;
 

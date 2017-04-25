@@ -162,6 +162,8 @@ public class SessionController {
                         iSession.skipQuestion();
                 } catch (LostSessionException e) {
                         e.printStackTrace();
+                } catch (TimeIsOverException e) {
+                        e.printStackTrace();
                 }
                 return "Skipped";
         }
@@ -175,6 +177,8 @@ public class SessionController {
                         help = iSession.provideHelp();
                 } catch (LostSessionException e) {
                         e.printStackTrace();
+                } catch (TimeIsOverException e) {
+                        e.printStackTrace();
                 }
                 return help;
         }
@@ -187,6 +191,8 @@ public class SessionController {
                         ISession iSession = getSession(session, request);
                         hint = iSession.provideHint();
                 } catch (LostSessionException e) {
+                        e.printStackTrace();
+                } catch (TimeIsOverException e) {
                         e.printStackTrace();
                 }
                 return hint;
