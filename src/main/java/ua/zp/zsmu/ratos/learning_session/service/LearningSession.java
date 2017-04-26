@@ -10,7 +10,7 @@ import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
-import ua.zp.zsmu.ratos.learning_session.service.util.DateUtil;
+import ua.zp.zsmu.ratos.learning_session.service.util.DateCalculator;
 import ua.zp.zsmu.ratos.learning_session.service.util.Evaluator;
 
 import java.util.*;
@@ -35,6 +35,9 @@ public class LearningSession implements ISession {
 
         private List<Question> questionSequence;
 
+        /**
+         * Creates a session report iteratively after each students feedback
+         */
         private ReportBuilder reportBuilder;
 
         private int currentQuestionIndex = 0;
@@ -116,13 +119,16 @@ public class LearningSession implements ISession {
         }
 
         private void updateTimeLeft() {
-                timeLeft = DateUtil.getDateDiff(new Date(),
-                        DateUtils.addMinutes(startTime, scheme.getDuration()), TimeUnit.MILLISECONDS);
+                timeLeft = getTimeLeft();
         }
 
         // TODO: to check
         private long calculateQuestionTookTime() {
-                return timeLeft - DateUtil.getDateDiff(new Date(),
+                return timeLeft - getTimeLeft();
+        }
+
+        private long getTimeLeft() {
+                return DateCalculator.getDateDiff(new Date(),
                         DateUtils.addMinutes(startTime, scheme.getDuration()), TimeUnit.MILLISECONDS);
         }
 
@@ -144,8 +150,7 @@ public class LearningSession implements ISession {
                 Question question = questionSequence.get(currentQuestionIndex);
                 QuestionResult questionResult = new QuestionResult(question, answers);
                 questionResult.calculateResult();
-                // calculateCurrentResult();
-                // increase counter and divide by the quantity
+                // TODO: calculateCurrentResult(); increase counter and divide by the quantity
                 Theme theme = question.getTheme();
 
                 // Let ReportBuilder do its job
@@ -212,7 +217,7 @@ public class LearningSession implements ISession {
         @Override
         public QuestionResult getQuestionResult(Long qid) throws IllegalAccessException {
                 if (!reportBuilder.questionResult.containsKey(qid))
-                        throw new IllegalStateException("ReportBuilder on this question is not yet available!");
+                        throw new IllegalStateException("Report on this question is not yet available!");
                 if (!isFinished&&!isInterruptedByUser&&!isInterruptedByTimeout)
                         throw new IllegalAccessException();
                 if (!scheme.isViewLogAllowed()) throw new IllegalAccessException();

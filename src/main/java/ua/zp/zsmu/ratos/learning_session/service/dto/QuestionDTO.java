@@ -2,8 +2,12 @@ package ua.zp.zsmu.ratos.learning_session.service.dto;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import ua.zp.zsmu.ratos.learning_session.model.Resource;
+import ua.zp.zsmu.ratos.learning_session.service.QuestionView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +21,15 @@ public final class QuestionDTO implements Serializable {
         private final Long qid;
         private final String title;
         private final List<AnswerDTO> questions;
-
         private final long timeLeft;
         private final int questionsLeft;
         private final double currentResult;
+
+        @Setter
+        private List<Resource> resources = new ArrayList<>();
+
+        @Setter
+        private QuestionView viewName = QuestionView.question;
 
         public QuestionDTO(Long qid, String title, List<AnswerDTO> questions,
                            long timeLeft, int questionsLeft, double currentResult) {

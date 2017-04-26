@@ -41,7 +41,7 @@ public class Resource {
         // 10 - Skip button (245)
         // 11 - Flash Player(11)
         @Column(name = "ct")
-        private String type;
+        private int type;
 
         @Column(name = "l")
         private short leftPosition;

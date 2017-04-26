@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Andrey on 25.04.2017.
  */
-public class DateUtil {
+public class DateCalculator {
 
-        private DateUtil(){}
+        private DateCalculator(){}
 
         /**
          * Get a diff between two dates

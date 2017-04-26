@@ -18,6 +18,7 @@ import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.LostSessionException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.UnsupportedQuestionTypeException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +84,7 @@ public class SessionController {
                 // 2.1. From produced ISession retrieve sid and send it to cookies
                 Cookie cookie = new Cookie("SID", Long.toString(iSession.getStoredSessionID()));
                 // Never expire by time, let the user do it.
-                cookie.setMaxAge(60*60);
+                //cookie.setMaxAge(60*60);
                 cookie.setSecure(true);
                 cookie.isHttpOnly();
                 response.addCookie(cookie);
@@ -95,6 +96,9 @@ public class SessionController {
                         ResultDTO result = iSession.interruptSessionByTimeout();
                         // return result.html
                         return "redirect:";
+                } catch (UnsupportedQuestionTypeException e) {
+                        // return empty question with
+                        return "Unsupported question type!";
                 }
                 // 3.1 Add Question to model
                 // 4. Return model and view
@@ -130,6 +134,9 @@ public class SessionController {
                         ResultDTO result = iSession.interruptSessionByTimeout();
                         // return result.html
                         return "redirect: result page";
+                } catch (UnsupportedQuestionTypeException e) {
+                        // return empty question with
+                        return "Unsupported question type!";
                 } catch (Exception e) {
                         LOGGER.error("ERROR: an unexpected exception");
                         return "redirect: result page";
