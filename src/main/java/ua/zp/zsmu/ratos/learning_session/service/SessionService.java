@@ -86,7 +86,8 @@ public class SessionService {
         }
 
         /**
-         * It is pretty much the same as provideNextQuestionUnchecked except we check all the time if there are any resources
+         * It is pretty much the same as provideNextQuestionUnchecked except we check at every nex question request
+         * if there are any resources
          * present in DB associated with a question
          * @param iSession
          * @return QuestionDTO
@@ -104,25 +105,6 @@ public class SessionService {
                 QuestionView questionView = determineViewType(resources);
                 question.setResources(resources);
 
-                /*switch (questionView.name()) {
-                        case "questionImg":  monthString = "January";
-                                break;
-                        case "questionImgMany":  monthString = "January";
-                                break;*/
-                /**
-                 *  0 - MediaPlayer (0)
-                 // 1 - img (767, blob is present)
-                 // 2 - iFrame (0)
-                 // 3 - Question (2128)
-                 // 4 - Answers section(2155)
-                 // 5 - Next button (2190)
-                 // 6 - Help button(7)
-                 // 7 - Hint button(1792)
-                 // 8 - (0)
-                 // 9 - Alt message (248)
-                 // 10 - Skip button (245)
-                 // 11 - Flash Player(11)
-                 */
                 return question;
         }
 
@@ -132,6 +114,18 @@ public class SessionService {
          * QuestionView.questionImg - contains only one image
          * QuestionView.questionImgMany - contains many question none of which is pressable and the right answer
          * QuestionView.questionImgAnswer - contains many questions some of them (more often one!) is pressable and is the right answer
+         *  0 - MediaPlayer (0)
+         // 1 - img (767, blob is present)
+         // 2 - iFrame (0)
+         // 3 - Question (2128)
+         // 4 - Answers section(2155)
+         // 5 - Next button (2190)
+         // 6 - Help button(7)
+         // 7 - Hint button(1792)
+         // 8 - (0)
+         // 9 - Alt message (248)
+         // 10 - Skip button (245)
+         // 11 - Flash Player(11)
          * @param resources
          * @return
          * @throws UnsupportedQuestionTypeException

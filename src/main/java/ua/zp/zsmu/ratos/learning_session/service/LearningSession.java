@@ -9,6 +9,7 @@ import ua.zp.zsmu.ratos.learning_session.service.dto.AnswerDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.QuestionAlreadyAnsweredException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 import ua.zp.zsmu.ratos.learning_session.service.util.DateCalculator;
 import ua.zp.zsmu.ratos.learning_session.service.util.Evaluator;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class LearningSession implements ISession {
 
-        private static final long serialVersionUID = -8131846952436733376L;
+        private static final long serialVersionUID = -7545118628418780765L;
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
         /**
          * ID of the stored backup (in a form of byte[]) of this class in a database
@@ -36,12 +37,12 @@ public class LearningSession implements ISession {
         private List<Question> questionSequence;
 
         /**
-         * Creates a session report iteratively after each students feedback
+         * Creates a session report iteratively after each student's feedback
          */
         private ReportBuilder reportBuilder;
 
         private int currentQuestionIndex = 0;
-        // In % (e.g. 14.55645645454%)
+        // In % (e.g. 8.5). If there are 20 questions in total, the result is 8.5/20 * 100% = 42.5%
         private double currentResult = 0d;
         // in milliseconds
         private long timeLeft;
@@ -75,7 +76,7 @@ public class LearningSession implements ISession {
         public ResultDTO interruptSessionByStudent() {
                 this.isInterruptedByUser=true;
                 return new ResultDTO(sid, student, scheme.getTitle(), currentResult,
-                        Evaluator.calculateMark(scheme, currentResult));
+                        Evaluator.calculateMark(scheme, calculateCurrentResult()));
         }
 
         // Call it from Controller/Service layer when TimeIsOverException is caught
@@ -83,14 +84,14 @@ public class LearningSession implements ISession {
         public ResultDTO interruptSessionByTimeout() {
                 this.isInterruptedByTimeout=true;
                 return new ResultDTO(sid, student, scheme.getTitle(), currentResult,
-                        Evaluator.calculateMark(scheme, currentResult));
+                        Evaluator.calculateMark(scheme, calculateCurrentResult()));
         }
 
         @Override
         public ResultDTO finishSession() {
                 this.isFinished = true;
                 return  new ResultDTO(sid, student, scheme.getTitle(), currentResult,
-                        Evaluator.calculateMark(scheme, currentResult));
+                        Evaluator.calculateMark(scheme, calculateCurrentResult()));
         }
 
         @Override
@@ -104,9 +105,9 @@ public class LearningSession implements ISession {
                 currentQuestionIndex++;
                 // update questions left
                 questionsLeft--;
-                Question q = questionSequence.get(currentQuestionIndex);
+                Question q = getCurrentQuestion();
                 return new QuestionDTO(q.getId(), q.getTitle(), createAnswerDTOs(q),
-                        timeLeft, questionsLeft, currentResult);
+                        timeLeft, questionsLeft, calculateCurrentResult());
         }
 
         // Check if the current date is more than startDate + timeForTest
@@ -145,12 +146,16 @@ public class LearningSession implements ISession {
                 return answers;
         }
 
+        // TODO: check if this question has already been answered
         @Override
-        public void processStudentAnswer(List<Long> answers) {
-                Question question = questionSequence.get(currentQuestionIndex);
+        public void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException {
+                if (qid!=getCurrentQuestionId())
+                        throw new QuestionAlreadyAnsweredException("Your answer to this question has already been submitted!");
+                Question question = getCurrentQuestion();
                 QuestionResult questionResult = new QuestionResult(question, answers);
                 questionResult.calculateResult();
-                // TODO: calculateCurrentResult(); increase counter and divide by the quantity
+                // increase counter and divide by the quantity
+                updateCurrentResult(questionResult.getResult());
                 Theme theme = question.getTheme();
 
                 // Let ReportBuilder do its job
@@ -160,11 +165,23 @@ public class LearningSession implements ISession {
                 reportBuilder.addStatTime(question, calculateQuestionTookTime());
         }
 
+        private void updateCurrentResult(int result) {
+                currentResult+=result/100;
+        }
+
+        private Question getCurrentQuestion() {
+                return questionSequence.get(currentQuestionIndex);
+        }
+
+        private Long getCurrentQuestionId() {
+                return getCurrentQuestion().getId();
+        }
+
         @Override
         public Question provideAnswers() {
                 if (!scheme.isRightAnswerDisplayed())
                         throw new UnsupportedOperationException("This scheme does not provide right answers!");
-                return questionSequence.get(currentQuestionIndex);
+                return getCurrentQuestion();
         }
 
         @Override
@@ -173,15 +190,15 @@ public class LearningSession implements ISession {
                         throw new UnsupportedOperationException("This scheme does not allow skipping!");
                 if (isTimeOver()) throw new TimeIsOverException("Time is over!");
                 // Update statistics
-                Question question = questionSequence.get(currentQuestionIndex);
+                Question question = getCurrentQuestion();
                 reportBuilder.addStatSkip(question, calculateQuestionTookTime());
                 // Swap the current question and the last one
                 Collections.swap(questionSequence, currentQuestionIndex, questionSequence.size()-1);
-                Question q = questionSequence.get(currentQuestionIndex);
-                // update time left
+                Question q = getCurrentQuestion();
+                // Update time left
                 updateTimeLeft();
                 return new QuestionDTO(q.getId(), q.getTitle(), createAnswerDTOs(q),
-                        timeLeft, questionsLeft, currentResult);
+                        timeLeft, questionsLeft, calculateCurrentResult());
         }
 
         @Override
@@ -189,7 +206,7 @@ public class LearningSession implements ISession {
                 if (!scheme.isHelpAllowed())
                         throw new UnsupportedOperationException("This scheme does not allow help!");
                 if (isTimeOver()) throw new TimeIsOverException("Time is over!");
-                Question question = questionSequence.get(currentQuestionIndex);
+                Question question = getCurrentQuestion();
                 reportBuilder.addStatHelp(question);
                 return question.getHelpString();
         }
@@ -199,7 +216,7 @@ public class LearningSession implements ISession {
                 if (scheme.isHintAfterAnswerEnabled())
                         throw new UnsupportedOperationException("This scheme does not allow hints!");
                 if (isTimeOver()) throw new TimeIsOverException("Time is over!");
-                Question question = questionSequence.get(currentQuestionIndex);
+                Question question = getCurrentQuestion();
                 reportBuilder.addStatHint(question);
                 return question.getHelpTitle();
         }
@@ -210,7 +227,12 @@ public class LearningSession implements ISession {
                         throw new IllegalAccessException();
                 if (!scheme.isViewLogAllowed()) throw new IllegalAccessException();
                 return new DetailedReportDTO(sid, currentResult, student, scheme,
-                        Evaluator.calculateMark(scheme, currentResult), reportBuilder.getThemeReport());
+                        Evaluator.calculateMark(scheme, calculateCurrentResult()), reportBuilder.getThemeReport());
+        }
+
+        // 0,456 which means 45,6%
+        private double calculateCurrentResult() {
+                return currentResult/questionSequence.size();
         }
 
 
