@@ -146,7 +146,6 @@ public class LearningSession implements ISession {
                 return answers;
         }
 
-        // TODO: check if this question has already been answered
         @Override
         public void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException {
                 if (qid!=getCurrentQuestionId())
