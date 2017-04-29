@@ -4,6 +4,7 @@ import ua.zp.zsmu.ratos.learning_session.model.Question;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
+import ua.zp.zsmu.ratos.learning_session.service.exceptions.QuestionAlreadyAnsweredException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 import java.io.Serializable;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface ISession extends Serializable {
 
         QuestionDTO provideNextQuestion() throws TimeIsOverException;
 
-        void processStudentAnswer(List<Long> answers);
+        void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException;
 
         Question provideAnswers();
 

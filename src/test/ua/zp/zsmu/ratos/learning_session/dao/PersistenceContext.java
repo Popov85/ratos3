@@ -14,6 +14,7 @@ import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.service.DBQuestionProvider;
 import ua.zp.zsmu.ratos.learning_session.service.SchemeService;
 import ua.zp.zsmu.ratos.learning_session.service.cache.CacheGuava;
+import ua.zp.zsmu.ratos.learning_session.service.IPChecker;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -80,5 +81,10 @@ public class PersistenceContext {
         @Bean
         public DBQuestionProvider dbQuestionProvider() {
                 return new DBQuestionProvider();
+        }
+
+        @Bean
+        public IPChecker ipChecker() {
+                return new IPChecker();
         }
 }

@@ -74,4 +74,9 @@ public class SessionConfig {
                 return new CacheGuava();
         }
 
+        @Bean
+        public IPChecker ipChecker() {
+                return new IPChecker();
+        }
+
 }

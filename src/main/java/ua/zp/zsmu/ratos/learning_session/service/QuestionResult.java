@@ -39,9 +39,11 @@ public final class QuestionResult implements Serializable {
         }
 
         /**
+         * Calculates the result (compares true answers with answers provided by a student)
          * 1) Check if a students answer list contains any zero-answer (if so - 0)
          * 2) Check if a students answer list contains all the required answers (if not - 0)
          * 3) Calculate a students score;
+         * @return 0-100 value
          */
         public int calculateResult() {
                 List<Long> zeroAnswers = getZeroAnswers();

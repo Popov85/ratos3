@@ -6,27 +6,26 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
- * Created by Andrey on 31.03.2017.
+ * Created by Andrey on 28.04.2017.
  */
 @Data
 @Getter
 @Setter
 @Entity
-@Table(name = "classes")
-public class ClassRoom {
+@Table(name = "comp")
+public class Computer {
+
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")
         @Column(name = "id")
         private Long id;
 
-        @Column(name = "title")
-        private String title;
+        @Column(name = "ip")
+        private String ip;
 
-        @OneToMany
-        @JoinColumn(name = "class")
-        List<Computer> computers;
+        @Column(name = "comment")
+        private String comment;
 }
