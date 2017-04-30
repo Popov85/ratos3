@@ -2,6 +2,7 @@ package ua.zp.zsmu.ratos.learning_session.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.QuestionDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJDBC;
 import ua.zp.zsmu.ratos.learning_session.dao.impl.ThemeDAOJPA;
@@ -75,6 +76,7 @@ public class SessionConfig {
         }
 
         @Bean
+        //@Scope("prototype")
         public IPChecker ipChecker() {
                 return new IPChecker();
         }

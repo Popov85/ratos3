@@ -32,7 +32,7 @@ public class Scheme implements Serializable {
         private String title;
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @OneToMany(fetch = FetchType.EAGER, mappedBy = "scheme")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme")
         private List<SchemeTheme> themes = new ArrayList<>();
 
         // Seems to be: random/sequence/happy - 0/1/2
@@ -70,8 +70,9 @@ public class Scheme implements Serializable {
         private double coefficientForLevel3;
 
         @Column(name = "timeleft")
-        private long timeDuringWhichToKeepSessionInformation;
+        private long timeDuringWhichKeepSessionInformation;
 
+        // Smth. different than initially expected(((
         @Column(name = "ip_mask")
         private String maskIPAddress;
 
@@ -90,10 +91,11 @@ public class Scheme implements Serializable {
         @Column(name="anonymous")
         private boolean isAvailableForAnonymousUser;
 
-        @Column(name = "groups")
+        @Column(name = "students")
         private String studentGroups;
 
-        @Column(name = "students")
+        // IP-mask goes here
+        @Column(name = "groups")
         private String classRooms;
 
         @Column(name="hint_after")

@@ -18,10 +18,14 @@ public interface SchemeDAO extends CrudRepository<Scheme, Long> {
         @Query("SELECT s FROM Scheme s LEFT JOIN FETCH s.themes WHERE s.id=?1")
         Scheme findOneWithThemes(Long id);
 
-        // Not used yet
-        @Query(value = "SELECT id, title, ip_mask FROM scheme WHERE enabled=1 and anonymous=1", nativeQuery = true)
-        List<SchemeDTO> findAllAvailable();
+        @Query("SELECT s FROM Scheme s LEFT JOIN FETCH s.themes")
+        List<Scheme> findAllWithThemes();
 
+        /*// Works fine but fails to retrieve themeId = 761 if EAGER
+        @Query(value = "SELECT * FROM scheme WHERE enabled=1 and anonymous=1", nativeQuery = true)
+        List<Scheme> findAllAvailable();*/
+
+        // Works fine but fails to retrieve themeId = 761 if EAGER
         @Query("SELECT s FROM Scheme s WHERE s.isEnabled=true and s.isAvailableForAnonymousUser = true")
         List<Scheme> findAllAvailableSchemes();
 }

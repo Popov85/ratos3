@@ -1,11 +1,8 @@
 package ua.zp.zsmu.ratos.learning_session.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ua.zp.zsmu.ratos.learning_session.dao.ClassRoomDAO;
-import ua.zp.zsmu.ratos.learning_session.model.ClassRoom;
-import ua.zp.zsmu.ratos.learning_session.model.Computer;
-import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 
 import java.util.List;
 
@@ -16,8 +13,7 @@ import java.util.List;
 @Service
 public class IPChecker {
 
-        @Autowired
-        private ClassRoomDAO classDAO;
+        private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(IPChecker.class);
 
         /**
          * A scheme contains a string separated by semicolon (;) which specifies classes,
@@ -28,63 +24,59 @@ public class IPChecker {
          * 3) 192.168.* - available for the whole mask
          * 4) 192.168.70.140; 192.168.70.141; 192.168.70.142 - available only for these 3 specified IP-addresses
          * 5) 14;25;192.168.70.*; 192.168.1.1 - available for 2 comp. classes, mask and one specified IP-address
-         * @param scheme
+         * @param mask
          * @param remoteIP
+         * @param classRooms
          * @return
          */
-        public boolean isSchemeAvailableFromIPAddress(Scheme scheme, String remoteIP) {
-                String mask = scheme.getMaskIPAddress();
+        public boolean isSchemeAvailableFromIPAddress(String mask, String remoteIP, List<Integer> classRooms) {
                 if (isAvailableForAll(mask)) return true;
-                // get an array of
+                // get an array of String
                 String[] addresses = mask.split(";");
                 for (String address : addresses) {
-                        if (isAvailableForSubMask(address, remoteIP)) return true;
+                        if (isAvailableForSubMask(address, remoteIP, classRooms)) return true;
                 }
                 return false;
         }
 
         private boolean isAvailableForAll(String mask) {
-                return mask.equals("*");
+                return mask.trim().equals("*");
         }
 
-        private boolean isAvailableForSubMask(String address, String remoteIP) {
+        private boolean isAvailableForSubMask(String address, String remoteIP, List<Integer> classRooms) {
                 if (address.equals(remoteIP)) return true;
-                if (address.contains(".")) {
-                        // mask or address goes
-                        if (address.contains("*")) {
-                                // mask goes
+                if (address.contains(".")) {// mask or address goes
+                        if (address.contains("*")) {// mask goes
                                 if (isMaskMatches(address, remoteIP)) return true;
-                        } else {
-                                // ip goes or error
-                                if (address.equals(remoteIP)) return true;
+                        } else {// ip goes or error
+                                if (address.trim().equals(remoteIP)) return true;
                         }
-                } else {
-                        // comp class goes or error
-                        if (isClassRoomContainIPAddress(address, remoteIP)) return true;
+                } else {// comp class goes or error
+                        if (isClassRoomContainIPAddress(address, remoteIP, classRooms)) return true;
                 }
                 return false;
         }
-
-        // TODO 192.168.* OR 192.168.70.* OR 192.*
+        // find out the position of first occurrence of '*' symbol
+        // cut out the values from remoteIP left from '*'
+        // equals
+        // Examples: 192.168.* OR 192.168.70.* OR 192.*
         private boolean isMaskMatches(String address, String remoteIP) {
-                String[] array = address.split("\\*");
-                // find out the position of first *
-                // cut out the values from remoteIP left from *
-                // equals
-                return false;
+                int index = address.indexOf("*");
+                String subAddress = address.substring(0, index);
+                String subRemoteIP = remoteIP.substring(0, index);
+                return subAddress.trim().equals(subRemoteIP);
         }
 
-        private boolean isClassRoomContainIPAddress(String classRoomID, String remoteIP) {
-                Long classId;
+        private boolean isClassRoomContainIPAddress(String classRoomID, String remoteIP, List<Integer> classRoomIDs) {
+                Integer parsedClassRoomId;
                 try {
-                        classId = Long.parseLong(classRoomID);
+                        parsedClassRoomId = Integer.parseInt(classRoomID.trim());
                 } catch (NumberFormatException e) {
                         return false;
                 }
-                ClassRoom classRoom = classDAO.findOneWithComputers(classId);
-                List<Computer> computers = classRoom.getComputers();
-                for (Computer computer : computers) {
-                        if (computer.getIp().equals(remoteIP)) return true;
+                LOGGER.info("Check classes IDs: " + classRoomID);
+                for (Integer classRoomId : classRoomIDs) {
+                        if (classRoomId.equals(parsedClassRoomId)) return true;
                 }
                 return false;
         }
