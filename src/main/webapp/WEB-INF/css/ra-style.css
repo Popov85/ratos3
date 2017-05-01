@@ -1,0 +1,214 @@
+BODY {
+    FONT-SIZE: 8pt;
+    BACKGROUND: #FAEBD7;
+    FONT-FAMILY: Verdana, Arial, Helvetica
+}
+
+P {
+    FONT-FAMILY: "Ms sans serif";
+    FONT-SIZE: 14px
+}
+
+.small {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt
+}
+
+.sname {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 6pt
+}
+
+FONT {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt
+}
+
+H1 {
+    FONT-FAMILY: "Sans-serif";
+    FONT-SIZE: 14px;
+    font: sans-serif;
+}
+
+H2 {
+    FONT-FAMILY: "Arial Cyr", Arial, Helvetica, sans-serif;
+    FONT-SIZE: 12pt
+}
+
+h3 {
+    FONT-FAMILY: "Verdana", Hevletica, Arial;
+    COLOR: #CEFFFF;
+    FONT-SIZE: 14px;
+    TEXT-DECORATION: UNDERLINE
+}
+
+h4 {
+    FONT-FAMILY: "Sans-serif";
+    FONT-SIZE: 14pt;
+    font: sans-serif;
+}
+
+h5 {
+    FONT-FAMILY: "Verdana", Hevletica, Arial;
+    FONT-SIZE: 14px;
+    color: yellow
+}
+
+OL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+LI {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px;
+    height: 1;
+}
+
+UL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+DL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+DD {
+    FONT-SIZE: 14px;
+    FONT-STYLE: normal
+}
+
+DT {
+    FONT-SIZE: 14px;
+    FONT-WEIGHT: bold
+}
+
+TD {
+    FONT-SIZE: 14px;
+    BACKGROUND: #FFF5EE;
+    CURSOR: hand;
+    FONT-FAMILY: "Ms sans serif"
+}
+
+TD.res {
+    background-color: #F5F5DC;
+    cursor: auto;
+}
+
+FONT {
+    FONT-FAMILY: "Ms sans serif";
+    FONT-SIZE: 16px;
+}
+
+INPUT {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+SELECT {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+TEXTAREA {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+A {
+    font-size: 16px;
+}
+
+A:link {
+    COLOR: #666699;
+    FONT-FAMILY: "Ms sans serif";
+    TEXT-DECORATION: none
+}
+
+A:visited {
+    COLOR: #666699;
+    FONT-FAMILY: "Ms sans serif";
+    TEXT-DECORATION: none
+}
+
+A:hover {
+    COLOR: #5F9EA0;
+    FONT-FAMILY: "Ms sans serif";
+    TEXT-DECORATION: underline;
+    background-color: #F0F8FF;
+}
+
+INPUT {
+    COLOR: #191970;
+    FONT-FAMILY: MS Sans Serif;
+    FONT-SIZE: 10pt
+}
+
+SELECT {
+    COLOR: #191970;
+    FONT-FAMILY: MS Sans Serif;
+    FONT-SIZE: 14px
+}
+
+BUTTON {
+    border: none;
+}
+
+.ahint {
+    COLOR: #000080;
+    FONT-FAMILY: MS Sans Serif;
+    FONT-SIZE: 8px;
+    TEXT-DECORATION: none
+}
+
+#hint {
+    BACKGROUND-COLOR: #fff6dd;
+    POSITION: absolute;
+    VISIBILITY: hidden;
+    WIDTH: 140px;
+    layer-background-color: #FFF6DD
+}
+
+#hint2 {
+    BACKGROUND-COLOR: #fff6dd;
+    POSITION: absolute;
+    VISIBILITY: hidden;
+    WIDTH: 140px;
+    layer-background-color: #FFF6DD
+}
+
+.date {
+    COLOR: #007000;
+    FONT-FAMILY: Courier;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    TEXT-DECORATION: none
+}
+
+.number {
+    COLOR: #6f0000;
+    FONT-SIZE: 11pt;
+    FONT-WEIGHT: bold
+}
+
+.dsc {
+    COLOR: #606060;
+    FONT-WEIGHT: normal
+}
+
+.date2 {
+    BACKGROUND-COLOR: #00ffaa;
+    COLOR: #007000;
+    FONT-FAMILY: Courier;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    TEXT-DECORATION: none
+}
+
+.private {
+    BACKGROUND-COLOR: #fae0e0;
+    COLOR: red;
+    FONT-WEIGHT: bold
+}

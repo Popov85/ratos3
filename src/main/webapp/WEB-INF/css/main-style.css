@@ -1,0 +1,225 @@
+BODY {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt;
+    background-color: #F6FBFF;
+}
+
+P {
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 14px
+}
+
+.small {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt
+}
+
+FONT {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt
+}
+
+H1 {
+    FONT-FAMILY: "Arial Cyr", Arial, Helvetica, sans-serif;
+    FONT-SIZE: 14pt;
+    FONT-WEIGHT: bold
+}
+
+H2 {
+    FONT-FAMILY: "Arial Cyr", Arial, Helvetica, sans-serif;
+    FONT-SIZE: 12pt
+}
+
+h3 {
+    FONT-FAMILY: "Verdana", Hevletica, Arial;
+    COLOR: #CEFFFF;
+    FONT-SIZE: 14px;
+    TEXT-DECORATION: UNDERLINE
+}
+
+h5 {
+    FONT-FAMILY: "Verdana", Hevletica, Arial;
+    FONT-SIZE: 14px;
+    color: yellow
+}
+
+OL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+LI {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px;
+    line-height: 16px;
+}
+
+UL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+DL {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+DD {
+    FONT-SIZE: 14px;
+    FONT-STYLE: normal
+}
+
+DT {
+    FONT-SIZE: 14px;
+    FONT-WEIGHT: bold;
+}
+
+TD {
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 8pt;
+}
+
+TABLE {
+    border-collapse: separate;
+    background-color: transparent;
+}
+
+INPUT {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px;
+    line-height: normal;
+}
+
+SELECT {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px;
+
+}
+
+TEXTAREA {
+    FONT-FAMILY: "Times New Roman", Times, serif;
+    FONT-SIZE: 14px
+}
+
+A.mylink {
+    FONT-FAMILY: "Verdana, Hevletica, Arial";
+    FONT-SIZE: 14px;
+    TEXT-DECORATION: none;
+    FONT-WEIGHT: bold
+
+}
+
+A.mylink {
+    COLOR: #CEFFFF
+}
+
+A.mylink:link {
+    COLOR: #CEFFFF
+}
+
+A.mylink:visited {
+    COLOR: #CEFFFF
+}
+
+A.mylink:hover {
+    COLOR: #CCCCFF
+}
+
+A.mylink:active {
+    COLOR: #CCCCFF
+}
+
+A:link {
+    COLOR: #666699;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none
+}
+
+A:visited {
+    COLOR: #666699;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none
+}
+
+A:active {
+    COLOR: red;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none
+}
+
+A:hover {
+    COLOR: red;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none
+}
+
+A.small:link {
+    COLOR: #666699;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none;
+    FONT-SIZE: 8pt
+}
+
+A.small:visited {
+    COLOR: #666699;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none;
+    FONT-SIZE: 8pt
+}
+
+A.small:active {
+    COLOR: red;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none;
+    FONT-SIZE: 8pt
+}
+
+A.small:hover {
+    COLOR: red;
+    FONT-FAMILY: Arial;
+    TEXT-DECORATION: none;
+    FONT-SIZE: 8pt
+}
+
+TD.hnews {
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial, Helvetica;
+    FONT-SIZE: 10pt;
+    TEXT-ALIGN: center
+}
+
+INPUT {
+    COLOR: #191970;
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 14px;
+}
+
+SELECT {
+    COLOR: #191970;
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 14px;
+}
+
+SELECT.nav {
+    BACKGROUND-COLOR: #eaf5ff;
+    BORDER-BOTTOM: #000080 1px solid;
+    BORDER-LEFT: #000080 1px solid;
+    BORDER-RIGHT: #000080 1px solid;
+    BORDER-TOP: #000080 1px solid;
+    COLOR: #000080;
+    FONT-SIZE: 12px
+}
+
+.ahint {
+    COLOR: #000080;
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8px;
+    TEXT-DECORATION: none
+}
+
+#hint, #hint2 {
+    BACKGROUND-COLOR: #fff6dd;
+    POSITION: absolute;
+    VISIBILITY: hidden;
+    WIDTH: 140px;
+}

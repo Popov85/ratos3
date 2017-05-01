@@ -24,9 +24,10 @@ public class IPChecker {
          * 3) 192.168.* - available for the whole mask
          * 4) 192.168.70.140; 192.168.70.141; 192.168.70.142 - available only for these 3 specified IP-addresses
          * 5) 14;25;192.168.70.*; 192.168.1.1 - available for 2 comp. classes, mask and one specified IP-address
-         * @param mask
+         * @param mask - a semicolon separated string signifying classes,
+         *             IP-addresses and IP-masks where this scheme is available
          * @param remoteIP
-         * @param classRooms
+         * @param classRooms - IDs of class room(s) the given IP address belongs to. More often only one class room
          * @return
          */
         public boolean isSchemeAvailableFromIPAddress(String mask, String remoteIP, List<Integer> classRooms) {
@@ -43,26 +44,27 @@ public class IPChecker {
                 return mask.trim().equals("*");
         }
 
-        private boolean isAvailableForSubMask(String address, String remoteIP, List<Integer> classRooms) {
-                if (address.equals(remoteIP)) return true;
-                if (address.contains(".")) {// mask or address goes
-                        if (address.contains("*")) {// mask goes
-                                if (isMaskMatches(address, remoteIP)) return true;
+        private boolean isAvailableForSubMask(String mask, String remoteIP, List<Integer> classRooms) {
+                if (mask.equals(remoteIP)) return true;
+                if (mask.contains(".")) {// mask or address goes
+                        if (mask.contains("*")) {// mask goes
+                                if (isMaskMatches(mask, remoteIP)) return true;
                         } else {// ip goes or error
-                                if (address.trim().equals(remoteIP)) return true;
+                                if (mask.trim().equals(remoteIP)) return true;
                         }
                 } else {// comp class goes or error
-                        if (isClassRoomContainIPAddress(address, remoteIP, classRooms)) return true;
+                        if (isClassRoomContainIPAddress(mask, remoteIP, classRooms)) return true;
                 }
                 return false;
         }
-        // find out the position of first occurrence of '*' symbol
-        // cut out the values from remoteIP left from '*'
-        // equals
-        // Examples: 192.168.* OR 192.168.70.* OR 192.*
-        private boolean isMaskMatches(String address, String remoteIP) {
-                int index = address.indexOf("*");
-                String subAddress = address.substring(0, index);
+        // Algorithm:
+        // 1) find out the position of first occurrence of '*' symbol
+        // 2) cut out the values from remoteIP left from '*'
+        // 3) compare through equals
+        // Examples: 192.* OR 192.168.* OR 192.168.70.*
+        private boolean isMaskMatches(String mask, String remoteIP) {
+                int index = mask.indexOf("*");
+                String subAddress = mask.substring(0, index);
                 String subRemoteIP = remoteIP.substring(0, index);
                 return subAddress.trim().equals(subRemoteIP);
         }

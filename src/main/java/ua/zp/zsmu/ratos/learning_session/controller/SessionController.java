@@ -8,10 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ua.zp.zsmu.ratos.learning_session.dao.FacultyDAO;
+import ua.zp.zsmu.ratos.learning_session.model.Faculty;
+import ua.zp.zsmu.ratos.learning_session.model.Scheme;
 import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.service.*;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.SchemeDTO;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.LostSessionException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.QuestionAlreadyAnsweredException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
@@ -21,6 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 4/8/2017.
@@ -36,6 +43,9 @@ public class SessionController {
         @Autowired
         private SchemeService schemeService;
 
+        @Autowired
+        private FacultyDAO facultyDAO;
+
         @GetMapping("/findOneSession")
         @ResponseBody
         public ResponseEntity<Session> findOneSession(@RequestParam Long id) {
@@ -43,11 +53,21 @@ public class SessionController {
         }
 
         @GetMapping("/index")
-        public ModelAndView index() {
+        public ModelAndView index(HttpServletRequest request) {
+                String ip = request.getRemoteAddr();
+                Map<String, Object> model = new HashMap<>();
+                model.put("ip", ip);
+                List<Faculty> faculties = facultyDAO.findAll();
+                LOGGER.info("faculties: "+faculties);
+                model.put("faculties", faculties);
+
+                List<SchemeDTO> schemes = schemeService.findAllAvailableFromIPAddress("192.168.1.140");
+                LOGGER.info("schemes: "+schemes);
+                model.put("schemes", schemes);
                 // 1. Fill faculties, courses and specialisations
                 // 2. Fill schemes (filter by IP)
                 // 3. Return view
-                return new ModelAndView();
+                return new ModelAndView("index", model);
         }
 
         // @PostMapping

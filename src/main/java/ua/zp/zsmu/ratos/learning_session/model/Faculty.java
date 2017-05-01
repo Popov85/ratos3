@@ -1,0 +1,27 @@
+package ua.zp.zsmu.ratos.learning_session.model;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
+/**
+ * Created by Andrey on 5/1/2017.
+ */
+@Data
+@Getter
+@Setter
+@Entity
+@Table(name="faculty")
+public class Faculty {
+        @Id
+        @GeneratedValue(generator = "increment")
+        @GenericGenerator(name = "increment", strategy = "increment")
+        @Column(name = "id")
+        private Long id;
+
+        @Column(name = "faculty")
+        private String title;
+}

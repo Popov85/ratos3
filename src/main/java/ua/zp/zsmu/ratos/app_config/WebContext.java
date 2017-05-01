@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -44,6 +45,7 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
                 ThymeleafViewResolver resolver = new ThymeleafViewResolver();
                 resolver.setTemplateEngine(templateEngine());
                 resolver.setCharacterEncoding("UTF-8");
+                resolver.setContentType("text/html; charset=UTF-8");
                 return resolver;
         }
 
@@ -62,7 +64,15 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
                 resolver.setSuffix(".html");
                 resolver.setCacheable(false);
                 resolver.setTemplateMode(TemplateMode.HTML);
+                resolver.setCharacterEncoding("UTF-8");
                 return resolver;
         }
 
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                //super.addResourceHandlers(registry);
+                registry.addResourceHandler("/img/**").addResourceLocations("/WEB-INF/img/");
+                registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
+                registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
+        }
 }
