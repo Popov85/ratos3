@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ua.zp.zsmu.ratos.learning_session.model.Resource;
 import ua.zp.zsmu.ratos.learning_session.service.QuestionView;
+import ua.zp.zsmu.ratos.learning_session.service.Student;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +21,11 @@ public final class QuestionDTO implements Serializable {
         private static final long serialVersionUID = -6039208993180397074L;
         private final Long qid;
         private final String title;
-        private final List<AnswerDTO> questions;
+        private final List<AnswerDTO> answers;
+        private final SchemeDTO schemeDTO;
+        private final Student student;
+        // scheme
+        // student
         private final long timeLeft;
         private final int questionsLeft;
         private final double currentResult;
@@ -31,11 +36,13 @@ public final class QuestionDTO implements Serializable {
         @Setter
         private QuestionView viewName = QuestionView.question;
 
-        public QuestionDTO(Long qid, String title, List<AnswerDTO> questions,
+        public QuestionDTO(Long qid, String title, List<AnswerDTO> answers, SchemeDTO schemeDTO, Student student,
                            long timeLeft, int questionsLeft, double currentResult) {
                 this.qid = qid;
                 this.title = title;
-                this.questions = questions;
+                this.answers = answers;
+                this.schemeDTO = schemeDTO;
+                this.student = student;
                 this.timeLeft = timeLeft;
                 this.questionsLeft = questionsLeft;
                 this.currentResult = currentResult;

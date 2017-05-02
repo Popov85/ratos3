@@ -5,24 +5,23 @@
     <title>Start</title>
     <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
-    <!--<script language="javascript" src="/js/start.js"></script>-->
-    <!--<link rel="stylesheet" type="text/css" href="/css/ra-style.css"/>-->
 </head>
 <body>
 <div class="container">
-    <div class="row" style="margin-top:20px;">
-        <div class="col-12">
-            <img class="mx-auto d-block" src="/img/start.png" border=0 alt="RATOS v.2.0">
+    <form action="#" th:action="@{/ratos/start}" method="post">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-12">
+                <img class="mx-auto d-block" src="/img/start.png" border=0 alt="RATOS v.2.0">
+            </div>
         </div>
-    </div>
-    <div class="row" style="margin-top:5px;">
-        <div class="col-12">
-            <table border="1" width="45%" align="center">
-                <tr>
-                    <td width="54%">Сценарий тестирования:</td>
-                    <td width="146%">
-                        <!--<select name="scheme" style="width: 295px"/>-->
-                        <!--<div th:class="${#fields.hasErrors('scheme') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
+        <div class="row" style="margin-top:5px;">
+            <div class="col-12">
+                <table border="1" width="45%" align="center">
+                    <tr>
+                        <td width="54%">Сценарий тестирования:</td>
+                        <td width="146%">
+                            <!--<select name="scheme" style="width: 295px"/>-->
+                            <!--<div th:class="${#fields.hasErrors('scheme') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
                             <select name="scheme" id="scheme" style="width:295px;">
                                 <option value="0" th:text="--Select--"></option>
                                 <option th:each="scheme : ${schemes}"
@@ -32,55 +31,58 @@
                             </select>
                             <!--<label class="control-label" for="scheme" th:if="${#fields.hasErrors('scheme')}"
                                    th:errors="*{scheme}">Incorrect data</label>-->
-                        <!--</div>-->
-                    </td>
-                </tr>
-                <tr>
-                    <td>Имя:</td>
-                    <td><input type="text" name="name" style="width:295px;" size="40" value=""></td>
-                </tr>
-                <tr>
-                    <td>Фамилия:</td>
-                    <td><input type="text" name="surname"  style="width:295px;" size="40" value=""></td>
-                </tr>
-                <tr>
-                    <td>Курс:</td>
-                    <td><select name=kurs>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                    </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Группа:</td>
-                    <td><input type="text" name="group" size=3></td>
-                </tr>
-                <tr>
-                    <td>Факультет:</td>
-                    <td>
-                        <!--<div th:class="${#fields.hasErrors('faculty') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
+                            <!--</div>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Имя:</td>
+                        <td><input type="text" name="name" style="width:295px;" size="40" value=""></td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия:</td>
+                        <td><input type="text" name="surname" style="width:295px;" size="40" value=""></td>
+                    </tr>
+                    <tr>
+                        <td>Курс:</td>
+                        <td><select name="course">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Группа:</td>
+                        <td><input type="text" name="group" size=3></td>
+                    </tr>
+                    <tr>
+                        <td>Факультет:</td>
+                        <td>
+                            <!--<div th:class="${#fields.hasErrors('faculty') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
                             <select name="faculty" id="faculty" style="width: 150px">
                                 <option value="0" th:text="--Select--"></option>
                                 <option th:each="faculty : ${faculties}"
-                                        th:value="${faculty.id}"
+                                        th:value="${faculty.title}"
                                         th:text="${faculty.title}">Faculty
                                 </option>
                             </select>
-                           <!-- <label class="control-label" for="faculty" th:if="${#fields.hasErrors('faculty')}"
-                                   th:errors="*{unit}">Incorrect data</label>
-                        </div>-->
-                    </td>
-                </tr>
-
-
-
-            </table>
+                            <!-- <label class="control-label" for="faculty" th:if="${#fields.hasErrors('faculty')}"
+                                    th:errors="*{unit}">Incorrect data</label>
+                         </div>-->
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
+        <div class="row text-center" style="margin-top:5px;">
+            <div class="col-12">
+                <input type="submit" value="Начать&gt;&gt;&gt;" class="btnStart">
+            </div>
+        </div>
+    </form>
 </div>
 </body>
 </html>

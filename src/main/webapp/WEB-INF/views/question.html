@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Question</title>
 </head>
 <body>
+<div class="container">
+    <form action="#" th:action="@{/ratos/next}" th:object="${question}" method="post">
 
+        <div>
+            <input type="hidden" name="id" id="id" th:field="*{id}"/>
+        </div>
+
+        <div class="row text-center" style="margin-top:20px;">
+            <div class="col-2">
+                <span th:title="*{student.name}"/>
+                <span th:title="*{student.surname}"/>
+            </div>
+            <div class="col-10">
+                <h3 class="form-signin-heading" align="center" th:title="*{scheme}"/>
+                <div th:title="*{timeLeft}"/>
+            </div>
+        </div>
+
+        <div class="row text-center" style="margin-top:20px;">
+            <div class="col-12">
+                <h4 class="form-signin-heading" align="center" th:title="*{title}"/>
+            </div>
+        </div>
+
+        <div class="row text-center" style="margin-top:20px;">
+            <div class="col-12">
+                <div th:title="*{timeLeft}"/>
+            </div>
+        </div>
+
+        <div th:each="item : *{answers}">
+            <input type="checkbox" th:value="${item.aid}" />
+            <label th:text="${item.title}">answer</label>
+        </div>
+
+        <div class="row text-right" style="margin-top:5px;">
+            <div class="col-12">
+                <input type="submit" value="Следующий&gt;&gt;&gt;" class="btnStart">
+            </div>
+        </div>
+
+    </form>
+</div>
 </body>
 </html>

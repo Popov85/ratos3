@@ -70,11 +70,13 @@ public class SessionController {
                 return new ModelAndView("index", model);
         }
 
-        // @PostMapping
-        @GetMapping("/start")
+        @PostMapping("/ratos/start")
         @ResponseBody
-        public String startSession(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        public String startSession(HttpSession session, HttpServletRequest request,
+                                   HttpServletResponse response, Student student, Scheme scheme) {
 
+                LOGGER.info("Student: "+student);
+                LOGGER.info("Scheme: "+scheme);
                 // WARN! Prevent two different session to launch from one PC!
                 // If we already have SID in cookies - we must check the possibility to continue the previous session
                 // If session was already opened do not launch "start" - just continue with next question
@@ -89,7 +91,7 @@ public class SessionController {
                 // 1. Launch start at SessionService
                 ISession iSession = null;
                 try {
-                        iSession = sessionService.start(new Student(), schemeService.findOne(53l));
+                        iSession = sessionService.start(new Student(), schemeService.findOneWithThemes(53l));
                 } catch (Exception e) {
                         // Catch out of memory exception
                         LOGGER.error("ERROR: "+e.getMessage());

@@ -37,6 +37,10 @@ public class SchemeService {
                 return schemeDAO.findOne(id);
         }
 
+        public Scheme findOneWithThemes(Long id) {
+                return schemeDAO.findOneWithThemes(id);
+        }
+
         /**
          * Filters list of all existing schemes based on a remote IP-address
          * @param remoteIP - IP-address from which the request was sent

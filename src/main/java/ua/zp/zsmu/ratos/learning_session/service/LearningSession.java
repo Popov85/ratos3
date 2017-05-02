@@ -5,10 +5,7 @@ import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.LoggerFactory;
 import ua.zp.zsmu.ratos.learning_session.model.*;
-import ua.zp.zsmu.ratos.learning_session.service.dto.AnswerDTO;
-import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
-import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
-import ua.zp.zsmu.ratos.learning_session.service.dto.DetailedReportDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.*;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.QuestionAlreadyAnsweredException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 import ua.zp.zsmu.ratos.learning_session.service.util.DateCalculator;
@@ -107,6 +104,7 @@ public class LearningSession implements ISession {
                 questionsLeft--;
                 Question q = getCurrentQuestion();
                 return new QuestionDTO(q.getId(), q.getTitle(), createAnswerDTOs(q),
+                        new SchemeDTO(scheme.getId(), scheme.getTitle(), scheme.getMaskIPAddress()), student,
                         timeLeft, questionsLeft, calculateCurrentResult());
         }
 
@@ -197,6 +195,7 @@ public class LearningSession implements ISession {
                 // Update time left
                 updateTimeLeft();
                 return new QuestionDTO(q.getId(), q.getTitle(), createAnswerDTOs(q),
+                        new SchemeDTO(scheme.getId(), scheme.getTitle(), scheme.getMaskIPAddress()), student,
                         timeLeft, questionsLeft, calculateCurrentResult());
         }
 

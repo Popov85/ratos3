@@ -85,9 +85,21 @@ TABLE {
 }
 
 INPUT {
-    FONT-FAMILY: "Times New Roman", Times, serif;
+    COLOR: #191970;
+    FONT-FAMILY: Arial;
     FONT-SIZE: 14px;
     line-height: normal;
+}
+
+.btnStart {
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 14px;
+    cursor: hand;
+    width:200px;
+    height:30px;
+    margin-Top:5px;
+    /*padding:5px 15px;*/
+    border: thin ridge
 }
 
 SELECT {
@@ -100,6 +112,7 @@ TEXTAREA {
     FONT-FAMILY: "Times New Roman", Times, serif;
     FONT-SIZE: 14px
 }
+
 
 A.mylink {
     FONT-FAMILY: "Verdana, Hevletica, Arial";
@@ -188,12 +201,6 @@ TD.hnews {
     TEXT-ALIGN: center
 }
 
-INPUT {
-    COLOR: #191970;
-    FONT-FAMILY: Arial;
-    FONT-SIZE: 14px;
-}
-
 SELECT {
     COLOR: #191970;
     FONT-FAMILY: Arial;
@@ -222,4 +229,5 @@ SELECT.nav {
     POSITION: absolute;
     VISIBILITY: hidden;
     WIDTH: 140px;
+
 }

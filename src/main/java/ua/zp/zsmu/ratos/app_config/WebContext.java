@@ -5,8 +5,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -17,6 +19,8 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+import ua.zp.zsmu.ratos.app_config.convertors.SchemeConverter;
+import ua.zp.zsmu.ratos.app_config.convertors.StudentConverter;
 
 import java.util.List;
 
@@ -74,5 +78,28 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
                 registry.addResourceHandler("/img/**").addResourceLocations("/WEB-INF/img/");
                 registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
                 registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
+        }
+
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+                //super.addArgumentResolvers(argumentResolvers);
+                argumentResolvers.add(studentConverter());
+        }
+
+        @Bean
+        public StudentConverter studentConverter() {
+                return new StudentConverter();
+        }
+
+        @Override
+        public void addFormatters(FormatterRegistry registry) {
+                //super.addFormatters(registry);
+                registry.addConverter(schemeConverter());
+
+        }
+
+        @Bean
+        public SchemeConverter schemeConverter() {
+               return new SchemeConverter();
         }
 }
