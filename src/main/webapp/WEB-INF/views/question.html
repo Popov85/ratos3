@@ -3,44 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Question</title>
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <form action="#" th:action="@{/ratos/next}" th:object="${question}" method="post">
 
         <div>
-            <input type="hidden" name="id" id="id" th:field="*{id}"/>
+            <input type="hidden" name="id" id="id" th:field="*{qid}"/>
         </div>
 
         <div class="row text-center" style="margin-top:20px;">
             <div class="col-2">
-                <span th:title="*{student.name}"/>
-                <span th:title="*{student.surname}"/>
+                <span th:text="*{student.name}"/>
+                <span th:text="*{student.surname}"/>
             </div>
             <div class="col-10">
-                <h3 class="form-signin-heading" align="center" th:title="*{scheme}"/>
-                <div th:title="*{timeLeft}"/>
+                <h4 class="form-signin-heading" align="center" th:text="*{scheme.scheme}"/>
+                <div th:text="*{timeLeft}"/>
             </div>
         </div>
 
         <div class="row text-center" style="margin-top:20px;">
             <div class="col-12">
-                <h4 class="form-signin-heading" align="center" th:title="*{title}"/>
+                <h2 class="form-signin-heading" align="center" th:text="*{title}"/>
             </div>
         </div>
 
-        <div class="row text-center" style="margin-top:20px;">
-            <div class="col-12">
-                <div th:title="*{timeLeft}"/>
-            </div>
+        <div class="row text-left" style="margin-top:20px;">
+            <ul>
+                <div th:each="item : *{answers}">
+                    <li>
+                        <input type="checkbox" name="answer" th:value="${item.aid}"/>
+                        <label th:text="${item.title}">answer</label>>
+                    </li>
+                </div>
+
+             <!--   <li th:each="item, stat : ${answers}">
+                    &lt;!&ndash;<label th:text="${stat.index}">Test</label>&ndash;&gt;
+                    <input type="checkbox" th:field="*{answers[__${stat.index}__]}" th:value="${item.aid}" />
+                    <label th:text="${item.title}">answer</label>
+                </li>-->
+
+            </ul>
         </div>
 
-        <div th:each="item : *{answers}">
-            <input type="checkbox" th:value="${item.aid}" />
-            <label th:text="${item.title}">answer</label>
-        </div>
-
-        <div class="row text-right" style="margin-top:5px;">
+        <div class="row" style="margin-top:5px;">
             <div class="col-12">
                 <input type="submit" value="Следующий&gt;&gt;&gt;" class="btnStart">
             </div>

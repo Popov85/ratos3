@@ -70,17 +70,27 @@ public class SessionController {
                 return new ModelAndView("index", model);
         }
 
+        @GetMapping("ratos/interrupt")
+        public String interruption() {
+                return "interruption";
+        }
+
         @PostMapping("/ratos/start")
         @ResponseBody
-        public String startSession(HttpSession session, HttpServletRequest request,
+        public ModelAndView startSession(HttpSession session, HttpServletRequest request,
                                    HttpServletResponse response, Student student, Scheme scheme) {
 
+                ModelAndView modelAndView = new ModelAndView();
+                modelAndView.setViewName("question");
                 LOGGER.info("Student: "+student);
                 LOGGER.info("Scheme: "+scheme);
                 // WARN! Prevent two different session to launch from one PC!
                 // If we already have SID in cookies - we must check the possibility to continue the previous session
                 // If session was already opened do not launch "start" - just continue with next question
-                if (!session.isNew()) return "We already created a session for you!";
+                if (!session.isNew()) {
+                        modelAndView.setViewName("redirect:/interruption");
+                        return modelAndView;
+                }
 
                 // 0. Instantiate Student (by all fields) and Scheme objects (by selected id)
 
@@ -95,7 +105,8 @@ public class SessionController {
                 } catch (Exception e) {
                         // Catch out of memory exception
                         LOGGER.error("ERROR: "+e.getMessage());
-                        return "Error";
+                        modelAndView.setViewName("redirect:/error");
+                        return modelAndView;
                 }
                 // 2. Save the produced ISession to a session variable
                 session.setAttribute("session", iSession);
@@ -113,14 +124,18 @@ public class SessionController {
                 } catch (TimeIsOverException e) {
                         ResultDTO result = iSession.interruptSessionByTimeout();
                         // return result.html
-                        return "redirect:";
+                        modelAndView.setViewName("redirect:/result");
+                        modelAndView.addObject("result", result);
+                        return modelAndView;
                 } catch (UnsupportedQuestionTypeException e) {
                         // return empty question with
-                        return "Unsupported question type!";
+                        modelAndView.addObject("message", "Unsupported question type!");
+                        return modelAndView;
                 }
                 // 3.1 Add Question to model
                 // 4. Return model and view
-                return question.toString();
+                modelAndView.addObject("question", question);
+                return modelAndView;
         }
 
         @PostMapping("/answer")
@@ -130,33 +145,60 @@ public class SessionController {
                 return "";
         }
 
-        // @PostMapping!!!
-        @GetMapping("/next")
-        @ResponseBody
-        public String provideNextQuestion(HttpSession session, HttpServletRequest request) throws QuestionAlreadyAnsweredException {
+        @PostMapping("/ratos/next")
+        public ModelAndView provideNextQuestion(HttpSession session, HttpServletRequest request, ModelAndView modelAndView) throws QuestionAlreadyAnsweredException {
                 // Check if we already have smth. in session
                 ISession iSession = null;
                 QuestionDTO question = null;
                 try {
                         iSession = getSession(session, request);
                         // empty list (ONLY for test purposes)
-                        iSession.processStudentAnswer(1L, new ArrayList<>());
+                        String qid = request.getParameter("qid");
+                        LOGGER.info("qid: "+qid);
+                        /*String answer = request.getParameter("answer");
+                        LOGGER.info("answer: "+answer);*/
+
+                        LOGGER.info("all params: ");
+                        Map<String, String[]> params =  request.getParameterMap();
+                        for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
+                                LOGGER.info("key: "+stringEntry.getKey());
+                                LOGGER.info("value: "+stringEntry.getValue());
+                                if (stringEntry.getValue().length>1) {
+                                        LOGGER.info("many values");
+                                        String[] values = stringEntry.getValue();
+                                        for (String value : values) {
+                                                LOGGER.info("value="+value);
+                                        }
+                                }
+                        }
+
+
+
+                        iSession.processStudentAnswer(Long.parseLong(qid), new ArrayList<>());
                         question = sessionService.provideNextQuestion(iSession);
+                        modelAndView.setViewName("question");
+                        modelAndView.addObject("question", question);
                 } catch (LostSessionException e) {
                         LOGGER.error("Cannot find session: possible reasons" +
                                 " 1) cookies JSESSIONID and SID were deleted" +
                                 " 2) Server's sudden unavailability");
                         // No way to produce result, sorry
-                        return "redirect: Error page with the possibility to return to start page";
+                        modelAndView.setViewName("redirect:/error");
+                        modelAndView.addObject("message", "redirect: Error page with the possibility to return to start page");
+                        return modelAndView;
                 } catch (TimeIsOverException e) {
                         ResultDTO result = iSession.interruptSessionByTimeout();
                         // return result.html
-                        return "redirect: result page";
+                        modelAndView.setViewName("redirect:/result");
+                        modelAndView.addObject("result", result);
+                        return modelAndView;
                 } catch (UnsupportedQuestionTypeException e) {
                         // return empty question with
-                        return "Unsupported question type!";
+                        modelAndView.setViewName("redirect:/question");
+                        modelAndView.addObject("message", "Unsupported question type!");
+                        return modelAndView;
                 }
-                return question+"";
+                return modelAndView;
         }
 
         // called by JS when it is required by session settings
@@ -229,14 +271,13 @@ public class SessionController {
         @GetMapping("/finish")
         public String finish(HttpSession session) {
                 session.invalidate();
-                return "";
+                return "index";
         }
 
         @PostMapping("/finish")
-        @ResponseBody
         public String finishSession(HttpSession session) {
                 session.invalidate();
-                return "Finished";
+                return "index";
         }
 
         private ISession getSession(HttpSession session, HttpServletRequest request) throws LostSessionException {

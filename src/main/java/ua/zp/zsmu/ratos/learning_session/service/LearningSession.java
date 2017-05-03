@@ -38,7 +38,7 @@ public class LearningSession implements ISession {
          */
         private ReportBuilder reportBuilder;
 
-        private int currentQuestionIndex = 0;
+        private int currentQuestionIndex = -1;
         // In % (e.g. 8.5). If there are 20 questions in total, the result is 8.5/20 * 100% = 42.5%
         private double currentResult = 0d;
         // in milliseconds
@@ -146,7 +146,7 @@ public class LearningSession implements ISession {
 
         @Override
         public void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException {
-                if (qid!=getCurrentQuestionId())
+                if (!qid.equals(getCurrentQuestionId()))
                         throw new QuestionAlreadyAnsweredException("Your answer to this question has already been submitted!");
                 Question question = getCurrentQuestion();
                 QuestionResult questionResult = new QuestionResult(question, answers);

@@ -22,7 +22,7 @@ public final class QuestionDTO implements Serializable {
         private final Long qid;
         private final String title;
         private final List<AnswerDTO> answers;
-        private final SchemeDTO schemeDTO;
+        private final SchemeDTO scheme;
         private final Student student;
         // scheme
         // student
@@ -36,12 +36,12 @@ public final class QuestionDTO implements Serializable {
         @Setter
         private QuestionView viewName = QuestionView.question;
 
-        public QuestionDTO(Long qid, String title, List<AnswerDTO> answers, SchemeDTO schemeDTO, Student student,
+        public QuestionDTO(Long qid, String title, List<AnswerDTO> answers, SchemeDTO scheme, Student student,
                            long timeLeft, int questionsLeft, double currentResult) {
                 this.qid = qid;
                 this.title = title;
                 this.answers = answers;
-                this.schemeDTO = schemeDTO;
+                this.scheme = scheme;
                 this.student = student;
                 this.timeLeft = timeLeft;
                 this.questionsLeft = questionsLeft;
