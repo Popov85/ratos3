@@ -2,9 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Result</title>
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
 </head>
 <body>
+<div class="container">
+    <div class="row" style="margin-top:20px;">
+        <div class="col-12">
+            <table align="center">
+                <tbody>
+                <tr>
+                    <td>Имя</td><td>Оценка</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <div class="row text-center" style="margin-top:5px;">
+        <div class="col-12">
+            <form action="/finish" method="post">
+                <input type="submit" value="Закрыть сессию&gt;&gt;&gt;" class="btnStart"/>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

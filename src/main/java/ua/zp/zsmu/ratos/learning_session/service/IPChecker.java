@@ -76,7 +76,7 @@ public class IPChecker {
                 } catch (NumberFormatException e) {
                         return false;
                 }
-                LOGGER.info("Check classes IDs: " + classRoomID);
+                //LOGGER.info("Check classes IDs: " + classRoomID);
                 for (Integer classRoomId : classRoomIDs) {
                         if (classRoomId.equals(parsedClassRoomId)) return true;
                 }

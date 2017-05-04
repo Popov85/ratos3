@@ -75,6 +75,11 @@ public class SessionController {
                 return "interruption";
         }
 
+        @GetMapping("/result")
+        public String result() {
+                return "result";
+        }
+
         @PostMapping("/ratos/start")
         @ResponseBody
         public ModelAndView startSession(HttpSession session, HttpServletRequest request,
@@ -88,7 +93,7 @@ public class SessionController {
                 // If we already have SID in cookies - we must check the possibility to continue the previous session
                 // If session was already opened do not launch "start" - just continue with next question
                 if (!session.isNew()) {
-                        modelAndView.setViewName("redirect:/interruption");
+                        modelAndView.setViewName("redirect:/ratos/interrupt");
                         return modelAndView;
                 }
 
@@ -101,7 +106,7 @@ public class SessionController {
                 // 1. Launch start at SessionService
                 ISession iSession = null;
                 try {
-                        iSession = sessionService.start(new Student(), schemeService.findOneWithThemes(53l));
+                        iSession = sessionService.start(student, schemeService.findOneWithThemes(53l));
                 } catch (Exception e) {
                         // Catch out of memory exception
                         LOGGER.error("ERROR: "+e.getMessage());
@@ -271,13 +276,13 @@ public class SessionController {
         @GetMapping("/finish")
         public String finish(HttpSession session) {
                 session.invalidate();
-                return "index";
+                return "redirect:/index";
         }
 
         @PostMapping("/finish")
         public String finishSession(HttpSession session) {
                 session.invalidate();
-                return "index";
+                return "redirect:/index";
         }
 
         private ISession getSession(HttpSession session, HttpServletRequest request) throws LostSessionException {

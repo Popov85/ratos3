@@ -24,8 +24,6 @@ public final class QuestionDTO implements Serializable {
         private final List<AnswerDTO> answers;
         private final SchemeDTO scheme;
         private final Student student;
-        // scheme
-        // student
         private final long timeLeft;
         private final int questionsLeft;
         private final double currentResult;

@@ -201,6 +201,53 @@ TD.hnews {
     TEXT-ALIGN: center
 }
 
+/*TD {
+    FONT-SIZE: 14px;
+    BACKGROUND: #E8E8E8;
+    FONT-FAMILY: Arial;
+    padding-right: 2px;
+    padding-left: 2px;
+}*/
+
+TD.res {
+    background-color: #EDEFF8;
+    cursor: auto;
+}
+
+TD.res_summary {
+    background-color: #F9FAAB;
+    color: #D03E3E;
+    text-decoration: underline;
+    font-size: 14pt;
+}
+
+.td_selected {
+    background-color: #FAEF70;
+    cursor: pointer;
+}
+
+.td_normal {
+    background-color: #F0FFFF;
+    cursor: pointer;
+}
+
+.td_wrong {
+    color: #CD3D3D;
+    background-color: #FFFF93;
+    text-decoration: line-through;
+}
+
+.td_right {
+    color: #006A01;
+}
+
+.td_missing {
+    color: #1E20FF;
+}
+
+.td_none {
+}
+
 SELECT {
     COLOR: #191970;
     FONT-FAMILY: Arial;
