@@ -1,0 +1,54 @@
+body {
+    font-family: Verdana, Arial, Helvetica;
+    background-color: #F6FBFF
+}
+
+h1 {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    /*font-size: 14pt;*/
+    font-weight: bold
+}
+
+h2 {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    /*font-size: 12pt;*/
+}
+
+h3 {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+}
+
+h4 {
+
+}
+
+input[type="submit"] {
+    font-family: Arial;
+    font-size: 14px;
+    cursor: pointer;
+    width:200px;
+    height:30px;
+    border: thin;
+}
+
+select {
+    color: #191970;
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 14px;
+}
+
+img {
+    border: 0px;
+}
+
+.top {
+    margin-top:5px;
+}
+
+.button {
+    margin-top:15px;
+}
+
+.block {
+    margin-top:20px;
+}

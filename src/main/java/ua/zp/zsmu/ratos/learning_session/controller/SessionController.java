@@ -60,14 +60,10 @@ public class SessionController {
                 List<Faculty> faculties = facultyDAO.findAll();
                 LOGGER.info("faculties: "+faculties);
                 model.put("faculties", faculties);
-
                 List<SchemeDTO> schemes = schemeService.findAllAvailableFromIPAddress("192.168.1.140");
                 LOGGER.info("schemes: "+schemes);
                 model.put("schemes", schemes);
-                // 1. Fill faculties, courses and specialisations
-                // 2. Fill schemes (filter by IP)
-                // 3. Return view
-                return new ModelAndView("index", model);
+                return new ModelAndView("start", model);
         }
 
         @GetMapping("ratos/interrupt")
@@ -276,13 +272,13 @@ public class SessionController {
         @GetMapping("/finish")
         public String finish(HttpSession session) {
                 session.invalidate();
-                return "redirect:/index";
+                return "redirect:/start";
         }
 
         @PostMapping("/finish")
         public String finishSession(HttpSession session) {
                 session.invalidate();
-                return "redirect:/index";
+                return "redirect:/start";
         }
 
         private ISession getSession(HttpSession session, HttpServletRequest request) throws LostSessionException {

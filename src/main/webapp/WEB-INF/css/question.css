@@ -1,0 +1,77 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0px;
+    background-color: #F0FFFF;
+    margin: 0px auto;
+    float: none;
+    width: 100%
+}
+
+td {
+    /*border: 1px solid black;*/
+    width: auto;
+    line-height: normal;
+    padding: 0px;
+}
+
+.td_selected {
+    background-color: #FAEF70;
+    cursor: pointer;
+}
+
+.td_normal {
+    background-color: #F0FFFF;
+    cursor: pointer;
+}
+
+small {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+h3 {
+    font-family: "Arial";
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+h4 {
+    font-family: "Arial";
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+td a, td a:visited, td a:link, td a:active {
+    font-family: Arial;
+    font-size: 16px;
+    color: #708090;
+    margin: 0px;
+    margin-left: -5px;
+    line-height: normal;
+    height: auto;
+    width: auto;
+    text-decoration: none;
+}
+
+td a:hover {
+    color: #6495ED;
+    text-decoration: underline;
+    background-color: #FFD700;
+}
+
+input[type="checkbox"] {
+    margin: 3px;
+}
+
+aside {
+    position: absolute;
+    top:0px;
+    left: 5px;
+    border: 2px solid gray;
+    color:black;
+    font-size: 12px;
+    background: #E8E8E8;
+    z-index: 9999;
+}
+

@@ -1,0 +1,38 @@
+table {
+    border-collapse: separate;
+    background-color: transparent;
+    width: 45%;
+    margin: 0px auto;
+    float: none;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+td {
+    font-family: Verdana, Arial, Helvetica;
+    font-size: 8pt;
+    color: black;
+}
+
+input {
+    color: #191970;
+    font-family: Arial;
+    font-size: 14px;
+    line-height: normal;
+}
+
+a {
+    font-family: Verdana, Arial, Helvetica;
+    font-size: 8pt;
+    color: #666699
+}
+
+.long {
+    width:295px;
+}
+
+.short {
+    width:50px;
+}

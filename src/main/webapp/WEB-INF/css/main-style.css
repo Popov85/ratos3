@@ -31,17 +31,12 @@ H2 {
 }
 
 h3 {
-    FONT-FAMILY: "Verdana", Hevletica, Arial;
-    COLOR: #CEFFFF;
-    FONT-SIZE: 14px;
-    TEXT-DECORATION: UNDERLINE
+    font-family: "Verdana", Hevletica, Arial;
+    color: #CEFFFF;
+    font-size: 10px;
+    text-decoration: UNDERLINE
 }
 
-h5 {
-    FONT-FAMILY: "Verdana", Hevletica, Arial;
-    FONT-SIZE: 14px;
-    color: yellow
-}
 
 OL {
     FONT-FAMILY: "Times New Roman", Times, serif;

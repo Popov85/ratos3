@@ -4,22 +4,25 @@
     <meta charset="UTF-8">
     <title>Start</title>
     <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/general.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/start.css"/>
 </head>
 <body>
 <div class="container">
     <form action="#" th:action="@{/ratos/start}" method="post">
-        <div class="row" style="margin-top:20px;">
+
+        <div class="row" style="margin-top:10px;">
             <div class="col-12">
-                <img class="mx-auto d-block" src="/img/start.png" border=0 alt="RATOS v.2.0">
+                <img class="mx-auto d-block" src="/img/start.png" alt="RATOS v.2.0">
             </div>
         </div>
+
         <div class="row" style="margin-top:5px;">
             <div class="col-12">
-                <table border="1" width="45%" align="center">
+                <table>
                     <tr>
-                        <td width="54%">Сценарий тестирования:</td>
-                        <td width="146%">
+                        <td>Сценарий тестирования:</td>
+                        <td class="long">
                             <!--<select name="scheme" style="width: 295px"/>-->
                             <!--<div th:class="${#fields.hasErrors('scheme') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
                             <select name="scheme" id="scheme" style="width:295px;">
@@ -36,27 +39,28 @@
                     </tr>
                     <tr>
                         <td>Имя:</td>
-                        <td><input type="text" name="name" style="width:295px;" size="40" value=""></td>
+                        <td><input type="text" name="name" size="40" class="long"></td>
                     </tr>
                     <tr>
                         <td>Фамилия:</td>
-                        <td><input type="text" name="surname" style="width:295px;" size="40" value=""></td>
+                        <td><input type="text" name="surname" size="40" class="long"></td>
                     </tr>
                     <tr>
                         <td>Курс:</td>
-                        <td><select name="course">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                        </select>
+                        <td>
+                            <select name="course">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
                         <td>Группа:</td>
-                        <td><input type="text" name="group" size=3></td>
+                        <td><input type="text" name="group" size=3 class="short"></td>
                     </tr>
                     <tr>
                         <td>Факультет:</td>
@@ -79,7 +83,13 @@
         </div>
         <div class="row text-center" style="margin-top:5px;">
             <div class="col-12">
-                <input type="submit" value="Начать&gt;&gt;&gt;" class="btnStart">
+                <input type="submit" value="Начать&gt;&gt;&gt;">
+            </div>
+        </div>
+
+        <div class="row text-center" style="margin-top:15px;">
+            <div class="col-12">
+                <a href="/results">[Результаты тестирования]</a>
             </div>
         </div>
     </form>

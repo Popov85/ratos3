@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Question</title>
     <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/general.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/question.css"/>
 </head>
 <body>
 
@@ -12,78 +13,53 @@
     <form action="#" th:action="@{/ratos/next}" th:object="${question}" method="post">
         <input type="hidden" name="id" id="id" th:field="*{qid}"/>
 
-        <aside></aside>
+        <aside>
+            <span th:text="*{student.name}"/><span th:text="*{student.surname}"/>
+            <div style="text-align: left">
+                <a href="/abuse"><img src="/img/trouble.gif" border="0"
+                                      title="Пожаловаться на некорректный вопрос"></a>
+                <a href="/finish"><img src="/img/close.png" border="0" title="Завершить тестирование"></a>
+            </div>
+        </aside>
 
-        <div align="left" style="position: absolute; top:0px; left: 5px; z-index: 9000;">
-            <table cellpadding="0" cellspacing="0" border="1">
-                <tbody>
-                <tr>
-                    <td style="cursor:auto;" align="right">
-                        <span th:text="*{student.name}"/>
-                        <span th:text="*{student.surname}"/>
-                        <br>
-                        <a href="/abuse"><img src="/img/trouble.gif" border="0"
-                                              title="Пожаловаться на некорректный вопрос"></a>
-                        <a href="/finish"><img src="/img/close.png" border="0" title="Завершить тестирование"></a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row text-center" style="margin-top:5px;">
+        <div class="row top text-center">
             <div class="col-12">
-                <h4 align="center" style="text-decoration: solid" th:text="*{scheme.scheme}"/>
+                <h3 align="center" th:text="*{scheme.scheme}"/>
                 <small>
                     <div th:text="'Осталось: '+*{timeLeft}+ ' на '+*{questionsLeft}+ ' вопросов'"/>
                 </small>
             </div>
         </div>
 
-        <div class="row text-center" style="margin-top:20px;">
+        <div class="row block text-center">
             <div class="col-12">
-                <h2 class="form-signin-heading" align="center" th:text="*{title}"/>
+                <h4 class="form-signin-heading" align="center" th:text="*{title}"/>
             </div>
         </div>
 
-       <!-- <div class="row text-left full-width-div" style="margin-top:20px; border: thin;">
-            <ul style="list-style-type: none; padding-left: 5px; margin-bottom: 0px; width:100vw; border:1px solid black;">
-                <div th:each="item : *{answers}" style="border:0px solid black;" width="100%">
-                    <li>
-                        <input type="checkbox" name="answer" th:value="${item.aid}" style="margin: 3px;"/>
-                        <label th:text="${item.title}" style="margin-bottom: 0px;">answer</label>
-                    </li>
-                </div>
-            </ul>
-        </div>-->
+        <div class="row block text-left full-width-div">
+            <table border="1">
+                <tbody>
+                <tr th:each="item : *{answers}">
+                    <td class="td_normal"
+                        onclick="if(!this.getElementsByTagName('input')[0].checked){
+                                this.getElementsByTagName('input')[0].checked=true;
+                                this.className='td_selected';
+                             }
+                        else {
+                                this.getElementsByTagName('input')[0].checked=false;
+                                this.className='td_normal';
+                             }">
+                        <input type="checkbox" name="answer" th:value="${item.aid}"
+                               onclick="this.checked=!this.checked;"/>
+                        <a href="#" th:text="${item.title}"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-
-            <div class="row text-left full-width-div" style="margin-top:20px;">
-                <table border="1" width="100%" cellspacing="0" cellpadding="0">
-                    <tbody>
-                    <tr th:each="item : *{answers}">
-                        <td class="td_normal"
-                            onclick="if(!this.getElementsByTagName('input')[0].checked){this.getElementsByTagName('input')[0].checked=true;
-                             this.className='td_selected';} else {this.getElementsByTagName('input')[0].checked=false;
-                             this.className='td_normal';}">
-                            <input type="checkbox" name="answer" th:value="${item.aid}" style="margin: 3px;"/>
-                            <label th:text="${item.title}" style="margin-bottom: 0px;">answer</label>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-
-
-
-
-
-
-
-
-        <div class="row text-right" style="margin-top:5px;">
+        <div class="row button text-right">
             <div class="col-12">
                 <input type="submit" value="Следующий&gt;&gt;&gt;" class="btnStart">
             </div>
