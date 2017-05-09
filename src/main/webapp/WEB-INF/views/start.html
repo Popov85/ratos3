@@ -1,32 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Start</title>
+    <title th:text="#{start.title}"/>
     <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="/css/general.css"/>
     <link rel="stylesheet" type="text/css" href="/css/start.css"/>
 </head>
 <body>
 <div class="container">
-    <form action="#" th:action="@{/ratos/start}" method="post">
+    <form action="#" th:action="@{/ratos/start}" th:object="${student}" method="post">
 
-        <div class="row" style="margin-top:10px;">
+        <div class="row top">
             <div class="col-12">
-                <img class="mx-auto d-block" src="/img/start.png" alt="RATOS v.2.0">
+                <div class="mx-auto d-block text-img">
+                <span>
+                     <a href="?lang=en">EN</a>
+                     <a href="?lang=ua">UA</a>
+                     <a href="?lang=ru">RU</a>
+                 </span>
+                    <img src="/img/start.png" alt="RATOS v.2.0">
+                </div>
             </div>
         </div>
 
-        <div class="row" style="margin-top:5px;">
+        <div class="row top">
             <div class="col-12">
                 <table>
                     <tr>
-                        <td>Сценарий тестирования:</td>
+                        <td th:text="#{start.scheme}"/>
                         <td class="long">
                             <!--<select name="scheme" style="width: 295px"/>-->
                             <!--<div th:class="${#fields.hasErrors('scheme') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
                             <select name="scheme" id="scheme" style="width:295px;">
-                                <option value="0" th:text="--Select--"></option>
+                                <option value="0" th:text="#{start.select_scheme}"></option>
                                 <option th:each="scheme : ${schemes}"
                                         th:value="${scheme.id}"
                                         th:text="${scheme.scheme}">Scheme
@@ -38,15 +45,27 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Имя:</td>
-                        <td><input type="text" name="name" size="40" class="long"></td>
+                        <td th:text="#{start.name}"/>
+                        <td>
+                            <input type="text" th:field="*{name}" id="name" name="name" size="40" class="long">
+                            <label class="control-label" for="name" th:if="${#fields.hasErrors('name')}"
+                                   th:errors="*{name}">
+                                Incorrect data
+                            </label>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Фамилия:</td>
-                        <td><input type="text" name="surname" size="40" class="long"></td>
+                        <td th:text="#{start.surname}"/>
+                        <td>
+                            <input type="text" th:field="*{surname}" id="surname" name="surname" size="40" class="long">
+                            <label class="control-label" for="surname" th:if="${#fields.hasErrors('surname')}"
+                                   th:errors="*{surname}">
+                                Incorrect data
+                            </label>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Курс:</td>
+                        <td th:text="#{start.year}"/>
                         <td>
                             <select name="course">
                                 <option>1</option>
@@ -59,15 +78,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Группа:</td>
+                        <td th:text="#{start.class}"/>
                         <td><input type="text" name="group" size=3 class="short"></td>
                     </tr>
                     <tr>
-                        <td>Факультет:</td>
+                        <td th:text="#{start.faculty}"/>
                         <td>
                             <!--<div th:class="${#fields.hasErrors('faculty') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
-                            <select name="faculty" id="faculty" style="width: 150px">
-                                <option value="0" th:text="--Select--"></option>
+                            <select name="faculty" id="faculty" style="width: 200px">
+                                <option value="0" th:text="#{start.select_faculty}"></option>
                                 <option th:each="faculty : ${faculties}"
                                         th:value="${faculty.title}"
                                         th:text="${faculty.title}">Faculty
@@ -81,15 +100,15 @@
                 </table>
             </div>
         </div>
-        <div class="row text-center" style="margin-top:5px;">
+        <div class="row button text-center">
             <div class="col-12">
-                <input type="submit" value="Начать&gt;&gt;&gt;">
+                <input type="submit" th:value="#{start.start}"/>
             </div>
         </div>
 
-        <div class="row text-center" style="margin-top:15px;">
+        <div class="row button text-center">
             <div class="col-12">
-                <a href="/results">[Результаты тестирования]</a>
+                <a href="/results" th:text="#{start.results}"/>
             </div>
         </div>
     </form>

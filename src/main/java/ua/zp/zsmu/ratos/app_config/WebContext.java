@@ -5,14 +5,21 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
@@ -23,6 +30,7 @@ import ua.zp.zsmu.ratos.app_config.convertors.SchemeConverter;
 import ua.zp.zsmu.ratos.app_config.convertors.StudentConverter;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Andrey on 23.03.2017.
@@ -74,7 +82,6 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
 
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                //super.addResourceHandlers(registry);
                 registry.addResourceHandler("/img/**").addResourceLocations("/WEB-INF/img/");
                 registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
                 registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
@@ -82,7 +89,6 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
 
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-                //super.addArgumentResolvers(argumentResolvers);
                 argumentResolvers.add(studentConverter());
         }
 
@@ -93,7 +99,6 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
 
         @Override
         public void addFormatters(FormatterRegistry registry) {
-                //super.addFormatters(registry);
                 registry.addConverter(schemeConverter());
 
         }
@@ -101,5 +106,41 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
         @Bean
         public SchemeConverter schemeConverter() {
                return new SchemeConverter();
+        }
+
+        /* Internationalization */
+
+        @Bean(name = "messageSource")
+        public ReloadableResourceBundleMessageSource messageSource(){
+                ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+                messageSource.setBasename("classpath:messages");
+                messageSource.setDefaultEncoding("UTF-8");
+                return messageSource;
+        }
+
+/*        @Override
+        public Validator getValidator() {
+                LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+                validator.setValidationMessageSource(messageSource());
+                return validator;
+        }*/
+
+        @Bean
+        public LocaleResolver localeResolver() {
+                SessionLocaleResolver slr = new SessionLocaleResolver();
+                slr.setDefaultLocale(new Locale("ua"));
+                return slr;
+        }
+
+        @Bean
+        public LocaleChangeInterceptor localeChangeInterceptor() {
+                LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+                lci.setParamName("lang");
+                return lci;
+        }
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(localeChangeInterceptor());
         }
 }

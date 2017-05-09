@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.dao.FacultyDAO;
@@ -24,6 +25,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ public class SessionController {
                 return new ResponseEntity<Session>(sessionService.findOne(id), HttpStatus.OK);
         }
 
-        @GetMapping("/index")
+        @GetMapping("/ratos/start")
         public ModelAndView index(HttpServletRequest request) {
                 String ip = request.getRemoteAddr();
                 Map<String, Object> model = new HashMap<>();
@@ -63,6 +65,7 @@ public class SessionController {
                 List<SchemeDTO> schemes = schemeService.findAllAvailableFromIPAddress("192.168.1.140");
                 LOGGER.info("schemes: "+schemes);
                 model.put("schemes", schemes);
+                model.put("student", new Student());
                 return new ModelAndView("start", model);
         }
 
@@ -78,10 +81,15 @@ public class SessionController {
 
         @PostMapping("/ratos/start")
         @ResponseBody
-        public ModelAndView startSession(HttpSession session, HttpServletRequest request,
-                                   HttpServletResponse response, Student student, Scheme scheme) {
-
+        public ModelAndView startSession(HttpSession session, HttpServletRequest request, HttpServletResponse response,
+                                         @Valid @ModelAttribute("student") Student student, BindingResult bindingResult,
+                                         Scheme scheme) {
                 ModelAndView modelAndView = new ModelAndView();
+                if (bindingResult.hasErrors()) {
+                        LOGGER.error("# of errors is: "+bindingResult.getFieldErrorCount());
+                        modelAndView.setViewName("start");
+                        return modelAndView;
+                }
                 modelAndView.setViewName("question");
                 LOGGER.info("Student: "+student);
                 LOGGER.info("Scheme: "+scheme);
@@ -272,13 +280,13 @@ public class SessionController {
         @GetMapping("/finish")
         public String finish(HttpSession session) {
                 session.invalidate();
-                return "redirect:/start";
+                return "redirect:/ratos/start";
         }
 
         @PostMapping("/finish")
         public String finishSession(HttpSession session) {
                 session.invalidate();
-                return "redirect:/start";
+                return "redirect:/ratos/start";
         }
 
         private ISession getSession(HttpSession session, HttpServletRequest request) throws LostSessionException {

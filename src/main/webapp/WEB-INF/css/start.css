@@ -29,6 +29,30 @@ a {
     color: #666699
 }
 
+a:hover {
+    font-family: Verdana, Arial, Helvetica;
+    font-size: 8pt;
+    color: red;
+}
+
+label {
+    margin-bottom: 0px;
+    font-size: 10px;
+    color: red;
+}
+
+.text-img {
+    position: relative;
+    width: 500px;
+}
+
+.text-img span {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 430px;
+}
+
 .long {
     width:295px;
 }
