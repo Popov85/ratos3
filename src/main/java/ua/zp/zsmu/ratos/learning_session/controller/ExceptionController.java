@@ -3,14 +3,11 @@ package ua.zp.zsmu.ratos.learning_session.controller;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.QuestionAlreadyAnsweredException;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -36,12 +33,12 @@ public class ExceptionController {
         }
 
         @ExceptionHandler(QuestionAlreadyAnsweredException.class)
-        @ResponseBody
-        public String handleRepeatedAnswerError(Exception ex, WebRequest request) {
+        public String handleRepeatedAnswerError(Exception ex, WebRequest request, Model model) {
                 LOGGER.info("Advice in use!");
-                ModelMap map = new ModelMap();
-                map.addAttribute("message", REPEATED_ANSWER_MESSAGE);
+              /*  ModelMap map = new ModelMap();
+                map.addAttribute("message", REPEATED_ANSWER_MESSAGE);*/
+                model.addAttribute("message");
                 //model.addAttribute("message", REPEATED_ANSWER_MESSAGE);
-                return REPEATED_ANSWER_MESSAGE;
+                return "question";
         }
 }

@@ -108,6 +108,25 @@ public class LearningSession implements ISession {
                         timeLeft, questionsLeft, calculateCurrentResult());
         }
 
+        /**
+         * Launch when a student tries to answer already answered question.
+         * In this case, he redirects to an error page which allows only to continue with the current question
+         * @return
+         * @throws TimeIsOverException
+         */
+        public QuestionDTO provideSameQuestion() throws TimeIsOverException {
+                if (isTimeOver()) throw new TimeIsOverException("Time is over!");
+                if (isQuestionsRunOut()) throw new IllegalStateException("No more questions!");
+                LOGGER.info("Current state: "+this);
+                // update timeLeft
+                updateTimeLeft();
+                // update current index
+                Question q = getCurrentQuestion();
+                return new QuestionDTO(q.getId(), q.getTitle(), createAnswerDTOs(q),
+                        new SchemeDTO(scheme.getId(), scheme.getTitle(), scheme.getMaskIPAddress()), student,
+                        timeLeft, questionsLeft, calculateCurrentResult());
+        }
+
         // Check if the current date is more than startDate + timeForTest
         // Duration is min-based time
         private boolean isTimeOver() {

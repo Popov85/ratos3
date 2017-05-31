@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class SessionController {
                         modelAndView.setViewName("start");
                         return modelAndView;
                 }
-                modelAndView.setViewName("question");
+                //modelAndView.setViewName("question");
                 LOGGER.info("Student: "+student);
                 LOGGER.info("Scheme: "+scheme);
                 // WARN! Prevent two different session to launch from one PC!
@@ -126,10 +125,15 @@ public class SessionController {
                 cookie.setSecure(true);
                 cookie.isHttpOnly();
                 response.addCookie(cookie);
-                // 3. Obtained ISession use to return first question
-                QuestionDTO question = null; //iSession.provideNextQuestion();
+                return getQuestion(iSession, modelAndView);
+        }
+
+        private ModelAndView getQuestion(ISession iSession, ModelAndView modelAndView) {
+                QuestionDTO question = null;
                 try {
                         question = sessionService.provideNextQuestion(iSession);
+                        modelAndView.setViewName("question");
+                        modelAndView.addObject("question", question);
                 } catch (TimeIsOverException e) {
                         ResultDTO result = iSession.interruptSessionByTimeout();
                         // return result.html
@@ -138,73 +142,42 @@ public class SessionController {
                         return modelAndView;
                 } catch (UnsupportedQuestionTypeException e) {
                         // return empty question with
+                        modelAndView.setViewName("question");
                         modelAndView.addObject("message", "Unsupported question type!");
                         return modelAndView;
                 }
-                // 3.1 Add Question to model
-                // 4. Return model and view
-                modelAndView.addObject("question", question);
                 return modelAndView;
         }
 
         @PostMapping("/answer")
         @ResponseBody
         public String provideAnswer(Long qid, HttpSession session) {
-
+                // TODO
                 return "";
         }
 
         @PostMapping("/ratos/next")
-        public ModelAndView provideNextQuestion(HttpSession session, HttpServletRequest request, ModelAndView modelAndView) throws QuestionAlreadyAnsweredException {
+        public ModelAndView provideNextQuestion(HttpSession session, HttpServletRequest request, ModelAndView modelAndView,
+                                                @RequestParam(value = "qid") long qid,
+                                                @RequestParam(value = "answer") List<Long> answer) throws QuestionAlreadyAnsweredException {
                 // Check if we already have smth. in session
                 ISession iSession = null;
                 QuestionDTO question = null;
                 try {
                         iSession = getSession(session, request);
-                        // empty list (ONLY for test purposes)
-                        String qid = request.getParameter("qid");
+
                         LOGGER.info("qid: "+qid);
-                        /*String answer = request.getParameter("answer");
-                        LOGGER.info("answer: "+answer);*/
+                        for (long a : answer) LOGGER.info("answer: "+a);
 
-                        LOGGER.info("all params: ");
-                        Map<String, String[]> params =  request.getParameterMap();
-                        for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
-                                LOGGER.info("key: "+stringEntry.getKey());
-                                LOGGER.info("value: "+stringEntry.getValue());
-                                if (stringEntry.getValue().length>1) {
-                                        LOGGER.info("many values");
-                                        String[] values = stringEntry.getValue();
-                                        for (String value : values) {
-                                                LOGGER.info("value="+value);
-                                        }
-                                }
-                        }
-
-
-
-                        iSession.processStudentAnswer(Long.parseLong(qid), new ArrayList<>());
-                        question = sessionService.provideNextQuestion(iSession);
-                        modelAndView.setViewName("question");
-                        modelAndView.addObject("question", question);
+                        iSession.processStudentAnswer(qid, answer);
+                        modelAndView = getQuestion(iSession, modelAndView);
                 } catch (LostSessionException e) {
                         LOGGER.error("Cannot find session: possible reasons" +
                                 " 1) cookies JSESSIONID and SID were deleted" +
                                 " 2) Server's sudden unavailability");
                         // No way to produce result, sorry
-                        modelAndView.setViewName("redirect:/error");
-                        modelAndView.addObject("message", "redirect: Error page with the possibility to return to start page");
-                        return modelAndView;
-                } catch (TimeIsOverException e) {
-                        ResultDTO result = iSession.interruptSessionByTimeout();
-                        // return result.html
-                        modelAndView.setViewName("redirect:/result");
-                        modelAndView.addObject("result", result);
-                        return modelAndView;
-                } catch (UnsupportedQuestionTypeException e) {
-                        // return empty question with
-                        modelAndView.setViewName("redirect:/question");
-                        modelAndView.addObject("message", "Unsupported question type!");
+                        modelAndView.setViewName("error");
+                        modelAndView.addObject("message", "Error page with the possibility to return to start page");
                         return modelAndView;
                 }
                 return modelAndView;
@@ -311,5 +284,20 @@ public class SessionController {
                 }
                 return value;
         }
+
+
+                  /*       LOGGER.info("all params: ");
+                        Map<String, String[]> params =  request.getParameterMap();
+                        for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
+                                LOGGER.info("key: "+stringEntry.getKey());
+                                LOGGER.info("value: "+stringEntry.getValue());
+                                if (stringEntry.getValue().length>1) {
+                                        LOGGER.info("many values");
+                                        String[] values = stringEntry.getValue();
+                                        for (String value : values) {
+                                                LOGGER.info("value="+value);
+                                        }
+                                }
+                        }*/
 
 }

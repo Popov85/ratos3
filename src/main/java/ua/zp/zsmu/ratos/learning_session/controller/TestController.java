@@ -20,8 +20,6 @@ import ua.zp.zsmu.ratos.learning_session.service.dto.SchemeDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.zp.zsmu.ratos.learning_session.service.QuestionView.question;
-
 /**
  * Created by Andrey on 14.04.2017.
  */
