@@ -34,11 +34,11 @@ public class ExceptionController {
 
         @ExceptionHandler(QuestionAlreadyAnsweredException.class)
         public String handleRepeatedAnswerError(Exception ex, WebRequest request, Model model) {
-                LOGGER.info("Advice in use!");
-              /*  ModelMap map = new ModelMap();
-                map.addAttribute("message", REPEATED_ANSWER_MESSAGE);*/
+               /* LOGGER.info("Advice in use!");
+              *//*  ModelMap map = new ModelMap();
+                map.addAttribute("message", REPEATED_ANSWER_MESSAGE);*//*
                 model.addAttribute("message");
-                //model.addAttribute("message", REPEATED_ANSWER_MESSAGE);
-                return "question";
+                //model.addAttribute("message", REPEATED_ANSWER_MESSAGE);*/
+                return "error";
         }
 }

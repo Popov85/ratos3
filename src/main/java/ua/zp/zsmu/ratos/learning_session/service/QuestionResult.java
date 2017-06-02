@@ -31,11 +31,21 @@ public final class QuestionResult implements Serializable {
         /**
          * List of Answer IDs a user returned
          */
-        private final List<Long> answers;
+        private List<Long> answers = new ArrayList<>();
 
         public QuestionResult(final Question question, final List<Long> answers) {
                 this.question = question;
                 this.answers = answers;
+        }
+
+        /**
+         * If a student didn't provide answer at all (nothing to check)
+         * @param question
+         * @param result
+         */
+        public QuestionResult(final Question question, final int result) {
+                this.question = question;
+                this.result = result;
         }
 
         /**

@@ -114,6 +114,7 @@ public class LearningSession implements ISession {
          * @return
          * @throws TimeIsOverException
          */
+        @Override
         public QuestionDTO provideSameQuestion() throws TimeIsOverException {
                 if (isTimeOver()) throw new TimeIsOverException("Time is over!");
                 if (isQuestionsRunOut()) throw new IllegalStateException("No more questions!");
@@ -150,7 +151,8 @@ public class LearningSession implements ISession {
                         DateUtils.addMinutes(startTime, scheme.getDuration()), TimeUnit.MILLISECONDS);
         }
 
-        private boolean isQuestionsRunOut() {
+        @Override
+        public boolean isQuestionsRunOut() {
                 return questionsLeft<=0;
         }
 
@@ -167,6 +169,10 @@ public class LearningSession implements ISession {
         public void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException {
                 if (!qid.equals(getCurrentQuestionId()))
                         throw new QuestionAlreadyAnsweredException("Your answer to this question has already been submitted!");
+                if (answers==null) {
+                        produceNegativeStatistics(qid);
+                        return;
+                }
                 Question question = getCurrentQuestion();
                 QuestionResult questionResult = new QuestionResult(question, answers);
                 questionResult.calculateResult();
@@ -178,6 +184,15 @@ public class LearningSession implements ISession {
                 reportBuilder.addResult(theme, questionResult);
 
                 // Calculate the time before an answer is provided by student
+                reportBuilder.addStatTime(question, calculateQuestionTookTime());
+        }
+
+        private void produceNegativeStatistics(Long qid) {
+                Question question = getCurrentQuestion();
+                QuestionResult questionResult = new QuestionResult(question, 0);
+                updateCurrentResult(0);
+                Theme theme = question.getTheme();
+                reportBuilder.addResult(theme, questionResult);
                 reportBuilder.addStatTime(question, calculateQuestionTookTime());
         }
 

@@ -1,32 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
     <title>Result</title>
     <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main-style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/general.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/result.css"/>
 </head>
 <body>
 <div class="container">
-    <div class="row" style="margin-top:20px;">
-        <div class="col-12">
-            <table align="center">
-                <tbody>
-                <tr>
-                    <td>Имя</td><td>Оценка</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <form action="#" th:action="@{/ratos/finish}" th:object="${result}" method="post">
 
-    <div class="row text-center" style="margin-top:5px;">
-        <div class="col-12">
-            <form action="/finish" method="post">
-                <input type="submit" value="Закрыть сессию&gt;&gt;&gt;" class="btnStart"/>
-            </form>
+        <div class="row top text-center">
+            <div class="col-12">
+                <h4 class="form-signin-heading" th:text="#{result.title}"/>
+            </div>
         </div>
-    </div>
+
+        <div class="row bloc text-center">
+            <div class="col-12">
+                <h5 class="form-signin-heading" th:text="*{scheme}"/>
+            </div>
+        </div>
+
+        <div class="row top">
+            <div class="col-12">
+                <table align="center">
+                    <tbody>
+                    <tr>
+                        <td class="res" th:text="#{student.name}"/>
+                        <td class="res" th:text="*{student.name}"/>
+                    </tr>
+                    <tr>
+                        <td class="res" th:text="#{student.surname}"/>
+                        <td class="res" th:text="*{student.surname}"/>
+                    </tr>
+                    <tr>
+                        <td class="res" th:text="#{student.class}"/>
+                        <td class="res" th:text="*{student.group}"/>
+                    </tr>
+                    <tr>
+                        <td class="res" th:text="#{student.year}"/>
+                        <td class="res" th:text="*{student.course}"/>
+                    </tr>
+                    <tr>
+                        <td class="res" th:text="#{student.faculty}"/>
+                        <td class="res" th:text="*{student.faculty}"/>
+                    </tr>
+                    <tr class="res">
+                        <td th:text="#{result.percentage}"/>
+                        <td th:text="*{result}"/>
+                    </tr>
+                    <tr>
+                        <td class="res_summary" th:text="#{result.mark}"/>
+                        <td class="res_summary" th:text="*{mark}"/>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row top text-center">
+            <div class="col-12">
+                <form action="/finish" method="post">
+                    <input type="submit" th:value="#{result.finish}" class="btnStart"/>
+                </form>
+            </div>
+        </div>
+    </form>
 </div>
 </body>
 </html>

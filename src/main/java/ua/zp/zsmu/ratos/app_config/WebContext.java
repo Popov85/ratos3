@@ -9,9 +9,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -27,8 +24,6 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import ua.zp.zsmu.ratos.app_config.convertors.SchemeConverter;
-import ua.zp.zsmu.ratos.app_config.convertors.StudentConverter;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -87,7 +82,7 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
                 registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
         }
 
-        @Override
+/*        @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
                 argumentResolvers.add(studentConverter());
         }
@@ -95,12 +90,11 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
         @Bean
         public StudentConverter studentConverter() {
                 return new StudentConverter();
-        }
+        }*/
 
         @Override
         public void addFormatters(FormatterRegistry registry) {
                 registry.addConverter(schemeConverter());
-
         }
 
         @Bean
@@ -109,7 +103,6 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
         }
 
         /* Internationalization */
-
         @Bean(name = "messageSource")
         public ReloadableResourceBundleMessageSource messageSource(){
                 ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -118,7 +111,7 @@ public class WebContext extends WebMvcConfigurerAdapter implements ApplicationCo
                 return messageSource;
         }
 
-/*        @Override
+        /* @Override
         public Validator getValidator() {
                 LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
                 validator.setValidationMessageSource(messageSource());

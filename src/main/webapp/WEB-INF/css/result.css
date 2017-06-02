@@ -1,0 +1,49 @@
+td.res {
+    background-color: #EDEFF8;
+    cursor: auto;
+}
+
+td.res_summary {
+    background-color: #F9FAAB;
+    color: #D03E3E;
+    text-decoration: underline;
+    font-size: 14pt;
+}
+
+td {
+    font-size: 14px;
+    background: #E8E8E8;
+    font-family: Arial;
+    padding-right: 2px;
+    padding-left: 2px;
+}
+
+table {
+    width: 60%;
+    white-space: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-size: medium;
+    font-style: normal;
+    color: inherit;
+    text-align: start;
+    font-variant: normal;
+}
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
+}
+
+h4 {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    font-size: 14pt;
+    font-weight: bold
+}
+
+h5 {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: bold
+}

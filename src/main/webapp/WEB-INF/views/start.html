@@ -45,7 +45,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td th:text="#{start.name}"/>
+                        <td th:text="#{student.name}"/>
                         <td>
                             <input type="text" th:field="*{name}" id="name" name="name" size="40" class="long">
                             <label class="control-label" for="name" th:if="${#fields.hasErrors('name')}"
@@ -55,7 +55,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td th:text="#{start.surname}"/>
+                        <td th:text="#{student.surname}"/>
                         <td>
                             <input type="text" th:field="*{surname}" id="surname" name="surname" size="40" class="long">
                             <label class="control-label" for="surname" th:if="${#fields.hasErrors('surname')}"
@@ -65,7 +65,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td th:text="#{start.year}"/>
+                        <td th:text="#{student.year}"/>
                         <td>
                             <select name="course">
                                 <option>1</option>
@@ -78,11 +78,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td th:text="#{start.class}"/>
+                        <td th:text="#{student.class}"/>
                         <td><input type="text" name="group" size=3 class="short"></td>
                     </tr>
                     <tr>
-                        <td th:text="#{start.faculty}"/>
+                        <td th:text="#{student.faculty}"/>
                         <td>
                             <!--<div th:class="${#fields.hasErrors('faculty') ? 'form-group has-error has-feedback' : 'form-group has success'}">-->
                             <select name="faculty" id="faculty" style="width: 200px">

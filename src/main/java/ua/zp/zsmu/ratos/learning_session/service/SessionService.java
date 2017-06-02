@@ -81,7 +81,7 @@ public class SessionService {
          * @return
          * @throws TimeIsOverException
          */
-        public QuestionDTO provideNextQuestionUnchecked(ISession iSession) throws TimeIsOverException {
+        public QuestionDTO provideNextQuestionUnchecked(ISession iSession, boolean variant) throws TimeIsOverException {
                 return iSession.provideNextQuestion();
         }
 
@@ -93,8 +93,13 @@ public class SessionService {
          * @return QuestionDTO
          * @throws TimeIsOverException
          */
-        public QuestionDTO provideNextQuestion(ISession iSession) throws TimeIsOverException, UnsupportedQuestionTypeException {
-                QuestionDTO question  = iSession.provideNextQuestion();
+        public QuestionDTO provideNextQuestion(ISession iSession, boolean variant) throws TimeIsOverException, UnsupportedQuestionTypeException {
+                QuestionDTO question;
+                if (variant) {
+                        question  = iSession.provideNextQuestion();
+                } else {
+                        question  = iSession.provideSameQuestion();
+                }
                 // Check if the question has any resources? Enrich the output if so
                 // If so - enrich the question with specifications of how to represent this question on the web page
                 // Determine what type of question it is:

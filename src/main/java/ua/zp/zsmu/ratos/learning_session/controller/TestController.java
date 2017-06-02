@@ -15,6 +15,7 @@ import ua.zp.zsmu.ratos.learning_session.model.Theme;
 import ua.zp.zsmu.ratos.learning_session.service.Student;
 import ua.zp.zsmu.ratos.learning_session.service.dto.AnswerDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.SchemeDTO;
 
 import java.util.ArrayList;
@@ -72,5 +73,19 @@ public class TestController {
                         result.add(a);
                 }
                 return result;
+        }
+
+        @GetMapping("/test/result")
+        private ModelAndView result() {
+                ModelAndView modelAndView = new ModelAndView("result");
+                Student student = new Student();
+                student.setName("Андрій");
+                student.setSurname("Попов");
+                student.setCourse("2");
+                student.setGroup("25");
+                student.setFaculty("Фармацевтичний");
+                ResultDTO result = new ResultDTO(111111111L, student, "Схема #1", 75.5d, "5");
+                modelAndView.addObject("result", result);
+                return modelAndView;
         }
 }

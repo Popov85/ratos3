@@ -24,6 +24,10 @@ public interface ISession extends Serializable {
 
         QuestionDTO provideNextQuestion() throws TimeIsOverException;
 
+        QuestionDTO provideSameQuestion() throws TimeIsOverException;
+
+        boolean isQuestionsRunOut();
+
         void processStudentAnswer(Long qid, List<Long> answers) throws QuestionAlreadyAnsweredException;
 
         Question provideAnswers();

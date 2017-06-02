@@ -125,13 +125,13 @@ public class SessionController {
                 cookie.setSecure(true);
                 cookie.isHttpOnly();
                 response.addCookie(cookie);
-                return getQuestion(iSession, modelAndView);
+                return getQuestion(iSession, modelAndView, true);
         }
 
-        private ModelAndView getQuestion(ISession iSession, ModelAndView modelAndView) {
+        private ModelAndView getQuestion(ISession iSession, ModelAndView modelAndView, boolean state) {
                 QuestionDTO question = null;
                 try {
-                        question = sessionService.provideNextQuestion(iSession);
+                        question = sessionService.provideNextQuestion(iSession, state);
                         modelAndView.setViewName("question");
                         modelAndView.addObject("question", question);
                 } catch (TimeIsOverException e) {
@@ -158,8 +158,9 @@ public class SessionController {
 
         @PostMapping("/ratos/next")
         public ModelAndView provideNextQuestion(HttpSession session, HttpServletRequest request, ModelAndView modelAndView,
-                                                @RequestParam(value = "qid") long qid,
-                                                @RequestParam(value = "answer") List<Long> answer) throws QuestionAlreadyAnsweredException {
+                                                @RequestParam(value = "qid", required=false) Long qid,
+                                                @RequestParam(value = "answer", required=false) List<Long> answer
+                                                ) throws QuestionAlreadyAnsweredException {
                 // Check if we already have smth. in session
                 ISession iSession = null;
                 QuestionDTO question = null;
@@ -167,10 +168,22 @@ public class SessionController {
                         iSession = getSession(session, request);
 
                         LOGGER.info("qid: "+qid);
-                        for (long a : answer) LOGGER.info("answer: "+a);
+                        LOGGER.info("answer: "+answer);
 
-                        iSession.processStudentAnswer(qid, answer);
-                        modelAndView = getQuestion(iSession, modelAndView);
+                        if (iSession.isQuestionsRunOut()) {
+                                ResultDTO result = iSession.finishSession();
+                                modelAndView.setViewName("result");
+                                modelAndView.addObject("result", result);
+                                return modelAndView;
+                        }
+                        if (qid==null) {
+                                // provide same question one more time
+                                modelAndView = getQuestion(iSession, modelAndView, false);
+                        } else {
+                                // process response and provide next question
+                                iSession.processStudentAnswer(qid, answer);
+                                modelAndView = getQuestion(iSession, modelAndView, true);
+                        }
                 } catch (LostSessionException e) {
                         LOGGER.error("Cannot find session: possible reasons" +
                                 " 1) cookies JSESSIONID and SID were deleted" +
@@ -182,6 +195,8 @@ public class SessionController {
                 }
                 return modelAndView;
         }
+
+
 
         // called by JS when it is required by session settings
         @PostMapping("/right")
