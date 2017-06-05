@@ -10,6 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import ua.zp.zsmu.ratos.learning_session.service.Student;
 
 /**
+ * Doesn't work with @Valid and @ModelAttribute() annotations!!
  * Created by Andrey on 5/2/2017.
  */
 public class StudentConverter implements HandlerMethodArgumentResolver {
@@ -27,18 +28,14 @@ public class StudentConverter implements HandlerMethodArgumentResolver {
                                       ModelAndViewContainer modelAndViewContainer,
                                       NativeWebRequest nativeWebRequest,
                                       WebDataBinderFactory webDataBinderFactory) throws Exception {
-           LOGGER.info("invoked...");
-
-            /*
                 String name = nativeWebRequest.getParameter("name");
-                LOGGER.info("myname= "+name);
                 String surname = nativeWebRequest.getParameter("surname");
-                LOGGER.info("mysurname= "+surname);
                 String group = nativeWebRequest.getParameter("group");
                 String faculty = nativeWebRequest.getParameter("faculty");
                 String course = nativeWebRequest.getParameter("course");
-                Student student = new Student(name, surname, group, faculty, course);*/
-                return new Object();
+                Student student = new Student(name, surname, group, faculty, course);
+                LOGGER.info("invoked..."+student);
+                return student;
         }
 
 

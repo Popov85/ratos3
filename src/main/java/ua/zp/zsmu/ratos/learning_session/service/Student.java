@@ -19,7 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Student implements Serializable {
 
-        private static final long serialVersionUID = -1045670516335576977L;
+        private static final long serialVersionUID = -6728905463323267893L;
 
         @NotEmpty(message = "{start.empty_name}")
         @Size(min=2, max=40, message = "{start.too_short_name}")

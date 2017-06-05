@@ -3,8 +3,6 @@ package ua.zp.zsmu.ratos.learning_session.controller;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.zp.zsmu.ratos.learning_session.dao.FacultyDAO;
 import ua.zp.zsmu.ratos.learning_session.model.Faculty;
 import ua.zp.zsmu.ratos.learning_session.model.Scheme;
-import ua.zp.zsmu.ratos.learning_session.model.Session;
 import ua.zp.zsmu.ratos.learning_session.service.*;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
 import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
@@ -47,11 +44,11 @@ public class SessionController {
         @Autowired
         private FacultyDAO facultyDAO;
 
-        @GetMapping("/findOneSession")
+  /*      @GetMapping("/findOneSession")
         @ResponseBody
         public ResponseEntity<Session> findOneSession(@RequestParam Long id) {
                 return new ResponseEntity<Session>(sessionService.findOne(id), HttpStatus.OK);
-        }
+        }*/
 
         @GetMapping("/ratos/start")
         public ModelAndView index(HttpServletRequest request) {
@@ -109,7 +106,7 @@ public class SessionController {
                 // 1. Launch start at SessionService
                 ISession iSession = null;
                 try {
-                        iSession = sessionService.start(student, schemeService.findOneWithThemes(53l));
+                        iSession = sessionService.start(student, scheme);
                 } catch (Exception e) {
                         // Catch out of memory exception
                         LOGGER.error("ERROR: "+e.getMessage());
@@ -196,8 +193,6 @@ public class SessionController {
                 return modelAndView;
         }
 
-
-
         // called by JS when it is required by session settings
         @PostMapping("/right")
         @ResponseBody
@@ -271,7 +266,7 @@ public class SessionController {
                 return "redirect:/ratos/start";
         }
 
-        @PostMapping("/finish")
+        @PostMapping("/ratos/finish")
         public String finishSession(HttpSession session) {
                 session.invalidate();
                 return "redirect:/ratos/start";
