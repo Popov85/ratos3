@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.zp.zsmu.ratos.learning_session.dao.ResourceDAO;
+import ua.zp.zsmu.ratos.learning_session.dao.ResultDAO;
 import ua.zp.zsmu.ratos.learning_session.dao.SessionDAO;
 import ua.zp.zsmu.ratos.learning_session.model.*;
 import ua.zp.zsmu.ratos.learning_session.service.dto.QuestionDTO;
+import ua.zp.zsmu.ratos.learning_session.service.dto.ResultDTO;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.TimeIsOverException;
 import ua.zp.zsmu.ratos.learning_session.service.exceptions.UnsupportedQuestionTypeException;
 
@@ -27,6 +29,9 @@ public class SessionService {
 
         @Autowired
         private SessionDAO sessionDAO;
+
+        @Autowired
+        private ResultDAO resultDAO;
 
         @Autowired
         private ResourceDAO resourceDAO;
@@ -73,6 +78,23 @@ public class SessionService {
 
         public Session findOne(Long sid) {
                 return sessionDAO.findOne(sid);
+        }
+
+
+        public void saveSessionResult(ResultDTO resultDTO) {
+                Result result = new Result();
+                result.setTestTime(new Date());
+                result.setStudentName(resultDTO.getStudent().getName());
+                result.setStudentSurName(resultDTO.getStudent().getSurname());
+
+                result.setGroup(resultDTO.getStudent().getGroup());
+                result.setFaculty(resultDTO.getStudent().getFaculty());
+
+                result.setMark(Integer.parseInt(resultDTO.getMark()));
+                Double percent = resultDTO.getResult();
+                result.setPercent(percent.intValue());
+                resultDAO.save(result);
+                LOGGER.info("Saved result: "+result);
         }
 
         /**

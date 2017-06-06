@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class LearningSession implements ISession {
 
-        private static final long serialVersionUID = -7545118628418780765L;
+        private static final long serialVersionUID = 1142822561758410868L;
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
         /**
          * ID of the stored backup (in a form of byte[]) of this class in a database

@@ -88,4 +88,17 @@ public class TestController {
                 modelAndView.addObject("result", result);
                 return modelAndView;
         }
+                  /*       LOGGER.info("all params: ");
+                        Map<String, String[]> params =  request.getParameterMap();
+                        for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
+                                LOGGER.info("key: "+stringEntry.getKey());
+                                LOGGER.info("value: "+stringEntry.getValue());
+                                if (stringEntry.getValue().length>1) {
+                                        LOGGER.info("many values");
+                                        String[] values = stringEntry.getValue();
+                                        for (String value : values) {
+                                                LOGGER.info("value="+value);
+                                        }
+                                }
+                        }*/
 }

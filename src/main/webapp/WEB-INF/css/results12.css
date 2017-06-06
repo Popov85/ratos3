@@ -1,0 +1,25 @@
+th {
+    background-color:#FFDEAD;
+    font-family: Verdana,Arial,Helvetica;
+    font-size: 8pt;
+    text-align: center;
+}
+
+td {
+    font-family: Verdana,Arial,Helvetica;
+    font-size: 8pt;
+}
+
+table {
+    width: 100%;
+    margin: 10px auto;
+    border-collapse: separate;
+    color: black;
+}
+
+label {
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+    color: black;
+}
