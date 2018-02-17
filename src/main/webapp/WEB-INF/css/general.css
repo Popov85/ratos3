@@ -19,7 +19,8 @@ h3 {
 }
 
 h4 {
-
+    font-family: "Arial Cyr", Arial, Helvetica, sans-serif;
+    font-size: 8pt;
 }
 
 input[type="submit"] {
@@ -51,4 +52,9 @@ img {
 
 .block {
     margin-top:20px;
+}
+
+.text-img {
+    position: relative;
+    width: 500px;
 }

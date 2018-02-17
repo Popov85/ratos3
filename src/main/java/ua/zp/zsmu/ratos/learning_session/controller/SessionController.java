@@ -44,12 +44,6 @@ public class SessionController {
         @Autowired
         private FacultyDAO facultyDAO;
 
-  /*      @GetMapping("/findOneSession")
-        @ResponseBody
-        public ResponseEntity<Session> findOneSession(@RequestParam Long id) {
-                return new ResponseEntity<Session>(sessionService.findOne(id), HttpStatus.OK);
-        }*/
-
         @GetMapping("/ratos/start")
         public ModelAndView index(HttpServletRequest request) {
                 String ip = request.getRemoteAddr();
@@ -169,6 +163,7 @@ public class SessionController {
 
                         if (iSession.isQuestionsRunOut()) {
                                 ResultDTO result = iSession.finishSession();
+                                sessionService.saveSessionResult(result);
                                 modelAndView.setViewName("result");
                                 modelAndView.addObject("result", result);
                                 return modelAndView;
@@ -294,20 +289,4 @@ public class SessionController {
                 }
                 return value;
         }
-
-
-                  /*       LOGGER.info("all params: ");
-                        Map<String, String[]> params =  request.getParameterMap();
-                        for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
-                                LOGGER.info("key: "+stringEntry.getKey());
-                                LOGGER.info("value: "+stringEntry.getValue());
-                                if (stringEntry.getValue().length>1) {
-                                        LOGGER.info("many values");
-                                        String[] values = stringEntry.getValue();
-                                        for (String value : values) {
-                                                LOGGER.info("value="+value);
-                                        }
-                                }
-                        }*/
-
 }
