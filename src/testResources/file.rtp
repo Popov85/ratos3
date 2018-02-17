@@ -1,0 +1,99 @@
+<!--------Файл вопросов RATOS-------->
+Ветвь:
+<!----------------------------------->
+
+
+
+#
+Question Line 1
+Question Line 2
+Question Line 3
+%!100%Correct answer 1
+Continuation of correct answer 2
+Continuation of correct answer 3
+%0%
+Wrong answer 1
+Continuation of wrong answer 2
+%0% 
+Wrong answer 1
+%0% Wrong answer 1
+
+Wrong answer 2
+
+
+
+Wrong answer 3
+
+
+#1
+Which of the following data sets ( a data set is a set of data not necessarily structured in a database) below does not comprise a thesaurus?
+%50%Axes
+%0%Codes
+%0%Classifications
+%!50% Some
+@
+Continuation of some hint
+
+
+
+#1
+Question
+%!50%Axes
+%0%Codes
+%0%Classifications
+%!50% 5
+@
+
+#1
+Question
+%!50%Axes
+%0%Codes
+%0%Classifications
+%0%
+@
+
+#1
+Question
+%0%Axes
+%0%Codes
+%0%Classifications
+@
+
+#1
+Question last but one
+%100%100
+%0%Some incorrect
+%0%Someincorrect
+%10%10
+@
+
+#1
+Question last
+%10%10
+%0%Some incorrect
+%0%Someincorrect
+%10%10
+%100%10
+%0%Some incorrect
+%0%Someincorrect
+%10% 10
+%10% 10
+@
+
+#1
+Question last
+%10%10
+%0%Some incorrect
+%0%Someincorrect
+%10%10
+%10%10
+%0%Some incorrect
+%0%Someincorrect
+%10% 10
+%10%10
+%0%Some incorrect
+%0%Someincorrect
+%10%10
+@
+
+#1

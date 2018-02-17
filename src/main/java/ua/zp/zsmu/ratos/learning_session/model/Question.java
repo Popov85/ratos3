@@ -65,4 +65,17 @@ public class Question implements Serializable {
         @OneToMany
         @JoinColumn(name = "qid")
         private List<Resource> resources = new ArrayList<>();
+
+
+        public String getQuestion() {
+                return title;
+        }
+
+        public void setDifficulty(int difficulty) {
+                this.level = (short) difficulty;
+        }
+
+        public void setQuestion(String question) {
+                this.title = question;
+        }
 }

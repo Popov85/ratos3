@@ -41,4 +41,29 @@ public class Answer implements Serializable {
         @Column(name="context_hint")
         private String contextHint;
 
+        public Answer(String answer, int percent, boolean isRequired) {
+                this.title = answer;
+                this.percentage = percent;
+                this.isRequired = isRequired;
+        }
+
+        public Answer() {
+
+        }
+
+        public String getAnswer() {
+                return title;
+        }
+
+        public int getCorrect() {
+                return percentage;
+        }
+
+        public void setCorrect(Integer correct) {
+                this.percentage = correct;
+        }
+
+        public void setAnswer(String answer) {
+                this.title = answer;
+        }
 }

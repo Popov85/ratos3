@@ -23,7 +23,9 @@ public class LearningSession implements ISession {
         private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LearningSession.class);
         /**
          * ID of the stored backup (in a form of byte[]) of this class in a database
+         * Update: user preserve() instead
          */
+        @Deprecated
         private final Long sid;
 
         private final Student student;
@@ -31,11 +33,10 @@ public class LearningSession implements ISession {
 
         private final Date startTime;
 
+        // Changeable during the session in the case a question is skipped
         private List<Question> questionSequence;
 
-        /**
-         * Creates a session report iteratively after each student's feedback
-         */
+        //Creates a session report iteratively after each student's feedback
         private ReportBuilder reportBuilder;
 
         private int currentQuestionIndex = -1;
