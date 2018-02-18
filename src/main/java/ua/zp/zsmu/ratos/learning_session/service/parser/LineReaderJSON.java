@@ -60,6 +60,12 @@ import java.util.List;
  */
 public class LineReaderJSON implements LineReader {
 
+    private String path;
+
+    public LineReaderJSON(String path) {
+        this.path = path;
+    }
+
     @Override
     public void readLine(String line) {
 
@@ -74,7 +80,7 @@ public class LineReaderJSON implements LineReader {
         // //mapper.readValue(jsonInput, mapper.getTypeFactory().constructCollectionType(List.class, Question.class));
         try {
             list = null;
-            jsonInput = Files.readAllBytes(Paths.get("D:\\questions.json"));
+            jsonInput = Files.readAllBytes(Paths.get(path));
             ObjectReader objectReader = mapper.reader().forType(new TypeReference<List<Question>>(){});
             result = objectReader.readValue(jsonInput);
         } catch (Exception e) {

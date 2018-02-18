@@ -42,7 +42,7 @@ import java.util.List;
  * <p>
  * Created by Andrey on 1/24/2018.
  */
-class LineReaderTXT implements LineReader {
+public class LineReaderTXT implements LineReader {
 
     // Result List of Questions
     private List<Question> questions = new ArrayList<>();
@@ -67,7 +67,7 @@ class LineReaderTXT implements LineReader {
     // if false - parsing process proceeds with adding an issue
     private boolean isStrict;
 
-    LineReaderTXT(boolean isStrict) {
+    public LineReaderTXT(boolean isStrict) {
         this.isStrict = isStrict;
     }
 

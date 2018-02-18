@@ -25,6 +25,21 @@ public class Question implements Serializable {
 
         private static final long serialVersionUID = -5996578036570248337L;
 
+        public Question() {
+                this.title = "";
+                this.level = 1;
+                this.answers = new ArrayList<>();
+                this.help = "";
+        }
+
+        public Question(final String question, final int difficulty, final List<Answer> answers, final String help) {
+                this.title = question;
+                this.level = (short) difficulty;
+                this.answers = answers;
+                this.help = help;
+        }
+
+
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")

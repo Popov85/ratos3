@@ -1,15 +1,13 @@
 package ua.zp.zsmu.ratos.learning_session.parser;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ua.zp.zsmu.ratos.learning_session.dao.PersistenceContext;
 import ua.zp.zsmu.ratos.learning_session.model.Question;
-import ua.zp.zsmu.ratos.learning_session.service.parser.Issue;
-import ua.zp.zsmu.ratos.learning_session.service.parser.LineReaderJSON;
-import ua.zp.zsmu.ratos.learning_session.service.parser.ParsingResult;
-import ua.zp.zsmu.ratos.learning_session.service.parser.QuestionsFileParser;
+import ua.zp.zsmu.ratos.learning_session.service.parser.*;
 
 /**
  * Created by Andrey on 2/17/2018.
@@ -19,25 +17,66 @@ import ua.zp.zsmu.ratos.learning_session.service.parser.QuestionsFileParser;
 public class QuestionFileParserTest {
 
     @Test(timeout=1000)
-    public void readFileTest() {
-        QuestionsFileParser parser = new QuestionsFileParser("D:\\large.xtt");
-        //QuestionsFileParser parser = new QuestionsFileParser("D:\\txt.txt");
+    public void readFileJSONTest() {
         ParsingResult<Question, Issue> result = null;
-        LineReaderJSON lineReaderJSON = new LineReaderJSON();
+        LineReaderJSON lineReaderJSON = new LineReaderJSON("src/testResources/questions.json");
         try {
-            result = lineReaderJSON.getParsingResult(); //parser.readFile(new LineReaderRTP(false));
+            result = lineReaderJSON.getParsingResult();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
-   /*         try {
-                questions = parser.readFile(new LineReaderTXT());
-            } catch (Exception e1) {
-                throw new RuntimeException("Unable to read the file!",e1);
-            }*/
         }
+        Assert.assertTrue(result.getQuestions().size()>0);
+
         System.out.println("QUESTIONS#:"+result.getQuestions().size());
         result.getQuestions().forEach(question->System.out.println(question));
 
-        //return (int) players.stream().filter(Player::isActive).count();
+        System.out.println("ISSUES#:"+result.getIssues().size());
+        System.out.println("SEVERE#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.HIGH).count());
+        System.out.println("MEDIUM#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.MEDIUM).count());
+        System.out.println("LOW#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.LOW).count());
+        result.getIssues().forEach(issue->System.out.println(issue));
+    }
+
+    @Test(timeout=1000)
+    public void readFileRTPTest() {
+        QuestionsFileParser parser = new QuestionsFileParser("src/testResources/file.rtp");
+        ParsingResult<Question, Issue> result = null;
+        try {
+            LineReader lineReader = new LineReaderRTP(false);
+            result = parser.readFile(lineReader);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+
+        Assert.assertTrue(result.getQuestions().size()>0);
+
+        System.out.println("QUESTIONS#:"+result.getQuestions().size());
+        result.getQuestions().forEach(question->System.out.println(question));
+
+        System.out.println("ISSUES#:"+result.getIssues().size());
+        System.out.println("SEVERE#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.HIGH).count());
+        System.out.println("MEDIUM#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.MEDIUM).count());
+        System.out.println("LOW#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.LOW).count());
+        result.getIssues().forEach(issue->System.out.println(issue));
+    }
+
+    @Test(timeout=1000)
+    public void readFileTXTTest() {
+        QuestionsFileParser parser = new QuestionsFileParser("src/testResources/txt.txt");
+        ParsingResult<Question, Issue> result = null;
+        try {
+            LineReader lineReader = new LineReaderTXT(false);
+            result = parser.readFile(lineReader);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+
+        Assert.assertTrue(result.getQuestions().size()>0);
+
+        System.out.println("QUESTIONS#:"+result.getQuestions().size());
+        result.getQuestions().forEach(question->System.out.println(question));
 
         System.out.println("ISSUES#:"+result.getIssues().size());
         System.out.println("SEVERE#:"+result.getIssues().stream().filter(severity -> severity.getSeverity()==Issue.Severity.HIGH).count());
