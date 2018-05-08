@@ -3,7 +3,6 @@ package ua.zp.zsmu.ratos.learning_session.service;
 import ch.qos.logback.classic.Logger;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.slf4j.LoggerFactory;
 import ua.zp.zsmu.ratos.learning_session.model.Answer;
 import ua.zp.zsmu.ratos.learning_session.model.Question;

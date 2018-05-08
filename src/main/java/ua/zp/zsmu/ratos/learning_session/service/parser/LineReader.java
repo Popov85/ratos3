@@ -8,6 +8,7 @@ import ua.zp.zsmu.ratos.learning_session.model.Question;
 public interface LineReader {
 
     void readLine(String line);
+
     ParsingResult<Question, Issue> getParsingResult();
 
 }

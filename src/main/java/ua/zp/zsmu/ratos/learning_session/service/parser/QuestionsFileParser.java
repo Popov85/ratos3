@@ -37,6 +37,7 @@ public class QuestionsFileParser implements Parser {
         this.filename = filename;
     }
 
+    @Override
     public ParsingResult<Question, Issue> readFile(LineReader lineReader) {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filename), "UTF-8"))) {
