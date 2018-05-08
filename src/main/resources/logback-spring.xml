@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <property name="DEV_HOME" value="log" />
+    <property name="PROD_HOME" value="${user.home}}/ratos-logs" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+       <!-- <charset>UTF-8</charset>-->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${DEV_HOME}/ratos-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <!--<charset>UTF-8</charset>-->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev, test">
+        <!--<property name="HOME" value="log" />-->
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <!--<property name="HOME" value="${user.home}}/ratos-logs" />-->
+        <root level="ERROR">
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+            <appender-ref ref="FILE"/>
+        </logger>
+    </springProfile>
+
+</configuration>

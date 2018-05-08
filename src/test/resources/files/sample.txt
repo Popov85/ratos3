@@ -1,0 +1,47 @@
+<!--------���� �������� RATOS-------->
+�����:
+<!----------------------------------->
+	
+
+    #
+    Question 0
+    1
+    Correct answer 0
+    0
+    Wrong answer 0
+    0
+    Wrong answer 0
+    0
+    Wrong answer 0
+
+
+    #
+    Question 1
+    1
+    Correct answer 1
+    Continuation of correct answer 1
+    Continuation of correct answer 1
+    0
+    Wrong answer 1
+    Continuation of wrong answer 1
+    0
+    Wrong answer 1
+    0
+    Wrong answer 1
+    Continuation of wrong answer 1
+    Continuation of wrong answer 1
+
+
+    #
+    Question2 Line 1
+    Question2 Line 2
+    Question2 Line 3
+    1
+    Correct answer 2
+    0
+    Wrong answer 2
+    Continuation of wrong answer 2
+    0
+    Wrong answer 1
+    0
+    Wrong answer 1

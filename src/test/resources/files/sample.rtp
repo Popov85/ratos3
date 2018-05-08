@@ -1,0 +1,55 @@
+<!--------���� �������� RATOS-------->
+�����:
+<!----------------------------------->
+
+#1
+Question 0. Which of the following data sets?
+%50%Axes
+%0%Codes
+%0%Classifications
+%!50% Some
+@ some hint for Question 0
+
+#
+Question 1 Line 1
+Question 1 Line 2
+Question 1 Line 3
+%!100%Correct answer 1
+Continuation of correct answer 2
+Continuation of correct answer 3
+%0%
+Wrong answer 1
+Continuation of wrong answer 1
+%0% 
+Wrong answer 1
+%0% Wrong answer 1
+
+Wrong answer 2
+Wrong answer 3
+
+#1
+Question 2. Which of the following data sets?
+%50%Axes
+%0%Codes
+%0%Classifications
+%!50% Some
+@ Hint
+Continuation of some hint
+
+
+#2
+Question 3.
+%!50%Axes
+%0%Codes
+%0%Classifications
+%!50% 5
+@
+
+#3
+Question 4.
+%!100%Axes
+%0%Codes
+%0%Classifications
+@
+
+Some hint for Question 4

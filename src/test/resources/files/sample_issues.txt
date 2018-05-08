@@ -1,0 +1,76 @@
+<!--------���� �������� RATOS-------->
+�����:
+<!----------------------------------->
+	
+
+    #
+    Question0 Line 1
+    Question0 Line 2
+    Question0 Line 3
+    1
+    Correct answer 1
+    Continuation of correct answer 2
+    Continuation of correct answer 3
+    0
+    Wrong answer 1
+    Continuation of wrong answer 2
+    0
+    Wrong answer 1
+    0
+    Wrong answer 1
+    Wrong answer 2
+    Wrong answer 3
+
+
+    #
+    Question1 Line 1
+    Question1 Line 2
+    Question1 Line 3
+    1
+    Correct answer 1
+    Continuation of correct answer 2
+    Continuation of correct answer 3
+    0
+    Wrong answer 1
+    Continuation of wrong answer 2
+    0
+    Wrong answer 1
+    0
+    Wrong answer 1
+    Wrong answer 2
+    Wrong answer 3
+
+
+
+    #
+    Question2 Line 1
+    Question2 Line 2
+    Question2 Line 3
+    1
+    Correct answer 1
+    Continuation of correct answer 2
+    Continuation of correct answer 3
+    0
+    Wrong answer 1
+    Continuation of wrong answer 2
+    0
+    Wrong answer 1
+    0
+    Wrong answer 1
+    Wrong answer 2
+    Wrong answer 3
+
+
+#3
+
+
+#
+Question
+
+#		2
+Question
+1
+0
+0
+0
+Answeer
