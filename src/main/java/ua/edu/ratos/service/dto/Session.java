@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
+import ua.edu.ratos.domain.Checkable;
 import ua.edu.ratos.domain.Question;
 
 import java.io.Serializable;
@@ -43,9 +44,9 @@ public class Session implements Serializable {
     /**
      * Individual list of questions
      */
-    private final List<Question> questions;
+    private final List<Checkable> questions;
 
-    public Session(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Question> questions) {
+    public Session(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Checkable> questions) {
         this.key = key;
         this.user = user;
         this.scheme = scheme;

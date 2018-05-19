@@ -1,6 +1,7 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.dao;
 
 import org.springframework.stereotype.Component;
+import ua.edu.ratos.domain.Result;
 
 import java.util.Arrays;
 import java.util.List;

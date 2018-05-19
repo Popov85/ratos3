@@ -5,6 +5,8 @@ import ua.edu.ratos.service.dto.Answer;
 import ua.edu.ratos.service.dto.Batch;
 import ua.edu.ratos.service.dto.Help;
 
+import java.util.List;
+
 /**
  * Educational session provides more possibility for students.
  * These operation only available for training sort of sessions, not knowledge control
@@ -48,7 +50,7 @@ public interface EducationalSession {
      * @param qid Question id in database
      * @return
      */
-    Answer answer(String key, long qid);
+    List<Answer> answer(String key, long qid);
 
     /**
      * Provides help for the given question

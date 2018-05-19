@@ -1,21 +1,16 @@
 package ua.edu.ratos.service.parsers;
 
-import ua.edu.ratos.domain.Answer;
-import ua.edu.ratos.domain.Question;
-import ua.edu.ratos.domain.TypeOfQuestion;
-import ua.edu.ratos.domain.answer.AnswerTypeA;
-import java.util.ArrayList;
+import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
 import java.util.List;
-import java.util.Optional;
+import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
+import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MAJOR;
 
-import static ua.edu.ratos.service.parsers.Issue.Part.*;
-import static ua.edu.ratos.service.parsers.Issue.Severity.HIGH;
-
-public class FileParserTXT extends AbstractFileParser implements FileParser {
+public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser implements QuestionsFileParser {
 
     private static final String PREFIX = ".txt parsing error: ";
 
-    private Question currentQuestion;
+    private QuestionMultipleChoice currentQuestion;
 
     private boolean questionStartExpected = true;
     private boolean answerStartExpected;
@@ -32,8 +27,8 @@ public class FileParserTXT extends AbstractFileParser implements FileParser {
             if (firstChar == '#') {
                 readQuestion();
             } else if (firstChar == '0' || firstChar == '1') {
-                boolean isCorrect = (firstChar == '1') ? true : false;
-                readAnswer(isCorrect);
+                short correct = (firstChar == '1') ? (short) 100 : 0;
+                readAnswer(correct);
             } else {// Goes String line (question title most probably), or the continuation of answer title
                 readString(trimmedLine);
             }
@@ -43,16 +38,10 @@ public class FileParserTXT extends AbstractFileParser implements FileParser {
     private void readQuestion() {
         if (!questionStartExpected) {
             String description = PREFIX + "unexpected question start!";
-            issues.add(new Issue(description, HIGH, QUESTION, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, QUESTION, currentRow, currentLine));
         }
 
-        currentQuestion = new Question();
-        currentQuestion.setQuestion("");
-        currentQuestion.setLevel((byte)1);
-        currentQuestion.setType(new TypeOfQuestion(1));
-        currentQuestion.setResource(Optional.empty());
-        currentQuestion.setHelp(Optional.empty());
-        currentQuestion.setAnswers(new ArrayList<>());
+        currentQuestion = QuestionMultipleChoice.createEmpty();
 
         questions.add(currentQuestion);
 
@@ -63,15 +52,15 @@ public class FileParserTXT extends AbstractFileParser implements FileParser {
         answerContinuationPossible = false;
     }
 
-    private void readAnswer(boolean isCorrect) {
+    private void readAnswer(short correct) {
         if (!answerStartExpected) {
             String description = PREFIX + "unexpected answer start!";
-            issues.add(new Issue(description, HIGH, ANSWER, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
 
-        AnswerTypeA answer = new AnswerTypeA();
+        AnswerMultipleChoice answer = new AnswerMultipleChoice();
         answer.setAnswer("");
-        answer.setCorrect(isCorrect);
+        answer.setPercent(correct);
 
         currentQuestion.getAnswers().add(answer);
 
@@ -91,12 +80,13 @@ public class FileParserTXT extends AbstractFileParser implements FileParser {
             answerStartExpected = true;
         }
         if (answerContinuationPossible) {
-            final List<Answer> answers = currentQuestion.getAnswers();
-            String currentAnswer = ((AnswerTypeA) answers.get(answers.size() - 1)).getAnswer();
-            ((AnswerTypeA) answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
+            final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
+            String currentAnswer = ((AnswerMultipleChoice) answers.get(answers.size() - 1)).getAnswer();
+            ((AnswerMultipleChoice) answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
 
             questionStartExpected = true;
             answerStartExpected = true;
         }
     }
 }
+

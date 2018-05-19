@@ -4,10 +4,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.SessionRepository;
-import ua.edu.ratos.service.dto.Batch;
-import ua.edu.ratos.service.dto.Result;
-import ua.edu.ratos.service.dto.Session;
+import ua.edu.ratos.domain.Checkable;
+import ua.edu.ratos.domain.Question;
+import ua.edu.ratos.domain.dao.SessionRepository;
+import ua.edu.ratos.service.dto.*;
 
 import java.util.*;
 
@@ -49,6 +49,10 @@ public class GenericSessionService implements GenericSession {
     public Session status(@NonNull String key) {
         Optional<Session> session = sessionRepository.findById(key);
         Session s = session.get();
+
+        Checkable checkable = s.getQuestions().get(s.index);
+        checkable.check(new ResponseFillBlankMultiple());
+
         log.info("Service: Session startStatus: {}", s);
         return s;
     }
@@ -74,6 +78,8 @@ public class GenericSessionService implements GenericSession {
 
     }
 
-
+    public Optional<Question> findById(int qid, List<Question> questions) {
+        return questions.stream().filter(q -> q.getQuestionId()==qid).findFirst();
+    }
 
 }

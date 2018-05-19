@@ -1,25 +1,20 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.edu.ratos.domain.Answer;
-import ua.edu.ratos.domain.HelpOfQuestion;
-import ua.edu.ratos.domain.Question;
-import ua.edu.ratos.domain.TypeOfQuestion;
-import ua.edu.ratos.domain.answer.AnswerTypeB;
-
-import java.util.ArrayList;
+import ua.edu.ratos.domain.Help;
+import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
 import java.util.List;
 import java.util.Optional;
-
-import static ua.edu.ratos.service.parsers.Issue.Part.*;
-import static ua.edu.ratos.service.parsers.Issue.Severity.*;
+import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
+import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.*;
 
 @Slf4j
-public class FileParserRTP extends AbstractFileParser implements FileParser {
+public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser implements QuestionsFileParser {
 
     private static final String PREFIX = ".rtp/.xtt parsing error: ";
 
-    private Question currentQuestion;
+    private QuestionMultipleChoice currentQuestion;
 
     private boolean questionStartExpected = true;
     private boolean answerStartExpected;
@@ -50,16 +45,10 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
     private void readQuestion(String line) {
         if (!questionStartExpected) {
             String description = PREFIX + "unexpected question start!";
-            issues.add(new Issue(description, HIGH, QUESTION, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, QUESTION, currentRow, currentLine));
         }
 
-        currentQuestion = new Question();
-        currentQuestion.setQuestion("");
-        currentQuestion.setLevel(getLevel(line));
-        currentQuestion.setType(new TypeOfQuestion(2));
-        currentQuestion.setResource(Optional.empty());
-        currentQuestion.setHelp(Optional.empty());
-        currentQuestion.setAnswers(new ArrayList<>());
+        currentQuestion = QuestionMultipleChoice.createEmpty();
 
         questions.add(currentQuestion);
 
@@ -80,7 +69,7 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
             if (number < 1 || number > 3) throw new RuntimeException();
         } catch (NumberFormatException e) {
             String description = PREFIX + "failed to parse difficulty level: level 1 is accepted";
-            issues.add(new Issue(description, LOW, QUESTION, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MINOR, QUESTION, currentRow, currentLine));
             return 1;
         }
         return (byte) number;
@@ -89,14 +78,14 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
     private void readAnswer(String line) {
         if (!answerStartExpected) {
             String description = PREFIX + "unexpected answer start!";
-            issues.add(new Issue(description, HIGH, ANSWER, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
         try {
-            Answer answer = createAnswer(line);
+            AnswerMultipleChoice answer = createAnswer(line);
             currentQuestion.getAnswers().add(answer);
         } catch (Exception e) {
             String description = PREFIX + "parsing error, answer skipped, details: " + e.getMessage();
-            issues.add(new Issue(description, HIGH, ANSWER, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
 
         questionStartExpected = true;
@@ -111,12 +100,12 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
     private void readHint(String line) {
         if (!hintStartExpected) {
             String description = PREFIX + "unexpected hint start!";
-            issues.add(new Issue(description, HIGH, HINT, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, HINT, currentRow, currentLine));
         }
 
-        HelpOfQuestion helpOfQuestion = new HelpOfQuestion();
-        helpOfQuestion.setHelp(line);
-        currentQuestion.setHelp(Optional.of(helpOfQuestion));
+        Help help = new Help();
+        help.setHelp(line);
+        currentQuestion.setHelp(help);
 
         questionStartExpected = true;
         answerStartExpected = false;
@@ -136,9 +125,9 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
             hintStartExpected = false;
         }
         if (answerContinuationPossible) {
-            final List<Answer> answers = currentQuestion.getAnswers();
-            String currentAnswer = ((AnswerTypeB) answers.get(answers.size() - 1)).getAnswer();
-            ((AnswerTypeB) answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
+            final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
+            String currentAnswer = ((AnswerMultipleChoice) answers.get(answers.size() - 1)).getAnswer();
+            ((AnswerMultipleChoice) answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
 
             questionStartExpected = true;
             answerStartExpected = true;
@@ -146,10 +135,10 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
         }
         if (hintContinuationPossible) {
 
-            Optional<HelpOfQuestion> help = currentQuestion.getHelp();
+            Optional<Help> help = currentQuestion.getHelp();
             String updatedHelp = help.get().getHelp()+line;
             help.get().setHelp(updatedHelp);
-            currentQuestion.setHelp(help);
+            currentQuestion.setHelp(help.get());
 
             questionStartExpected = true;
             answerStartExpected = false;
@@ -158,7 +147,7 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
     }
 
     // Parses %!100%-like answer String and creates Answer object
-    private AnswerTypeB createAnswer(String line) {
+    private AnswerMultipleChoice createAnswer(String line) {
         // Try to find the second closing %-sign - the end of answer prefix
         int stop = line.indexOf('%', 1);
         if (stop == -1) throw new RuntimeException("Incorrect answer prefix!");
@@ -175,20 +164,20 @@ public class FileParserRTP extends AbstractFileParser implements FileParser {
         if (percent < 0 || percent > 100) {
             percent = 0;
             String description = PREFIX + "percentage is out of range, 0 is accepted";
-            issues.add(new Issue(description, MEDIUM, ANSWER, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MEDIUM, ANSWER, currentRow, currentLine));
         }
         //Incorrect answers cannot be required! Fix typo
         if (percent == 0 && isRequired) {
             isRequired = false;
             String description = PREFIX + "incorrect answers cannot be required, corrected";
-            issues.add(new Issue(description, LOW, ANSWER, currentRow, currentLine));
+            questionsParsingIssues.add(new QuestionsParsingIssue(description, MINOR, ANSWER, currentRow, currentLine));
         }
         String answer = line.substring(stop + 1).trim();
-        AnswerTypeB answerTypeB = new AnswerTypeB();
-        answerTypeB.setAnswer(answer);
-        answerTypeB.setPercent((short) percent);
-        answerTypeB.setRequired(isRequired);
-        return answerTypeB;
+        AnswerMultipleChoice a = new AnswerMultipleChoice();
+        a.setAnswer(answer);
+        a.setPercent((short) percent);
+        a.setRequired(isRequired);
+        return a;
     }
 
 }

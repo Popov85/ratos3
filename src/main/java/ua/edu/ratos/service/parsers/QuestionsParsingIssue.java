@@ -10,21 +10,21 @@ import lombok.ToString;
  */
 @Setter
 @Getter
-@AllArgsConstructor
 @ToString
-public class Issue {
+@AllArgsConstructor
+public class QuestionsParsingIssue {
     /**
      * The severity of this parsing issue
      */
     public enum Severity {
-        LOW, MEDIUM, HIGH
+        MINOR, MEDIUM, MAJOR
     }
 
     /**
      * The part of the file where faced with this issue
      */
     public enum Part {
-        QUESTION, HEADER, ANSWER, HINT
+        HEADER, QUESTION, ANSWER, HINT
     }
 
     private final String description;

@@ -2,7 +2,7 @@ package ua.edu.ratos.service;
 
 import org.springframework.cache.annotation.Cacheable;
 import ua.edu.ratos.config.TrackTime;
-import ua.edu.ratos.domain.ResultDAO;
+import ua.edu.ratos.domain.dao.ResultDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.domain.Result;
