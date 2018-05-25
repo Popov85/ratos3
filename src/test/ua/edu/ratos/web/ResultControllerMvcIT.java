@@ -1,6 +1,6 @@
 package ua.edu.ratos.web;
 
-import ua.edu.ratos.domain.Result;
+import ua.edu.ratos.domain.model.Result;
 import ua.edu.ratos.service.ResultService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

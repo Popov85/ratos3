@@ -1,4 +1,4 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.question;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,26 +23,22 @@ import java.util.Optional;
 @Setter
 @Getter
 @ToString
-public class QuestionMatcher extends Question implements Checkable<ResponseMatcher> {
+public class QuestionMatcher extends Question {
 
     private List<AnswerMatcher> answers;
 
-    @Override
-    public int check(ResponseMatcher responseMatcher) {
-        final List<ResponseMatcher.Triple> responses = responseMatcher.getResponses();
-        for (ResponseMatcher.Triple response : responses) {
-            final long answerId = response.getAnswerId();
-            final long obtainedLeftPhraseId = response.getLeftPhraseId();
-            final long obtainedRightPhraseId = response.getRightPhraseId();
-            final Optional<AnswerMatcher> answerMatcher = findById(answerId);
+    public int evaluate(ResponseMatcher response) {
+        final List<ResponseMatcher.Triple> responses = response.responses;
+        for (ResponseMatcher.Triple r : responses) {
+            final long answerId = r.answerId;
+            final long obtainedLeftPhraseId = r.leftPhraseId;
+            final long obtainedRightPhraseId = r.rightPhraseId;
+            final Optional<AnswerMatcher> answerMatcher =
+                    answers.stream().filter(a -> a.getAnswerId() == answerId).findFirst();
             final long correctLeftPhraseId = answerMatcher.get().getLeftMatcher().getLeftPhraseId();
             final long correctRightPhraseId = answerMatcher.get().getRightMatcher().getRightPhraseId();
             if (obtainedLeftPhraseId!=correctLeftPhraseId || obtainedRightPhraseId!=correctRightPhraseId) return 0;
         }
         return 100;
-    }
-
-    private Optional<AnswerMatcher> findById(long answerId) {
-        return answers.stream().filter(a -> a.getAnswerId() == answerId).findFirst();
     }
 }

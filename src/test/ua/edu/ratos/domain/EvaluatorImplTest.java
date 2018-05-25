@@ -4,9 +4,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
-import ua.edu.ratos.service.dto.Response;
+import ua.edu.ratos.domain.question.Question;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
+import ua.edu.ratos.service.Evaluator;
+import ua.edu.ratos.service.EvaluatorImpl;
+import ua.edu.ratos.service.Response;
+import ua.edu.ratos.service.dto.ResponseFillBlankMultiple;
 import ua.edu.ratos.service.dto.ResponseMultipleChoice;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,25 +18,24 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
-public class QuestionMultipleChoiceTest {
+public class EvaluatorImplTest {
 
     @Test
-    public void calculateResultTestOneRightRequired() {
+    public void checkTestOneRightRequired() {
+
 
         QuestionMultipleChoice question = new QuestionMultipleChoice();
-
         List<AnswerMultipleChoice> answers = new ArrayList<>();
         answers.add(createAnswer(1000l, "Answer0", (short) 0, false));
         answers.add(createAnswer(1001l, "Answer1", (short) 0, false));
         answers.add(createAnswer(1002l, "Answer2", (short)100, true));
         answers.add(createAnswer(1003l, "Answer3", (short)0, false));
+
         question.setAnswers(answers);
 
-        // Empty list
-        Long[] userAnswers = new Long[] {};
         ResponseMultipleChoice response = new ResponseMultipleChoice();
-        response.setIds(Arrays.asList());
-        assertEquals(0, question.check(response));
+        response.ids = Arrays.asList();
+        assertEquals(0, response.evaluateWith(new EvaluatorImpl(question)));
 
   /*      // All answers
         userAnswers = new Long[] { 1000l, 1001l, 1002l,1003l};
@@ -59,6 +62,15 @@ public class QuestionMultipleChoiceTest {
         questionResult = new QuestionResult(question, Arrays.asList(userAnswers));
         assertEquals(100, questionResult.calculateResult());*/
 
+    }
+
+    private AnswerMultipleChoice createAnswer(Long id, String title, short percentage, boolean isRequired) {
+        AnswerMultipleChoice answer = new AnswerMultipleChoice();
+        answer.setAnswerId(id);
+        answer.setAnswer(title);
+        answer.setPercent(percentage);
+        answer.setRequired(isRequired);
+        return answer;
     }
 
 /*    @Test
@@ -404,15 +416,6 @@ public class QuestionMultipleChoiceTest {
         assertEquals(0, questionResult.calculateResult());
 
     }*/
-
-    private AnswerMultipleChoice createAnswer(Long id, String title, short percentage, boolean isRequired) {
-        AnswerMultipleChoice answer = new AnswerMultipleChoice();
-        answer.setAnswerId(id);
-        answer.setAnswer(title);
-        answer.setPercent(percentage);
-        answer.setRequired(isRequired);
-        return answer;
-    }
 
 }
 

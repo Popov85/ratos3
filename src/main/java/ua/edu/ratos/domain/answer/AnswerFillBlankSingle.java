@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
-public class AnswerFillBlankSingle implements Answer {
+public class AnswerFillBlankSingle {
     private long answerId;
     /**
      * English - eng, French - fr, Polish - pl, Ukrainian - ukr, Russian - ru, etc.
@@ -27,7 +27,6 @@ public class AnswerFillBlankSingle implements Answer {
     private boolean isCaseSensitive;
     private List<String> acceptedPhrases;
 
-    @Override
     public boolean isValid() {
         if (this.lang == null) return false;
         if (this.lang.isEmpty()) return false;

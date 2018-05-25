@@ -5,7 +5,7 @@ import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.domain.dao.ResultDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.Result;
+import ua.edu.ratos.domain.model.Result;
 
 import java.util.List;
 

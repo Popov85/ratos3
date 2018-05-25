@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.*;
-import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
 import java.util.List;
 import java.util.stream.Collectors;
 

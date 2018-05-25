@@ -7,12 +7,11 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class AnswerMatcher implements Answer {
+public class AnswerMatcher {
     private long answerId;
     private AnswerMatcherLeft leftMatcher;
     private AnswerMatcherRight rightMatcher;
 
-    @Override
     public boolean isValid() {
         if (this.leftMatcher == null || this.rightMatcher==null) return false;
         if (this.leftMatcher.getLeftPhrase().isEmpty()) return false;

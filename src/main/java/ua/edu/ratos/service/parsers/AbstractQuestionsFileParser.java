@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
 
 import java.io.*;
 import java.util.ArrayList;

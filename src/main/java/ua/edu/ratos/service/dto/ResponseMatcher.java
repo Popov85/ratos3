@@ -1,22 +1,24 @@
 package ua.edu.ratos.service.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
+import ua.edu.ratos.service.Evaluator;
+import ua.edu.ratos.service.Response;
 
 import java.util.List;
 
-@Setter
-@Getter
 @ToString
 public class ResponseMatcher implements Response {
+    public long questionId;
+    public List<Triple> responses;
 
-    private List<Triple> responses;
-
-    @Getter
     public static class Triple {
-        private long answerId;
-        private long leftPhraseId;
-        private long rightPhraseId;
+        public long answerId;
+        public long leftPhraseId;
+        public long rightPhraseId;
+    }
+
+    @Override
+    public int evaluateWith(Evaluator evaluator) {
+        return evaluator.evaluate(this);
     }
 }

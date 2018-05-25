@@ -1,11 +1,12 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
-import ua.edu.ratos.service.dto.Batch;
+import ua.edu.ratos.service.dto.BatchIn;
+import ua.edu.ratos.service.dto.BatchOut;
 import ua.edu.ratos.service.dto.Result;
 
 /**
- * Generic session interface. Defines generic learning session operations
+ * Generic batched session interface. Defines generic learning session operations in batches
  * @author Andrey P.
  */
 public interface GenericSession {
@@ -20,17 +21,17 @@ public interface GenericSession {
 
     /**
      * Provides a new batch of questions
-     * @param batch batch with user's provided answers
-     * @return next batch
+     * @param batchIn batch with user's provided answers
+     * @return next batchOut
      */
-    Batch next(Batch batch);
+    BatchOut next(BatchIn batchIn);
 
     /**
      * Normal finish, provides results for session
-     * @param batch last batch of questions
+     * @param batchIn last batch of questions
      * @return
      */
-    Result finish(Batch batch);
+    Result finish(BatchIn batchIn);
 
     /**
      * Session cancelled by user, empty data
@@ -40,7 +41,7 @@ public interface GenericSession {
 
 
     @Deprecated
-    Batch proceed(@NonNull String key);
+    BatchOut proceed(@NonNull String key);
 
 
 }

@@ -18,5 +18,4 @@ public class QuestionSequenceTest {
         Assert.assertEquals(listCorrect, listResponse);
         if (listResponse.equals(listCorrect)) System.out.println("Equals");
     }
-
 }

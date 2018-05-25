@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.edu.ratos.domain.Help;
-import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.model.Help;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
 import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
 import java.util.List;
 import java.util.Optional;
@@ -126,8 +126,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
         if (answerContinuationPossible) {
             final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
-            String currentAnswer = ((AnswerMultipleChoice) answers.get(answers.size() - 1)).getAnswer();
-            ((AnswerMultipleChoice) answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
+            String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
+            (answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
 
             questionStartExpected = true;
             answerStartExpected = true;

@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class AnswerFillBlankMultiple extends AnswerFillBlankSingle implements Answer {
+public class AnswerFillBlankMultiple extends AnswerFillBlankSingle {
     private String phrase;
     private byte occurrence = 1;
 

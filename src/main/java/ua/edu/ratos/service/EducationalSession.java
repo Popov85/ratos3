@@ -1,11 +1,8 @@
 package ua.edu.ratos.service;
 
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.dto.Answer;
-import ua.edu.ratos.service.dto.Batch;
+import ua.edu.ratos.service.dto.BatchOut;
 import ua.edu.ratos.service.dto.Help;
-
-import java.util.List;
 
 /**
  * Educational session provides more possibility for students.
@@ -26,7 +23,7 @@ public interface EducationalSession {
      * @param key
      * @return
      */
-    Batch resume(String key);
+    BatchOut resume(String key);
 
     /**
      * Serialize session state to database
@@ -44,13 +41,8 @@ public interface EducationalSession {
 
     /*--------------Ajax-------------*/
 
-    /**
-     * Provides right answers to the question
-     * @param key Session key
-     * @param qid Question id in database
-     * @return
-     */
-    List<Answer> answer(String key, long qid);
+
+    Object answer(String key, long qid);
 
     /**
      * Provides help for the given question

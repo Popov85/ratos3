@@ -1,27 +1,24 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.question;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
-import ua.edu.ratos.domain.answer.validator.AnswersListValidator;
 import ua.edu.ratos.domain.answer.validator.AnswersMultipleChoiceListValidator;
-import ua.edu.ratos.service.dto.Response;
+import ua.edu.ratos.domain.answer.validator.AnswersMultipleChoiceListValidatorImpl;
 import ua.edu.ratos.service.dto.ResponseMultipleChoice;
 
-import static ua.edu.ratos.domain.QuestionMultipleChoice.Display.AUTO;
+import static ua.edu.ratos.domain.question.QuestionMultipleChoice.Display.AUTO;
 
 @Getter
 @Setter
 @ToString
-public class QuestionMultipleChoice extends Question implements Checkable<ResponseMultipleChoice> {
+public class QuestionMultipleChoice extends Question {
 
     public enum Display {AUTO, HIDE};
-
     /**
      * Should single-answer questions be displayed with radio-button, or checkboxes?
      */
@@ -29,6 +26,7 @@ public class QuestionMultipleChoice extends Question implements Checkable<Respon
 
     private List<AnswerMultipleChoice> answers;
 
+    private transient boolean isSingle;
     /**
      * Creates a new empty Question object
      * @return newly created empty Question
@@ -40,7 +38,6 @@ public class QuestionMultipleChoice extends Question implements Checkable<Respon
         q.setAnswers(new ArrayList<>());
         return q;
     }
-
     /**
      * Checks whether this question contains only one correct answer or multiple correct answers
      * @return
@@ -60,33 +57,24 @@ public class QuestionMultipleChoice extends Question implements Checkable<Respon
         if (this.answers == null) return false;
         if (this.answers.isEmpty()) return false;
         if (this.answers.size()<2) return false;
-        AnswersListValidator validator = new AnswersMultipleChoiceListValidator();
+        AnswersMultipleChoiceListValidator validator = new AnswersMultipleChoiceListValidatorImpl();
         if (!validator.isValid(this.answers)) return false;
         return true;
     }
 
-
-    /**
-     * Calculates the result (compares true answers with answers provided by user)
-     * 1) Check if user answer list contains any zero-answer (if so - 0)
-     * 2) Check if user answer list contains all the required answers (if not - 0)
-     * 3) Calculate user score;
-     * @return 0-100 value: 0 - incorrect, 0-99 - partly correct, 100 - correct
-     */
-    @Override
-    public int check(@NonNull ResponseMultipleChoice response) {
+    public int evaluate(ResponseMultipleChoice response) {
         List<Long> zeroAnswers = getZeroAnswers();
-        List<Long> ids = response.getIds();
+        List<Long> ids = response.ids;
         for (Long id: ids) {
             if (zeroAnswers.contains(id)) return 0;
         }
         List<Long> requiredAnswers = getRequiredAnswers();
         for (Long requiredAnswer : requiredAnswers) {
-            if(!answers.contains(requiredAnswer)) return 0;
+            if(!this.answers.contains(requiredAnswer)) return 0;
         }
         int result = 0;
         for (Long id: ids) {
-            for (AnswerMultipleChoice answer : answers) {
+            for (AnswerMultipleChoice answer : this.answers) {
                 if (id==(answer.getAnswerId()))
                     result+=answer.getPercent();
             }
@@ -95,7 +83,7 @@ public class QuestionMultipleChoice extends Question implements Checkable<Respon
     }
 
     private List<Long> getZeroAnswers() {
-        List<Long> zeroAnswers = answers
+        List<Long> zeroAnswers = this.answers
                 .stream()
                 .filter(answer -> answer.getPercent() == 0)
                 .map(AnswerMultipleChoice::getAnswerId)

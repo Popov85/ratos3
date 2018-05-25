@@ -1,12 +1,16 @@
 package ua.edu.ratos.service.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
+import ua.edu.ratos.service.Evaluator;
+import ua.edu.ratos.service.Response;
 
-@Setter
-@Getter
 @ToString
 public class ResponseFillBlankSingle implements Response {
-    private String enteredPhrase;
+    public Long questionId;
+    public String enteredPhrase;
+
+    @Override
+    public int evaluateWith(Evaluator evaluator) {
+        return evaluator.evaluate(this);
+    }
 }

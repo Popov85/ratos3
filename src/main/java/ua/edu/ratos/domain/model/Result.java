@@ -1,4 +1,4 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

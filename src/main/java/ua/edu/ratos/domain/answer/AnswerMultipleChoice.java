@@ -3,19 +3,18 @@ package ua.edu.ratos.domain.answer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ua.edu.ratos.domain.Resource;
+import ua.edu.ratos.domain.model.Resource;
 
 @Setter
 @Getter
 @ToString
-public class AnswerMultipleChoice implements Answer {
+public class AnswerMultipleChoice {
     private long answerId;
     private String answer;
     private short percent;
     private boolean isRequired;
     private Resource resource;
 
-    @Override
     public boolean isValid() {
         if (answer == null) return false;
         if (answer.isEmpty())return false;

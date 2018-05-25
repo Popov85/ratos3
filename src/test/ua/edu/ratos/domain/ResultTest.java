@@ -3,6 +3,8 @@ package ua.edu.ratos.domain;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import ua.edu.ratos.domain.model.Result;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

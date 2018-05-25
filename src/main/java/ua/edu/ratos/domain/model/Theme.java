@@ -1,7 +1,9 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import ua.edu.ratos.domain.question.Question;
+
 import java.util.List;
 
 @Setter

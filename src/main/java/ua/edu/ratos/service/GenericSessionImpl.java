@@ -4,8 +4,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.Checkable;
-import ua.edu.ratos.domain.Question;
+import ua.edu.ratos.domain.question.Question;
+import ua.edu.ratos.domain.question.QuestionMatcher;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
 import ua.edu.ratos.domain.dao.SessionRepository;
 import ua.edu.ratos.service.dto.*;
 
@@ -14,12 +15,12 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class GenericSessionService implements GenericSession {
+public class GenericSessionImpl implements GenericSession {
 
     private final SessionRepository sessionRepository;
 
     @Autowired
-    public GenericSessionService(SessionRepository sessionRepository) {
+    public GenericSessionImpl(SessionRepository sessionRepository) {
         this.sessionRepository=sessionRepository;
     }
 
@@ -32,27 +33,36 @@ public class GenericSessionService implements GenericSession {
         return key;
     }
 
-    public Batch proceed(@NonNull String key) {
+    @Override
+    public BatchOut next(BatchIn batchIn) {
+        return null;
+    }
+
+    @Override
+    public Result finish(BatchIn batchIn) {
+        return null;
+    }
+
+    public BatchOut proceed(@NonNull String key) {
         Optional<Session> session = sessionRepository.findById(key);
         Session s = session.get();
         int index = s.index;
         s.setIndex(++index);
         sessionRepository.save(s);
-        Batch batch = new Batch();
-        batch.setKey(s.getKey());
-        batch.setTimeLeft(s.getTimeout());
-        batch.setIndex(index);
-        log.info("Service: Session proceeded: {}, next batch: {}", session, batch);
-        return batch;
+        BatchOut batchOut = new BatchOut();
+        batchOut.setKey(s.getKey());
+        batchOut.setTimeLeft(s.getTimeout());
+        batchOut.setIndex(index);
+        log.info("Service: Session proceeded: {}, next batchOut: {}", session, batchOut);
+        return batchOut;
     }
 
     public Session status(@NonNull String key) {
         Optional<Session> session = sessionRepository.findById(key);
         Session s = session.get();
-
-        Checkable checkable = s.getQuestions().get(s.index);
-        checkable.check(new ResponseFillBlankMultiple());
-
+        Response response = new ResponseMultipleChoice();
+        Question question = s.getQuestions().get(s.index);
+        final int result = response.evaluateWith(new EvaluatorImpl(question));
         log.info("Service: Session startStatus: {}", s);
         return s;
     }
@@ -63,15 +73,6 @@ public class GenericSessionService implements GenericSession {
         log.info("Deleted key : {}", key);
     }
 
-    @Override
-    public Batch next(Batch batch) {
-        return null;
-    }
-
-    @Override
-    public Result finish(Batch batch) {
-        return null;
-    }
 
     @Override
     public void cancel(String key) {

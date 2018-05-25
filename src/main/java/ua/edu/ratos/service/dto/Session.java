@@ -5,9 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import ua.edu.ratos.domain.Checkable;
-import ua.edu.ratos.domain.Question;
-
+import ua.edu.ratos.domain.question.Question;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Scenario 2: User is inactive for more than 12 hours.
  * 1) Session data for this key is forever lost in memory due to timeout.
- * 2) User gets his current result if present in incoming Batch object.
+ * 2) User gets his current result if present in incoming BatchOut object.
  * 3) Result is not stored in database.
  */
 @Getter
@@ -44,9 +42,9 @@ public class Session implements Serializable {
     /**
      * Individual list of questions
      */
-    private final List<Checkable> questions;
+    private final List<Question> questions;
 
-    public Session(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Checkable> questions) {
+    public Session(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Question> questions) {
         this.key = key;
         this.user = user;
         this.scheme = scheme;
@@ -61,10 +59,8 @@ public class Session implements Serializable {
      */
     public int index;
     /**
-     * Current Batch index
+     * Current BatchOut index
      */
     public int batch;
-
-
 
 }

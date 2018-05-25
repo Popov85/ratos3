@@ -1,6 +1,6 @@
 package ua.edu.ratos.service.parsers;
 
-import ua.edu.ratos.domain.QuestionMultipleChoice;
+import ua.edu.ratos.domain.question.QuestionMultipleChoice;
 import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
 import java.util.List;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
@@ -81,8 +81,8 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
         }
         if (answerContinuationPossible) {
             final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
-            String currentAnswer = ((AnswerMultipleChoice) answers.get(answers.size() - 1)).getAnswer();
-            ((AnswerMultipleChoice) answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
+            String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
+            (answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
 
             questionStartExpected = true;
             answerStartExpected = true;

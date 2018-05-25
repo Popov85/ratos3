@@ -1,9 +1,11 @@
-package ua.edu.ratos.domain;
+package ua.edu.ratos.domain.question;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
+import ua.edu.ratos.domain.model.Help;
+import ua.edu.ratos.domain.model.Resource;
+import ua.edu.ratos.domain.model.Theme;
 import java.util.Optional;
 
 @Getter
