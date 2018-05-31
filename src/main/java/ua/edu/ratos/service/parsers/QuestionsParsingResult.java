@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.*;
-import ua.edu.ratos.domain.question.QuestionMultipleChoice;
+import ua.edu.ratos.domain.model.question.QuestionMultipleChoice;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class QuestionsParsingResult {
     }
 
     /**
-     * Validates each answer first, validation includes decide if it is a single answer question
+     * Validates each answerIds first, validation includes decide if it is a single answerIds question
      * @param questions initial list of questions
      * @return filtered list of questions
      */

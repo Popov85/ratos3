@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import ua.edu.ratos.domain.question.Question;
+import ua.edu.ratos.domain.model.question.Question;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

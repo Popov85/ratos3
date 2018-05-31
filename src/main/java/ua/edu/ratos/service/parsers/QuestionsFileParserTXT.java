@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
-import ua.edu.ratos.domain.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
+import ua.edu.ratos.domain.model.question.QuestionMultipleChoice;
+import ua.edu.ratos.domain.model.answer.AnswerMultipleChoice;
 import java.util.List;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MAJOR;
@@ -29,7 +29,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
             } else if (firstChar == '0' || firstChar == '1') {
                 short correct = (firstChar == '1') ? (short) 100 : 0;
                 readAnswer(correct);
-            } else {// Goes String line (question title most probably), or the continuation of answer title
+            } else {// Goes String line (question title most probably), or the continuation of answerIds title
                 readString(trimmedLine);
             }
         }
@@ -54,7 +54,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
 
     private void readAnswer(short correct) {
         if (!answerStartExpected) {
-            String description = PREFIX + "unexpected answer start!";
+            String description = PREFIX + "unexpected answerIds start!";
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
 

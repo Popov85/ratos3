@@ -1,9 +1,12 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
-import ua.edu.ratos.domain.question.*;
+import ua.edu.ratos.domain.model.question.*;
 import ua.edu.ratos.service.dto.*;
 
+/**
+ * @link https://stackoverflow.com/questions/30527947/polymorphism-and-dto-object-creation
+ */
 public class EvaluatorImpl implements Evaluator {
 
     private final Question question;

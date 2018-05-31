@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.dto;
 
 import lombok.Data;
-import ua.edu.ratos.domain.question.Question;
+import ua.edu.ratos.domain.model.question.Question;
 import java.util.List;
 
 @Data

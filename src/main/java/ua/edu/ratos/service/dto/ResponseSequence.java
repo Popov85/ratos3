@@ -9,7 +9,7 @@ import java.util.List;
 @ToString
 public class ResponseSequence implements Response {
     public long questionId;
-    public List<Long> answer;
+    public List<Long> answerIds;
 
     @Override
     public int evaluateWith(Evaluator evaluator) {

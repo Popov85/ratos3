@@ -3,13 +3,12 @@ package ua.edu.ratos.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Result {
-    private long id;
+    private Long resultId;
     private String user;
     private int result;
 

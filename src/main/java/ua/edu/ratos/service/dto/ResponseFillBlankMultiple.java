@@ -9,6 +9,7 @@ import java.util.List;
 
 @ToString
 public class ResponseFillBlankMultiple implements Response {
+    public long questionId;
     public List<Pair> enteredPhrases;
 
     public static class Pair {

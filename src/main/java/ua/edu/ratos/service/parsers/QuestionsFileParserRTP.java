@@ -2,8 +2,8 @@ package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.domain.model.Help;
-import ua.edu.ratos.domain.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.answer.AnswerMultipleChoice;
+import ua.edu.ratos.domain.model.question.QuestionMultipleChoice;
+import ua.edu.ratos.domain.model.answer.AnswerMultipleChoice;
 import java.util.List;
 import java.util.Optional;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
@@ -36,7 +36,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
                 readAnswer(trimmedLine);
             } else if (firstChar == '@') {
                 readHint(trimmedLine);
-            } else {// Goes String line (question title most probably), or the continuation of answer title or hint title
+            } else {// Goes String line (question title most probably), or the continuation of answerIds title or hint title
                 readString(trimmedLine);
             }
         }
@@ -77,14 +77,14 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
 
     private void readAnswer(String line) {
         if (!answerStartExpected) {
-            String description = PREFIX + "unexpected answer start!";
+            String description = PREFIX + "unexpected answerIds start!";
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
         try {
             AnswerMultipleChoice answer = createAnswer(line);
             currentQuestion.getAnswers().add(answer);
         } catch (Exception e) {
-            String description = PREFIX + "parsing error, answer skipped, details: " + e.getMessage();
+            String description = PREFIX + "parsing error, answerIds skipped, details: " + e.getMessage();
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
 
@@ -146,14 +146,14 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
     }
 
-    // Parses %!100%-like answer String and creates Answer object
+    // Parses %!100%-like answerIds String and creates Answer object
     private AnswerMultipleChoice createAnswer(String line) {
-        // Try to find the second closing %-sign - the end of answer prefix
+        // Try to find the second closing %-sign - the end of answerIds prefix
         int stop = line.indexOf('%', 1);
-        if (stop == -1) throw new RuntimeException("Incorrect answer prefix!");
+        if (stop == -1) throw new RuntimeException("Incorrect answerIds prefix!");
         String value = line.substring(1, stop).replaceAll("\\s+", "");
         if (value.length() < 1 || value.length() > 4)
-            throw new RuntimeException("Inappropriate answer prefix length!");
+            throw new RuntimeException("Inappropriate answerIds prefix length!");
 
         boolean isRequired = false;
         if (value.charAt(0) == '!') isRequired = true;

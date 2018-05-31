@@ -13,8 +13,8 @@ public class ResponseMatcher implements Response {
 
     public static class Triple {
         public long answerId;
-        public long leftPhraseId;
-        public long rightPhraseId;
+        public String leftPhrase;
+        public String rightPhrase;
     }
 
     @Override

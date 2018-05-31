@@ -63,9 +63,9 @@ public interface EducationalSession {
      * There are the following types of complaints supported:
      * -Incorrect statement of question
      * -Typo in question
-     * -Typo in an answer
+     * -Typo in an answerIds
      * -Bad question formatting
-     * -Bad answer formatting
+     * -Bad answerIds formatting
      * @param qid
      * @param complaint
      */

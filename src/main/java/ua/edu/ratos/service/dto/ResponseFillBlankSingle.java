@@ -6,7 +6,7 @@ import ua.edu.ratos.service.Response;
 
 @ToString
 public class ResponseFillBlankSingle implements Response {
-    public Long questionId;
+    public long questionId;
     public String enteredPhrase;
 
     @Override
