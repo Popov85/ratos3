@@ -15,6 +15,7 @@ public class Resource {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
+    @Column(name="resource_id")
     private Long resourceId;
 
     @Column(name="hyperlink")

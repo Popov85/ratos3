@@ -5,17 +5,21 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.domain.model.Resource;
+import ua.edu.ratos.domain.model.question.QuestionMatcher;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
-@ToString
-//@Entity
+@ToString(exclude = {"question", "resource"})
+@Entity
 @Table(name = "answer_mq")
 public class AnswerMatcher {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
+    @Column(name="answer_id")
     private long answerId;
 
     @Column(name="left_phrase")
@@ -24,9 +28,15 @@ public class AnswerMatcher {
     @Column(name="right_phrase")
     private String rightPhrase;
 
-    @ManyToOne// Only applicable for right phrase
-    @JoinColumn(name = "right_phrase_resource_id", foreignKey = @ForeignKey(name = "fk_answer_mq_resource_resource_id"))
-    private Resource resource;
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "question_id", foreignKey = @ForeignKey(name = "fk_answer_mq_question_question_id"))
+    private QuestionMatcher question;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "answer_mq_resource",
+            joinColumns = @JoinColumn(name = "answer_id"),
+            inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    private List<Resource> resources;
 
     public boolean isValid() {
         if (this.leftPhrase == null || this.rightPhrase==null) return false;

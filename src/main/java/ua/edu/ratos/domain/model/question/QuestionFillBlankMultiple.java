@@ -5,23 +5,27 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.domain.model.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.service.dto.ResponseFillBlankMultiple;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
-//@Entity
+@ToString(callSuper = true, exclude = "answers")
+@Entity
 public class QuestionFillBlankMultiple extends Question{
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnswerFillBlankMultiple> answers;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnswerFillBlankMultiple> answers = new ArrayList<>();
+
+    public void addAnswer(AnswerFillBlankMultiple answer) {
+        this.answers.add(answer);
+        answer.setQuestion(this);
+    }
 
     public int evaluate(ResponseFillBlankMultiple response) {
         final List<ResponseFillBlankMultiple.Pair> pairs = response.enteredPhrases;

@@ -9,13 +9,14 @@ import javax.persistence.*;
 @Setter
 @Getter
 @ToString
-//@Entity
+@Entity
 @Table(name = "settings_fbq")
 public class SettingsAnswerFillBlank {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long set_id;
+    @Column(name="set_id")
+    private Long settingsId;
     /**
      * English - eng, French - fr, Polish - pl, Ukrainian - ukr, Russian - ru, etc.
      */

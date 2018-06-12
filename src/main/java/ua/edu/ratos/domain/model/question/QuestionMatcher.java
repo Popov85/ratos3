@@ -26,11 +26,11 @@ import java.util.Optional;
 
 @Setter
 @Getter
-@ToString
-//@Entity
+@ToString(callSuper = true, exclude = "answers")
+@Entity
 public class QuestionMatcher extends Question {
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerMatcher> answers;
 
     public int evaluate(ResponseMatcher response) {

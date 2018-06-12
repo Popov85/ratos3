@@ -8,7 +8,6 @@ import ua.edu.ratos.service.dto.ResponseSequence;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +22,11 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
-//@Entity
+@ToString(callSuper = true, exclude = "answers")
+@Entity
 public class QuestionSequence extends Question {
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerSequence> answers;
 
     public int evaluate(ResponseSequence response) {

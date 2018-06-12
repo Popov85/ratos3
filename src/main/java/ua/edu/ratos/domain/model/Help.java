@@ -3,22 +3,33 @@ package ua.edu.ratos.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ua.edu.ratos.domain.model.question.Question;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = {"question", "resources"})
 @Entity
 @Table(name = "help")
 public class Help {
     @Id
-    @GeneratedValue
+    @Column(name = "help_id")
     private Long helpId;
 
-    @Column(name="text")
+    @Column(name = "text")
     private String help;
 
-    @ManyToOne
-    @JoinColumn(name = "help_resource_id", foreignKey = @ForeignKey(name = "fk_help_resource_resource_id"))
-    private Resource resource;
+    @MapsId
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "help_id")
+    private Question question;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "help_resource",
+            joinColumns = @JoinColumn(name = "help_id"),
+            inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    private List<Resource> resources;
 }

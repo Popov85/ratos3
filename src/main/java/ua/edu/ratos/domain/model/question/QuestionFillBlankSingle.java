@@ -5,19 +5,17 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.domain.model.answer.AnswerFillBlankSingle;
 import ua.edu.ratos.service.dto.ResponseFillBlankSingle;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
-//@Entity
+@ToString(callSuper = true, exclude = "answer")
+@Entity
 public class QuestionFillBlankSingle extends Question {
 
-    @OneToOne
-    @JoinColumn(name = "question_id")
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, optional = false)
     private AnswerFillBlankSingle answer;
 
     public boolean isValid() {

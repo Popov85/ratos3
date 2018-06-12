@@ -10,7 +10,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = "questions")
 @Entity
 @Table(name="theme")
 public class Theme {
@@ -22,7 +22,7 @@ public class Theme {
     @Column(name="name")
     private String name;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
 }

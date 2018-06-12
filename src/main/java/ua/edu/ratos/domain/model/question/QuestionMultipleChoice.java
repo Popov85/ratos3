@@ -10,29 +10,32 @@ import java.util.stream.Collectors;
 import ua.edu.ratos.domain.model.answer.AnswerMultipleChoice;
 import ua.edu.ratos.service.dto.ResponseMultipleChoice;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static ua.edu.ratos.domain.model.question.QuestionMultipleChoice.Display.AUTO;
 
 @Getter
 @Setter
-@ToString
-//@Entity
+@ToString(callSuper = true, exclude = "answers")
+@Entity
 public class QuestionMultipleChoice extends Question {
 
     /**
      * Should single-answerIds questions be displayed with radio-button, or checkboxes?
      */
     public enum Display {AUTO, HIDE};
-    private Display display = AUTO;
+    private transient Display display = AUTO;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnswerMultipleChoice> answers;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnswerMultipleChoice> answers = new ArrayList<>();
+
+    public void addAnswer(AnswerMultipleChoice answer) {
+        this.answers.add(answer);
+        answer.setQuestion(this);
+    }
 
     private transient boolean isSingle;
+
     /**
      * Creates a new empty Question object (for parsers)
      * @return newly created empty Question

@@ -1,9 +1,10 @@
 package ua.edu.ratos.domain.model.answer;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
+import ua.edu.ratos.domain.model.question.QuestionFillBlankSingle;
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,23 +12,27 @@ import java.util.List;
  * Free-word answers, only one blank to fill in is acceptable, within this blank several words are acceptable
  * @author Andrey P.
  */
-@Setter
-@Getter
-@ToString
-//@Entity
+@Data
+@ToString(exclude = {"question", "settings", "acceptedPhrases"})
+@Entity
 @Table(name = "answer_fbsq")
 public class AnswerFillBlankSingle {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private Long questionId;
+    @Column(name="answer_id")
+    private Long answerId;
 
-    @ManyToOne
-    @JoinColumn(name = "set_id", foreignKey = @ForeignKey(name = "fk_answer_fbsq_settings_set_id"))
+    @MapsId
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "answer_id")
+    private QuestionFillBlankSingle question;
+
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "set_id", foreignKey = @ForeignKey(name = "fk_answer_fbsq_settings_set_id"), nullable=false)
     private SettingsAnswerFillBlank settings;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "fbsq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
     private List<AcceptedPhrase> acceptedPhrases;
 
     public boolean isValid() {
