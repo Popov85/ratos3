@@ -8,7 +8,6 @@
     <property name="PROD_HOME" value="${user.home}}/ratos-logs" />
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-       <!-- <charset>UTF-8</charset>-->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
         </encoder>
@@ -18,14 +17,12 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${DEV_HOME}/ratos-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
-        <!--<charset>UTF-8</charset>-->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
         </encoder>
     </appender>
 
     <springProfile name="dev, test">
-        <!--<property name="HOME" value="log" />-->
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
@@ -35,10 +32,12 @@
         <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
     </springProfile>
 
     <springProfile name="prod">
-        <!--<property name="HOME" value="${user.home}}/ratos-logs" />-->
         <root level="ERROR">
             <appender-ref ref="FILE"/>
         </root>

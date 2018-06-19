@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ua.edu.ratos.domain.dao.ThemeRepository;
-import ua.edu.ratos.domain.model.Theme;
+import ua.edu.ratos.domain.repository.ThemeRepository;
+import ua.edu.ratos.domain.entity.Theme;
 
 import java.util.List;
 import java.util.stream.Collectors;

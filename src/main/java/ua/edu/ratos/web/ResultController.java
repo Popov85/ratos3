@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ratos.domain.model.Result;
+import ua.edu.ratos.domain.model.ResultMock;
 import ua.edu.ratos.service.ResultService;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,12 +18,12 @@ public class ResultController {
     private ResultService resultService;
 
     @RequestMapping("/results")
-    public List<Result> results() {
+    public List<ResultMock> results() {
         return  resultService.findAll();
     }
 
     @RequestMapping("/result")
-    public Result result() {
+    public ResultMock result() {
         return  resultService.findOne(1);
     }
 
@@ -35,7 +35,7 @@ public class ResultController {
     @RequestMapping("/test")
     public String resultsTest() {
         RestTemplate restTemplate = new RestTemplate();
-        Result body = restTemplate.getForObject("http://localhost:8080/result", Result.class);
+        ResultMock body = restTemplate.getForObject("http://localhost:8080/result", ResultMock.class);
         return body.getUser();
     }
 

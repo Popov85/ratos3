@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.model.question.Question;
-import ua.edu.ratos.domain.dao.SessionRepository;
+import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.domain.repository.SessionRepository;
 import ua.edu.ratos.service.dto.*;
 import java.util.*;
 

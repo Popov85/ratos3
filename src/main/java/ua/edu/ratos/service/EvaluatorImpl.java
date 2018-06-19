@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
-import ua.edu.ratos.domain.model.question.*;
+import ua.edu.ratos.domain.entity.question.*;
 import ua.edu.ratos.service.dto.*;
 
 /**

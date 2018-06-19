@@ -1,6 +1,6 @@
 package ua.edu.ratos.web;
 
-import ua.edu.ratos.domain.model.Result;
+import ua.edu.ratos.domain.model.ResultMock;
 import ua.edu.ratos.service.ResultService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class ResultControllerMvcIT {
     @Test
     public void getVehicleWhenRequestingTextShouldReturnMakeAndModel() throws Exception {
         given(this.resultService.findOne(1))
-                .willReturn(new Result(1L, "John", 100));
+                .willReturn(new ResultMock(1L, "John", 100));
         this.mvc.perform(get("/result").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'id': 1,'user':'John', 'result':100}"));

@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
-import ua.edu.ratos.domain.model.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.model.answer.AnswerMultipleChoice;
+import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import java.util.List;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MAJOR;

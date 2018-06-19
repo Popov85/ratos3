@@ -5,14 +5,14 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import ua.edu.ratos.domain.model.question.Question;
+import ua.edu.ratos.domain.entity.question.Question;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Scenario 0: Normal finish
- * 1) Result is stored in database
+ * 1) ResultMock is stored in database
  * 2) User gets result
  * 3) Key is removed from memory programmatically
  *
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * Scenario 2: User is inactive for more than 12 hours.
  * 1) Session data for this key is forever lost in memory due to timeout.
  * 2) User gets his current result if present in incoming BatchOut object.
- * 3) Result is not stored in database.
+ * 3) ResultMock is not stored in database.
  */
 @Getter
 @Setter

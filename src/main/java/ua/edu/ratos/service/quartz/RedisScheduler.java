@@ -5,7 +5,7 @@ import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.domain.dao.SessionRepository;
+import ua.edu.ratos.domain.repository.SessionRepository;
 
 import java.util.Set;
 

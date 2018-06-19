@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.dto;
 
 import lombok.ToString;
-import ua.edu.ratos.domain.model.Resource;
+import ua.edu.ratos.domain.entity.Resource;
 
 import java.util.List;
 import java.util.Optional;
