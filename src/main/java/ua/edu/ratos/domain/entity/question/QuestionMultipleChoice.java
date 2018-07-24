@@ -3,32 +3,34 @@ package ua.edu.ratos.domain.entity.question;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
-import ua.edu.ratos.service.dto.ResponseMultipleChoice;
 
+import org.hibernate.annotations.DynamicUpdate;
+import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
+import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
 import javax.persistence.*;
 
-import static ua.edu.ratos.domain.entity.question.QuestionMultipleChoice.Display.AUTO;
 
 @Getter
 @Setter
-@ToString(callSuper = true, exclude = {"answers"})
 @Entity
 @DiscriminatorValue(value = "1")
-@NamedEntityGraph(name = "QuestionMultipleChoice", attributeNodes = @NamedAttributeNode("answers"))
+@NamedEntityGraph(name = "MCQ.enriched", attributeNodes = {
+        @NamedAttributeNode("answers"),
+        @NamedAttributeNode("resources"),
+        @NamedAttributeNode("help"),
+        @NamedAttributeNode("theme")
+})
+@DynamicUpdate
 public class QuestionMultipleChoice extends Question {
 
-    /**
-     * Should single-answerIds questions be displayed with radio-button, or checkboxes?
-     */
-    public enum Display {AUTO, HIDE};
-    private transient Display display = AUTO;
+    // Is it a question with the single correct answer?
+    @Transient
+    private boolean isSingle;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<AnswerMultipleChoice> answers = new ArrayList<>();
 
     public void addAnswer(AnswerMultipleChoice answer) {
@@ -36,7 +38,10 @@ public class QuestionMultipleChoice extends Question {
         answer.setQuestion(this);
     }
 
-    private transient boolean isSingle;
+    public void removeAnswer(AnswerMultipleChoice answer) {
+        this.answers.remove(answer);
+        answer.setQuestion(null);
+    }
 
     /**
      * Creates a new empty Question object (for parsers)
@@ -124,4 +129,16 @@ public class QuestionMultipleChoice extends Question {
         return requiredAnswers;
     }
 
+    @Override
+    public String toString() {
+        return "QuestionMultipleChoice{" +
+                "isSingle=" + isSingle +
+                ", questionId=" + questionId +
+                ", question='" + question + '\'' +
+                ", level=" + level +
+                ", deleted=" + deleted +
+                ", type=" + ((type==null) ? null: type.getAbbreviation()) +
+                ", lang=" + ((lang==null) ? null: lang.getAbbreviation())+
+                '}';
+    }
 }

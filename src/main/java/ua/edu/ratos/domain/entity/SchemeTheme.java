@@ -10,7 +10,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@ToString(exclude = {"scheme", "typeLevelSettings"})
+@ToString(exclude = {"scheme", "schemeThemeSettings"})
 @Entity
 @Table(name="scheme_theme")
 public class SchemeTheme {
@@ -33,16 +33,6 @@ public class SchemeTheme {
     private short order;
 
     @OneToMany(mappedBy = "schemeTheme", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SchemeThemeTypeLevelSettings> typeLevelSettings = new ArrayList<>();
-
-    public void addTypeLevelSettings(SchemeThemeTypeLevelSettings typeLevelSettings) {
-        this.typeLevelSettings.add(typeLevelSettings);
-        typeLevelSettings.setSchemeTheme(this);
-    }
-
-    public void removeTypeLevelSettings(SchemeThemeTypeLevelSettings typeLevelSettings) {
-        this.typeLevelSettings.remove(typeLevelSettings);
-        typeLevelSettings.setSchemeTheme(null);
-    }
+    private List<SchemeThemeSettings> schemeThemeSettings = new ArrayList<>();
 
 }

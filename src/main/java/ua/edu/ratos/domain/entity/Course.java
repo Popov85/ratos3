@@ -26,8 +26,12 @@ public class Course {
     @Column(name = "created")
     private LocalDateTime created;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dep_id")
+    protected Department department;
 
 }

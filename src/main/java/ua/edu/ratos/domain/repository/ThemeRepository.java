@@ -1,11 +1,14 @@
 package ua.edu.ratos.domain.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ua.edu.ratos.domain.entity.Theme;
 
-public interface ThemeRepository extends CrudRepository<Theme, Long> {
+import java.util.List;
+
+public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
     @Modifying
     @Query("update Theme t set t.name = ?1 where t.themeId = ?2")

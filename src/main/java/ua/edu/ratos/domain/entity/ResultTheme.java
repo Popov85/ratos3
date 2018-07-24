@@ -3,7 +3,6 @@ package ua.edu.ratos.domain.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ua.edu.ratos.domain.Result;
 
 import javax.persistence.*;
 

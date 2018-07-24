@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"staff"})
 @Entity
 @Table(name = "mode")
 public class Mode {
@@ -18,6 +18,9 @@ public class Mode {
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "mode_id")
     private Long modeId;
+
+    @Column(name="name")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "staff_id")

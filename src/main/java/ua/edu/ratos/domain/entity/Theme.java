@@ -27,7 +27,7 @@ public class Theme {
     @Column(name="is_deleted")
     private boolean deleted;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="course_id")
     private Course course;
 

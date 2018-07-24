@@ -1,4 +1,4 @@
-package java.ua.edu.ratos.web;
+package ua.edu.ratos.web;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

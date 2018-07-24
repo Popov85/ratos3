@@ -4,8 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.domain.entity.Help;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
 import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.*;
 
@@ -23,6 +24,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
     private boolean questionContinuationPossible;
     private boolean answerContinuationPossible;
     private boolean hintContinuationPossible;
+
+    private String helpLine = "";
 
     @Override
     protected void parseLine(String line) {
@@ -59,6 +62,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         questionContinuationPossible = true;
         answerContinuationPossible = false;
         hintContinuationPossible = false;
+
+        this.helpLine = "";
     }
 
     private byte getLevel(String line) {
@@ -104,8 +109,10 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
 
         Help help = new Help();
+        help.setName("automatic");
         help.setHelp(line);
-        currentQuestion.setHelp(help);
+
+        currentQuestion.setHelp(new HashSet<>(Arrays.asList(help)));
 
         questionStartExpected = true;
         answerStartExpected = false;
@@ -135,10 +142,11 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
         if (hintContinuationPossible) {
 
-            Optional<Help> help = currentQuestion.getHelp();
-            String updatedHelp = help.get().getHelp()+line;
-            help.get().setHelp(updatedHelp);
-            currentQuestion.setHelp(help.get());
+            String updatedHelp = this.helpLine+line;
+            Help help = new Help();
+            help.setName("automatic");
+            help.setHelp(updatedHelp);
+            currentQuestion.setHelp(new HashSet<>(Arrays.asList(help)));
 
             questionStartExpected = true;
             answerStartExpected = false;

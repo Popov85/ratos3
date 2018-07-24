@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"organisation", "faculty"})
 @Entity
 @Table(name = "department")
 public class Department {
@@ -23,7 +23,11 @@ public class Department {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_id")
     private Organisation organisation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fac_id")
+    protected Faculty faculty;
 }

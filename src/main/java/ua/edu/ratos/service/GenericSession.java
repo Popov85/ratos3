@@ -1,9 +1,9 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
-import ua.edu.ratos.service.dto.BatchIn;
-import ua.edu.ratos.service.dto.BatchOut;
-import ua.edu.ratos.service.dto.Result;
+import ua.edu.ratos.service.dto.session.BatchIn;
+import ua.edu.ratos.service.dto.session.BatchOut;
+import ua.edu.ratos.domain.model.Result;
 
 /**
  * Generic batched session interface. Defines generic learning session operations in batches

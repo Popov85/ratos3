@@ -11,10 +11,8 @@ import ua.edu.ratos.domain.entity.*;
 import ua.edu.ratos.domain.entity.answer.*;
 import ua.edu.ratos.domain.repository.*;
 import ua.edu.ratos.domain.entity.question.*;
-
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -25,6 +23,9 @@ public class Bootstrap {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private FacultyRepository facultyRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -38,7 +39,6 @@ public class Bootstrap {
     @Autowired
     private StaffRepository staffRepository;
 
-
     @Autowired
     private CourseRepository courseRepository;
 
@@ -46,7 +46,19 @@ public class Bootstrap {
     private ThemeRepository themeRepository;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private StrategyRepository strategyRepository;
+
+    @Autowired
+    private ModeRepository modeRepository;
+
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @Autowired
+    private SchemeRepository schemeRepository;
+
+    @Autowired
+    private ThemeViewRepository themeViewRepository;
 
     @Autowired
     private QuestionTypeRepository questionTypeRepository;
@@ -54,41 +66,91 @@ public class Bootstrap {
     @Autowired
     private LanguageRepository languageRepository;
 
+    @Autowired
+    private SettingsAnswerFillBlankRepository settingsAnswerFillBlankRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    private Iterable<Theme> themes;
+
+    // @Commit can be used as direct replacement for @Rollback(false);
+    // however, it should not be declared alongside @Rollback.
+    // Declaring @Commit and @Rollback on the same test method or on the same test class is unsupported and may lead to unpredictable results.
 
     @Commit
     @Test
     public void bootstrap() {
         saveOrganisation();
+        saveFaculties();
         saveDepartments();
+
         saveUsers();
         saveRoles();
         savePositions();
         saveStaff();
         saveCourses();
         saveThemes();
+
+        saveSchemeStrategies();
+        saveSchemeModes();
+        saveSchemeSettings();
+        saveSchemes();
+
         saveQuestionTypes();
         saveLanguages();
+        saveAnswerSettings();
         saveQuestions();
     }
 
+
+    private <T> T getFirst(Iterable<T> iterable) {
+        return iterable.iterator().next();
+    }
+
+    private <T> T getRandom(Iterable<T> iterable) {
+        List<T> entities = new ArrayList<>();
+        iterable.forEach(entities::add);
+        Random rnd = new Random();
+        int i;
+        if (entities.size()==1) {
+            i = 0;
+        } else {
+            i = rnd.nextInt(entities.size() - 1);
+        }
+        return entities.get(i);
+    }
+
+
     private void saveOrganisation() {
         Organisation organisation = new Organisation();
-        organisation.setName("Open University");
+        organisation.setName("Open IT-university");
 
         organisationRepository.save(organisation);
     }
 
+    private void saveFaculties() {
+        Faculty faculty = new Faculty();
+        faculty.setName("Programming faculty");
+
+        facultyRepository.save(faculty);
+    }
+
     private void saveDepartments() {
-        Organisation organisation = new Organisation();
-        organisation.setOrgId(1L);
+
+        Organisation organisation = getFirst(organisationRepository.findAll());
+
+        Faculty faculty = getFirst(facultyRepository.findAll());
 
         Department department = new Department();
         department.setName("Enterprise programming");
         department.setOrganisation(organisation);
+        department.setFaculty(faculty);
 
         Department department2 = new Department();
         department2.setName("Applied programming");
         department2.setOrganisation(organisation);
+        department2.setFaculty(faculty);
 
         departmentRepository.saveAll(Arrays.asList(department, department2));
     }
@@ -130,29 +192,28 @@ public class Bootstrap {
         position.setName("Researcher");
 
         Position position2 = new Position();
-        position2.setName("Instructor");
+        position2.setName("Professor");
 
         Position position3 = new Position();
-        position3.setName("Assistant");
+        position3.setName("Instructor");
 
         Position position4 = new Position();
-        position4.setName("Labour assistant");
+        position4.setName("Assistant");
 
-        positionRepository.saveAll(Arrays.asList(position, position2, position3, position4));
+        Position position5 = new Position();
+        position5.setName("Labour assistant");
+
+        positionRepository.saveAll(Arrays.asList(position, position2, position3, position4, position5));
     }
 
     private void saveStaff() {
-        User user = new User();
-        user.setUserId(1L);
+        User user = getFirst(userRepository.findAll());
 
-        Department department = new Department();
-        department.setDepId(1L);
+        Department department = getFirst(departmentRepository.findAll());
 
-        Position position = new Position();
-        position.setPosId(1L);
+        Position position = getFirst(positionRepository.findAll());
 
-        Role role = new Role();
-        role.setRoleId(1L);
+        Role role = getRandom(roleRepository.findAll());
 
         Staff staff = new Staff();
         staff.setUser(user);
@@ -164,27 +225,27 @@ public class Bootstrap {
     }
 
 
-
     private void saveCourses() {
-        Staff staff = new Staff();
-        staff.setStaId(1L);
+        Staff staff = getFirst(staffRepository.findAll());
+        Department department = getFirst(departmentRepository.findAll());
 
         Course course = new Course();
         course.setName("Java for Beginners");
         course.setCreated(LocalDateTime.now());
         course.setStaff(staff);
+        course.setDepartment(department);
 
         Course course1 = new Course();
         course1.setName("Java for Professionals");
         course1.setCreated(LocalDateTime.now());
         course1.setStaff(staff);
+        course1.setDepartment(department);
 
         courseRepository.saveAll(Arrays.asList(course, course1));
     }
 
     private void saveThemes() {
-        Course course = new Course();
-        course.setCourseId(1L);
+        Course course = getFirst(courseRepository.findAll());
 
         Theme theme = new Theme();
         theme.setName("Java Operators");
@@ -198,27 +259,158 @@ public class Bootstrap {
         theme3.setName("Java Generics");
         theme3.setCourse(course);
 
-        themeRepository.saveAll(Arrays.asList(theme, theme2, theme3));
+        this.themes = themeRepository.saveAll(Arrays.asList(theme, theme2, theme3));
+    }
+
+
+
+    private void saveSchemeStrategies() {
+        Strategy strategy = new Strategy();
+        strategy.setName("default");
+        strategy.setDescription("Default sequence sorting strategy: " +
+                "themes, questions, types, levels appear in the resulting individual question sequence " +
+                "without any additional processing");
+
+        Strategy strategy2 = new Strategy();
+        strategy2.setName("randomized");
+        strategy2.setDescription("Keeps theme sequence, but randomizes questions within a theme");
+
+        strategyRepository.saveAll(Arrays.asList(strategy, strategy2));
+    }
+
+
+    private void saveSchemeModes() {
+        Staff staff = getFirst(staffRepository.findAll());
+
+        Mode mode = new Mode();
+        mode.setName("exam");
+        mode.setStaff(staff);
+        mode.setHelpable(false);
+        mode.setPyramid(false);
+        mode.setSkipable(false);
+        mode.setRightAnswer(false);
+        mode.setResultDetails(false);
+        mode.setPauseable(false);
+        mode.setPreservable(false);
+        mode.setReportable(true);
+
+
+        Mode mode2 = new Mode();
+        mode2.setName("training");
+        mode2.setStaff(staff);
+        mode2.setHelpable(true);
+        mode2.setPyramid(true);
+        mode2.setSkipable(true);
+        mode2.setRightAnswer(true);
+        mode2.setResultDetails(true);
+        mode2.setPauseable(true);
+        mode2.setPreservable(true);
+        mode2.setReportable(true);
+
+        modeRepository.saveAll(Arrays.asList(mode, mode2));
+    }
+
+    private void saveSchemeSettings() {
+        Staff staff = getFirst(staffRepository.findAll());
+
+        Settings settings=new Settings();
+        settings.setName("default");
+        settings.setStaff(staff);
+        settings.setSecondsPerQuestion(60);
+        settings.setQuestionsPerSheet((short) 1);
+        settings.setDaysKeepResultDetails((short)1);
+        settings.setThreshold3((byte) 50);
+        settings.setThreshold4((byte) 75);
+        settings.setThreshold5((byte) 90);
+        settings.setLevel2Coefficient(1);
+        settings.setLevel3Coefficient(1);
+        settings.setDisplayMark(true);
+        settings.setDisplayPercent(true);
+
+        Settings settings2=new Settings();
+        settings2.setName("custom");
+        settings2.setStaff(staff);
+        settings2.setSecondsPerQuestion(30);
+        settings2.setQuestionsPerSheet((short) 1);
+        settings2.setDaysKeepResultDetails((short)365);
+        settings2.setThreshold3((byte) 60);
+        settings2.setThreshold4((byte) 75);
+        settings2.setThreshold5((byte) 95);
+        settings2.setLevel2Coefficient(1);
+        settings2.setLevel3Coefficient(1);
+        settings2.setDisplayMark(false);
+        settings2.setDisplayPercent(false);
+
+        settingsRepository.saveAll(Arrays.asList(settings, settings2));
+    }
+
+    private void saveSchemes() {
+        Course course = getFirst(courseRepository.findAll());
+        Staff staff = getFirst(staffRepository.findAll());
+        Mode mode = getFirst(modeRepository.findAll());
+        Settings settings = getFirst(settingsRepository.findAll());
+        Strategy strategy = getFirst(strategyRepository.findAll());
+
+        Scheme scheme = new Scheme();
+        scheme.setName("Java Basics: training scheme");
+        scheme.setActive(true);
+        scheme.setCourse(course);
+        scheme.setStaff(staff);
+        scheme.setMode(mode);
+        scheme.setSettings(settings);
+        scheme.setStrategy(strategy);
+        scheme.setCreated(LocalDateTime.now());
+
+        SchemeTheme schemeTheme = new SchemeTheme();
+        schemeTheme.setScheme(scheme);
+        final Theme theme = getFirst(themeRepository.findAll());
+        schemeTheme.setTheme(theme);
+
+        // Find out what question types and levels exist in this theme? Set all existing types and levels by default for further processing
+        final List<ThemeView> themeViews = themeViewRepository.findAllByThemeId(theme.getThemeId());
+        final List<SchemeThemeSettings> allSchemeThemeSettings = new ArrayList<>();
+        for (ThemeView themeView : themeViews) {
+            final String abbreviation = themeView.getType();
+            final short l1 = themeView.getL1();
+            final short l2 = themeView.getL2();
+            final short l3 = themeView.getL3();
+            SchemeThemeSettings schemeThemeSettings = new SchemeThemeSettings();
+            schemeThemeSettings.setSchemeTheme(schemeTheme);
+            schemeThemeSettings.setType(questionTypeRepository.findByAbbreviation(abbreviation));
+            schemeThemeSettings.setLevel1(l1);
+            schemeThemeSettings.setLevel2(l2);
+            schemeThemeSettings.setLevel3(l3);
+            allSchemeThemeSettings.add(schemeThemeSettings);
+        }
+        schemeTheme.setSchemeThemeSettings(allSchemeThemeSettings);
+        scheme.setSchemeThemes(Arrays.asList(schemeTheme));
+
+        schemeRepository.save(scheme);
     }
 
     private void saveQuestionTypes() {
         QuestionType type = new QuestionType();
+        type.setTypeId(1L);
         type.setAbbreviation("MCQ");
         type.setDescription("Multiple choice question");
 
         QuestionType type2 = new QuestionType();
+        type2.setTypeId(2L);
         type2.setAbbreviation("FBSQ");
         type2.setDescription("Fill blank single question");
 
         QuestionType type3 = new QuestionType();
+        type3.setTypeId(3L);
         type3.setAbbreviation("FBMQ");
         type3.setDescription("Fill blank multiple question");
 
         QuestionType type4 = new QuestionType();
+        type4.setTypeId(4L);
         type4.setAbbreviation("MQ");
         type4.setDescription("Matcher question");
 
         QuestionType type5 = new QuestionType();
+        type5.setTypeId(5L);
         type5.setAbbreviation("SQ");
         type5.setDescription("Sequence question");
 
@@ -250,6 +442,31 @@ public class Bootstrap {
         languageRepository.saveAll(Arrays.asList(lang, lang1, lang2, lang3, lang4));
     }
 
+    private void saveAnswerSettings() {
+        Staff staff = getFirst(staffRepository.findAll());
+
+        final Iterable<Language> languages = languageRepository.findAll();
+        Language lang = getRandom(languages);
+
+        SettingsAnswerFillBlank settings = new SettingsAnswerFillBlank();
+        settings.setName("eng default");
+        settings.setStaff(staff);
+        settings.setLang(lang);
+        settings.setWordsLimit((short)5);
+        settings.setSymbolsLimit((short) 50);
+
+        Language lang2 = getRandom(languages);
+
+        SettingsAnswerFillBlank settings2 = new SettingsAnswerFillBlank();
+        settings2.setName("ru default");
+        settings2.setStaff(staff);
+        settings2.setLang(lang2);
+        settings2.setWordsLimit((short)5);
+        settings2.setSymbolsLimit((short) 50);
+
+        settingsAnswerFillBlankRepository.saveAll(Arrays.asList(settings, settings2));
+    }
+
     //--------------------------------------------------
 
 
@@ -263,16 +480,14 @@ public class Bootstrap {
 
 
     private void saveMCQ() {
-        Theme theme = new Theme();
-        theme.setThemeId(1L);
+        Theme theme = getFirst(themes);
 
         QuestionMultipleChoice mcq = new QuestionMultipleChoice();
         mcq.setQuestion("Interface used to interact with the second-level cache.");
         mcq.setLevel((byte)1);
         mcq.setTheme(theme);
 
-        Language lang = new Language();
-        lang.setLangId(1L);
+        Language lang = getRandom(languageRepository.findAll());
 
         mcq.setLang(lang);
 
@@ -301,53 +516,56 @@ public class Bootstrap {
         mcq.addAnswer(answer2);
         mcq.addAnswer(answer3);
 
+        Staff staff = getRandom(staffRepository.findAll());
+
         Resource resource = new Resource();
         resource.setLink("http://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html");
-        resource.setDescription("Java Persistence is the API");
+        resource.setDescription("Java Persistence API web documentation");
+        resource.setStaff(staff);
 
-        mcq.setResources(Arrays.asList(resource));
+        mcq.setResources(new HashSet(Arrays.asList(resource)));
 
         Help help = new Help();
         help.setHelp("Package javax.persistence");
         help.setQuestion(mcq);
 
-        mcq.setHelp(help);
+        mcq.setHelp(new HashSet<>(Arrays.asList(help)));
 
         questionRepository.save(mcq);
     }
 
 
     private void saveFBSQ() {
-        Theme theme = new Theme();
-        theme.setThemeId(1L);
+        Theme theme = getFirst(themes);
 
         QuestionFillBlankSingle fbsq = new QuestionFillBlankSingle();
         fbsq.setQuestion("Defines the set of cascadable operations that are propagated to the associated entity.");
         fbsq.setLevel((byte)1);
         fbsq.setTheme(theme);
 
-        Language lang = new Language();
-        lang.setLangId(1L);
+        Language lang = getFirst(languageRepository.findAll());
+
         fbsq.setLang(lang);
 
         final AnswerFillBlankSingle answer = new AnswerFillBlankSingle();
 
+        Staff staff = getRandom(staffRepository.findAll());
+
         AcceptedPhrase acceptedPhrase = new AcceptedPhrase();
         acceptedPhrase.setPhrase("CascadeType");
+        acceptedPhrase.setStaff(staff);
 
         AcceptedPhrase acceptedPhrase1 = new AcceptedPhrase();
         acceptedPhrase1.setPhrase("Enum<CascadeType>");
+        acceptedPhrase1.setStaff(staff);
 
         AcceptedPhrase acceptedPhrase2 = new AcceptedPhrase();
         acceptedPhrase2.setPhrase("java.lang.Object java.lang.Enum<CascadeType>");
+        acceptedPhrase2.setStaff(staff);
 
-        answer.setAcceptedPhrases(Arrays.asList(acceptedPhrase, acceptedPhrase1, acceptedPhrase2));
+        answer.setAcceptedPhrases(new HashSet<>(Arrays.asList(acceptedPhrase, acceptedPhrase1, acceptedPhrase2)));
 
-        SettingsAnswerFillBlank settings = new SettingsAnswerFillBlank();
-
-        settings.setLang(lang);
-        settings.setWordsLimit((short)3);
-        settings.setSymbolsLimit((short) 25);
+        SettingsAnswerFillBlank settings = getRandom(settingsAnswerFillBlankRepository.findAll());
 
         answer.setSettings(settings);
 
@@ -359,8 +577,7 @@ public class Bootstrap {
     }
 
     private void saveFBMQ() {
-        Theme theme = new Theme();
-        theme.setThemeId(1L);
+        Theme theme = getFirst(themes);
 
         QuestionFillBlankMultiple fbmq = new QuestionFillBlankMultiple();
         fbmq.setQuestion("Lock modes can be specified by means of passing a LockModeType argument to one " +
@@ -369,8 +586,7 @@ public class Bootstrap {
         fbmq.setLevel((byte)2);
         fbmq.setTheme(theme);
 
-        Language lang = new Language();
-        lang.setLangId(1L);
+        Language lang = getFirst(languageRepository.findAll());
 
         fbmq.setLang(lang);
 
@@ -380,20 +596,19 @@ public class Bootstrap {
         answer.setPhrase("Query.setLockMode()");
         answer.setOccurrence((byte)1);
 
+        Staff staff = getRandom(staffRepository.findAll());
+
         AcceptedPhrase acceptedPhrase = new AcceptedPhrase();
         acceptedPhrase.setPhrase("setLockMode() of Query");
+        acceptedPhrase.setStaff(staff);
 
         AcceptedPhrase acceptedPhrase1 = new AcceptedPhrase();
         acceptedPhrase1.setPhrase("Query.setLockMode");
+        acceptedPhrase1.setStaff(staff);
 
-        answer.setAcceptedPhrases(Arrays.asList(acceptedPhrase, acceptedPhrase1));
+        answer.setAcceptedPhrases(new HashSet<>(Arrays.asList(acceptedPhrase, acceptedPhrase1)));
 
-        SettingsAnswerFillBlank settings = new SettingsAnswerFillBlank();
-
-
-        settings.setLang(lang);
-        settings.setWordsLimit((short)3);
-        settings.setSymbolsLimit((short) 30);
+        SettingsAnswerFillBlank settings = getRandom(settingsAnswerFillBlankRepository.findAll());
 
         answer.setSettings(settings);
         answer.setQuestion(fbmq);
@@ -405,17 +620,15 @@ public class Bootstrap {
 
         AcceptedPhrase acceptedPhrase2 = new AcceptedPhrase();
         acceptedPhrase2.setPhrase("setLockMode() of TypedQuery");
+        acceptedPhrase2.setStaff(staff);
 
         AcceptedPhrase acceptedPhrase3 = new AcceptedPhrase();
         acceptedPhrase3.setPhrase("TypedQuery.setLockMode");
+        acceptedPhrase3.setStaff(staff);
 
-        answer2.setAcceptedPhrases(Arrays.asList(acceptedPhrase, acceptedPhrase1));
+        answer2.setAcceptedPhrases(new HashSet<>(Arrays.asList(acceptedPhrase, acceptedPhrase1)));
 
-        SettingsAnswerFillBlank settings2 = new SettingsAnswerFillBlank();
-
-        settings2.setLang(lang);
-        settings2.setWordsLimit((short)3);
-        settings2.setSymbolsLimit((short) 40);
+        SettingsAnswerFillBlank settings2 = getRandom(settingsAnswerFillBlankRepository.findAll());
 
         answer2.setSettings(settings2);
         answer2.setQuestion(fbmq);
@@ -427,16 +640,15 @@ public class Bootstrap {
 
 
     private void saveMQ() {
-        Theme theme = new Theme();
-        theme.setThemeId(1L);
+        Theme theme = getFirst(themes);
 
         QuestionMatcher mq = new QuestionMatcher();
         mq.setQuestion("Match the following concepts:");
         mq.setLevel((byte)3);
         mq.setTheme(theme);
 
-        Language lang = new Language();
-        lang.setLangId(1L);
+        Language lang = getRandom(languageRepository.findAll());
+
         mq.setLang(lang);
 
         final AnswerMatcher answer = new AnswerMatcher();
@@ -466,16 +678,14 @@ public class Bootstrap {
 
 
     private void saveSQ() {
-        Theme theme = new Theme();
-        theme.setThemeId(1L);
+        Theme theme = getFirst(themes);
 
         QuestionSequence sq = new QuestionSequence();
         sq.setQuestion("Order Maven build process stages one after another:");
         sq.setLevel((byte)2);
         sq.setTheme(theme);
 
-        Language lang = new Language();
-        lang.setLangId(1L);
+        Language lang = getRandom(languageRepository.findAll());
         sq.setLang(lang);
 
         final AnswerSequence answer = new AnswerSequence();

@@ -15,8 +15,8 @@ import static org.hamcrest.text.IsEmptyString.isEmptyString;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MAJOR;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MINOR;
 
-@RunWith(JUnit4.class)
 
+@RunWith(JUnit4.class)
 public class QuestionsFileParserRTPTest {
 
     private static final String REGULAR_SOURCE = "classpath:files/sample.rtp";

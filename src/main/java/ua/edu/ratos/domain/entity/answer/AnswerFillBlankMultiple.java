@@ -1,14 +1,13 @@
 package ua.edu.ratos.domain.entity.answer;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankMultiple;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Free-word answerIds, multiple blanks to fill acceptable
@@ -19,6 +18,8 @@ import java.util.List;
 @ToString(exclude = {"question", "settings", "acceptedPhrases"})
 @Entity
 @Table(name = "answer_fbmq")
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class AnswerFillBlankMultiple{
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
@@ -32,21 +33,27 @@ public class AnswerFillBlankMultiple{
     @Column(name="occurrence")
     private byte occurrence = 1;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_id")
+    @Column(name="is_deleted")
+    private boolean deleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", nullable = false)
     private QuestionFillBlankMultiple question;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "set_id")
     private SettingsAnswerFillBlank settings;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "fbmq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
-    private List<AcceptedPhrase> acceptedPhrases = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "fbmq_phrase", joinColumns = {@JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id")})
+    private Set<AcceptedPhrase> acceptedPhrases = new HashSet<>();
 
-    public boolean isValid() {
-        if (this.phrase == null || this.phrase.isEmpty()) return false;
-        if (this.occurrence <0 || this.occurrence>100) return false;
-        return true;
+    public void addPhrase(@NonNull AcceptedPhrase phrase) {
+        this.acceptedPhrases.add(phrase);
     }
+
+    public void removePhrase(@NonNull AcceptedPhrase phrase) {
+        this.acceptedPhrases.remove(phrase);
+    }
+
 }

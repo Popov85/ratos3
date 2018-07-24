@@ -1,21 +1,26 @@
 package ua.edu.ratos.domain.entity.answer;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
 @ToString(exclude = {"question", "resources"})
+@NoArgsConstructor
 @Entity
 @Table(name="answer_mcq")
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class AnswerMultipleChoice {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
@@ -32,14 +37,30 @@ public class AnswerMultipleChoice {
     @Column(name="is_required")
     private boolean isRequired;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    private List<Resource> resources = new ArrayList<>();
+    @Column(name="is_deleted")
+    private boolean deleted;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_id", updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
     private QuestionMultipleChoice question;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    private Set<Resource> resources = new HashSet<>();
+
+    public void addResource(Resource resource) {
+        this.resources.add(resource);
+    }
+
+    public void removeResource(Resource resource) {
+        this.resources.remove(resource);
+    }
+
+    public AnswerMultipleChoice(String answer, short percent, boolean isRequired) {
+        this.answer = answer;
+        this.percent = percent;
+        this.isRequired = isRequired;
+    }
 
     public boolean isValid() {
         if (answer == null) return false;

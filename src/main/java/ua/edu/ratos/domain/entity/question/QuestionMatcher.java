@@ -2,11 +2,11 @@ package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
-import ua.edu.ratos.service.dto.ResponseMatcher;
-
+import ua.edu.ratos.service.dto.response.ResponseMatcher;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +24,29 @@ import java.util.Optional;
 
 @Setter
 @Getter
-@ToString(callSuper = true, exclude = "answers")
 @Entity
 @DiscriminatorValue(value = "4")
+@NamedEntityGraph(name = "MQ.enriched", attributeNodes = {
+        @NamedAttributeNode("answers"),
+        @NamedAttributeNode("resources"),
+        @NamedAttributeNode("help"),
+        @NamedAttributeNode("theme")
+})
+@DynamicUpdate
 public class QuestionMatcher extends Question {
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnswerMatcher> answers;
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<AnswerMatcher> answers = new ArrayList<>();
+
+    public void addAnswer(AnswerMatcher answer) {
+        this.answers.add(answer);
+        answer.setQuestion(this);
+    }
+
+    public void removeAnswer(AnswerMatcher answer) {
+        this.answers.remove(answer);
+        answer.setQuestion(null);
+    }
 
     public int evaluate(ResponseMatcher response) {
         final List<ResponseMatcher.Triple> responses = response.responses;
@@ -45,5 +61,17 @@ public class QuestionMatcher extends Question {
             if (!obtainedLeftPhrase.equals(correctLeftPhrase) || !obtainedRightPhrase.equals(correctRightPhrase)) return 0;
         }
         return 100;
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionMatcher{" +
+                ", questionId=" + questionId +
+                ", question='" + question + '\'' +
+                ", level=" + level +
+                ", deleted=" + deleted +
+                ", type=" + type.getAbbreviation() +
+                ", lang=" + lang.getAbbreviation() +
+                '}';
     }
 }

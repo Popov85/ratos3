@@ -13,10 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="question_type")
 public class QuestionType {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "type_id")
     private Long typeId;
 

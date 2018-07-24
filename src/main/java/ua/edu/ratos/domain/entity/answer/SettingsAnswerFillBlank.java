@@ -5,12 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.domain.entity.Language;
+import ua.edu.ratos.domain.entity.Staff;
 
 import javax.persistence.*;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = "staff")
 @Entity
 @Table(name = "settings_fbq")
 public class SettingsAnswerFillBlank {
@@ -19,6 +20,9 @@ public class SettingsAnswerFillBlank {
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name="set_id")
     private Long settingsId;
+
+    @Column(name="name")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "lang_id")
@@ -38,4 +42,8 @@ public class SettingsAnswerFillBlank {
 
     @Column(name="is_case_sensitive")
     private boolean isCaseSensitive;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    protected Staff staff;
 }

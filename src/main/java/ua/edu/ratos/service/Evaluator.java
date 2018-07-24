@@ -1,6 +1,6 @@
 package ua.edu.ratos.service;
 
-import ua.edu.ratos.service.dto.*;
+import ua.edu.ratos.service.dto.response.*;
 
 public interface Evaluator {
     int evaluate(ResponseMultipleChoice response);

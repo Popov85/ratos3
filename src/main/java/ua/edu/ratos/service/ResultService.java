@@ -3,7 +3,7 @@ package ua.edu.ratos.service;
 import org.springframework.cache.annotation.Cacheable;
 import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.domain.model.ResultMock;
-import ua.edu.ratos.domain.repository.ResultRepository;
+import ua.edu.ratos.domain.repository.ResultDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class ResultService {
 
     @Autowired
-    private ResultRepository resultDAO;
+    private ResultDao resultDAO;
 
     @TrackTime
     public List<ResultMock> findAll() {

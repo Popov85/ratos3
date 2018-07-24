@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.service.GenericSession;
-import ua.edu.ratos.service.dto.BatchOut;
+import ua.edu.ratos.service.dto.session.BatchOut;
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
 

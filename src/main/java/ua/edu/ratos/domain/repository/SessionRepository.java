@@ -1,7 +1,7 @@
 package ua.edu.ratos.domain.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import ua.edu.ratos.service.dto.Session;
+import ua.edu.ratos.domain.model.Session;
 
-public interface SessionRepository extends CrudRepository<Session, String>{
+public interface SessionRepository extends CrudRepository<Session, String> {
 }

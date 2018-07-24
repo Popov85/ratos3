@@ -1,17 +1,19 @@
 package ua.edu.ratos.domain.entity.answer;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankSingle;
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Free-word answers, only one blank to fill in is acceptable, within this blank several words are acceptable
  * @author Andrey P.
  */
-@Data
+@Setter
+@Getter
 @ToString(exclude = {"question", "settings", "acceptedPhrases"})
+@NoArgsConstructor
 @Entity
 @Table(name = "answer_fbsq")
 public class AnswerFillBlankSingle {
@@ -21,17 +23,25 @@ public class AnswerFillBlankSingle {
     private Long answerId;
 
     @MapsId
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "answer_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id", nullable = false, updatable = false)
     private QuestionFillBlankSingle question;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne
     @JoinColumn(name = "set_id", nullable=false)
     private SettingsAnswerFillBlank settings;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "fbsq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
-    private List<AcceptedPhrase> acceptedPhrases;
+    private Set<AcceptedPhrase> acceptedPhrases = new HashSet<>();
+
+    public void addPhrase(@NonNull AcceptedPhrase phrase) {
+        this.acceptedPhrases.add(phrase);
+    }
+
+    public void removePhrase(@NonNull AcceptedPhrase phrase) {
+        this.acceptedPhrases.remove(phrase);
+    }
 
     public boolean isValid() {
         if (this.settings == null) return false;

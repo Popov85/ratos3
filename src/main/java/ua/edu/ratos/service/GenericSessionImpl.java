@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.domain.entity.question.Question;
 import ua.edu.ratos.domain.repository.SessionRepository;
-import ua.edu.ratos.service.dto.*;
+import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
+import ua.edu.ratos.service.dto.session.BatchIn;
+import ua.edu.ratos.service.dto.session.BatchOut;
+import ua.edu.ratos.domain.model.Result;
+import ua.edu.ratos.domain.model.Session;
+
 import java.util.*;
 
 

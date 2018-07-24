@@ -22,11 +22,22 @@
         </encoder>
     </appender>
 
-    <springProfile name="dev, test">
+    <springProfile name="dev, h2, mysql">
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.hibernate.stat" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
         <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
@@ -41,8 +52,11 @@
         <root level="ERROR">
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+        <logger name="ua.edu.ratos" additivity="false" level="WARN">
             <appender-ref ref="FILE"/>
+        </logger>
+        <logger name="org.springframework" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
 

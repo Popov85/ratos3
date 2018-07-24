@@ -1,6 +1,7 @@
 package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -9,13 +10,12 @@ import ua.edu.ratos.domain.entity.Language;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.Theme;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Setter
 @ToString (exclude = {"help", "resources", "theme", "language"})
+@NoArgsConstructor
 @Entity
 @Table(name = "question")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -24,7 +24,7 @@ public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "question_id")
+    @Column(name = "question_id", updatable = false, nullable = false)
     protected Long questionId;
 
     @Column(name = "title")
@@ -37,30 +37,43 @@ public abstract class Question {
     @Column(name = "is_deleted")
     protected boolean deleted;
 
-    @ManyToOne
-    @JoinColumn(name = "theme_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "theme_id", updatable = false)
     protected Theme theme;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", insertable = false, updatable = false)
     protected QuestionType type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lang_id")
     protected Language lang;
 
-    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected Help help;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected Set<Help> help = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "question_resource", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    protected List<Resource> resources = new ArrayList<>();
+    protected Set<Resource> resources = new HashSet<>();
 
-    public Optional<Help> getHelp() {
+    public Question(String question, byte level) {
+        this.question = question;
+        this.level = level;
+    }
+
+    public void addResource(Resource resource) {
+        this.resources.add(resource);
+    }
+
+    public void removeResource(Resource resource) {
+        this.resources.remove(resource);
+    }
+
+    public Optional<Set<Help>> getHelp() {
         return Optional.ofNullable(help);
     }
 
-    public Optional<List<Resource>> getResource() {
+    public Optional<Set<Resource>> getResources() {
         return Optional.ofNullable(resources);
     }
 

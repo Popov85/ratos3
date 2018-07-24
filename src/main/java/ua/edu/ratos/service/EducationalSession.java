@@ -1,8 +1,8 @@
 package ua.edu.ratos.service;
 
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.dto.BatchOut;
-import ua.edu.ratos.service.dto.Help;
+import ua.edu.ratos.domain.entity.Help;
+import ua.edu.ratos.service.dto.session.BatchOut;
 
 /**
  * Educational session provides more possibility for students.
