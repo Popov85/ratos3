@@ -1,11 +1,11 @@
 -- -----------------------------------------------------
 -- Schema ratos3
 -- -----------------------------------------------------
-CREATE SCHEMA ratos3;
+CREATE SCHEMA IF NOT EXISTS ratos3;
 -- -----------------------------------------------------
 -- Table   user
 -- -----------------------------------------------------
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
   user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   surname VARCHAR(100) NOT NULL,
@@ -855,7 +855,7 @@ CREATE TABLE IF NOT EXISTS   theme_type  ( course_id  INT,  theme_id  INT,  type
 -- View   theme_type
 -- -----------------------------------------------------
 
-CREATE VIEW  theme_type_view  AS
+CREATE OR REPLACE VIEW theme_type_view AS
   select theme.course_id as course_id, theme.theme_id as theme_id, question.type_id as type_id, theme.name as theme, question_type.eng_abbreviation as type,
          sum(question.level=1) as L1, sum(question.level=3) as L2, sum(question.level=3) as L3, count(question.type_id) as total
   from question

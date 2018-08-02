@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.service.AnswerMCQService;
 import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
-import javax.validation.Valid;
 
+/**
+ * @link https://g00glen00b.be/validating-the-input-of-your-rest-api-with-spring/
+ */
 @Slf4j
 @RestController
 public class AnswerFBMQController {

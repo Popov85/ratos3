@@ -1,4 +1,4 @@
-package ua.edu.ratos.integration_test.service;
+package ua.edu.ratos.it.service;
 
 import org.junit.Assert;
 import org.junit.Test;

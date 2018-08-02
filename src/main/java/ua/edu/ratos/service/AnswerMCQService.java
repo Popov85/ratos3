@@ -1,6 +1,7 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +10,8 @@ import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.domain.repository.AnswerMCQRepository;
 import ua.edu.ratos.domain.repository.QuestionMCQRepository;
 import ua.edu.ratos.domain.repository.ResourceRepository;
-import java.util.Optional;
+import ua.edu.ratos.service.dto.entity.AnswerMCQInDto;
+
 
 @Service
 public class AnswerMCQService {
@@ -23,49 +25,36 @@ public class AnswerMCQService {
     @Autowired
     private ResourceRepository resourceRepository;
 
-    /**
-     * Saves only generic parameters of answer, in case any resources manipulation, refer to methods addResource(), deleteResource()
-     * @param answer AnswerMultipleChoice to be persisted
-     * @param questionId
-     * @return generated Id
-     */
-    @Transactional
-    public Long save(@NonNull AnswerMultipleChoice answer, @NonNull Long questionId) {
-        answer.setQuestion(questionRepository.getOne(questionId));
-        return answerRepository.save(answer).getAnswerId();
-    }
+    @Autowired
+    private ModelMapper modelMapper;
 
-    /**
-     * Updates only generic fields of Answer
-     * @param updatedAnswer
-     */
     @Transactional
-    public void update(@NonNull AnswerMultipleChoice updatedAnswer) {
-        final Long answerId = updatedAnswer.getAnswerId();
-        final Optional<AnswerMultipleChoice> optional = answerRepository.findById(answerId);
-        final AnswerMultipleChoice oldAnswer = optional.orElseThrow(() ->
-                new RuntimeException("AnswerMultipleChoice not found, ID = "+ answerId));
-        oldAnswer.setAnswer(updatedAnswer.getAnswer());
-        oldAnswer.setPercent(updatedAnswer.getPercent());
-        oldAnswer.setRequired(updatedAnswer.isRequired());
+    public Long save(@NonNull AnswerMCQInDto dto) {
+        return answerRepository.save(fromDto(dto)).getAnswerId();
     }
 
     @Transactional
-    public void addResource(@NonNull Resource resource, @NonNull Long answerId) {
+    public void update(@NonNull AnswerMCQInDto dto) {
+        answerRepository.save(fromDto(dto));
+    }
+
+    @Transactional
+    public void addResource(@NonNull Long answerId, @NonNull Long resourceId) {
         final AnswerMultipleChoice answer = answerRepository.findByIdWithResources(answerId);
-        answer.addResource(resource);
-    }
-
-    @Transactional
-    public void addResource(@NonNull Long resourceId, @NonNull Long answerId) {
-        final AnswerMultipleChoice answer = answerRepository.findByIdWithResources(answerId);
+        // Will fetch it anyways
         final Resource resource = resourceRepository.getOne(resourceId);
         answer.addResource(resource);
     }
 
     @Transactional
-    public void deleteResource(@NonNull Long resourceId, @NonNull Long answerId, boolean fromRepository) {
+    public void deleteResource(@NonNull Long answerId, @NonNull Long resourceId) {
+        deleteResource(answerId, resourceId, false);
+    }
+
+    @Transactional
+    public void deleteResource(@NonNull Long answerId, @NonNull Long resourceId, boolean fromRepository) {
         final AnswerMultipleChoice answer = answerRepository.findByIdWithResources(answerId);
+        // Will fetch it anyways
         final Resource deletableResource = resourceRepository.getOne(resourceId);
         answer.removeResource(deletableResource);
         if (fromRepository) resourceRepository.delete(deletableResource);
@@ -74,5 +63,13 @@ public class AnswerMCQService {
     @Transactional
     public void deleteById(@NonNull Long answerId) {
         answerRepository.pseudoDeleteById(answerId);
+    }
+
+
+    private AnswerMultipleChoice fromDto(AnswerMCQInDto dto) {
+        AnswerMultipleChoice answer = modelMapper.map(dto, AnswerMultipleChoice.class);
+        if (dto.getResourceId()!=0) answer.addResource(resourceRepository.getOne(dto.getResourceId()));
+        answer.setQuestion(questionRepository.getOne(dto.getQuestionId()));
+        return answer;
     }
 }

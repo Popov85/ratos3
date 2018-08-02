@@ -1,4 +1,4 @@
-package ua.edu.ratos.integration_test.repository;
+package ua.edu.ratos.it.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;

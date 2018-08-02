@@ -19,12 +19,12 @@ public class AnswerMQInDto {
     @NotNull(groups = {AnswerMQInDto.Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
-    @NotEmpty(message = "{dto.phrase.required}")
-    @Size(min = 1, max = 100, message = "{dto.phrase.invalid}")
+    @NotEmpty(message = "Invalid leftPhrase, {dto.string.required}")
+    @Size(min = 1, max = 100, message = "Invalid leftPhrase, {dto.string.invalid}")
     private String leftPhrase;
 
-    @NotEmpty(message = "{dto.phrase.required}")
-    @Size(min = 1, max = 100, message = "{dto.phrase.invalid}")
+    @NotEmpty(message = "Invalid rightPhrase, {dto.string.required}")
+    @Size(min = 1, max = 100, message = "Invalid rightPhrase, {dto.string.invalid}")
     private String rightPhrase;
 
     @PositiveOrZero(message = "Invalid resourceId, {dto.fk.invalidOptional}")

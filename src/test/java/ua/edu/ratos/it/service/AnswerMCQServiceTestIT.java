@@ -1,6 +1,5 @@
-package ua.edu.ratos.integration_test.service;
+package ua.edu.ratos.it.service;
 
-import org.hibernate.Hibernate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +13,11 @@ import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.domain.repository.AnswerMCQRepository;
 import ua.edu.ratos.domain.repository.QuestionMCQRepository;
 import ua.edu.ratos.domain.repository.ResourceRepository;
-import ua.edu.ratos.domain.repository.StaffRepository;
 import ua.edu.ratos.service.AnswerMCQService;
-import java.util.Arrays;
-import java.util.HashSet;
+import ua.edu.ratos.service.dto.entity.AnswerMCQInDto;
 import java.util.Optional;
 import java.util.Set;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,21 +25,19 @@ import java.util.Set;
 public class AnswerMCQServiceTestIT {
 
     public static final String ANSWER = "Represents an attribute node of an entity graph";
-    public static final String RESOURCE_LINK = "https://image.slidesharecdn.com/schema01.jpg";
-    public static final String RESOURCE_DESCRIPTION = "Schema#1";
+    public static final String ANSWER_UPD = "An attribute node of an EntityGraph";
+    public static final String RESOURCE_LINK_1 = "https://image.slidesharecdn.com/schema01.jpg";
+    public static final String RESOURCE_DESCRIPTION_1 = "Schema#1";
+    public static final String RESOURCE_LINK_2 = "https://image.slidesharecdn.com/schema02.jpg";
+    public static final String RESOURCE_DESCRIPTION_2 = "Schema#2";
 
     @Autowired
     private AnswerMCQService answerService;
 
     @Autowired
     private AnswerMCQRepository answerRepository;
-
     @Autowired
     private QuestionMCQRepository questionRepository;
-
-    @Autowired
-    private StaffRepository staffRepository;
-
     @Autowired
     private ResourceRepository resourceRepository;
 
@@ -49,34 +45,40 @@ public class AnswerMCQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWrongTest() {
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)100, true);
-        answerService.save(answer, null);
+        // 1. Try to insert invalid data
+        AnswerMCQInDto dto = new AnswerMCQInDto(null, ANSWER, (short)100, true, 0, null);
+        answerService.save(dto);
     }
+
 
     @Test
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveSimpleTest() {
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)100, true);
-        answerService.save(answer, 1L);
-        Assert.assertTrue(answerRepository.findById(1L).isPresent());
+        // 1. Try to insert valid data
+        AnswerMCQInDto dto = new AnswerMCQInDto(null, ANSWER, (short)100, true, 0, 1L);
+        answerService.save(dto);
+
+        // 2. Retrieve and compare
+        final Optional<AnswerMultipleChoice> foundAnswer = answerRepository.findById(1L);
+        Assert.assertTrue(foundAnswer.isPresent());
+        Assert.assertEquals(ANSWER, foundAnswer.get().getAnswer());
     }
+
 
     @Test
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWithResourcesTest() {
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)100, true);
-        answer.setResources(new HashSet<>(Arrays.asList(resource)));
-        answerService.save(answer, 1L);
+        // 1. Try to insert valid data with a resource
+        AnswerMCQInDto dto = new AnswerMCQInDto(null, ANSWER, (short)100, true, 1, 1L);
+        answerService.save(dto);
 
+        // 2. Retrieve and compare
         final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
         final Set<Resource> resources = foundAnswer.getResources();
-        Assert.assertTrue(Hibernate.isInitialized(resources));
         Assert.assertEquals(1, resources.size());
-        Assert.assertTrue(resources.contains(resource));
+        Assert.assertTrue(resources.contains(new Resource(RESOURCE_LINK_1, RESOURCE_DESCRIPTION_1)));
     }
 
 
@@ -85,23 +87,61 @@ public class AnswerMCQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() {
         //1. Insert
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)0, false);
-        answer.setQuestion(questionRepository.getOne(1L));
-        answerRepository.save(answer);
+        insert();
 
         // 2. Update
-        final AnswerMultipleChoice insertedAnswer = answerRepository.findById(1L).get();
-        insertedAnswer.setPercent((short)100);
-        insertedAnswer.setRequired(true);
-        answerService.update(insertedAnswer);
+        AnswerMCQInDto dto = new AnswerMCQInDto(1L, ANSWER_UPD, (short)100, true, 1, 1L);
+        answerService.update(dto);
 
         // 3. Find and compare
         final Optional<AnswerMultipleChoice> foundAnswer = answerRepository.findById(1L);
         Assert.assertTrue(foundAnswer.isPresent());
+        Assert.assertEquals(ANSWER_UPD, foundAnswer.get().getAnswer());
         Assert.assertEquals((short)100, foundAnswer.get().getPercent());
         Assert.assertTrue(foundAnswer.get().isRequired());
-        Assert.assertNotNull(foundAnswer.get().getQuestion());
     }
+
+    @Test
+    @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void updateWithResourcesTest() {
+        //1. Insert
+        insert();
+
+        // 2. Update answer, percent and resource {2}
+        AnswerMCQInDto dto = new AnswerMCQInDto(1L, ANSWER_UPD, (short)100, true, 2, 1L);
+        answerService.update(dto);
+
+        // 3. Find and compare
+        final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
+        Assert.assertNotNull(foundAnswer);
+        Assert.assertEquals(ANSWER_UPD, foundAnswer.getAnswer());
+        Assert.assertEquals((short)100, foundAnswer.getPercent());
+        Assert.assertTrue(foundAnswer.isRequired());
+        Assert.assertEquals(1, foundAnswer.getResources().size());
+        Assert.assertTrue(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_2, RESOURCE_DESCRIPTION_2)));
+    }
+
+    @Test
+    @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void updateWithoutResourcesTest() {
+        //1. Insert
+        insert();
+
+        // 2. Update answer, percent and remove resource : {0}
+        AnswerMCQInDto dto = new AnswerMCQInDto(1L, ANSWER_UPD, (short)100, true, 0, 1L);
+        answerService.update(dto);
+
+        // 3. Find and compare
+        final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
+        Assert.assertNotNull(foundAnswer);
+        Assert.assertEquals(ANSWER_UPD, foundAnswer.getAnswer());
+        Assert.assertEquals((short)100, foundAnswer.getPercent());
+        Assert.assertTrue(foundAnswer.isRequired());
+        Assert.assertEquals(0, foundAnswer.getResources().size());
+    }
+
 
     @Test
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -109,35 +149,24 @@ public class AnswerMCQServiceTestIT {
     public void addResourceTest() {
         // 1. Insert with a resource
         insert();
-
         // 2. Add 2-d resource
-        Resource resource2 = new Resource("https://image.slidesharecdn.com/schema02.jpg", "Schema#02");
-        resource2.setStaff(staffRepository.getOne(1L));
-        answerService.addResource(resource2, 1L);
-
+        answerService.addResource(1L, 2L);
         // 3. Find with resources and compare
         final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundAnswer.getResources()));
         Assert.assertEquals(2, foundAnswer.getResources().size());
     }
 
     @Test
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void addResourceExistingTest() {
+    public void addResourceWrongTest() {
         // 1. Insert with a resource
         insert();
-
-        // 2. Add 2-d resource
-        Resource resource2 = new Resource("https://image.slidesharecdn.com/schema02.jpg", "Schema#02");
-        resource2.setStaff(staffRepository.getOne(1L));
-        final Resource savedResource = resourceRepository.save(resource2);
-        answerService.addResource(savedResource.getResourceId(), 1L);
-
+        // 2. Add 2-d resource (1L is already associated with the answer)
+        answerService.addResource(1L, 1L);
         // 3. Find with resources and compare
         final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundAnswer.getResources()));
-        Assert.assertEquals(2, foundAnswer.getResources().size());
+        Assert.assertEquals(1, foundAnswer.getResources().size());
     }
 
 
@@ -146,19 +175,11 @@ public class AnswerMCQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteResourceTest() {
         // 1. Insert with a resource
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)50, true);
-        answer.setQuestion(questionRepository.getOne(1L));
-        answer.setResources(new HashSet<>(Arrays.asList(resource)));
-        answerRepository.save(answer);
-
+        insert();
         // 2. Delete this single resource
-        answerService.deleteResource(resource.getResourceId(), 1L, false);
-
+        answerService.deleteResource(1L, 1L, false);
         // 3. Find with resources and compare
         final AnswerMultipleChoice foundAnswer = answerRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundAnswer.getResources()));
         Assert.assertTrue(foundAnswer.getResources().isEmpty());
     }
 
@@ -166,23 +187,22 @@ public class AnswerMCQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() {
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)100, true);
-        answer.setQuestion(questionRepository.getOne(1L));
-        answerRepository.save(answer);
-
+        // 1. Insert
+        insert();
         Assert.assertTrue(answerRepository.findById(1L).isPresent());
-
+        // 2. Delete
         answerService.deleteById(1L);
-
+        // 3. Make sure deleted
         Assert.assertFalse(answerRepository.findById(1L).isPresent());
     }
 
     private void insert() {
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        AnswerMultipleChoice answer = new AnswerMultipleChoice(ANSWER, (short)50, true);
+        AnswerMultipleChoice answer = new AnswerMultipleChoice();
+        answer.setAnswer(ANSWER);
+        answer.setPercent((short)50);
+        answer.setRequired(true);
         answer.setQuestion(questionRepository.getOne(1L));
-        answer.setResources(new HashSet<>(Arrays.asList(resource)));
+        answer.addResource(resourceRepository.findById(1L).get());
         answerRepository.save(answer);
     }
 

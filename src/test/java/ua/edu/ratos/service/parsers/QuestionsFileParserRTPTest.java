@@ -30,14 +30,14 @@ public class QuestionsFileParserRTPTest {
         assertThat(result.getHeader(), not(isEmptyString()));
         Assert.assertTrue(result.getQuestions().size()>0);
 
-        System.out.println("QUESTIONS#: "+result.questions()+" INVALID#: "+result.invalid());
+   /*     System.out.println("QUESTIONS#: "+result.questions()+" INVALID#: "+result.invalid());
         result.getQuestions().forEach(question->System.out.println(question));
 
 
         System.out.println("ISSUES#: "+result.issues()+
                 " MAJOR#: "+result.issuesOf(MAJOR) +
                 " MINOR#: "+result.issuesOf(MINOR));
-        result.getIssues().forEach(issue->System.out.println(issue));
+        result.getIssues().forEach(issue->System.out.println(issue));*/
     }
 }
 

@@ -1,6 +1,7 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +11,12 @@ import ua.edu.ratos.domain.entity.answer.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.repository.AcceptedPhraseRepository;
 import ua.edu.ratos.domain.repository.AnswerFBSQRepository;
 import ua.edu.ratos.domain.repository.SettingsAnswerFillBlankRepository;
+import ua.edu.ratos.service.dto.entity.AnswerFBSQInDto;
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AnswerFBSQService {
@@ -25,38 +30,38 @@ public class AnswerFBSQService {
     @Autowired
     private SettingsAnswerFillBlankRepository settingsRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+
     @Transactional
-    public void addAcceptedPhrase(@NonNull AcceptedPhrase phrase, @NonNull Long answerId) {
-        final AnswerFillBlankSingle answer = answerRepository.findByIdWithAcceptedPhrases(answerId);
-        answer.addPhrase(phrase);
+    public void update(@NonNull AnswerFBSQInDto dto) {
+        answerRepository.save(fromDto(dto));
     }
 
     @Transactional
-    public void addAcceptedPhrase(@NonNull Long phraseId, @NonNull Long answerId) {
+    public void addAcceptedPhrase(@NonNull Long answerId, @NonNull Long phraseId) {
         final AnswerFillBlankSingle answer = answerRepository.findByIdWithAcceptedPhrases(answerId);
-        final AcceptedPhrase phrase = phraseRepository.findById(phraseId).get();
+        final AcceptedPhrase phrase = phraseRepository.getOne(phraseId);
         phrase.setLastUsed(LocalDateTime.now());
         answer.addPhrase(phrase);
     }
 
     @Transactional
-    public void deleteAcceptedPhrase(@NonNull Long phraseId, @NonNull Long answerId) {
+    public void deleteAcceptedPhrase(@NonNull Long answerId, @NonNull Long phraseId) {
         final AnswerFillBlankSingle answer = answerRepository.findByIdWithAcceptedPhrases(answerId);
         AcceptedPhrase deletablePhrase = phraseRepository.getOne(phraseId);
         answer.removePhrase(deletablePhrase);
     }
 
-    /**
-     * Effectively updates only settings
-     * @param answerId
-     * @param setId
-     */
-    @Transactional
-    public void update(@NonNull Long answerId, @NonNull Long setId) {
-        final Optional<AnswerFillBlankSingle> optional = answerRepository.findById(answerId);
-        final AnswerFillBlankSingle oldAnswer = optional.orElseThrow(() ->
-                new RuntimeException("AnswerFillBlankSingle not found, ID = "+ answerId));
-        final SettingsAnswerFillBlank updatedSettings = settingsRepository.getOne(setId);
-        oldAnswer.setSettings(updatedSettings);
+    private AnswerFillBlankSingle fromDto(AnswerFBSQInDto dto) {
+        if (dto.getPhrasesIds()==null||dto.getPhrasesIds().isEmpty())
+            throw new RuntimeException("Answer does not make sense without any accepted phrases!");
+        AnswerFillBlankSingle answer = modelMapper.map(dto, AnswerFillBlankSingle.class);
+        answer.setSettings(settingsRepository.getOne(dto.getSetId()));
+        Set<AcceptedPhrase> phrases = new HashSet<>();
+        dto.getPhrasesIds().forEach(id->phrases.add(phraseRepository.getOne(id)));
+        answer.setAcceptedPhrases(phrases);
+        return answer;
     }
 }

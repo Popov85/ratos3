@@ -3,7 +3,6 @@ package ua.edu.ratos.service.dto.entity;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
-
 import javax.validation.constraints.*;
 
 @ToString
@@ -12,7 +11,7 @@ import javax.validation.constraints.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerSQInDto {
+public class AnswerMCQInDto {
 
     public interface New{}
     public interface Update{}
@@ -22,12 +21,15 @@ public class AnswerSQInDto {
     @NotNull(groups = {AnswerMQInDto.Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
-    @NotEmpty(message = "Invalid phrase, {dto.string.required}")
-    @Size(min = 1, max = 100, message = "Invalid phrase, {dto.string.invalid}")
-    private String phrase;
+    @NotEmpty(message = "Invalid answer, {dto.string.required}")
+    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    private String answer;
 
-    @Range(min = 1, max=10, message = "Invalid elementOrder, {dto.range.invalid}")
-    private short order;
+    @Range(min = 0, max=100, message = "Invalid percent, {dto.range.invalid}")
+    private short percent;
+
+    // TODO 0 percent cannot be required!
+    private boolean isRequired;
 
     @PositiveOrZero(message = "Invalid resourceId, {dto.fk.invalidOptional}")
     private long resourceId;

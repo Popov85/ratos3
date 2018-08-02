@@ -44,7 +44,7 @@ public class AnswerMultipleChoice {
     @JoinColumn(name = "question_id")
     private QuestionMultipleChoice question;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     private Set<Resource> resources = new HashSet<>();
 

@@ -31,7 +31,7 @@ public class AnswerFillBlankSingle {
     @JoinColumn(name = "set_id", nullable=false)
     private SettingsAnswerFillBlank settings;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "fbsq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
     private Set<AcceptedPhrase> acceptedPhrases = new HashSet<>();
 

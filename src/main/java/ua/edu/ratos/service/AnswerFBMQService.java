@@ -65,6 +65,8 @@ public class AnswerFBMQService {
 
 
     private AnswerFillBlankMultiple fromDto(AnswerFBMQInDto dto) {
+        if (dto.getPhrasesIds()==null||dto.getPhrasesIds().isEmpty())
+            throw new RuntimeException("Answer does not make sense without any accepted phrases!");
         AnswerFillBlankMultiple answer = modelMapper.map(dto, AnswerFillBlankMultiple.class);
         answer.setQuestion(questionRepository.getOne(dto.getQuestionId()));
         answer.setSettings(settingsRepository.getOne(dto.getSetId()));

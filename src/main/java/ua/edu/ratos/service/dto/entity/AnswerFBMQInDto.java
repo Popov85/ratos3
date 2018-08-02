@@ -26,11 +26,11 @@ public class AnswerFBMQInDto {
     @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
-    @NotEmpty(message = "{dto.phrase.required}")
-    @Size(min = 1, max = 100, message = "{dto.phrase.invalid}")
+    @NotEmpty(message = "Invalid phrase, {dto.string.required}")
+    @Size(min = 1, max = 100, message = "Invalid phrase, {dto.string.invalid}")
     private String phrase;
 
-    @Range(min=1, max=10, message = "{dto.occurrence.invalid}")
+    @Range(min=1, max=10, message = "Invalid occurrence, {dto.range.invalid}")
     private byte occurrence;
 
     @Positive(message = "Invalid setId, {dto.fk.invalid}")
@@ -39,7 +39,7 @@ public class AnswerFBMQInDto {
     @Positive(message = "Invalid questionId, {dto.fk.invalid}")
     private long questionId;
 
-    @NotNull(message = "Invalid phrasesIds, {dto.collection.required}")
+    @NotEmpty(message = "Invalid phrasesIds, {dto.collection.required}")
     @Size(min = 1, max = 10, message = "Invalid phrasesIds, {dto.collection.invalid}")
     private Set<Long> phrasesIds;
 }

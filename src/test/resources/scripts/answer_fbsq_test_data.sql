@@ -12,3 +12,7 @@ insert into language (name, eng_abbreviation) values('русский', 'ru');
 insert into theme (name, course_id) values('Java Operators', 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('eng default', 5, 100, 0, 0, 0, 1, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ru default', 5, 100, 0, 0, 0, 2, 1);
+
+insert into accepted_phrase(phrase, staff_id, last_used) values('CascadeType',1, '2018-07-18 10:30:15.999999999');
+insert into accepted_phrase(phrase, staff_id, last_used) values('Enum<CascadeType>',1, '2018-07-18 10:32:19.999999999');
+insert into accepted_phrase(phrase, staff_id, last_used) values('javax.persistence.CascadeType',1, '2018-07-18 10:32:19.999999999');

@@ -19,7 +19,6 @@ public class EvaluatorImplTest {
     @Test
     public void checkTestOneRightRequired() {
 
-
         QuestionMultipleChoice question = new QuestionMultipleChoice();
         List<AnswerMultipleChoice> answers = new ArrayList<>();
         answers.add(createAnswer(1000l, "Answer0", (short) 0, false));
