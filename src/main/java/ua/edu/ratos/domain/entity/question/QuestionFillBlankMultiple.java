@@ -7,26 +7,18 @@ import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankMultiple;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
 @Entity
 @DiscriminatorValue(value = "3")
-@NamedEntityGraph(name = "FBMQ.enriched", attributeNodes = {
-        @NamedAttributeNode("answers"),
-        @NamedAttributeNode("resources"),
-        @NamedAttributeNode("help"),
-        @NamedAttributeNode("theme")
-})
 @DynamicUpdate
 public class QuestionFillBlankMultiple extends Question{
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<AnswerFillBlankMultiple> answers = new ArrayList<>();
+    private Set<AnswerFillBlankMultiple> answers = new HashSet<>();
 
     public void addAnswer(AnswerFillBlankMultiple answer) {
         this.answers.add(answer);

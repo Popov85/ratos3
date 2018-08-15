@@ -28,14 +28,10 @@ public class Help {
     private String help;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", updatable = false, nullable = false)
-    private Question question;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", updatable = false, nullable = false)
     private Staff staff;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "help_resource", joinColumns = @JoinColumn(name = "help_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     private Set<Resource> resources = new HashSet<>();
 

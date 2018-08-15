@@ -44,7 +44,7 @@ public class AnswerMQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWrongTest() {
         // 1. Try to save with wrong parameters
-        AnswerMQInDto dto = new AnswerMQInDto(null, "", "", 0, 0);
+        AnswerMQInDto dto = new AnswerMQInDto(null, "", "", 0, 0L);
         answerService.save(dto);
     }
 
@@ -53,7 +53,7 @@ public class AnswerMQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveSimpleTest() {
         // 1. Try to save correct dto
-        AnswerMQInDto dto = new AnswerMQInDto(null, LEFT_PHRASE, RIGHT_PHRASE, 0, 1);
+        AnswerMQInDto dto = new AnswerMQInDto(null, LEFT_PHRASE, RIGHT_PHRASE, 0, 1L);
         answerService.save(dto);
 
         // 2. Retrieve and compare
@@ -68,7 +68,7 @@ public class AnswerMQServiceTestIT {
     @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWithResourcesTest() {
         // 1. Try to save with a resource
-        AnswerMQInDto dto = new AnswerMQInDto(null, LEFT_PHRASE, RIGHT_PHRASE, 1, 1);
+        AnswerMQInDto dto = new AnswerMQInDto(null, LEFT_PHRASE, RIGHT_PHRASE, 1, 1L);
         answerService.save(dto);
 
         // 2. Retrieve and compare
@@ -87,7 +87,7 @@ public class AnswerMQServiceTestIT {
        insert();
 
        // 2. Update
-        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 1, 1);
+        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 1, 1L);
         answerService.update(dto);
 
         // 3. Retrieve and compare
@@ -108,7 +108,7 @@ public class AnswerMQServiceTestIT {
         insert();
 
         // 2. Update with another resource {2L}
-        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 2, 1);
+        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 2, 1L);
         answerService.update(dto);
 
         // 3. Retrieve and compare
@@ -128,7 +128,7 @@ public class AnswerMQServiceTestIT {
         insert();
 
         // 2. Update without resource
-        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 0, 1);
+        AnswerMQInDto dto = new AnswerMQInDto(1L, LEFT_PHRASE_UPD, RIGHT_PHRASE, 0, 1L);
         answerService.update(dto);
 
         // 3. Retrieve and compare

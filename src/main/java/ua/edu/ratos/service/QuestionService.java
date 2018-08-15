@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Help;
 import ua.edu.ratos.domain.entity.Resource;
-import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.domain.entity.question.*;
 import ua.edu.ratos.domain.repository.*;
+import ua.edu.ratos.service.dto.entity.*;
+import ua.edu.ratos.service.dto.transformer.DtoQuestionTransformer;
 import java.util.*;
 
 @Slf4j
@@ -21,45 +22,63 @@ public class QuestionService {
     @Autowired
     private ResourceRepository resourceRepository;
 
-    /**
-     * Question added while editing Theme's set of Questions in front-end Editor tool,
-     * this method is used for saving questions of every possible type
-     * @param question
-     */
+    @Autowired
+    private DtoQuestionTransformer transformer;
+
+
     @Transactional
-    public void save(@NonNull Question question) {
-        final Question savedQuestion = questionRepository.save(question);
-        log.debug("Saved question :: {} ", savedQuestion);
+    public Long save(@NonNull QuestionMCQInDto dto) {
+        final QuestionMultipleChoice entity = transformer.fromDto(dto);
+        final Question savedQuestion = questionRepository.save(entity);
+        return savedQuestion.getQuestionId();
     }
 
+    @Transactional
+    public Long save(@NonNull QuestionFBSQInDto dto) {
+        final QuestionFillBlankSingle entity = transformer.fromDto(dto);
+        final Question savedQuestion = questionRepository.save(entity);
+        return savedQuestion.getQuestionId();
+    }
+
+    @Transactional
+    public Long save(@NonNull QuestionFBMQInDto dto) {
+        final QuestionFillBlankMultiple entity = transformer.fromDto(dto);
+        final Question savedQuestion = questionRepository.save(entity);
+        return savedQuestion.getQuestionId();
+    }
+
+    @Transactional
+    public Long save(@NonNull QuestionMQInDto dto) {
+        final QuestionMatcher entity = transformer.fromDto(dto);
+        final Question savedQuestion = questionRepository.save(entity);
+        return savedQuestion.getQuestionId();
+    }
+
+    @Transactional
+    public Long save(@NonNull QuestionSQInDto dto) {
+        final QuestionSequence entity = transformer.fromDto(dto);
+        final Question savedQuestion = questionRepository.save(entity);
+        return savedQuestion.getQuestionId();
+    }
+
+
     /**
-     * Questions added after parsing the .rtp- .txt-files
+     * Questions obtained after parsing the .rtp- .txt-files
      * @param questions
      */
     @Transactional
     public void saveAll(@NonNull List<Question> questions) {
         questionRepository.saveAll(questions);
-        log.debug("Saved multiple questions :: {} ", questions.size());
     }
 
-    /**
-     * Updates only generic fields of Question
-     * @param updatedQuestion base Question, without any child fields, except required Language
-     *  In order to update a Question's Help/Resources or Answers refer to the corresponding classes
-     * @link
-     */
     @Transactional
-    public void update(@NonNull Question updatedQuestion) {
-        final Long questionId = updatedQuestion.getQuestionId();
+    public void update(@NonNull QuestionInDto dto) {
+        final Long questionId = dto.getQuestionId();
         final Optional<Question> optional = questionRepository.findById(questionId);
-        final Question oldQuestion = optional.orElseThrow(() ->
+        final Question updatable = optional.orElseThrow(() ->
                 new RuntimeException("Question not found, ID = "+ questionId));
-        oldQuestion.setQuestion(updatedQuestion.getQuestion());
-        oldQuestion.setLevel(updatedQuestion.getLevel());
-        oldQuestion.setLang(updatedQuestion.getLang());
-        log.debug("Updated question :: {} ", oldQuestion);
+        transformer.mapDto(dto, updatable);
     }
-
 
     @Transactional
     public void addResource(@NonNull Resource resource, Long questionId) {
@@ -73,19 +92,6 @@ public class QuestionService {
         question.removeResource(resource);
         if (fromRepository) resourceRepository.delete(resource);
     }
-/*
-    @Transactional
-    public void addHelp(@NonNull Help help) {
-        if (help.getHelpId()==null || help.getHelpId()==0)
-            throw new RuntimeException("helpId must not be null");
-        helpRepository.save(help);
-    }
-
-    @Transactional
-    public void removeHelp(@NonNull Long questionId) {
-        helpRepository.deleteById(questionId);
-    }*/
-
 
     /**
      * Fetch all existing questions from the DB into the in-memory cache for further processing
@@ -120,7 +126,7 @@ public class QuestionService {
     @Transactional
     public void deleteById(@NonNull Long questionId) {
         questionRepository.pseudoDeleteById(questionId);
-        log.warn("Question is to be hidden, Id= {}", questionId);
+        log.warn("Question is hidden, ID = {}", questionId);
     }
 
 }

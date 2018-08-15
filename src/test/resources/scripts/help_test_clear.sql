@@ -1,7 +1,6 @@
 delete from help_resource;
 delete from help;
 delete from resource;
-delete from question;
 delete from theme;
 delete from language;
 delete from question_type;
@@ -24,7 +23,6 @@ ALTER TABLE staff ALTER COLUMN staff_id RESTART WITH 1;
 ALTER TABLE course ALTER COLUMN course_id RESTART WITH 1;
 ALTER TABLE language ALTER COLUMN lang_id RESTART WITH 1;
 ALTER TABLE theme ALTER COLUMN theme_id RESTART WITH 1;
-ALTER TABLE question ALTER COLUMN question_id RESTART WITH 1;
 ALTER TABLE help ALTER COLUMN help_id RESTART WITH 1;
 ALTER TABLE resource ALTER COLUMN resource_id RESTART WITH 1;
 

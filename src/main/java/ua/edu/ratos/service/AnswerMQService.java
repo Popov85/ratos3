@@ -41,7 +41,7 @@ public class AnswerMQService {
 
     private AnswerMatcher fromDto(AnswerMQInDto dto) {
         AnswerMatcher answer = modelMapper.map(dto, AnswerMatcher.class);
-        if (dto.getResourceId()!=0) answer.addResource(resourceRepository.getOne(dto.getResourceId()));
+        if (dto.getRightPhraseResourceId()!=0) answer.addResource(resourceRepository.getOne(dto.getRightPhraseResourceId()));
         answer.setQuestion(questionRepository.getOne(dto.getQuestionId()));
         return answer;
     }

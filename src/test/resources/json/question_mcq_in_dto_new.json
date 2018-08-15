@@ -1,0 +1,44 @@
+{
+  "questionId":null,
+  "question":"Interface used to interact with the second-level cache",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":1,
+  "langId":1,
+  "helpId":1,
+  "resourcesIds":null,
+  "answers":[
+    {
+      "answerId":null,
+      "answer":"Cache",
+      "percent":100,
+      "isRequired":true,
+      "resourceId":0,
+      "questionId":null
+    },
+    {
+      "answerId":null,
+      "answer":"EntityManager",
+      "percent":0,
+      "isRequired":false,
+      "resourceId":0,
+      "questionId":null
+    },
+    {
+      "answerId":null,
+      "answer":"StoredProcedure",
+      "percent":0,
+      "isRequired":false,
+      "resourceId":0,
+      "questionId":null
+    },
+    {
+      "answerId":null,
+      "answer":"Subgraph<T>",
+      "percent":0,
+      "isRequired":false,
+      "resourceId":0,
+      "questionId":null
+    }
+  ]
+}

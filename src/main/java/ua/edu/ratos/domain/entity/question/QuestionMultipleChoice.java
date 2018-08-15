@@ -17,16 +17,11 @@ import javax.persistence.*;
 @Setter
 @Entity
 @DiscriminatorValue(value = "1")
-@NamedEntityGraph(name = "MCQ.enriched", attributeNodes = {
-        @NamedAttributeNode("answers"),
-        @NamedAttributeNode("resources"),
-        @NamedAttributeNode("help"),
-        @NamedAttributeNode("theme")
-})
 @DynamicUpdate
 public class QuestionMultipleChoice extends Question {
-
-    // Is it a question with the single correct answer?
+    /**
+     * Is it a question with the single correct answer?
+     */
     @Transient
     private boolean isSingle;
 
@@ -137,8 +132,6 @@ public class QuestionMultipleChoice extends Question {
                 ", question='" + question + '\'' +
                 ", level=" + level +
                 ", deleted=" + deleted +
-                ", type=" + ((type==null) ? null: type.getAbbreviation()) +
-                ", lang=" + ((lang==null) ? null: lang.getAbbreviation())+
                 '}';
     }
 }

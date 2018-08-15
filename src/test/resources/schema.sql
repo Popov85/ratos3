@@ -215,7 +215,6 @@ CREATE TABLE IF NOT EXISTS   question  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table   answer_mcq
 -- -----------------------------------------------------
@@ -328,27 +327,39 @@ CREATE TABLE IF NOT EXISTS   answer_sq  (
 -- -----------------------------------------------------
 -- Table   help
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   help  (
-  help_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  text  VARCHAR(500) NOT NULL,
-  question_id  INT UNSIGNED NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( help_id ),
-  INDEX  fk_help_question_question_id_idx  ( question_id  ASC),
-  INDEX  fk_help_staff_staff_id_idx  ( staff_id  ASC),
-  CONSTRAINT  fk_help_question_question_id
-  FOREIGN KEY ( question_id )
-  REFERENCES   question  ( question_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT  fk_help_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES   staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS help (
+  help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  text VARCHAR(500) NOT NULL,
+  staff_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (help_id),
+  INDEX fk_help_staff_staff_id_idx (staff_id ASC),
+  CONSTRAINT fk_help_staff_staff_id
+  FOREIGN KEY (staff_id)
+  REFERENCES staff (staff_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ratos3`.`question_help`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS question_help (
+  question_id INT UNSIGNED NOT NULL,
+  help_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (question_id, help_id),
+  INDEX fk_question_help_help_id_idx (help_id ASC),
+  CONSTRAINT fk_question_help_question_id
+  FOREIGN KEY (question_id)
+  REFERENCES question (question_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_question_help_help_id
+  FOREIGN KEY (help_id)
+  REFERENCES help (help_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table   resource

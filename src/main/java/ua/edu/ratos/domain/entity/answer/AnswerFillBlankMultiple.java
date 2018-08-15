@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankMultiple;
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -56,4 +57,17 @@ public class AnswerFillBlankMultiple{
         this.acceptedPhrases.remove(phrase);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnswerFillBlankMultiple that = (AnswerFillBlankMultiple) o;
+        return occurrence == that.occurrence &&
+                Objects.equals(phrase, that.phrase);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phrase, occurrence);
+    }
 }

@@ -1,0 +1,31 @@
+{
+  "question":"Order Maven build process stages in the correct way",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":5,
+  "langId":1,
+  "helpId":1,
+  "resourcesIds":[1],
+  "answers":[
+    {
+      "phrase":"validate",
+      "order":0,
+      "resourceId":1
+    },
+    {
+      "phrase":"compile",
+      "order":1,
+      "resourceId":2
+    },
+    {
+      "phrase":"test",
+      "order":2,
+      "resourceId":3
+    },
+    {
+      "phrase":"package",
+      "order":3,
+      "resourceId":4
+    }
+  ]
+}

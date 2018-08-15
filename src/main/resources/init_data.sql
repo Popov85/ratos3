@@ -48,9 +48,6 @@ insert into language (name, eng_abbreviation) values('українська', 'uk
 insert into language (name, eng_abbreviation) values('Polską', 'pl');
 
 
-
-
-
 insert into question (title, level, type_id, theme_id, lang_id) values ('Interface used to interact with the second-level cache', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Defines the set of cascadable operations that are propagated to the associated entity', 1, 2, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Lock modes can be specified by means of passing a LockModeType argument to one of the EntityManager methods that take locks (lock, find, or refresh) or to the Query.setLockMode() or TypedQuery.setLockMode() method', 2, 3, 1, 1);
@@ -82,7 +79,7 @@ insert into answer_sq(element, element_order, question_id) values('test', 3, 5);
 insert into answer_sq(element, element_order, question_id) values('package', 4, 5);
 insert into answer_sq(element, element_order, question_id) values('verify', 5, 5);
 
-insert into help (name, text, question_id, staff_id) values('Java persistence URL', 'See javax.persistence package', 1, 1);
+insert into help (name, text, staff_id) values('Java persistence URL', 'See javax.persistence package', 1);
 
 insert into resource (hyperlink, description, staff_id) values('http://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html', 'Java Persistence API web documentation', 1);
 

@@ -1,6 +1,5 @@
 package ua.edu.ratos.it.service;
 
-import org.hibernate.Hibernate;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.Help;
 import ua.edu.ratos.domain.entity.Resource;
+import ua.edu.ratos.domain.entity.Staff;
 import ua.edu.ratos.domain.repository.HelpRepository;
-import ua.edu.ratos.domain.repository.QuestionRepository;
-import ua.edu.ratos.domain.repository.ResourceRepository;
-import ua.edu.ratos.domain.repository.StaffRepository;
 import ua.edu.ratos.service.HelpService;
+import ua.edu.ratos.service.dto.entity.HelpInDto;
+import javax.persistence.EntityManager;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -23,29 +22,26 @@ import java.util.*;
 public class HelpServiceTestIT {
 
     public static final String HELP_NAME = "Java doc URL on Cache interface";
-    public static final String HELP_CONTENT = "Refer to https://docs.oracle.com/javaee/7/api/javax/persistence/Cache.html";
-    public static final String RESOURCE_LINK = "https://image.slidesharecdn.com/slide01.jpg";
-    public static final String RESOURCE_DESCRIPTION = "Caching schema";
+    public static final String HELP_TEXT = "Refer to https://docs.oracle.com/javaee/7/api/javax/persistence/Cache.html";
+    public static final String HELP_NAME_UPD = "Java documentation on Cache interface";
+    public static final String HELP_TEXT_UPD = "Refer to https://docs.oracle.com";
 
     @Autowired
     private HelpService helpService;
 
     @Autowired
     private HelpRepository helpRepository;
+
     @Autowired
-    private QuestionRepository questionRepository;
-    @Autowired
-    private StaffRepository staffRepository;
-    @Autowired
-    private ResourceRepository resourceRepository;
+    private EntityManager em;
 
 
     @Test(expected = Exception.class)
     @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWrongTest() {
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        helpService.save(help, null, null);
+        HelpInDto dto = new HelpInDto(null, null, null, 0, 0);
+        helpService.save(dto);
     }
 
 
@@ -53,9 +49,13 @@ public class HelpServiceTestIT {
     @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveSimpleTest() {
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        final Help savedHelp = helpService.save(help, 1L, 1L);
-        Assert.assertTrue(helpRepository.findById(1L).isPresent());
+        HelpInDto dto = new HelpInDto(null, HELP_NAME, HELP_TEXT, 1L, 0);
+        helpService.save(dto);
+        final Help foundHelp = helpRepository.findByIdWithResources(1L);
+        Assert.assertNotNull(foundHelp);
+        Assert.assertEquals(HELP_NAME, foundHelp.getName());
+        Assert.assertEquals(HELP_TEXT, foundHelp.getHelp());
+        Assert.assertEquals(0, foundHelp.getResources().size());
     }
 
 
@@ -63,13 +63,12 @@ public class HelpServiceTestIT {
     @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveWithResourceTest() {
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setResources(new HashSet<>(Arrays.asList(resource)));
-        final Help savedHelp = helpService.save(help, 1L, 1L);
+        HelpInDto dto = new HelpInDto(null, HELP_NAME, HELP_TEXT, 1L, 1);
+        helpService.save(dto);
         final Help foundHelp = helpRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundHelp.getResources()));
+        Assert.assertNotNull(foundHelp);
+        Assert.assertEquals(HELP_NAME, foundHelp.getName());
+        Assert.assertEquals(HELP_TEXT, foundHelp.getHelp());
         Assert.assertEquals(1, foundHelp.getResources().size());
     }
 
@@ -79,110 +78,38 @@ public class HelpServiceTestIT {
     @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() {
         //1. Insert
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setQuestion(questionRepository.getOne(1L));
-        help.setStaff(staffRepository.getOne(1L));
-        final Help savedHelp = helpRepository.save(help);
+       insert();
 
-        // 2. Update
-        savedHelp.setName("Cache interface");
-        savedHelp.setHelp("Interface used to interact with the second-level cache");
-        final Help updatedHelp = helpService.update(savedHelp);
+        // 2. Update {name, text and resourcesId = 2}
+        HelpInDto dto = new HelpInDto(1L, HELP_NAME_UPD, HELP_TEXT_UPD, 1L, 2);
+        helpService.update(dto);
 
         //3. Find and compare
-        final Optional<Help> foundHelp = helpRepository.findById(1L);
-        Assert.assertTrue(foundHelp.isPresent());
-        Assert.assertEquals("Cache interface", foundHelp.get().getName());
-        Assert.assertEquals("Interface used to interact with the second-level cache", foundHelp.get().getHelp());
-        Assert.assertNotNull(foundHelp.get().getQuestion());
-        Assert.assertNotNull(foundHelp.get().getStaff());
-    }
-
-
-    @Test
-    @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void addResourceTest() {
-        // 1. Insert with a resource
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setQuestion(questionRepository.getOne(1L));
-        help.setStaff(staffRepository.getOne(1L));
-        help.setResources(new HashSet<>(Arrays.asList(resource)));
-        final Help savedHelp = helpRepository.save(help);
-
-        // 2. Add 2-d resource
-        Resource resource2 = new Resource("Caching schema2",
-                "https://image.slidesharecdn.com/slide02.jpg");
-        resource2.setStaff(staffRepository.getOne(1L));
-        helpService.addResource(resource2, 1L);
-
-        // 3. Find with resources and compare
         final Help foundHelp = helpRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundHelp.getResources()));
-        Assert.assertEquals(2, foundHelp.getResources().size());
-    }
-
-    @Test
-    @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void addResourceExistingTest() {
-        // 1. Insert with a resource
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setQuestion(questionRepository.getOne(1L));
-        help.setStaff(staffRepository.getOne(1L));
-        help.setResources(new HashSet<>(Arrays.asList(resource)));
-        final Help savedHelp = helpRepository.save(help);
-
-        // 2. Add 2-d resource
-        Resource resource2 = new Resource("Caching schema2",
-                "https://image.slidesharecdn.com/slide02.jpg");
-        resource2.setStaff(staffRepository.getOne(1L));
-        Resource savedResource = resourceRepository.save(resource2);
-        helpService.addResource(savedResource.getResourceId(), 1L);
-
-        // 3. Find with resources and compare
-        final Help foundHelp = helpRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundHelp.getResources()));
-        Assert.assertEquals(2, foundHelp.getResources().size());
-    }
-
-    @Test
-    @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void deleteResourceTest() {
-        // 1. Insert with a resource
-        Resource resource = new Resource(RESOURCE_LINK, RESOURCE_DESCRIPTION);
-        resource.setStaff(staffRepository.getOne(1L));
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setQuestion(questionRepository.getOne(1L));
-        help.setStaff(staffRepository.getOne(1L));
-        help.setResources(new HashSet<>(Arrays.asList(resource)));
-        final Help savedHelp = helpRepository.save(help);
-
-        // 2. Delete this single resource
-        helpService.deleteResource(resource.getResourceId(), 1L, false);
-
-        // 3. Find with resources and compare
-        final Help foundHelp = helpRepository.findByIdWithResources(1L);
-        Assert.assertTrue(Hibernate.isInitialized(foundHelp.getResources()));
-        Assert.assertTrue(foundHelp.getResources().isEmpty());
+        Assert.assertNotNull(foundHelp);
+        Assert.assertEquals(HELP_NAME_UPD, foundHelp.getName());
+        Assert.assertEquals(HELP_TEXT_UPD, foundHelp.getHelp());
+        Assert.assertEquals(1, foundHelp.getResources().size());
+        Assert.assertTrue(foundHelp.getResources().contains(em.find(Resource.class, 2L)));
     }
 
     @Test
     @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
-        Help help = new Help(HELP_NAME, HELP_CONTENT);
-        help.setQuestion(questionRepository.getOne(1L));
-        help.setStaff(staffRepository.getOne(1L));
-        final Help savedHelp = helpRepository.save(help);
+        insert();
         Assert.assertTrue(helpRepository.findById(1L).isPresent());
-        helpService.deleteById(savedHelp.getHelpId());
+        helpService.deleteById(1L);
         Assert.assertFalse(helpRepository.findById(1L).isPresent());
     }
 
+
+    private Help insert() {
+        Help help = new Help();
+        help.setName(HELP_NAME);
+        help.setHelp(HELP_TEXT);
+        help.setStaff(em.getReference(Staff.class, 1L));
+        help.setResources(new HashSet<>(Arrays.asList(em.find(Resource.class, 1L))));
+        return helpRepository.save(help);
+    }
 }

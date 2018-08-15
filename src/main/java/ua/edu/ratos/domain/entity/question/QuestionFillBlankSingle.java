@@ -13,12 +13,6 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @DiscriminatorValue(value = "2")
-@NamedEntityGraph(name = "FBSQ.enriched", attributeNodes = {
-        @NamedAttributeNode("answer"),
-        @NamedAttributeNode("resources"),
-        @NamedAttributeNode("help"),
-        @NamedAttributeNode("theme")
-})
 @DynamicUpdate
 public class QuestionFillBlankSingle extends Question {
 
@@ -66,8 +60,6 @@ public class QuestionFillBlankSingle extends Question {
                 ", question='" + question + '\'' +
                 ", level=" + level +
                 ", deleted=" + deleted +
-                ", type=" + type.getAbbreviation() +
-                ", lang=" + lang.getAbbreviation() +
                 '}';
     }
 }

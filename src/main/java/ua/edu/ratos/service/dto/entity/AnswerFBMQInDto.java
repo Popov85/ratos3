@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
@@ -21,25 +22,28 @@ public class AnswerFBMQInDto {
 
     public interface New{}
     public interface Update{}
+    public interface Include{}
 
-    @Null(groups = {New.class}, message = "{dto.pk.invalid}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Null(groups = {New.class, Include.class}, message = "Non-null answerId, {dto.pk.nullable}")
     @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
-    @NotEmpty(message = "Invalid phrase, {dto.string.required}")
-    @Size(min = 1, max = 100, message = "Invalid phrase, {dto.string.invalid}")
+    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 200, message = "Invalid phrase, {dto.string.invalid}")
     private String phrase;
 
-    @Range(min=1, max=10, message = "Invalid occurrence, {dto.range.invalid}")
+    @Range(groups = {New.class, Update.class, Include.class}, min=1, max=20, message = "Invalid occurrence, {dto.range.invalid}")
     private byte occurrence;
 
-    @Positive(message = "Invalid setId, {dto.fk.invalid}")
+    @Positive(groups = {New.class, Update.class, Include.class}, message = "Invalid setId, {dto.fk.required}")
     private long setId;
 
-    @Positive(message = "Invalid questionId, {dto.fk.invalid}")
-    private long questionId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Null(groups = {Include.class}, message = "Non-null questionId, {dto.fk.nullable}")
+    @Positive(groups = {New.class, Update.class}, message = "Invalid questionId, {dto.fk.required}")
+    private Long questionId;
 
-    @NotEmpty(message = "Invalid phrasesIds, {dto.collection.required}")
-    @Size(min = 1, max = 10, message = "Invalid phrasesIds, {dto.collection.invalid}")
+    @NotEmpty(groups = {New.class, Update.class, Include.class}, message = "Invalid phrasesIds, {dto.collection.required}")
+    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 10, message = "Invalid phrasesIds, {dto.collection.invalid}")
     private Set<Long> phrasesIds;
 }

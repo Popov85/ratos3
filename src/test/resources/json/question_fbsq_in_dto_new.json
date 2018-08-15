@@ -1,0 +1,16 @@
+{
+  "questionId":null,
+  "question":"What interface defines the set of cascadable operations that are propagated to the associated entity?",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":2,
+  "langId":1,
+  "helpId":1,
+  "resourcesIds":[1],
+  "answer":
+  {
+    "answerId":null,
+    "setId":1,
+    "phrasesIds": [1,2,3]
+  }
+}

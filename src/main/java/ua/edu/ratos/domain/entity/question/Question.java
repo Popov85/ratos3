@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Help;
 import ua.edu.ratos.domain.entity.Language;
 import ua.edu.ratos.domain.entity.Resource;
@@ -20,6 +21,7 @@ import java.util.*;
 @Table(name = "question")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_id", discriminatorType = DiscriminatorType.INTEGER)
+@Where(clause = "is_deleted = 0")
 public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -28,7 +30,6 @@ public abstract class Question {
     protected Long questionId;
 
     @Column(name = "title")
-    //@Size(min = 10, max = 200, message = "About Me must be between 10 and 200 characters")
     protected String question;
 
     @Column(name = "level")
@@ -49,7 +50,8 @@ public abstract class Question {
     @JoinColumn(name = "lang_id")
     protected Language lang;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "question_help", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "help_id"))
     protected Set<Help> help = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -59,6 +61,14 @@ public abstract class Question {
     public Question(String question, byte level) {
         this.question = question;
         this.level = level;
+    }
+
+    public void addHelp(Help help) {
+        this.help.add(help);
+    }
+
+    public void removeHelp(Help help) {
+        this.help.remove(help);
     }
 
     public void addResource(Resource resource) {

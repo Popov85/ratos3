@@ -41,7 +41,7 @@ public class AnswerFBMQServiceTestIT {
     public void saveWrongTest() {
         // 1. Try to save with wrong parameters
         AnswerFBMQInDto dto = new AnswerFBMQInDto(null, PHRASE,
-                (byte)1, 0, 0, null);
+                (byte)1, 0, 0L, null);
         answerService.save(dto);
     }
 

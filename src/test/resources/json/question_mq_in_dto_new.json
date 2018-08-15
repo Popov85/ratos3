@@ -1,0 +1,27 @@
+{
+  "questionId":null,
+  "question":"Match the following concepts",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":4,
+  "langId":1,
+  "helpId":0,
+  "resourcesIds":null,
+  "answers":[
+    {
+      "leftPhrase":"Interface used to interact with the second-level cache",
+      "rightPhrase":"Cache",
+      "rightPhraseResourceId":1
+    },
+    {
+      "leftPhrase":"Type for query parameter objects",
+      "rightPhrase":"Parameter<T>",
+      "rightPhraseResourceId":2
+    },
+    {
+      "leftPhrase":"Interface used to interact with the persistence context",
+      "rightPhrase":"EntityManager",
+      "rightPhraseResourceId":3
+    }
+  ]
+}

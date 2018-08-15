@@ -15,27 +15,27 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query(value = "select ty.abbreviation from Question q join q.theme th join q.type ty where th.themeId = ?1")
     List<String> findTypes(Long themeId);
 
-    @Query(value = "SELECT q FROM QuestionMultipleChoice q " +
+    @Query(value = "SELECT DISTINCT q FROM QuestionMultipleChoice q " +
             "join fetch q.answers left join fetch q.help left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     List<QuestionMultipleChoice> findAllMCQWithEverythingByThemeId(Long themeId);
 
-    @Query(value = "SELECT q FROM QuestionFillBlankSingle q " +
+    @Query(value = "SELECT DISTINCT q FROM QuestionFillBlankSingle q " +
             "join fetch q.answer left join fetch q.help left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     List<QuestionFillBlankSingle> findAllFBSQWithEverythingByThemeId(Long themeId);
 
-    @Query(value = "SELECT q FROM QuestionFillBlankMultiple q " +
+    @Query(value = "SELECT DISTINCT q FROM QuestionFillBlankMultiple q " +
             "join fetch q.answers left join fetch q.help left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     List<QuestionFillBlankMultiple> findAllFBMQWithEverythingByThemeId(Long themeId);
 
-    @Query(value = "SELECT q FROM QuestionMatcher q " +
+    @Query(value = "SELECT DISTINCT q FROM QuestionMatcher q " +
             "join fetch q.answers left join fetch q.help left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     List<QuestionMatcher> findAllMQWithEverythingByThemeId(Long themeId);
 
-    @Query(value = "SELECT q FROM QuestionSequence q " +
+    @Query(value = "SELECT DISTINCT q FROM QuestionSequence q " +
             "join fetch q.answers left join fetch q.help left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     List<QuestionSequence> findAllSQWithEverythingByThemeId(Long themeId);

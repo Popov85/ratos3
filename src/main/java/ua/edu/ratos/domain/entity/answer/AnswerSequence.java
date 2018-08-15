@@ -1,9 +1,6 @@
 package ua.edu.ratos.domain.entity.answer;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
@@ -40,11 +37,14 @@ public class AnswerSequence {
     @JoinColumn(name = "question_id")
     private QuestionSequence question;
 
+    @Setter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "answer_sq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    private Set<Resource> resources = new HashSet<>();
+    private Set<Resource> resources = new HashSet<>(1);
 
     public void addResource(@NonNull Resource resource) {
+        if (!this.resources.isEmpty()) throw
+                new IllegalStateException("Currently, only one resource associated with an answer is supported");
         this.resources.add(resource);
     }
 

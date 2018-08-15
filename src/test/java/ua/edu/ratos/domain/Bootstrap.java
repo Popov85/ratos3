@@ -527,7 +527,6 @@ public class Bootstrap {
 
         Help help = new Help();
         help.setHelp("Package javax.persistence");
-        help.setQuestion(mcq);
 
         mcq.setHelp(new HashSet<>(Arrays.asList(help)));
 
@@ -560,7 +559,7 @@ public class Bootstrap {
         acceptedPhrase1.setStaff(staff);
 
         AcceptedPhrase acceptedPhrase2 = new AcceptedPhrase();
-        acceptedPhrase2.setPhrase("java.lang.Object java.lang.Enum<CascadeType>");
+        acceptedPhrase2.setPhrase("java.lang.Enum<CascadeType>");
         acceptedPhrase2.setStaff(staff);
 
         answer.setAcceptedPhrases(new HashSet<>(Arrays.asList(acceptedPhrase, acceptedPhrase1, acceptedPhrase2)));
@@ -633,7 +632,7 @@ public class Bootstrap {
         answer2.setSettings(settings2);
         answer2.setQuestion(fbmq);
 
-        fbmq.setAnswers(Arrays.asList(answer, answer2));
+        fbmq.setAnswers(new HashSet(Arrays.asList(answer, answer2)));
 
         questionRepository.save(fbmq);
     }
@@ -652,7 +651,7 @@ public class Bootstrap {
         mq.setLang(lang);
 
         final AnswerMatcher answer = new AnswerMatcher();
-        answer.setLeftPhrase("Interface used to interact with the second-level cache.");
+        answer.setLeftPhrase("Interface used to interact with the second-level cache");
         answer.setRightPhrase("Cache");
         answer.setQuestion(mq);
 

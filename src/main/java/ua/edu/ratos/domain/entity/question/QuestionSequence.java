@@ -24,12 +24,6 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @DiscriminatorValue(value = "5")
-@NamedEntityGraph(name = "SQ.enriched", attributeNodes = {
-        @NamedAttributeNode("answers"),
-        @NamedAttributeNode("resources"),
-        @NamedAttributeNode("help"),
-        @NamedAttributeNode("theme")
-})
 @DynamicUpdate
 public class QuestionSequence extends Question {
 

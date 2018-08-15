@@ -1,9 +1,11 @@
 package ua.edu.ratos.service.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
+import java.util.Objects;
 
 @ToString
 @Getter
@@ -17,25 +19,42 @@ public class AnswerMCQInDto {
     public interface Update{}
     public interface Include{}
 
-    @Null(groups = {AnswerMQInDto.New.class, AnswerSQInDto.Include.class}, message = "{dto.pk.invalid}")
-    @NotNull(groups = {AnswerMQInDto.Update.class}, message = "{dto.pk.required}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Null(groups = {New.class, Include.class}, message = "Non-null answerId, {dto.pk.nullable}")
+    @NotNull(groups = {Update.class}, message = "Invalid answerId, {dto.pk.required}")
     private Long answerId;
 
-    @NotEmpty(message = "Invalid answer, {dto.string.required}")
-    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 500, message = "Invalid answer, {dto.string.invalid}")
     private String answer;
 
-    @Range(min = 0, max=100, message = "Invalid percent, {dto.range.invalid}")
+    @Range(groups = {New.class, Update.class, Include.class}, min = 0, max=100, message = "Invalid percent, {dto.range.invalid}")
     private short percent;
-
-    // TODO 0 percent cannot be required!
+    /**
+     * 0 percent cannot be required! See custom validator for details
+     * @see ua.edu.ratos.service.dto.validator.AnswerMCQInDtoValidator
+     */
     private boolean isRequired;
 
-    @PositiveOrZero(message = "Invalid resourceId, {dto.fk.invalidOptional}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @PositiveOrZero(groups = {New.class, Update.class, Include.class}, message = "Invalid resourceId, {dto.fk.optional}")
     private long resourceId;
 
-    @Null(groups = {AnswerSQInDto.Include.class})
-    @NotNull(groups = {AnswerSQInDto.New.class, AnswerSQInDto.Update.class}, message = "{dto.pk.invalid}")
-    @Positive(groups = {AnswerSQInDto.New.class, AnswerSQInDto.Update.class},message = "Invalid questionId, {dto.fk.invalid}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Null(groups = {Include.class}, message = "Non-null questionId, {dto.fk.nullable}")
+    @Positive(groups = {New.class, Update.class},message = "Invalid questionId, {dto.fk.required}")
     private Long questionId;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnswerMCQInDto that = (AnswerMCQInDto) o;
+        return Objects.equals(answer, that.answer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(answer);
+    }
 }
