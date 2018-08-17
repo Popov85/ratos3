@@ -129,7 +129,7 @@ public class DtoQuestionTransformer {
     }
 
     private <T> void check(Collection<T> collection, int threshold, String message) {
-        if (collection==null || collection.isEmpty() || collection.size()<threshold)
+        if (collection.isEmpty() || collection.size()<threshold)
             throw new IllegalStateException(message);
     }
 

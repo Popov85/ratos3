@@ -11,7 +11,6 @@ public class SessionStoreController {
     @Autowired
     private SessionStoreService sessionStoreService;
 
-
     @RequestMapping("/sessions/findAll")
     public String allCurrentSessions() {
         return "All current sessions: "+ sessionStoreService.findAll();

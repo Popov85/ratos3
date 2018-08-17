@@ -41,13 +41,12 @@ public class QuestionFBMQServiceTestIT {
     @Sql(scripts = "/scripts/question_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
-        QuestionFBMQInDto dto = objectMapper
-                .readValue(json, QuestionFBMQInDto.class);
+        QuestionFBMQInDto dto = objectMapper.readValue(json, QuestionFBMQInDto.class);
         questionService.save(dto);
         final QuestionFillBlankMultiple foundQuestion =
-                (QuestionFillBlankMultiple) em.createQuery(FIND)
-                        .setParameter("questionId",1L)
-                        .getSingleResult();
+            (QuestionFillBlankMultiple) em.createQuery(FIND)
+                .setParameter("questionId",1L)
+                .getSingleResult();
         Assert.assertNotNull(foundQuestion);
         Assert.assertEquals(QUESTION_NEW, foundQuestion.getQuestion());
         Assert.assertEquals(3, foundQuestion.getAnswers().size());

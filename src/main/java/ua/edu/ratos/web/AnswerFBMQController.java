@@ -3,11 +3,8 @@ package ua.edu.ratos.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ratos.service.AnswerMCQService;
+import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.service.AnswerFBMQService;
 import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
 
 /**
@@ -16,17 +13,22 @@ import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
 @Slf4j
 @RestController
 public class AnswerFBMQController {
+
     @Autowired
-    private AnswerMCQService answerService;
+    private AnswerFBMQService answerService;
 
-
-    @PostMapping("/answer/save/fbmq")
+    @PostMapping("/answer/fbmq")
     public void save(@Validated(AnswerFBMQInDto.New.class) @RequestBody AnswerFBMQInDto dto) {
         log.info("Answer :: {}", dto);
     }
 
-    @PutMapping("/answer/update/fbmq")
+    @PutMapping("/answer/fbmq")
     public void update(@Validated(AnswerFBMQInDto.Update.class) @RequestBody AnswerFBMQInDto dto) {
         log.info("Answer :: {}", dto);
+    }
+
+    @DeleteMapping("/answer/fbmq/{answerId}")
+    public void delete(@PathVariable Long answerId) {
+        log.info("Answer to delete ID :: {}", answerId);
     }
 }

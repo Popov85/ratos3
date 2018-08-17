@@ -23,6 +23,7 @@ public class QuestionInDto {
     @NotNull(groups = {Update.class}, message = "Invalid questionId, {dto.pk.required}")
     private Long questionId;
 
+    @NotBlank(groups = {New.class, Update.class,}, message = "Invalid question, {dto.string.required}")
     @Size(groups = {New.class, Update.class}, min = 1, max = 1000, message = "Invalid question, {dto.string.invalid}")
     private String question;
 

@@ -13,6 +13,12 @@ insert into theme (name, course_id) values('Java Operators', 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('eng default', 5, 100, 0, 0, 0, 1, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ru default', 5, 100, 0, 0, 0, 2, 1);
 
+insert into question(title, level, type_id, theme_id, lang_id, is_deleted) values('some question', 1, 2, 1, 1, 0);
+insert into answer_fbsq(answer_id, set_id) values(1, 1);
+
 insert into accepted_phrase(phrase, staff_id, last_used) values('CascadeType',1, '2018-07-18 10:30:15.999999999');
 insert into accepted_phrase(phrase, staff_id, last_used) values('Enum<CascadeType>',1, '2018-07-18 10:32:19.999999999');
 insert into accepted_phrase(phrase, staff_id, last_used) values('javax.persistence.CascadeType',1, '2018-07-18 10:32:19.999999999');
+
+insert into fbsq_phrase(phrase_id, answer_id) values(1, 1);
+insert into fbsq_phrase(phrase_id, answer_id) values(2, 1);

@@ -2,7 +2,6 @@ package ua.edu.ratos.domain.entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import ua.edu.ratos.domain.entity.question.Question;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -31,11 +30,14 @@ public class Help {
     @JoinColumn(name = "staff_id", updatable = false, nullable = false)
     private Staff staff;
 
+    @Setter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "help_resource", joinColumns = @JoinColumn(name = "help_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     private Set<Resource> resources = new HashSet<>();
 
     public void addResource(Resource resource) {
+        if (!this.resources.isEmpty()) throw
+            new IllegalStateException("Currently, only one resource can be associated with a help object");
         this.resources.add(resource);
     }
 

@@ -23,9 +23,11 @@ public class AnswerMQInDto {
     @NotNull(groups = {Update.class}, message = "Invalid answerId, {dto.pk.required}")
     private Long answerId;
 
+    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid leftPhrase, {dto.string.required}")
     @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 100, message = "Invalid leftPhrase, {dto.string.invalid}")
     private String leftPhrase;
 
+    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid rightPhrase, {dto.string.required}")
     @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 500, message = "Invalid rightPhrase, {dto.string.invalid}")
     private String rightPhrase;
 

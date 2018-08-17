@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.domain.repository.QuestionRepository;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.entity.*;
 
@@ -16,8 +15,7 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-
-    @PostMapping("/question/save/mcq")
+    @PostMapping("/question/mcq")
     public Long save(@Validated({QuestionInDto.New.class, AnswerMCQInDto.Include.class}) @RequestBody QuestionMCQInDto dto) {
         log.debug("QuestionMultipleChoice dto :: {} ", dto);
       /*  final Long generatedId = questionService.save(dto);
@@ -25,7 +23,7 @@ public class QuestionController {
         return 1L;
     }
 
-    @PostMapping("/question/save/fbsq")
+    @PostMapping("/question/fbsq")
     public Long save(@Validated({QuestionInDto.New.class, AnswerFBSQInDto.New.class}) @RequestBody QuestionFBSQInDto dto) {
         log.debug("QuestionFillBlankSimple dto :: {} ", dto);
         /*  final Long generatedId = questionService.save(dto);
@@ -33,7 +31,7 @@ public class QuestionController {
         return 1L;
     }
 
-    @PostMapping("/question/save/fbmq")
+    @PostMapping("/question/fbmq")
     public Long save(@Validated({QuestionInDto.New.class, AnswerFBMQInDto.Include.class}) @RequestBody QuestionFBMQInDto dto) {
         log.debug("QuestionFillBlankMultiple dto :: {} ", dto);
         /*  final Long generatedId = questionService.save(dto);
@@ -41,7 +39,7 @@ public class QuestionController {
         return 1L;
     }
 
-    @PostMapping("/question/save/mq")
+    @PostMapping("/question/mq")
     public Long save(@Validated({QuestionInDto.New.class, AnswerMQInDto.Include.class}) @RequestBody QuestionMQInDto dto) {
         log.debug("QuestionMatcher dto :: {} ", dto);
         /*  final Long generatedId = questionService.save(dto);
@@ -50,7 +48,7 @@ public class QuestionController {
     }
 
 
-    @PostMapping("/question/save/sq")
+    @PostMapping("/question/sq")
     public Long save(@Validated({QuestionInDto.New.class, AnswerSQInDto.Include.class}) @RequestBody QuestionSQInDto dto) {
         log.debug("QuestionSequence dto :: {} ", dto);
         /*  final Long generatedId = questionService.save(dto);
@@ -61,7 +59,7 @@ public class QuestionController {
 
 
 
-    @PutMapping("/question/update/")
+    @PutMapping("/question")
     public void update(@Validated(QuestionInDto.Update.class) @RequestBody QuestionInDto dto) {
         log.debug("Question dto :: {} ", dto);
     }

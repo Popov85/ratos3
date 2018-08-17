@@ -39,7 +39,7 @@ public class QuestionServiceTestIT {
     @Test
     @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_upd.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/question_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void updateSimpleTest() throws Exception {
+    public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         QuestionInDto dto = objectMapper
                 .readValue(json, QuestionInDto.class);

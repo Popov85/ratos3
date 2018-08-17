@@ -29,6 +29,7 @@ public class AnswerFBMQInDto {
     @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
+    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid phrase, {dto.string.required}")
     @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 200, message = "Invalid phrase, {dto.string.invalid}")
     private String phrase;
 

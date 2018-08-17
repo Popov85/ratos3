@@ -40,8 +40,7 @@ public class QuestionMCQServiceTestIT {
     @Sql(scripts = "/scripts/question_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
-        QuestionMCQInDto dto = objectMapper
-                .readValue(json, QuestionMCQInDto.class);
+        QuestionMCQInDto dto = objectMapper.readValue(json, QuestionMCQInDto.class);
         questionService.save(dto);
         final QuestionMultipleChoice foundQuestion =
             (QuestionMultipleChoice) em.createQuery(FIND)

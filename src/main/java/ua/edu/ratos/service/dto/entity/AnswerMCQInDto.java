@@ -24,6 +24,7 @@ public class AnswerMCQInDto {
     @NotNull(groups = {Update.class}, message = "Invalid answerId, {dto.pk.required}")
     private Long answerId;
 
+    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid answer, {dto.string.required}")
     @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 500, message = "Invalid answer, {dto.string.invalid}")
     private String answer;
 

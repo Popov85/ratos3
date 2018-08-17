@@ -18,23 +18,24 @@ public class HelpInDto {
     public interface New{}
     public interface Update{}
 
-    @Null(groups = {HelpInDto.New.class}, message = "{dto.pk.invalid}")
-    @NotNull(groups = {HelpInDto.Update.class}, message = "{dto.pk.required}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Null(groups = {New.class}, message = "{dto.pk.nullable}")
+    @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long helpId;
 
-    @NotEmpty(groups = {HelpInDto.New.class, HelpInDto.Update.class}, message = "Invalid name, {dto.string.required}")
-    @Size(groups = {HelpInDto.New.class, HelpInDto.Update.class}, min = 1, max = 100, message = "Invalid name, {dto.string.invalid}")
+    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
+    @Size(groups = {New.class, Update.class}, min = 1, max = 100, message = "Invalid name, {dto.string.invalid}")
     private String name;
 
-    @NotEmpty(groups = {HelpInDto.New.class, HelpInDto.Update.class}, message = "Invalid help, {dto.string.required}")
-    @Size(groups = {HelpInDto.New.class, HelpInDto.Update.class}, min = 1, max = 1000, message = "Invalid help, {dto.string.invalid}")
+    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
+    @Size(groups = {New.class, Update.class}, min = 1, max = 1000, message = "Invalid help, {dto.string.invalid}")
     private String help;
 
-    @Positive(groups = {HelpInDto.New.class, HelpInDto.Update.class}, message = "Invalid staffId, {dto.fk.invalid}")
+    @Positive(groups = {New.class, Update.class}, message = "Invalid staffId, {dto.fk.required}")
     private long staffId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {HelpInDto.New.class, HelpInDto.Update.class}, message = "Invalid rightPhraseResourceId, {dto.fk.invalidOptional}")
+    @PositiveOrZero(groups = {New.class, Update.class}, message = "Invalid resourceId, {dto.fk.optional}")
     private long resourceId;
 
     @Override
@@ -42,11 +43,12 @@ public class HelpInDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         HelpInDto helpInDto = (HelpInDto) o;
-        return Objects.equals(help, helpInDto.help);
+        return Objects.equals(name, helpInDto.name) &&
+                Objects.equals(help, helpInDto.help);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(help);
+        return Objects.hash(name, help);
     }
 }

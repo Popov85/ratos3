@@ -40,8 +40,7 @@ public class QuestionFBSQServiceTestIT {
     @Sql(scripts = "/scripts/question_fbsq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
-        QuestionFBSQInDto dto = objectMapper
-                .readValue(json, QuestionFBSQInDto.class);
+        QuestionFBSQInDto dto = objectMapper.readValue(json, QuestionFBSQInDto.class);
         questionService.save(dto);
         final QuestionFillBlankSingle foundQuestion =
             (QuestionFillBlankSingle) em.createQuery(FIND)

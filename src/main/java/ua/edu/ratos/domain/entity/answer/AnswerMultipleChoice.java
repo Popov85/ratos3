@@ -1,9 +1,6 @@
 package ua.edu.ratos.domain.entity.answer;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
@@ -44,11 +41,14 @@ public class AnswerMultipleChoice {
     @JoinColumn(name = "question_id")
     private QuestionMultipleChoice question;
 
+    @Setter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     private Set<Resource> resources = new HashSet<>();
 
     public void addResource(Resource resource) {
+        if (!this.resources.isEmpty())
+            throw new IllegalStateException("Currently, only one resource can be associated with an answer");
         this.resources.add(resource);
     }
 
