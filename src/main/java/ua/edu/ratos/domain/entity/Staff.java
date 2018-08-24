@@ -17,7 +17,7 @@ public class Staff {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "staff_id")
-    private Long staId;
+    private Long staffId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

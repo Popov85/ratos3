@@ -6,8 +6,8 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.domain.entity.question.Question;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -31,7 +31,7 @@ public class Theme {
     @JoinColumn(name="course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Question> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Set<Question> questions = new HashSet<>();
 
 }

@@ -15,7 +15,6 @@ import ua.edu.ratos.service.HelpService;
 import ua.edu.ratos.service.dto.entity.HelpInDto;
 import javax.persistence.EntityManager;
 import java.io.File;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -79,30 +78,6 @@ public class HelpServiceTestIT {
         Assert.assertEquals(HELP_TEXT_UPD, foundHelp.getHelp());
         Assert.assertEquals(1, foundHelp.getResources().size());
         Assert.assertTrue(foundHelp.getResources().contains(new Resource(RESOURCE_LINK_UPD, RESOURCE_NAME_UPD)));
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByStaffTest() {
-        List<Help> helps = helpService.findByStaff(1L);
-        Assert.assertFalse(helps.isEmpty());
-        Assert.assertEquals(3, helps.size());
-        helps = helpService.findByStaff(2L);
-        Assert.assertFalse(helps.isEmpty());
-        Assert.assertEquals(4, helps.size());
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByDepartmentTest() {
-        List<Help> helps = helpService.findByDepartment(1L);
-        Assert.assertFalse(helps.isEmpty());
-        Assert.assertEquals(3, helps.size());
-        helps = helpService.findByDepartment(2L);
-        Assert.assertFalse(helps.isEmpty());
-        Assert.assertEquals(4, helps.size());
     }
 
 

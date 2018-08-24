@@ -64,4 +64,9 @@ public class QuestionController {
         log.debug("Question dto :: {} ", dto);
     }
 
+    @DeleteMapping("/question/{questionId}")
+    public void delete(@PathVariable Long questionId) {
+        log.debug("Question to delete ID :: {}", questionId);
+    }
+
 }

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.*;
 import ua.edu.ratos.domain.repository.*;
 import ua.edu.ratos.service.dto.entity.*;
@@ -18,9 +17,6 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
-
-    @Autowired
-    private ResourceRepository resourceRepository;
 
     @Autowired
     private DtoQuestionTransformer transformer;
@@ -80,18 +76,6 @@ public class QuestionService {
         transformer.mapDto(dto, updatable);
     }
 
-    @Transactional
-    public void addResource(@NonNull Resource resource, Long questionId) {
-        final Question question = questionRepository.findByIdWithResources(questionId);
-        question.addResource(resource);
-    }
-
-    @Transactional
-    public void deleteResource(@NonNull Resource resource, boolean fromRepository, Long questionId) {
-        final Question question = questionRepository.findByIdWithResources(questionId);
-        question.removeResource(resource);
-        if (fromRepository) resourceRepository.delete(resource);
-    }
 
     /**
      * Fetch all existing questions from the DB into the in-memory cache for further processing
@@ -99,14 +83,14 @@ public class QuestionService {
      * @return all existing questions in this theme by type
      */
     @Transactional(readOnly = true)
-    public Map<String, List<? extends Question>> findAll(@NonNull Long themeId) {
-        Map<String, List<? extends Question>> questions = new HashMap<>();
+    public Map<String, Set<? extends Question>> findAllByThemeId(@NonNull Long themeId) {
+        Map<String, Set<? extends Question>> questions = new HashMap<>();
         // First, find all existing types in this theme
         questionRepository.findTypes(themeId).forEach((t)->questions.put(t, findByType(t, themeId)));
         return questions;
     }
 
-    private List<? extends Question> findByType(String type, Long themeId) {
+    private Set<? extends Question> findByType(String type, Long themeId) {
         switch (type) {
             case "MCQ":
                 return questionRepository.findAllMCQWithEverythingByThemeId(themeId);

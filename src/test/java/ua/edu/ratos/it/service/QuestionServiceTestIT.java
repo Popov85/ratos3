@@ -67,4 +67,15 @@ public class QuestionServiceTestIT {
         foundQuestion = em.find(QuestionMultipleChoice.class, 1L);
         Assert.assertNull(foundQuestion);
     }
+
+
+
+    @Test
+    @Sql(scripts = "/scripts/question_mcq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/question_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByThemeIdTest() throws Exception {
+        // TODO
+    }
+
+
 }

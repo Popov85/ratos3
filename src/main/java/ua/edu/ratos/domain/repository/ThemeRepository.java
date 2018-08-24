@@ -1,22 +1,23 @@
 package ua.edu.ratos.domain.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import ua.edu.ratos.domain.entity.Theme;
-
-import java.util.List;
+import java.util.Set;
 
 public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
-    @Modifying
-    @Query("update Theme t set t.name = ?1 where t.themeId = ?2")
-    void updateById(String updatedName, Long themeId);
+    @Query(value = "SELECT t FROM Theme t join t.course c where c.courseId =?1 order by t.name desc")
+    Set<Theme> findAllByCourseId(Long courseId);
 
-    @Modifying
-    @Query("delete from Theme t where t.themeId = ?1")
-    void deleteById(Long themeId);
+    @Query(value = "SELECT t FROM Theme t join t.course c join c.department d where d.depId =?1 order by t.name desc")
+    Set<Theme> findAllByDepartmentId(Long depId);
+
+    @Query(value = "SELECT t FROM Theme t join t.course c join c.department d join d.organisation o where o.orgId =?1 order by t.name desc")
+    Page<Theme> findByOrganisationId(Long orgId, Pageable pageable);
 
     @Modifying
     @Query("update Theme t set t.deleted = true where t.themeId = ?1")

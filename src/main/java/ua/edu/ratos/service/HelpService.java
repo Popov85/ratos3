@@ -19,6 +19,9 @@ public class HelpService {
     @Autowired
     private DtoHelpTransformer transformer;
 
+    @Autowired
+    private PropertiesService propertiesService;
+
 
     @Transactional
     public Long save(@NonNull HelpInDto dto) {
@@ -26,14 +29,25 @@ public class HelpService {
         return helpRepository.save(help).getHelpId();
     }
 
+
     @Transactional(readOnly = true)
-    public List<Help> findByStaff(@NonNull Long staId) {
-        return helpRepository.findByStaffWithResources(staId);
+    public List<Help> findByStaffIdWithResources(@NonNull Long staffId) {
+        return helpRepository.findByStaffIdWithResources(staffId, propertiesService.getInitCollectionSize()).getContent();
     }
 
     @Transactional(readOnly = true)
-    public List<Help> findByDepartment(@NonNull Long depId) {
-        return helpRepository.findByDepartmentWithResources(depId);
+    public List<Help> findByStaffIdAndFirstNameLettersWithResources(@NonNull Long staffId, @NonNull String starts) {
+        return helpRepository.findByStaffIdAndFirstNameLettersWithResources(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Help> findByDepartmentIdWithResources(@NonNull Long depId) {
+        return helpRepository.findByDepartmentIdWithResources(depId, propertiesService.getInitCollectionSize()).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Help> findByDepartmentIdAndFirstNameLettersWithResources(@NonNull Long depId, @NonNull String starts) {
+        return helpRepository.findByDepartmentIdAndFirstNameLettersWithResources(depId, starts, propertiesService.getInitCollectionSize()).getContent();
     }
 
     @Transactional
