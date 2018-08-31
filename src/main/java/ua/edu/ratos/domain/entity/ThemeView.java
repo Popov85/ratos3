@@ -1,17 +1,19 @@
 package ua.edu.ratos.domain.entity;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
+
 import javax.persistence.*;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 @ToString
 @Entity
-@Table(name="theme_type")
-@Immutable
+@Table(name="theme_type_view")
 public class ThemeView {
 
     @EmbeddedId
@@ -33,5 +35,5 @@ public class ThemeView {
     private short l3;
 
     @Column(name="total")
-    private int total;
+    private int questions;
 }

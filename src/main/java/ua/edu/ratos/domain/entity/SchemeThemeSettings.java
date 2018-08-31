@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Setter
 @Getter
-@ToString(exclude = "schemeTheme")
+@ToString(exclude = {"schemeTheme", "type"})
 @Entity
 @Table(name="type_level")
 public class SchemeThemeSettings {
@@ -19,11 +19,11 @@ public class SchemeThemeSettings {
     @Column(name="type_level_id")
     private Long schemeThemeSettingsId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "scheme_theme_id")
     private SchemeTheme schemeTheme;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "type_id")
     private QuestionType type;
 
@@ -35,5 +35,4 @@ public class SchemeThemeSettings {
 
     @Column(name="level_3")
     private short level3;
-
 }

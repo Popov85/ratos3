@@ -1,16 +1,17 @@
 package ua.edu.ratos.domain.entity;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"scheme", "schemeThemeSettings"})
+@ToString(exclude = {"scheme", "theme", "schemeThemeSettings"})
 @Entity
 @Table(name="scheme_theme")
 public class SchemeTheme {
@@ -21,11 +22,11 @@ public class SchemeTheme {
     @Column(name="scheme_theme_id")
     private Long schemeThemeId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "scheme_id")
     private Scheme scheme;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
@@ -33,6 +34,16 @@ public class SchemeTheme {
     private short order;
 
     @OneToMany(mappedBy = "schemeTheme", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SchemeThemeSettings> schemeThemeSettings = new ArrayList<>();
+    private Set<SchemeThemeSettings> schemeThemeSettings = new HashSet<>();
+
+    public void addSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {
+        this.schemeThemeSettings.add(schemeThemeSettings);
+        schemeThemeSettings.setSchemeTheme(this);
+    }
+
+    public void removeSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {
+        this.schemeThemeSettings.remove(schemeThemeSettings);
+        schemeThemeSettings.setSchemeTheme(null);
+    }
 
 }

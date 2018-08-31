@@ -1,6 +1,7 @@
 package ua.edu.ratos.domain.entity;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -51,13 +52,33 @@ public class Scheme {
     private LocalDateTime created;
 
     @Column(name="is_active")
-    private boolean active;
+    private boolean active = true;
 
     @Column(name="is_deleted")
     private boolean deleted;
 
+    /**
+     * Scheme becomes completed as soon as at least one Theme is associated with it and all other settings are set
+     */
+    @Column(name="is_completed")
+    private boolean completed;
+
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SchemeTheme> schemeThemes = new ArrayList<>();
+
+    public void addSchemeTheme(@NonNull SchemeTheme schemeTheme) {
+        this.schemeThemes.add(schemeTheme);
+        schemeTheme.setScheme(this);
+    }
+
+    public void removeSchemeTheme(@NonNull SchemeTheme schemeTheme) {
+        this.schemeThemes.remove(schemeTheme);
+        schemeTheme.setScheme(null);
+    }
+
+    public void clearSchemeTheme() {
+        this.schemeThemes.clear();
+    }
 
 }

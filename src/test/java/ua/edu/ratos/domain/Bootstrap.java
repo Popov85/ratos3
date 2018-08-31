@@ -345,7 +345,7 @@ public class Bootstrap {
     }
 
     private void saveSchemes() {
-        Course course = getFirst(courseRepository.findAll());
+    /*    Course course = getFirst(courseRepository.findAll());
         Staff staff = getFirst(staffRepository.findAll());
         Mode mode = getFirst(modeRepository.findAll());
         Settings settings = getFirst(settingsRepository.findAll());
@@ -385,7 +385,7 @@ public class Bootstrap {
         schemeTheme.setSchemeThemeSettings(allSchemeThemeSettings);
         scheme.setSchemeThemes(Arrays.asList(schemeTheme));
 
-        schemeRepository.save(scheme);
+        schemeRepository.save(scheme);*/
     }
 
     private void saveQuestionTypes() {

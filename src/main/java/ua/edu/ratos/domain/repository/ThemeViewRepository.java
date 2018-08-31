@@ -1,17 +1,33 @@
 package ua.edu.ratos.domain.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import ua.edu.ratos.domain.entity.ThemeView;
 import ua.edu.ratos.domain.entity.ThemeViewId;
+import java.util.Set;
 
-import java.util.List;
-
-public interface ThemeViewRepository extends Repository<ThemeView, ThemeViewId> {
-
-    @Query(value="select t from ThemeView t where t.themeViewId.courseId = ?1")
-    List<ThemeView> findAllByCourseId(Long courseId);
+public interface ThemeViewRepository extends CrudRepository<ThemeView, ThemeViewId> {
 
     @Query(value="select t from ThemeView t where t.themeViewId.themeId = ?1")
-    List<ThemeView> findAllByThemeId(Long themeId);
+    Set<ThemeView> findAllByThemeId(Long themeId);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.courseId = ?1")
+    Set<ThemeView> findAllByCourseId(Long courseId);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.courseId = ?1 and t.theme like %?2%")
+    Set<ThemeView> findAllByCourseIdAndThemeLettersContains(Long courseId, String contains);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.depId = ?1")
+    Page<ThemeView> findAllByDepartmentId(Long depId, Pageable pageable);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.depId = ?1 and t.theme like %?2%")
+    Set<ThemeView> findAllByDepartmentIdAndThemeLettersContains(Long depId, String contains);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.orgId = ?1")
+    Page<ThemeView> findAllByOrganisationId(Long orgId, Pageable pageable);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.orgId = ?1 and t.theme like %?2%")
+    Set<ThemeView> findAllByOrganisationIdAndThemeLettersContains(Long orgId, String contains);
 }

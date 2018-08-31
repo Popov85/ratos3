@@ -42,4 +42,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Transactional
     @Query("update Question q set q.deleted = true where q.questionId = ?1")
     void pseudoDeleteById(Long questionId);
+
 }

@@ -11,15 +11,25 @@ public class PropertiesService {
     @Value("${ratos.data.collection.size}")
     private int initCollectionSize;
 
-    private PageRequest pageRequest;
+    private PageRequest collectionRequest;
 
     public PageRequest getInitCollectionSize() {
-        return this.pageRequest;
+        return this.collectionRequest;
+    }
+
+    @Value("${ratos.data.table.size}")
+    private int initTableSize;
+
+    private PageRequest tableRequest;
+
+    public PageRequest getInitTableSize() {
+        return this.tableRequest;
     }
 
     @PostConstruct
     private void initialize() {
-        this.pageRequest = PageRequest.of(0, initCollectionSize);
+        this.collectionRequest = PageRequest.of(0, initCollectionSize);
+        this.tableRequest = PageRequest.of(0, initTableSize);
     }
 
 }
