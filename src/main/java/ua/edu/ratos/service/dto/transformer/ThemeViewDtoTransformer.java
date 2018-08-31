@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.domain.entity.ThemeView;
+import ua.edu.ratos.domain.entity.ThemeViewId;
 import ua.edu.ratos.service.dto.view.ThemeOutDto;
 import ua.edu.ratos.service.dto.view.TypeOutDto;
 import java.util.HashSet;
@@ -22,13 +23,37 @@ public class ThemeViewDtoTransformer {
         Set<ThemeOutDto> result = new HashSet<>();
         Map<String, List<ThemeView>> questionsByTheme = themeViews.stream().collect(
                 Collectors.groupingBy(ThemeView::getTheme));
-        for (Map.Entry<String, List<ThemeView>> entry : questionsByTheme.entrySet()) {
-            final String theme = entry.getKey();
-            final List<ThemeView> views = entry.getValue();
-            Long themeId = views.get(0).getThemeViewId().getThemeId();
+        for (List<ThemeView> views : questionsByTheme.values()) {
+            final ThemeView themeView = views.get(0);
+            final ThemeViewId themeViewId = themeView.getThemeViewId();
+
+            Long themeId = themeViewId.getThemeId();
+            final String theme = themeView.getTheme();
+
+            Long orgId = themeViewId.getOrgId();
+            final String organisation = themeView.getOrganisation();
+
+            Long facId = themeViewId.getFacId();
+            final String faculty = themeView.getFaculty();
+
+            Long depId = themeViewId.getDepId();
+            final String department = themeView.getDepartment();
+
+            Long courseId = themeViewId.getCourseId();
+            final String course = themeView.getCourse();
+
             ThemeOutDto out = new ThemeOutDto()
                     .setThemeId(themeId)
-                    .setTheme(theme);
+                    .setTheme(theme)
+                    .setOrgId(orgId)
+                    .setOrganisation(organisation)
+                    .setFacId(facId)
+                    .setFaculty(faculty)
+                    .setDepId(depId)
+                    .setDepartment(department)
+                    .setCourseId(courseId)
+                    .setCourse(course);
+
             int totalQuestions = 0;
             for (ThemeView view : views) {
                 TypeOutDto typeDto = modelMapper.map(view, TypeOutDto.class)

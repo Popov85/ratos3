@@ -31,8 +31,16 @@ CREATE TABLE IF NOT EXISTS organisation  (
 CREATE TABLE IF NOT EXISTS   faculty  (
   fac_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name  VARCHAR(500) NOT NULL,
-  PRIMARY KEY ( fac_id ))
+  org_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( fac_id ),
+  INDEX fk_faculty_organisation_fac_id_idx (org_id ASC),
+  CONSTRAINT fk_faculty_organisation_fac_id
+  FOREIGN KEY (org_id)
+  REFERENCES organisation (org_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
   ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------
@@ -41,23 +49,15 @@ CREATE TABLE IF NOT EXISTS   faculty  (
 CREATE TABLE IF NOT EXISTS   department  (
   dep_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name  VARCHAR(500) NOT NULL,
-  org_id  INT UNSIGNED NOT NULL,
   fac_id  INT UNSIGNED NOT NULL,
   PRIMARY KEY ( dep_id ),
-  INDEX  fk_department_organisation_org_id_idx  ( org_id  ASC),
   INDEX  fk_department_faculty_fac_id_idx  ( fac_id  ASC),
-  CONSTRAINT  fk_department_organisation_org_id
-  FOREIGN KEY ( org_id )
-  REFERENCES   organisation  ( org_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT  fk_department_faculty_fac_id
   FOREIGN KEY ( fac_id )
   REFERENCES   faculty  ( fac_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table   position
@@ -861,19 +861,21 @@ CREATE TABLE IF NOT EXISTS   student  (
 -- -----------------------------------------------------
 -- Placeholder table for view   theme_type
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   theme_type  (org_id  INT, dep_id  INT, course_id  INT,  theme_id  INT,  type_id  INT,  theme  INT,  type  INT,  L1  INT,  L2  INT,  L3  INT,  total  INT);
+CREATE TABLE IF NOT EXISTS   theme_type  (org_id  INT, fac_id INT, dep_id  INT, course_id  INT,  theme_id  INT,  type_id  INT,  theme  INT,  type  INT,  L1  INT,  L2  INT,  L3  INT,  total  INT);
 
 -- -----------------------------------------------------
 -- View   theme_type
 -- -----------------------------------------------------
 
 CREATE OR REPLACE VIEW theme_type_view AS
-  select o.org_id as org_id, d.dep_id as dep_id, c.course_id as course_id, t.theme_id as theme_id, question.type_id as type_id, t.name as theme, question_type.eng_abbreviation as type,
+  select o.org_id as org_id, f.fac_id as fac_id, d.dep_id as dep_id, c.course_id as course_id, t.theme_id as theme_id, question.type_id as type_id,
+    o.name as organisation, f.name as faculty, d.name as department, c.name as course, t.name as theme, question_type.eng_abbreviation as type,
          sum(question.level=1) as L1, sum(question.level=3) as L2, sum(question.level=3) as L3, count(question.type_id) as total
   from question
     inner join question_type on question.type_id=question_type.type_id
     inner join theme t on question.theme_id=t.theme_id
     inner join course c on t.course_id=c.course_id
     inner join department d on c.dep_id=d.dep_id
-    inner join organisation o on d.org_id=o.org_id
+    inner join faculty f on d.fac_id=f.fac_id
+    inner join organisation o on f.org_id=o.org_id
   group by type_id, course_id;

@@ -15,6 +15,19 @@ import java.util.Set;
 public class ThemeOutDto {
     private long themeId;
     private String theme;
+
+    private long orgId;
+    private String organisation;
+
+    private long facId;
+    private String faculty;
+
+    private long depId;
+    private String department;
+
+    private long courseId;
+    private String course;
+
     private int totalQuestions;
     private Set<TypeOutDto> typeDetails = new HashSet<>();
 

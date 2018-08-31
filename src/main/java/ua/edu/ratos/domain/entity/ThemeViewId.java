@@ -3,7 +3,6 @@ package ua.edu.ratos.domain.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -17,6 +16,9 @@ public class ThemeViewId implements Serializable {
 
     @Column(name = "org_id")
     private Long orgId;
+
+    @Column(name = "fac_id")
+    private Long facId;
 
     @Column(name = "dep_id")
     private Long depId;
@@ -36,6 +38,7 @@ public class ThemeViewId implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         ThemeViewId that = (ThemeViewId) o;
         return Objects.equals(orgId, that.orgId) &&
+                Objects.equals(facId, that.facId) &&
                 Objects.equals(depId, that.depId) &&
                 Objects.equals(courseId, that.courseId) &&
                 Objects.equals(themeId, that.themeId) &&
@@ -45,6 +48,6 @@ public class ThemeViewId implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(orgId, depId, courseId, themeId, typeId);
+        return Objects.hash(orgId, facId, depId, courseId, themeId, typeId);
     }
 }

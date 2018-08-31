@@ -36,8 +36,17 @@ public class ThemeRepositoryTestIT {
     @Sql(scripts = "/scripts/theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
         Assert.assertEquals(21, themeRepository.findAll().size());
-        Set<Theme> themes = themeRepository.findAllByDepartmentId(1L);
-        Assert.assertEquals(5, themes.size());
+        Page<Theme> themes = themeRepository.findByDepartmentId(1L, PageRequest.of(0, 50));
+        Assert.assertEquals(5, themes.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = "/scripts/theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByFacultyIdTest() {
+        Assert.assertEquals(21, themeRepository.findAll().size());
+        Page<Theme> themes = themeRepository.findByFacultyId(1L, PageRequest.of(0, 50));
+        Assert.assertEquals(7, themes.getContent().size());
     }
 
     @Test

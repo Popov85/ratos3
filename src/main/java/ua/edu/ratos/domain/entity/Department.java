@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 @Getter
@@ -22,10 +21,6 @@ public class Department {
 
     @Column(name = "name")
     private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_id")
-    private Organisation organisation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fac_id")

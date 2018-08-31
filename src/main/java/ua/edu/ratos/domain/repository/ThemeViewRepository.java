@@ -25,9 +25,21 @@ public interface ThemeViewRepository extends CrudRepository<ThemeView, ThemeView
     @Query(value="select t from ThemeView t where t.themeViewId.depId = ?1 and t.theme like %?2%")
     Set<ThemeView> findAllByDepartmentIdAndThemeLettersContains(Long depId, String contains);
 
+    @Query(value="select t from ThemeView t where t.themeViewId.facId = ?1")
+    Page<ThemeView> findAllByFacultyId(Long facId, Pageable pageable);
+
+    @Query(value="select t from ThemeView t where t.themeViewId.facId = ?1 and t.theme like %?2%")
+    Set<ThemeView> findAllByFacultyIdAndThemeLettersContains(Long facId, String contains);
+
     @Query(value="select t from ThemeView t where t.themeViewId.orgId = ?1")
     Page<ThemeView> findAllByOrganisationId(Long orgId, Pageable pageable);
 
     @Query(value="select t from ThemeView t where t.themeViewId.orgId = ?1 and t.theme like %?2%")
     Set<ThemeView> findAllByOrganisationIdAndThemeLettersContains(Long orgId, String contains);
+
+    @Query(value="select t from ThemeView t")
+    Page<ThemeView> findAll(Pageable pageable);
+
+    @Query(value="select t from ThemeView t where t.theme like %?2%")
+    Set<ThemeView> findAllByThemeLettersContains(String contains);
 }

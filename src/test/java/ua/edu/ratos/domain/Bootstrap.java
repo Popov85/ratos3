@@ -144,12 +144,10 @@ public class Bootstrap {
 
         Department department = new Department();
         department.setName("Enterprise programming");
-        department.setOrganisation(organisation);
         department.setFaculty(faculty);
 
         Department department2 = new Department();
         department2.setName("Applied programming");
-        department2.setOrganisation(organisation);
         department2.setFaculty(faculty);
 
         departmentRepository.saveAll(Arrays.asList(department, department2));

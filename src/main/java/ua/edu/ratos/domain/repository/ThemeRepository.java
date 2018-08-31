@@ -14,10 +14,15 @@ public interface ThemeRepository extends JpaRepository<Theme, Long> {
     Set<Theme> findAllByCourseId(Long courseId);
 
     @Query(value = "SELECT t FROM Theme t join t.course c join c.department d where d.depId =?1 order by t.name desc")
-    Set<Theme> findAllByDepartmentId(Long depId);
+    Page<Theme> findByDepartmentId(Long depId, Pageable pageable);
 
-    @Query(value = "SELECT t FROM Theme t join t.course c join c.department d join d.organisation o where o.orgId =?1 order by t.name desc")
+    @Query(value = "SELECT t FROM Theme t join t.course c join c.department d join d.faculty f where f.facId =?1 order by t.name desc")
+    Page<Theme> findByFacultyId(Long facId, Pageable pageable);
+
+    @Query(value = "SELECT t FROM Theme t join t.course c join c.department d join d.faculty f join f.organisation o where o.orgId =?1 order by t.name desc")
     Page<Theme> findByOrganisationId(Long orgId, Pageable pageable);
+
+
 
     @Modifying
     @Query("update Theme t set t.deleted = true where t.themeId = ?1")

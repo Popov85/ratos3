@@ -96,6 +96,7 @@ public class ThemeViewDtoTransformerTest {
                 .setThemeId(themeId)
                 .setCourseId(1L)
                 .setDepId(1L)
+                .setFacId(1L)
                 .setOrgId(1L);
     }
 

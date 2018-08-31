@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
 import javax.persistence.*;
 
 @Getter
@@ -18,6 +17,18 @@ public class ThemeView {
 
     @EmbeddedId
     private ThemeViewId themeViewId = new ThemeViewId();
+
+    @Column(name="organisation")
+    private String organisation;
+
+    @Column(name="faculty")
+    private String faculty;
+
+    @Column(name="department")
+    private String department;
+
+    @Column(name="course")
+    private String course;
 
     @Column(name="theme")
     private String theme;

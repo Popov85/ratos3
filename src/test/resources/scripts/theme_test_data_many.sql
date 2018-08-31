@@ -1,20 +1,20 @@
 insert into organisation (name) values('Open IT-university');
 insert into organisation (name) values('Medical university');
 
-insert into faculty (name) values('Programming faculty #1');
-insert into faculty (name) values('Programming faculty #2');
-insert into faculty (name) values('Medical faculty #1');
-insert into faculty (name) values('Pharmaceutical faculty #2');
+insert into faculty (name, org_id) values('Programming faculty #1', 1);
+insert into faculty (name, org_id) values('Programming faculty #2', 1);
+insert into faculty (name, org_id) values('Medical faculty #1', 2);
+insert into faculty (name, org_id) values('Pharmaceutical faculty #2', 2);
 
-insert into department (name, org_id, fac_id) values('IT department #1', 1, 1);
-insert into department (name, org_id, fac_id) values('IT department #2', 1, 1);
-insert into department (name, org_id, fac_id) values('IT department #3', 1, 2);
-insert into department (name, org_id, fac_id) values('IT department #4', 1, 2);
+insert into department (name, fac_id) values('IT department #1', 1);
+insert into department (name, fac_id) values('IT department #2', 1);
+insert into department (name, fac_id) values('IT department #3', 2);
+insert into department (name, fac_id) values('IT department #4', 2);
 
-insert into department (name, org_id, fac_id) values('Med department #1', 2, 3);
-insert into department (name, org_id, fac_id) values('Med department #2', 2, 3);
-insert into department (name, org_id, fac_id) values('Pharm department #1', 2, 4);
-insert into department (name, org_id, fac_id) values('Pharm department #2', 2, 4);
+insert into department (name, fac_id) values('Med department #1', 3);
+insert into department (name, fac_id) values('Med department #2', 3);
+insert into department (name, fac_id) values('Pharm department #1', 4);
+insert into department (name, fac_id) values('Pharm department #2', 4);
 
 insert into role (name) values('Department instructor');
 insert into position (name) values('Instructor');
