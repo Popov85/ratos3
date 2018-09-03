@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBMQService;
 import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
 import javax.persistence.EntityManager;
@@ -48,7 +49,7 @@ public class AnswerFBMQServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/answer_fbmq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
@@ -68,7 +69,7 @@ public class AnswerFBMQServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
@@ -89,7 +90,7 @@ public class AnswerFBMQServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
         Assert.assertNotNull(em.find(AnswerFillBlankMultiple.class, 1L));
         answerService.deleteById(1L);

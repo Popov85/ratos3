@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.Scheme;
 import ua.edu.ratos.domain.entity.SchemeTheme;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.SchemeThemeService;
 import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import javax.persistence.EntityManager;
@@ -37,7 +38,7 @@ public class SchemeThemeServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         SchemeThemeInDto dto = objectMapper.readValue(json, SchemeThemeInDto.class);

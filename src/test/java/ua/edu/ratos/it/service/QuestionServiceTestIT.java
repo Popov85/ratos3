@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.entity.QuestionInDto;
 import javax.persistence.EntityManager;
@@ -38,7 +39,7 @@ public class QuestionServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_upd.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         QuestionInDto dto = objectMapper
@@ -58,7 +59,7 @@ public class QuestionServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_upd.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() throws Exception {
         QuestionMultipleChoice foundQuestion;
         foundQuestion = em.find(QuestionMultipleChoice.class, 1L);
@@ -67,15 +68,5 @@ public class QuestionServiceTestIT {
         foundQuestion = em.find(QuestionMultipleChoice.class, 1L);
         Assert.assertNull(foundQuestion);
     }
-
-
-
-    @Test
-    @Sql(scripts = "/scripts/question_mcq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByThemeIdTest() throws Exception {
-        // TODO
-    }
-
 
 }

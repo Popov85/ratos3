@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.ThemeView;
 import ua.edu.ratos.domain.repository.ThemeViewRepository;
+import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByThemeIdTest() {
         themeViewRepository.findAll().forEach(System.out::println);
         final Set<ThemeView> questions = themeViewRepository.findAllByThemeId(1L);
@@ -36,7 +37,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByCourseIdTest() {
         final Set<ThemeView> questions = themeViewRepository.findAllByCourseId(2L);
         questions.forEach(System.out::println);
@@ -45,7 +46,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByCourseIdAndFirstThemeLettersTest() {
         final Set<ThemeView> questions = themeViewRepository.findAllByCourseIdAndThemeLettersContains(1L, "unique");
         questions.forEach(System.out::println);
@@ -54,7 +55,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
         final Page<ThemeView> questions = themeViewRepository.findAllByDepartmentId(1L, PageRequest.of(0, 50));
         questions.forEach(System.out::println);
@@ -63,7 +64,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdAndFirstThemeLettersTest() {
         final Set<ThemeView> questions = themeViewRepository.findAllByDepartmentIdAndThemeLettersContains(1L, "unique");
         questions.forEach(System.out::println);
@@ -72,7 +73,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByOrganisationIdTest() {
         final Page<ThemeView> questions = themeViewRepository.findAllByOrganisationId(2L, PageRequest.of(0, 50));
         questions.forEach(System.out::println);
@@ -81,7 +82,7 @@ public class ThemeViewRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/theme_view_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/theme_view_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByOrganisationIdAndFirstThemeLettersTest() {
         final Set<ThemeView> questions = themeViewRepository.findAllByOrganisationIdAndThemeLettersContains(2L, "special");
         questions.forEach(System.out::println);

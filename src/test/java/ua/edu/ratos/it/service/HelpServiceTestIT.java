@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.Help;
 import ua.edu.ratos.domain.entity.Resource;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.HelpService;
 import ua.edu.ratos.service.dto.entity.HelpInDto;
 import javax.persistence.EntityManager;
@@ -46,7 +47,7 @@ public class HelpServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/help_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         HelpInDto dto = objectMapper.readValue(json, HelpInDto.class);
@@ -64,7 +65,7 @@ public class HelpServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         HelpInDto dto = objectMapper.readValue(json, HelpInDto.class);
@@ -83,7 +84,7 @@ public class HelpServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/help_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
         Assert.assertNotNull(em.find(Help.class, 1L));
         helpService.deleteById(1L);

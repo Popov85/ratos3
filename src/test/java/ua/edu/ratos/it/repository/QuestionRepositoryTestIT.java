@@ -11,6 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.question.*;
 import ua.edu.ratos.domain.repository.QuestionRepository;
+import ua.edu.ratos.it.ActiveProfile;
+
 import java.util.*;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -26,7 +28,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_test_data_types.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_test_clear_many.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findTypesTest() throws Exception {
         final Set<String> types = questionRepository.findTypes(1L);
         Assert.assertEquals(3, types.size());
@@ -36,7 +38,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_mcq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_mcq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllMCQWithEverythingByThemeIdTest() throws Exception {
         Assert.assertEquals(5, questionRepository.findAll().size());
         final Set<QuestionMultipleChoice> questions = questionRepository.findAllMCQWithEverythingByThemeId(1L);
@@ -59,7 +61,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_fbsq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_fbsq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllFBSQWithEverythingByThemeIdTest() throws Exception {
         Assert.assertEquals(5, questionRepository.findAll().size());
         final Set<QuestionFillBlankSingle> questions = questionRepository.findAllFBSQWithEverythingByThemeId(1L);
@@ -83,7 +85,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_fbmq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllFBMQWithEverythingByThemeIdTest() throws Exception {
         Assert.assertEquals(5, questionRepository.findAll().size());
         final Set<QuestionFillBlankMultiple> questions = questionRepository.findAllFBMQWithEverythingByThemeId(1L);
@@ -109,7 +111,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_mq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllMQWithEverythingByThemeIdTest() throws Exception {
         Assert.assertEquals(5, questionRepository.findAll().size());
         final Set<QuestionMatcher> questions = questionRepository.findAllMQWithEverythingByThemeId(1L);
@@ -135,7 +137,7 @@ public class QuestionRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_sq_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_sq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllSQWithEverythingByThemeIdTest() throws Exception {
         Assert.assertEquals(5, questionRepository.findAll().size());
         final Set<QuestionSequence> questions = questionRepository.findAllSQWithEverythingByThemeId(1L);

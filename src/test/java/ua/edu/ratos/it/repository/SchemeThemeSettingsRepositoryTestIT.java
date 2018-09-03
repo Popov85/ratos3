@@ -10,6 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.SchemeThemeSettings;
 import ua.edu.ratos.domain.repository.SchemeThemeSettingsRepository;
+import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class SchemeThemeSettingsRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_settings_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_settings_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllBySchemeThemeIdTest() {
         final Set<SchemeThemeSettings> foundSettings = schemeThemeSettingsRepository.findAllBySchemeThemeId(1L);
         Assert.assertEquals(4, foundSettings.size());

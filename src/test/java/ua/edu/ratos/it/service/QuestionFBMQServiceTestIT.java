@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankMultiple;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.entity.QuestionFBMQInDto;
 import javax.persistence.EntityManager;
@@ -38,7 +39,7 @@ public class QuestionFBMQServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/question_fbmq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_fbmq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         QuestionFBMQInDto dto = objectMapper.readValue(json, QuestionFBMQInDto.class);

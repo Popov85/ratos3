@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.Scheme;
 import ua.edu.ratos.domain.entity.SchemeTheme;
 import ua.edu.ratos.domain.repository.SchemeRepository;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.SchemeService;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,7 @@ public class SchemeServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void reOrderTest() throws Exception {
         // 1. Given 8 themes associated with a scheme
         // 2. Reorder elements by putting 2d index element to the top and 5th index element to the bottom
@@ -50,7 +51,7 @@ public class SchemeServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIndexTest() throws Exception {
         // 1. Given 8 themes associated with a scheme
         // 2. Delete the 4th one
@@ -66,7 +67,7 @@ public class SchemeServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data_one.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIndexLastElementTest() throws Exception {
         // 1. Given 1 theme associated with a scheme
         // 2. Delete it single theme

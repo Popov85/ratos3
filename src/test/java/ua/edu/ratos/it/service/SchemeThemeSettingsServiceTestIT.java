@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.SchemeThemeSettings;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.SchemeThemeSettingsService;
 import ua.edu.ratos.service.dto.entity.SchemeThemeSettingsInDto;
 import javax.persistence.EntityManager;
@@ -36,7 +37,7 @@ public class SchemeThemeSettingsServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_settings_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_settings_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         SchemeThemeSettingsInDto dto = objectMapper.readValue(json, SchemeThemeSettingsInDto.class);
@@ -52,7 +53,7 @@ public class SchemeThemeSettingsServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_settings_test_data_one.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_settings_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         SchemeThemeSettingsInDto dto = objectMapper.readValue(json, SchemeThemeSettingsInDto.class);
@@ -68,7 +69,7 @@ public class SchemeThemeSettingsServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_settings_test_data_one.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/scheme_theme_settings_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
         Assert.assertNotNull(em.find(SchemeThemeSettings.class, 1L));
         schemeThemeSettingsService.deleteById(1L);

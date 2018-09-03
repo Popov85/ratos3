@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.repository.ResourceRepository;
+import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ResourceRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/resource_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/resource_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByStaffIdTest() {
         final List<Resource> all = resourceRepository.findAll();
         Assert.assertEquals(7, all.size());
@@ -38,7 +39,7 @@ public class ResourceRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/resource_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/resource_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByDepartmentIdTest() { final List<Resource> all = resourceRepository.findAll();
         Assert.assertEquals(7, all.size());
         final Page<Resource> resources = resourceRepository.findByDepartmentId(1L, PageRequest.of(0, 20));
@@ -48,7 +49,7 @@ public class ResourceRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/resource_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/resource_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByStaffIdAndFirstLettersTest() {
         final List<Resource> all = resourceRepository.findAll();
         Assert.assertEquals(7, all.size());
@@ -60,7 +61,7 @@ public class ResourceRepositoryTestIT {
 
     @Test
     @Sql(scripts = "/scripts/resource_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/resource_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByDepartmentIdAndFirstLettersTest() {
         final List<Resource> all = resourceRepository.findAll();
         Assert.assertEquals(7, all.size());

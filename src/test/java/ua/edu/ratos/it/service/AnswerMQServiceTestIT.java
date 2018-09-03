@@ -15,6 +15,7 @@ import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
 import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.domain.entity.question.QuestionMatcher;
 import ua.edu.ratos.domain.repository.AnswerMQRepository;
+import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerMQService;
 import ua.edu.ratos.service.dto.entity.AnswerMCQInDto;
 import ua.edu.ratos.service.dto.entity.AnswerMQInDto;
@@ -53,7 +54,7 @@ public class AnswerMQServiceTestIT {
 
     @Test
     @Sql(scripts = "/scripts/answer_mq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
@@ -71,7 +72,7 @@ public class AnswerMQServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
@@ -90,7 +91,7 @@ public class AnswerMQServiceTestIT {
 
     @Test
     @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_mq_test_clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() throws Exception {
         Assert.assertNotNull(em.find(AnswerMatcher.class, 1L));
         answerService.deleteById(1L);
