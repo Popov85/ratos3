@@ -26,7 +26,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
             Character firstChar = trimmedLine.charAt(0);
             if (firstChar == '#') {
                 readQuestion();
-            } else if (firstChar == '0' || firstChar == '1') {
+            } else if (trimmedLine.length()==1 && (firstChar == '0' || firstChar == '1')) {
                 short correct = (firstChar == '1') ? (short) 100 : 0;
                 readAnswer(correct);
             } else {// Goes String line (question title most probably), or the continuation of answerIds title
@@ -62,7 +62,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
         answer.setAnswer("");
         answer.setPercent(correct);
 
-        currentQuestion.getAnswers().add(answer);
+        currentQuestion.addAnswer(answer);
 
         questionStartExpected = true;
         answerStartExpected = false;

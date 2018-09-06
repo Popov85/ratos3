@@ -38,7 +38,7 @@ public class QuestionServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
-    @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_upd.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
@@ -58,7 +58,7 @@ public class QuestionServiceTestIT {
 
 
     @Test
-    @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_upd.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() throws Exception {
         QuestionMultipleChoice foundQuestion;

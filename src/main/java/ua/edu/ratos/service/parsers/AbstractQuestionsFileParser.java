@@ -2,7 +2,6 @@ package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +24,35 @@ public abstract class AbstractQuestionsFileParser implements QuestionsFileParser
     protected String header = "";
 
     @Override
-    public QuestionsParsingResult parseFile(File filename, String charset) {
+    public QuestionsParsingResult parseFile(File file, String charset) {
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(filename), charset))) {
-            List<String> lines = br.lines().collect(Collectors.toList());
-            int sentinel = getSentinel(lines);
-            this.startStatus = true;
-            for (int i = sentinel; i < lines.size(); i++) {
-                currentRow = i;
-                currentLine = lines.get(i);
-                parseLine(currentLine);
-            }
+                new InputStreamReader(new FileInputStream(file), charset))) {
+            doParse(br);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse File",e);
         }
-        return new QuestionsParsingResult(header, questions, questionsParsingIssues);
+        return new QuestionsParsingResult(charset, header, questions, questionsParsingIssues);
+    }
+
+    @Override
+    public QuestionsParsingResult parseStream(InputStream stream, String charset) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, charset))) {
+            doParse(br);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse InputStream",e);
+        }
+        return new QuestionsParsingResult(charset, header, questions, questionsParsingIssues);
+    }
+
+    private void doParse(BufferedReader br) {
+        List<String> lines = br.lines().collect(Collectors.toList());
+        int sentinel = getSentinel(lines);
+        this.startStatus = true;
+        for (int i = sentinel; i < lines.size(); i++) {
+            currentRow = i;
+            currentLine = lines.get(i);
+            parseLine(currentLine);
+        }
     }
 
     /**

@@ -66,7 +66,7 @@ public class SchemeServiceTestIT {
     }
 
     @Test
-    @Sql(scripts = "/scripts/scheme_theme_test_data_one.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/scheme_theme_test_data.sql", "/scripts/scheme_theme_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIndexLastElementTest() throws Exception {
         // 1. Given 1 theme associated with a scheme

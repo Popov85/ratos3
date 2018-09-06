@@ -87,7 +87,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
         try {
             AnswerMultipleChoice answer = createAnswer(line);
-            currentQuestion.getAnswers().add(answer);
+            currentQuestion.addAnswer(answer);
         } catch (Exception e) {
             String description = PREFIX + "parsing error, answerIds skipped, details: " + e.getMessage();
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));

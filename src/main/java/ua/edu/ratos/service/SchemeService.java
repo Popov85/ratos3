@@ -76,8 +76,8 @@ public class SchemeService {
     }
 
     @Transactional
-    public void deleteById(@NonNull Long helpId) {
-        final Optional<Scheme> scheme = schemeRepository.findById(helpId);
+    public void deleteById(@NonNull Long schemeId) {
+        final Optional<Scheme> scheme = schemeRepository.findById(schemeId);
         scheme.get().setDeleted(true);
     }
 

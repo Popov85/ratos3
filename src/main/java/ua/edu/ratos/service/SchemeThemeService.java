@@ -44,7 +44,7 @@ public class SchemeThemeService {
     @Transactional
     public Long save(@NonNull SchemeThemeInDto dto) {
         SchemeTheme schemeTheme = transformer.fromDto(dto);
-        if (dto.isFirst()) {// update Scheme completed flag
+        if (dto.isFirst()) {// update Scheme's 'completed' flag
             final Optional<Scheme> scheme = schemeRepository.findById(dto.getSchemeId());
             scheme.get().setCompleted(true);
         }

@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.util.ResourceUtils;
 import java.io.File;
+import java.io.FileInputStream;
+
 import ua.edu.ratos.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
@@ -23,6 +25,7 @@ public class AbstractQuestionsFileParserTest {
     public void parseFileShouldThrowRuntimeExceptionTest1() throws Exception {
         QuestionsFileParserMockImpl mock = new QuestionsFileParserMockImpl();
         File file = ResourceUtils.getFile(EMPTY_SOURCE_FILE);
+        //FileInputStream f = new FileInputStream(file);
         mock.parseFile(file,"UTF-8");
     }
 

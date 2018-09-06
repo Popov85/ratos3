@@ -32,6 +32,7 @@ public class DtoSchemeThemeTransformer {
         dto.getSchemeThemeSettings().forEach(s-> {
             final SchemeThemeSettings set = modelMapper.map(s, SchemeThemeSettings.class);
             set.setType(em.getReference(QuestionType.class, s.getQuestionTypeId()));
+            System.out.println("SETTINGS :: "+set);
             schemeTheme.addSchemeThemeSettings(set);
         });
         return schemeTheme;

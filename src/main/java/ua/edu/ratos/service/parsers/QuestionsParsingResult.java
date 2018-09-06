@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @Getter
 @ToString
 public class QuestionsParsingResult {
+    private final String charset;
     private final String header;
     private final List<QuestionMultipleChoice> questions;
     private final List<QuestionsParsingIssue> issues;
@@ -18,7 +19,8 @@ public class QuestionsParsingResult {
      */
     private int invalid;
 
-    public QuestionsParsingResult(@NonNull String header, @NonNull List<QuestionMultipleChoice> questions, @NonNull List<QuestionsParsingIssue> issues) {
+    public QuestionsParsingResult(@NonNull String charset, @NonNull String header, @NonNull List<QuestionMultipleChoice> questions, @NonNull List<QuestionsParsingIssue> issues) {
+        this.charset = charset;
         this.header = header;
         this.questions = validate(questions);
         this.invalid = questions.size() - this.questions.size();

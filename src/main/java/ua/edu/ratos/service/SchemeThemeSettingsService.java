@@ -4,10 +4,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.SchemeTheme;
 import ua.edu.ratos.domain.entity.SchemeThemeSettings;
 import ua.edu.ratos.domain.repository.SchemeThemeSettingsRepository;
-import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.entity.SchemeThemeSettingsInDto;
 import ua.edu.ratos.service.dto.transformer.DtoSchemeThemeSettingsTransformer;
 

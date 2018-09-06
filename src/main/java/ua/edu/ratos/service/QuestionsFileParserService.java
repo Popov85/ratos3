@@ -2,65 +2,116 @@ package ua.edu.ratos.service;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ua.edu.ratos.domain.entity.Language;
+import ua.edu.ratos.domain.entity.Staff;
+import ua.edu.ratos.domain.entity.Theme;
 import ua.edu.ratos.domain.entity.question.Question;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
 import ua.edu.ratos.domain.entity.question.QuestionType;
-import ua.edu.ratos.domain.repository.LanguageRepository;
-import ua.edu.ratos.domain.repository.QuestionTypeRepository;
+import ua.edu.ratos.service.dto.entity.FileInDto;
+import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer;
+import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
-import java.io.File;
+
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class QuestionsFileParserService {
+    /**
+     * Currently, only MCQ (Type ID = 1) are supported to be saved via file
+     */
+    private static final long DEFAULT_QUESTION_TYPE_ID = 1L;
 
     @Autowired
-    private LanguageRepository languageRepository;
-
-    @Autowired
-    private QuestionTypeRepository typeRepository;
+    private EntityManager em;
 
     @Autowired
     private QuestionService questionService;
 
-    public QuestionsParsingResult parseAndSave(@NonNull String fileType, @NonNull File filename, @NonNull String charset, @NonNull Long langId, boolean isConfirmed) {
-        QuestionsFileParser parser = getParser(fileType);
-        final QuestionsParsingResult parsingResult = parser.parseFile(filename, charset);
-        if (isConfirmed) {
-            save(fileType, langId, parsingResult);
-            return parsingResult;
+    @Autowired
+    private QuestionsParsingResultDtoTransformer transformer;
+
+    /**
+     * Parses multipart file and saves all the questions to DB
+     * @param multipartFile file with questions
+     * @param dto metadata of the file
+     * @return result on parsing and saving
+     */
+    public QuestionsParsingResultOutDto parseAndSave(@NonNull MultipartFile multipartFile, @NonNull FileInDto dto) throws IOException {
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+        QuestionsFileParser parser = getParser(extension);
+        final String encoding = detectEncoding(multipartFile.getInputStream());
+        final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
+        //parsingResult.getQuestions().forEach(System.out::println);
+        //return transformer.toDto(parsingResult, false);
+        if (dto.isConfirmed()) {
+            save(parsingResult.getQuestions(), dto);
+            log.debug("Saved questions into the DB after confirmation, {}", parsingResult.getQuestions().size());
+            return transformer.toDto(parsingResult, true);
         }
         if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
-            save(fileType, langId, parsingResult);
-            return parsingResult;
+            save(parsingResult.getQuestions(), dto);
+            log.debug("Saved questions into the DB with no major issues, {}", parsingResult.getQuestions().size());
+            return transformer.toDto(parsingResult, true);
         } else {
-            return parsingResult;
+            return transformer.toDto(parsingResult, false);
         }
     }
 
-    private void save(@NonNull String fileType, @NonNull Long langId, @NonNull QuestionsParsingResult parsingResult) {
-        final List<QuestionMultipleChoice> parsedQuestions = parsingResult.getQuestions();
-        // First, Enrich questions with Language and Type
-        QuestionType type = typeRepository.getOne(1L);
-        Language language = languageRepository.getOne(langId);
-        final ArrayList<Question> questions = new ArrayList<>();
+
+    /**
+     * Detects a file's encoding based on input bytes
+     * @param inputStream input file
+     * @return detected encoding
+     * @throws IOException
+     * @link https://code.google.com/archive/p/juniversalchardet/
+     * @link https://stackoverflow.com/questions/3759356/what-is-the-most-accurate-encoding-detector?noredirect=1&lq=1
+     */
+    private String detectEncoding(@NonNull InputStream inputStream) throws IOException {
+        UniversalDetector detector = new UniversalDetector(null);
+        int n;
+        byte[] buf = new byte[4096];
+        while ((n = inputStream.read(buf)) > 0 && !detector.isDone()) {
+            detector.handleData(buf, 0, n);
+        }
+        detector.dataEnd();
+        String encoding = detector.getDetectedCharset();
+        if (encoding == null)
+            throw new RuntimeException("Failed to detect the encoding of uploaded file");
+        log.debug("Detected encoding :: {} ", encoding);
+        return encoding;
+    }
+
+    private void save(@NonNull List<QuestionMultipleChoice> parsedQuestions, @NonNull FileInDto dto) {
+        // First, Enrich questions with Theme, Language and Type, second for each non-null help, enrich it with Staff
+        QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
+        Theme theme = em.getReference(Theme.class, dto.getThemeId());
+        Language language = em.getReference(Language.class, dto.getLangId());
+        Staff staff = em.getReference(Staff.class, dto.getStaffId());
+        final List<Question> questions = new ArrayList<>();
         parsedQuestions.forEach(q->{
+            q.setTheme(theme);
             q.setType(type);
             q.setLang(language);
+            if (q.getHelp().isPresent()) q.getHelp().get().forEach(h->h.setStaff(staff));
             questions.add(q);
         });
         questionService.saveAll(questions);
-        log.debug("Parsed and saved :: {} questions of type :: {} ", questions.size(), fileType);
     }
 
-    private QuestionsFileParser getParser(@NonNull String fileType) {
-        if ("rtp".equals(fileType)) return new QuestionsFileParserRTP();
-        if ("txt".equals(fileType)) return new QuestionsFileParserTXT();
-        throw new UnsupportedOperationException("Unsupported question type");
+    private QuestionsFileParser getParser(@NonNull String extension) {
+        if ("txt".equals(extension)) return new QuestionsFileParserTXT();
+        if ("rtp".equals(extension) || "xtt".equals(extension)) return new QuestionsFileParserRTP();
+        throw new UnsupportedOperationException("Unsupported file extension: only .txt/.rtp/.xtt files are supported");
     }
 }

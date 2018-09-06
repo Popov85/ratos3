@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS   answer_sq  (
 CREATE TABLE IF NOT EXISTS help (
   help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  text VARCHAR(500) NOT NULL,
+  text VARCHAR(5000) NOT NULL,
   staff_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (help_id),
   INDEX fk_help_staff_staff_id_idx (staff_id ASC),
