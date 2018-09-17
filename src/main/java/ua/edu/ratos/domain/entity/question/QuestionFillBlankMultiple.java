@@ -2,6 +2,7 @@ package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankMultiple;
@@ -13,11 +14,13 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@Cacheable
 @DiscriminatorValue(value = "3")
 @DynamicUpdate
 public class QuestionFillBlankMultiple extends Question{
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<AnswerFillBlankMultiple> answers = new HashSet<>();
 
     public void addAnswer(AnswerFillBlankMultiple answer) {

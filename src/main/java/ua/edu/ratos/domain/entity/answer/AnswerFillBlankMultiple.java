@@ -19,6 +19,7 @@ import java.util.Set;
 @ToString(exclude = {"question", "settings", "acceptedPhrases"})
 @Entity
 @Table(name = "answer_fbmq")
+@Cacheable
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class AnswerFillBlankMultiple{

@@ -13,7 +13,7 @@ import org.springframework.util.StopWatch;
 @Component
 public class ProfilingAspect {
 
-    private static final long WARN_THRESHOLD = 100;
+    private static final long WARN_THRESHOLD = 500;
 
     @Pointcut("execution(* ua.edu.ratos.domain.*.*(..))")
     public void domain(){}

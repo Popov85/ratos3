@@ -7,11 +7,19 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+/**
+ * Default strategies:
+ * Theme -> Type -> Level -> Question
+ * 1) Default: randomised irrespective to type and level, but observe themes order
+ * 2) Full randomized: randomized irrespective to theme order, type or level
+ * 3) TO be continued...
+ */
 @Getter
 @Setter
 @ToString
 @Entity
 @Table(name = "strategy")
+@Cacheable
 public class Strategy {
 
     @Id

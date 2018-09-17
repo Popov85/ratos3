@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@Cacheable
 @DiscriminatorValue(value = "2")
 @DynamicUpdate
 public class QuestionFillBlankSingle extends Question {

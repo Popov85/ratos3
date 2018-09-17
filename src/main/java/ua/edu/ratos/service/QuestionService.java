@@ -5,11 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.domain.entity.SchemeThemeSettings;
 import ua.edu.ratos.domain.entity.question.*;
 import ua.edu.ratos.domain.repository.*;
 import ua.edu.ratos.service.dto.entity.*;
 import ua.edu.ratos.service.dto.transformer.DtoQuestionTransformer;
+import ua.edu.ratos.service.utils.CollectionShuffler;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -77,34 +81,28 @@ public class QuestionService {
     }
 
 
-    /**
-     * Fetch all existing questions from the DB into the in-memory cache for further processing
-     * @param themeId
-     * @return all existing questions in this theme by type
-     */
     @Transactional(readOnly = true)
-    public Map<String, Set<? extends Question>> findAllByThemeId(@NonNull Long themeId) {
-        Map<String, Set<? extends Question>> questions = new HashMap<>();
-        // First, find all existing types in this theme
-        questionRepository.findTypes(themeId).forEach((t)->questions.put(t, findByType(t, themeId)));
+    public Set<Question> findAllByThemeId(@NonNull Long themeId) {
+        Set<Question> questions = new HashSet<>();
+        // First, find all existing types (ids) in this theme
+        questionRepository.findTypes(themeId).forEach(typeId->questions.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
         return questions;
     }
 
-    private Set<? extends Question> findByType(String type, Long themeId) {
-        switch (type) {
-            case "MCQ":
-                return questionRepository.findAllMCQWithEverythingByThemeId(themeId);
-            case "FBSQ":
-                return questionRepository.findAllFBSQWithEverythingByThemeId(themeId);
-            case "FBMQ":
-                return questionRepository.findAllFBMQWithEverythingByThemeId(themeId);
-            case "MQ":
-                return questionRepository.findAllMQWithEverythingByThemeId(themeId);
-            case "SQ":
-                return questionRepository.findAllSQWithEverythingByThemeId(themeId);
-            default:
-                throw new RuntimeException("Unrecognized question type");
+    @Transactional(readOnly = true)
+    public Set<? extends Question> findAllByThemeIdAndTypeId(Long themeId, Long typeId) {
+        if (typeId==1) {
+            return questionRepository.findAllMCQWithEverythingByThemeId(themeId);
+        } else if (typeId==2) {
+            return questionRepository.findAllFBSQWithEverythingByThemeId(themeId);
+        } else if (typeId==3) {
+            return questionRepository.findAllFBMQWithEverythingByThemeId(themeId);
+        } else if (typeId==4) {
+            return questionRepository.findAllMQWithEverythingByThemeId(themeId);
+        } else if (typeId==5) {
+            return questionRepository.findAllSQWithEverythingByThemeId(themeId);
         }
+        throw new RuntimeException("Unsupported type");
     }
 
     @Transactional

@@ -14,6 +14,7 @@ import javax.persistence.*;
 @ToString(exclude = "staff")
 @Entity
 @Table(name = "settings_fbq")
+@Cacheable
 public class SettingsAnswerFillBlank {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

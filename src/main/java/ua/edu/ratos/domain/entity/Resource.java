@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "resource")
+@Cacheable
 public class Resource {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

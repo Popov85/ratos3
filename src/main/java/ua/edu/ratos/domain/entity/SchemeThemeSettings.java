@@ -12,6 +12,7 @@ import javax.persistence.*;
 @ToString(exclude = {"schemeTheme", "type"})
 @Entity
 @Table(name="type_level")
+@Cacheable
 public class SchemeThemeSettings {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

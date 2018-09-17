@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@Cacheable
 @DiscriminatorValue(value = "1")
 @DynamicUpdate
 public class QuestionMultipleChoice extends Question {
@@ -26,6 +28,7 @@ public class QuestionMultipleChoice extends Question {
     private boolean isSingle;
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<AnswerMultipleChoice> answers = new ArrayList<>();
 
     public void addAnswer(AnswerMultipleChoice answer) {

@@ -17,6 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "accepted_phrase")
+@Cacheable
 @DynamicUpdate
 public class AcceptedPhrase {
     @Id

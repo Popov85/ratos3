@@ -1,0 +1,99 @@
+<!-- http://www.ehcache.org/documentation/3.5/getting-started.html -->
+<!--http://www.ehcache.org/documentation/3.5/107.html-->
+<config
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+    xmlns='http://www.ehcache.org/v3'
+    xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+
+  <service>
+    <jsr107:defaults enable-management="true" enable-statistics="true"/>
+  </service>
+
+  <!--Scheme related cache-->
+
+  <cache alias="ua.edu.ratos.domain.entity.Scheme">
+    <heap>1000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Mode">
+      <heap>500</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Settings">
+      <heap>500</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Strategy">
+      <heap>10</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.SchemeTheme">
+      <heap>2000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.SchemeThemeSettings">
+      <heap>2000</heap>
+  </cache>
+
+  <!--Questions related cache-->
+
+  <cache alias="ua.edu.ratos.domain.entity.question.Question">
+    <resources>
+      <heap>5000</heap>
+      <offheap unit="MB">100</offheap>
+    </resources>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.question.QuestionType">
+      <heap>10</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Theme">
+      <heap>2000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Language">
+      <heap>10</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Help">
+      <heap>500</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.Resource">
+      <heap>500</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice">
+    <resources>
+      <heap>20000</heap>
+      <offheap unit="MB">400</offheap>
+    </resources>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerFillBlankSingle">
+      <heap>1000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AcceptedPhrase">
+      <heap>4000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.SettingsAnswerFillBlank">
+      <heap>500</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple">
+      <heap>1000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerMatcher">
+      <heap>1000</heap>
+  </cache>
+
+  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerSequence">
+      <heap>1000</heap>
+  </cache>
+
+</config>

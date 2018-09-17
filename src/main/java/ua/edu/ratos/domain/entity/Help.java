@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "help")
+@Cacheable
 public class Help {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

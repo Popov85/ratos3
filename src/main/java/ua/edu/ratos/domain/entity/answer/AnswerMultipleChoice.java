@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name="answer_mcq")
+@Cacheable
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class AnswerMultipleChoice {

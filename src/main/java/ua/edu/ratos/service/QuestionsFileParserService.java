@@ -17,6 +17,7 @@ import ua.edu.ratos.service.dto.entity.FileInDto;
 import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer;
 import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
+import ua.edu.ratos.service.utils.CharsetDetector;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -41,16 +42,19 @@ public class QuestionsFileParserService {
     @Autowired
     private QuestionsParsingResultDtoTransformer transformer;
 
+    @Autowired
+    private CharsetDetector charsetDetector;
+
     /**
      * Parses multipart file and saves all the questions to DB
      * @param multipartFile file with questions
      * @param dto metadata of the file
      * @return result on parsing and saving
      */
-    public QuestionsParsingResultOutDto parseAndSave(@NonNull MultipartFile multipartFile, @NonNull FileInDto dto) throws IOException {
+    public synchronized QuestionsParsingResultOutDto parseAndSave(@NonNull MultipartFile multipartFile, @NonNull FileInDto dto) throws IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         QuestionsFileParser parser = getParser(extension);
-        final String encoding = detectEncoding(multipartFile.getInputStream());
+        final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
         final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
         //parsingResult.getQuestions().forEach(System.out::println);
         //return transformer.toDto(parsingResult, false);
@@ -66,30 +70,6 @@ public class QuestionsFileParserService {
         } else {
             return transformer.toDto(parsingResult, false);
         }
-    }
-
-
-    /**
-     * Detects a file's encoding based on input bytes
-     * @param inputStream input file
-     * @return detected encoding
-     * @throws IOException
-     * @link https://code.google.com/archive/p/juniversalchardet/
-     * @link https://stackoverflow.com/questions/3759356/what-is-the-most-accurate-encoding-detector?noredirect=1&lq=1
-     */
-    private String detectEncoding(@NonNull InputStream inputStream) throws IOException {
-        UniversalDetector detector = new UniversalDetector(null);
-        int n;
-        byte[] buf = new byte[4096];
-        while ((n = inputStream.read(buf)) > 0 && !detector.isDone()) {
-            detector.handleData(buf, 0, n);
-        }
-        detector.dataEnd();
-        String encoding = detector.getDetectedCharset();
-        if (encoding == null)
-            throw new RuntimeException("Failed to detect the encoding of uploaded file");
-        log.debug("Detected encoding :: {} ", encoding);
-        return encoding;
     }
 
     private void save(@NonNull List<QuestionMultipleChoice> parsedQuestions, @NonNull FileInDto dto) {

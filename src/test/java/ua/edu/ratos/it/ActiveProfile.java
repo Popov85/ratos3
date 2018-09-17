@@ -4,7 +4,7 @@ package ua.edu.ratos.it;
  * Constant holder for exceptionally database IT testing purposes
  * for switching between h2 and mysql
  */
-public class ActiveProfile {
+public final class ActiveProfile {
     /**
      * Current profile for database IT tests.
      * Make sure the value is equal to the value of

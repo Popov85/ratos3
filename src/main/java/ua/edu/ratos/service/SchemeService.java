@@ -41,7 +41,15 @@ public class SchemeService {
         schemeRepository.save(scheme);
     }
 
-
+    /**
+     * Gets Scheme instance for a student session request
+     * @param schemeId
+     * @return Scheme object preferably from L2C
+     */
+    @Transactional(readOnly = true)
+    public Scheme findByIdForSession(@NonNull Long schemeId) {
+        return schemeRepository.findByIdForSession(schemeId);
+    }
 
     /**
      * Reorder themes within a scheme by sending List<Long> and by updating each SchemeTheme with new order parameter

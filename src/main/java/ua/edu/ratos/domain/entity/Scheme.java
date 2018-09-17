@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import javax.persistence.*;
@@ -13,9 +14,10 @@ import java.util.List;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings","mode", "course", "staff", "schemeThemes"})
+@ToString(exclude = {"strategy", "settings", "mode", "course", "staff", "schemeThemes"})
 @Entity
 @Table(name="scheme")
+@Cacheable
 @Where(clause = "is_deleted = 0")
 public class Scheme {
 
@@ -58,13 +60,15 @@ public class Scheme {
     private boolean deleted;
 
     /**
-     * Scheme becomes completed as soon as at least one Theme is associated with it and all other settings are set
+     * Scheme becomes completed as soon as at least one Theme is associated with it and all other settings are set;
+     * if the last Theme associated with a Scheme gets deleted, the Scheme becomes incomplete
      */
     @Column(name="is_completed")
     private boolean completed;
 
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<SchemeTheme> schemeThemes = new ArrayList<>();
 
     public void addSchemeTheme(@NonNull SchemeTheme schemeTheme) {

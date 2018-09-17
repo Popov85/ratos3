@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @ToString
 @Entity
+@Cacheable
 @Table(name="question_type")
 public class QuestionType {
     @Id

@@ -1,19 +1,20 @@
 package ua.edu.ratos.domain.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import ua.edu.ratos.domain.entity.Scheme;
+
+import javax.persistence.QueryHint;
 
 public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
     @Query(value = "SELECT s FROM Scheme s left join fetch s.schemeThemes t where s.schemeId = ?1")
     Scheme findByIdWithThemes(Long schemeId);
 
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy left join fetch s.schemeThemes st left join fetch st.schemeThemeSettings where s.schemeId = ?1")
+    @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    Scheme findByIdForSession(Long schemeId);
 
-
-   /* @Query(value="select s from Scheme s join fetch s.course c join fetch c.department d join fetch d.faculty f join fetch d.organisation o where t.themeViewId.orgId = ?1")
-    Page<Scheme> findAllByOrganisationId(Long orgId, Pageable pageable);*/
 
 }

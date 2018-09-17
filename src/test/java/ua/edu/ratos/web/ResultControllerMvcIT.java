@@ -1,5 +1,6 @@
 package ua.edu.ratos.web;
 
+import org.junit.Ignore;
 import ua.edu.ratos.domain.model.ResultMock;
 import ua.edu.ratos.service.ResultService;
 import org.junit.Test;
@@ -25,6 +26,7 @@ public class ResultControllerMvcIT {
     private ResultService resultService;
 
     @Test
+    @Ignore("For later references")
     public void getVehicleWhenRequestingTextShouldReturnMakeAndModel() throws Exception {
   /*      given(this.resultService.findOne(1))
                 .willReturn(new ResultMock(1L, "John", 100));

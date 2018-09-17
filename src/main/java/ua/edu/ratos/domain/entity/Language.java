@@ -12,6 +12,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name="language")
+@Cacheable
 public class Language {
 
     @Id

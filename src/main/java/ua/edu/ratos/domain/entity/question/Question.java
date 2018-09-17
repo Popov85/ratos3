@@ -19,6 +19,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "question")
+@Cacheable
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_id", discriminatorType = DiscriminatorType.INTEGER)
 @Where(clause = "is_deleted = 0")

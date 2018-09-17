@@ -1,6 +1,8 @@
 package ua.edu.ratos.it.service;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +10,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.Scheme;
-import ua.edu.ratos.domain.entity.SchemeTheme;
+import ua.edu.ratos.domain.entity.*;
 import ua.edu.ratos.domain.repository.SchemeRepository;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.SchemeService;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +32,9 @@ public class SchemeServiceTestIT {
 
     @Autowired
     private SchemeRepository schemeRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -46,8 +54,6 @@ public class SchemeServiceTestIT {
         Assert.assertEquals(edit, actual);
         //schemeThemes.forEach(System.out::println);
     }
-
-
 
     @Test
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -80,5 +86,4 @@ public class SchemeServiceTestIT {
         Assert.assertFalse(foundScheme.isCompleted());
         foundScheme.getSchemeThemes().forEach(System.out::println);
     }
-
 }

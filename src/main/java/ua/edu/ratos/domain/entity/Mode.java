@@ -6,12 +6,15 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @ToString(exclude = {"staff"})
 @Entity
 @Table(name = "mode")
+@Cacheable
 public class Mode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -21,10 +24,6 @@ public class Mode {
 
     @Column(name="name")
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
 
     @Column(name="is_helpable")
     private boolean helpable;
@@ -49,5 +48,15 @@ public class Mode {
 
     @Column(name="is_reportable")
     private boolean reportable;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
+
+    @Column(name="is_default")
+    private boolean defaultMode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
 
 }

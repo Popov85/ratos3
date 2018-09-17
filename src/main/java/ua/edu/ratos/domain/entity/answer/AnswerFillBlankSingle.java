@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "answer_fbsq")
+@Cacheable
 public class AnswerFillBlankSingle {
 
     @Id

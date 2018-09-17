@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.domain.entity.Scheme;
+import ua.edu.ratos.domain.repository.SchemeRepository;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import java.util.List;
@@ -15,6 +17,10 @@ public class SchemeController {
 
     @Autowired
     private SchemeService schemeService;
+
+    @Autowired
+    private SchemeRepository schemeRepository;
+
 
     @PostMapping("/")
     public Long save(@Validated({SchemeInDto.New.class}) @RequestBody SchemeInDto dto) {
@@ -48,6 +54,16 @@ public class SchemeController {
         schemeService.deleteByIndex(schemeId, themeIndex);
         log.debug("Theme's index to delete :: {}", themeIndex);
     }
+
+    //----------------CACHE-ABLE (delete later)--------------------
+
+    @GetMapping("/{schemeId}")
+    public void findByIdForSession(@PathVariable Long schemeId) {
+        final Scheme scheme = schemeService.findByIdForSession(schemeId);
+        log.debug("Scheme :: {}", scheme);
+        log.debug("Collection :: {}", scheme.getSchemeThemes());
+    }
+
 
 
 }

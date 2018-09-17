@@ -2,6 +2,7 @@ package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import ua.edu.ratos.domain.entity.answer.AnswerSequence;
 import ua.edu.ratos.service.dto.response.ResponseSequence;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@Cacheable
 @DiscriminatorValue(value = "5")
 @DynamicUpdate
 public class QuestionSequence extends Question {
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<AnswerSequence> answers = new ArrayList<>();
 
     public void addAnswer(AnswerSequence answer) {

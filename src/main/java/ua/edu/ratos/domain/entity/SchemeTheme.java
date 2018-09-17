@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Set;
 @ToString(exclude = {"scheme", "theme", "schemeThemeSettings"})
 @Entity
 @Table(name="scheme_theme")
+@Cacheable
 public class SchemeTheme {
 
     @Id
@@ -34,6 +36,7 @@ public class SchemeTheme {
     private short order;
 
     @OneToMany(mappedBy = "schemeTheme", cascade = CascadeType.ALL, orphanRemoval = true)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<SchemeThemeSettings> schemeThemeSettings = new HashSet<>();
 
     public void addSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {

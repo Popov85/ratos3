@@ -14,6 +14,7 @@ import java.util.Set;
 @ToString(exclude = {"questions", "course"})
 @Entity
 @Table(name="theme")
+@Cacheable
 public class Theme {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

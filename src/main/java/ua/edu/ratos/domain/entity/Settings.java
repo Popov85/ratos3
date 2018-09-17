@@ -12,6 +12,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "settings")
+@Cacheable
 public class Settings {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -22,7 +23,7 @@ public class Settings {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
@@ -55,5 +56,11 @@ public class Settings {
 
     @Column(name = "display_mark")
     private boolean displayMark;
+
+    @Column(name="is_default")
+    private boolean defaultSettings;
+
+    @Column(name = "is_deleted")
+    private boolean deleted;
 
 }

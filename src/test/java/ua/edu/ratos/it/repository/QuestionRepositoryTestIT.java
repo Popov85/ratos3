@@ -30,9 +30,9 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = "/scripts/question_test_data_types.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findTypesTest() throws Exception {
-        final Set<String> types = questionRepository.findTypes(1L);
+        final Set<Long> types = questionRepository.findTypes(1L);
         Assert.assertEquals(3, types.size());
-        Assert.assertThat(types, containsInAnyOrder("MCQ", "FBSQ", "FBMQ"));
+        Assert.assertThat(types, containsInAnyOrder(1L, 2L, 3L));
     }
 
 

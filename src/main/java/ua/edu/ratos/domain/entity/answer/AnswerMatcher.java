@@ -15,6 +15,7 @@ import java.util.Set;
 @ToString(exclude = {"question", "resources"})
 @Entity
 @Table(name = "answer_mq")
+@Cacheable
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class AnswerMatcher {
