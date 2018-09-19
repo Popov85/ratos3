@@ -11,7 +11,7 @@ public interface AcceptedPhraseRepository extends JpaRepository<AcceptedPhrase, 
     @Query(value = "SELECT a FROM AcceptedPhrase a join a.staff s where s.staffId =?1 order by a.lastUsed desc")
     Page<AcceptedPhrase> findAllLastUsedByStaffId(Long staId, Pageable pageable);
 
-    @Query(value = "SELECT a FROM AcceptedPhrase a join a.staff s where s.staffId =?1 and a.phrase like ?2% order by a.phrase desc")
+    @Query(value = "SELECT a FROM AcceptedPhrase a join a.staff s where s.staffId =?1 and a.phrase like ?2% order by a.phrase asc")
     Page<AcceptedPhrase> findAllLastUsedByStaffIdAndFirstLetters(Long staId, String starts, Pageable pageable);
 
 }

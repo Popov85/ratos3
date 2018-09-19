@@ -23,7 +23,13 @@ public class DtoAcceptedPhraseTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public AcceptedPhrase fromDto(@NonNull AcceptedPhraseInDto dto) {
+        return fromDto(dto, null);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AcceptedPhrase fromDto(@NonNull AcceptedPhraseInDto dto, Long phraseId) {
         AcceptedPhrase phrase = modelMapper.map(dto, AcceptedPhrase.class);
+        phrase.setPhraseId(phraseId);
         phrase.setStaff(em.getReference(Staff.class, dto.getStaffId()));
         phrase.setLastUsed(LocalDateTime.now());
         return phrase;

@@ -1,7 +1,5 @@
-insert into organisation (name) values('Open IT-university');
-insert into organisation (name) values('Medical university');
+insert into organisation (name) values('University #2');
 
-insert into faculty (name, org_id) values('Programming faculty #1', 1);
 insert into faculty (name, org_id) values('Programming faculty #2', 1);
 insert into faculty (name, org_id) values('Medical faculty #1', 2);
 insert into faculty (name, org_id) values('Pharmaceutical faculty #2', 2);
@@ -16,20 +14,9 @@ insert into department (name, fac_id) values('Med department #2', 3);
 insert into department (name, fac_id) values('Pharm department #1', 4);
 insert into department (name, fac_id) values('Pharm department #2', 4);
 
-insert into role (name) values('Department instructor');
-insert into position (name) values('Instructor');
-insert into user (name, surname, password, email) values('Clara','Denis','hY45lKj4','clara.denis@gmail.com');
 insert into user (name, surname, password, email) values('Yuri','Smirnoff','5Pf1yrtE','yuri.smirnoff@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(1, 1, 1, 1);
 insert into staff (user_id, dep_id, pos_id, role_id) values(2, 2, 1, 1);
-insert into language (name, eng_abbreviation) values('English', 'en');
-insert into question_type (type_id, eng_abbreviation, description) values (1, 'MCQ', 'Multiple choice question');
-insert into question_type (type_id, eng_abbreviation, description) values (2, 'FBSQ', 'Fill blank single question');
-insert into question_type (type_id, eng_abbreviation, description) values (3, 'FBMQ', 'Fill blank multiple question');
-insert into question_type (type_id, eng_abbreviation, description) values (4, 'MQ', 'Matcher question');
-insert into question_type (type_id, eng_abbreviation, description) values (5, 'SQ', 'Sequence question');
 
-insert into course (name, created, created_by, dep_id) values('IT course #1 (D1)', CURRENT_TIMESTAMP, 1, 1);
 insert into course (name, created, created_by, dep_id) values('IT course #2 (D1)', CURRENT_TIMESTAMP, 1, 1);
 insert into course (name, created, created_by, dep_id) values('IT course #3 (D2)', CURRENT_TIMESTAMP, 1, 1);
 
@@ -67,7 +54,6 @@ insert into theme (name, course_id) values('IT theme #8', 6);
 insert into theme (name, course_id) values('IT theme #9', 7);
 insert into theme (name, course_id) values('IT theme #10', 8);
 insert into theme (name, course_id) values('IT theme #11', 9);
-
 
 insert into theme (name, course_id) values('Med theme #1', 10);
 insert into theme (name, course_id) values('Med theme #2', 10);
@@ -107,8 +93,6 @@ insert into question (title, level, type_id, theme_id, lang_id) values ('FBS que
 
 insert into question (title, level, type_id, theme_id, lang_id) values ('FBM question #6 (T4)', 1, 3, 4, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('FBM question #7 (T4)', 3, 3, 4, 1);
-
-
 
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1 (T20)', 1, 1, 20, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2 (T20)', 2, 1, 20, 1);

@@ -27,9 +27,9 @@ public class AnswerFBSQServiceTestIT {
 
     public static final String FIND = "select a from AnswerFillBlankSingle a join fetch a.acceptedPhrases where a.answerId=:answerId";
 
-    public static final String PHRASE1 = "CascadeType";
-    public static final String PHRASE2 = "Enum<CascadeType>";
-    public static final String PHRASE3_UPD = "javax.persistence.CascadeType";
+    public static final String PHRASE1 = "Phrase #1";
+    public static final String PHRASE2 = "Phrase #2";
+    public static final String PHRASE3_UPD = "Phrase #3";
     public static final long SETTINGS_ID_UPD = 2L;
 
 
@@ -44,6 +44,7 @@ public class AnswerFBSQServiceTestIT {
 
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_fbsq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {

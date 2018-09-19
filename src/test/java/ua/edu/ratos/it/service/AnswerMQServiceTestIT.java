@@ -34,9 +34,9 @@ public class AnswerMQServiceTestIT {
 
     public static final String FIND = "select a from AnswerMatcher a left join fetch a.resources where a.answerId=:answerId";
 
-    public static final String LEFT_PHRASE = "Interface used to interact with the second-level cache";
-    public static final String LEFT_PHRASE_UPD = "Interface used to interact with the 2d cache";
-    public static final String RIGHT_PHRASE = "Cache";
+    public static final String LEFT_PHRASE = "Left phrase";
+    public static final String LEFT_PHRASE_UPD = "Updated left phrase";
+    public static final String RIGHT_PHRASE = "Right phrase";
     public static final String RESOURCE_LINK_1 = "https://image.slidesharecdn.com/schema01.jpg";
     public static final String RESOURCE_DESCRIPTION_1 = "Schema#1";
     public static final String RESOURCE_LINK_2 = "https://image.slidesharecdn.com/schema02.jpg";
@@ -53,6 +53,7 @@ public class AnswerMQServiceTestIT {
 
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
@@ -71,6 +72,7 @@ public class AnswerMQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
@@ -90,6 +92,7 @@ public class AnswerMQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() throws Exception {

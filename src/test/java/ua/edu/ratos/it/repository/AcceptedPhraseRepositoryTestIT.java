@@ -14,10 +14,6 @@ import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
 import ua.edu.ratos.domain.repository.AcceptedPhraseRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
-
-/**
- * @link https://github.com/spring-projects/spring-framework/blob/8aa6e5bfea2c7314deaa1b432554e9e914b09ee7/spring-test/src/main/java/org/springframework/test/context/jdbc/SqlScriptsTestExecutionListener.java
- */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
@@ -28,9 +24,9 @@ public class AcceptedPhraseRepositoryTestIT {
 
 
     @Test
-    @Sql(scripts = "/scripts/accepted_phrase_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql","/scripts/accepted_phrase_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllLastUsedByStaffIdTest() throws Exception {
+    public void findAllLastUsedByStaffIdTest() {
         Assert.assertEquals(7, phraseRepository.findAll().size());
         final Page<AcceptedPhrase> foundPage = phraseRepository.findAllLastUsedByStaffId(1L, PageRequest.of(0, 20));
         Assert.assertEquals(4, foundPage.getContent().size());
@@ -38,7 +34,7 @@ public class AcceptedPhraseRepositoryTestIT {
 
 
     @Test
-    @Sql(scripts = "/scripts/accepted_phrase_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql","/scripts/accepted_phrase_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllLastUsedByStaffIdAndFirstLettersTest() {
         Assert.assertEquals(7, phraseRepository.findAll().size());

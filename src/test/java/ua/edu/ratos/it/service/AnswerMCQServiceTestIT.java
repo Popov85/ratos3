@@ -29,11 +29,10 @@ public class AnswerMCQServiceTestIT {
 
     public static final String FIND = "select a from AnswerMultipleChoice a left join fetch a.resources where a.answerId=:answerId";
 
-    public static final String ANSWER_NEW = "Represents an attribute node of an entity graph";
-    public static final String ANSWER_UPD = "An attribute node of an entity graph";
+    public static final String ANSWER_NEW = "Answer #1";
+    public static final String ANSWER_UPD = "Updated answer #1";
     public static final String RESOURCE_NAME = "Schema#1";
     public static final String RESOURCE_LINK = "https://image.slidesharecdn.com/schema01.jpg";
-
 
     @Autowired
     private AnswerMCQService answerService;
@@ -45,6 +44,7 @@ public class AnswerMCQServiceTestIT {
     private EntityManager em;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
@@ -64,6 +64,7 @@ public class AnswerMCQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
@@ -82,6 +83,7 @@ public class AnswerMCQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() throws Exception {

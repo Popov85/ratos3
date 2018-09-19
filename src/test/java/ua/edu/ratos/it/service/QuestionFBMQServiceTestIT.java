@@ -24,7 +24,7 @@ import java.io.File;
 public class QuestionFBMQServiceTestIT {
 
     public static final String JSON_NEW = "classpath:json/question_fbmq_in_dto_new.json";
-    public static final String QUESTION_NEW = "Lock modes can be specified by means of passing a LockModeType argument to one of the EntityManager methods that take locks (lock, find, or refresh)";
+    public static final String QUESTION_NEW = "Question #1";
 
     public static final String FIND = "select q from QuestionFillBlankMultiple q join fetch q.answers left join fetch q.help left join fetch q.resources where q.questionId=:questionId";
 
@@ -38,6 +38,7 @@ public class QuestionFBMQServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/question_fbmq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {

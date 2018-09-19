@@ -1,16 +1,7 @@
-insert into organisation (name) values('Open IT-university');
-insert into faculty (name, org_id) values('Programming faculty', 1);
-insert into department (name, fac_id) values('Enterprise programming', 1);
-insert into department (name, fac_id) values('Applied programming', 1);
-insert into role (name) values('Department instructor');
-insert into position (name) values('Instructor');
-insert into user (name, surname, password, email) values('Clara','Denis','hY45lKj4','clara.denis@gmail.com');
+insert into department (name, fac_id) values('Department #2', 1);
 insert into user (name, surname, password, email) values('Yuri','Smirnoff','5Pf1yrtE','yuri.smirnoff@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(1, 1, 1, 1);
 insert into staff (user_id, dep_id, pos_id, role_id) values(2, 2, 1, 1);
 
-insert into settings(name, staff_id, seconds_per_question, questions_per_sheet, days_keep_result_details, threshold_3, threshold_4, threshold_5, level_2_coefficient, level_3_coefficient, display_percent, display_mark, is_default)
-values('default', 1, 60, 1, 1, 50, 70, 85, 1, 1, 1, 1, 1);
 insert into settings(name, staff_id, seconds_per_question, questions_per_sheet, days_keep_result_details, threshold_3, threshold_4, threshold_5, level_2_coefficient, level_3_coefficient, display_percent, display_mark)
 values('custom #1', 1, 60, 1, 1, 79, 89, 99, 1, 1, 1, 1);
 insert into settings(name, staff_id, seconds_per_question, questions_per_sheet, days_keep_result_details, threshold_3, threshold_4, threshold_5, level_2_coefficient, level_3_coefficient, display_percent, display_mark)

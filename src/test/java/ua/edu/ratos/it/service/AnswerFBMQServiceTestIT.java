@@ -30,12 +30,12 @@ public class AnswerFBMQServiceTestIT {
 
     public static final String FIND = "select a from AnswerFillBlankMultiple a left join fetch a.acceptedPhrases where a.answerId=:answerId";
 
-    public static final String PHRASE = "javax.persistence.Query.setLockMode()";
-    public static final String PHRASE_UPD = "Query#setLockMode()";
+    public static final String PHRASE = "Phrase";
+    public static final String PHRASE_UPD = "Updated phrase";
 
-    public static final String ACCEPTED_PHRASE1 = "setLockMode()";
-    public static final String ACCEPTED_PHRASE2 = "setLockMode";
-    public static final String ACCEPTED_PHRASE3_UPD = "Query.setLockMode()";
+    public static final String ACCEPTED_PHRASE1 = "Phrase #1";
+    public static final String ACCEPTED_PHRASE2 = "Phrase #2";
+    public static final String ACCEPTED_PHRASE3 = "Phrase #3";
 
 
     @PersistenceContext
@@ -48,6 +48,7 @@ public class AnswerFBMQServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_fbmq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
@@ -64,10 +65,11 @@ public class AnswerFBMQServiceTestIT {
         Assert.assertEquals(1, foundAnswer.getSettings().getSettingsId().longValue());
         Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE1)));
         Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE2)));
-        Assert.assertFalse(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3_UPD)));
+        Assert.assertFalse(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3)));
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
@@ -84,11 +86,11 @@ public class AnswerFBMQServiceTestIT {
         Assert.assertEquals(2, foundAnswer.getSettings().getSettingsId().longValue());
         Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE1)));
         Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE2)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3_UPD)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3)));
     }
 
-
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
@@ -96,6 +98,5 @@ public class AnswerFBMQServiceTestIT {
         answerService.deleteById(1L);
         Assert.assertNull(em.find(AnswerFillBlankMultiple.class, 1L));
     }
-
 
 }

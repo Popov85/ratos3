@@ -1,5 +1,3 @@
-insert into course (name, created, created_by, dep_id) values('Test course #1', CURRENT_TIMESTAMP, 1, 1);
-
 insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, is_completed) values('Training scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1);
 
 insert into theme (name, course_id) values('IT theme #1 with all questions types', 1);

@@ -1,5 +1,6 @@
 package ua.edu.ratos.domain.entity.answer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,10 +30,12 @@ public class AcceptedPhrase {
     @Column(name="phrase")
     private String phrase;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", nullable = false, updatable = false)
     protected Staff staff;
 
+    @JsonIgnore
     @Column(name="last_used", nullable = false)
     private LocalDateTime lastUsed = LocalDateTime.now();
 

@@ -26,7 +26,7 @@ public class QuestionServiceTestIT {
     public static final String FIND = "select q from QuestionMultipleChoice q join fetch q.answers join fetch q.help join fetch q.resources where q.questionId=:questionId";
 
     public static final String JSON_UPD = "classpath:json/question_in_dto_upd.json";
-    public static final String QUESTION_UPD = "Interface used to interact with the 2d level cache";
+    public static final String QUESTION_UPD = "Updated question";
 
     @Autowired
     private QuestionService questionService;
@@ -38,6 +38,7 @@ public class QuestionServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
@@ -58,6 +59,7 @@ public class QuestionServiceTestIT {
 
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/question_mcq_test_data.sql", "/scripts/question_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() throws Exception {

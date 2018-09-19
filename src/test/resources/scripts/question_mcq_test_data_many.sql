@@ -1,18 +1,5 @@
-insert into organisation (name) values('Open IT-university');
-insert into faculty (name, org_id) values('Programming faculty', 1);
-insert into department (name, fac_id) values('Enterprise programming', 1);
-insert into role (name) values('Department instructor');
-insert into position (name) values('Instructor');
-insert into user (name, surname, password, email) values('Clara','Denis','hY45lKj4','clara.denis@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(1, 1, 1, 1);
-insert into course (name, created, created_by, dep_id) values('Java for Beginners', CURRENT_TIMESTAMP, 1, 1);
-insert into language (name, eng_abbreviation) values('English', 'en');
-
 insert into theme (name, course_id) values('Java Operators', 1);
 insert into theme (name, course_id) values('Java Strings', 1);
-
-insert into question_type (type_id, eng_abbreviation, description) values (1, 'MCQ', 'Multiple choice question');
-
 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema01.jpg', 'QuestionSchema#1', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema02.jpg', 'QuestionSchema#2', 1);
@@ -53,16 +40,11 @@ insert into help_resource(help_id, resource_id) values(3, 8);
 insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
-
-
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #3', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #4', 1, 1, 2, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #5', 1, 1, 2, 1);
-
-
-
 
 insert into question_resource(question_id, resource_id) values(1, 1);
 insert into question_resource(question_id, resource_id) values(2, 2);
@@ -75,7 +57,6 @@ insert into question_help(question_id, help_id) values(2,2);
 insert into question_help(question_id, help_id) values(3,3);
 insert into question_help(question_id, help_id) values(4,4);
 insert into question_help(question_id, help_id) values(5,5);
-
 
 insert into answer_mcq (answer, percent, is_required, question_id) values('Answer #1 (Q#1)', 100, 1, 1);
 insert into answer_mcq (answer, percent, is_required, question_id) values('Answer #2 (Q#1)', 0, 0, 1);

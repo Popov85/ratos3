@@ -24,7 +24,7 @@ public class HelpRepositoryTestIT {
     private HelpRepository helpRepository;
 
     @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByStaffIdWithResourcesTest() {
         Assert.assertEquals(7, helpRepository.findAll().size());
@@ -36,7 +36,7 @@ public class HelpRepositoryTestIT {
     }
 
     @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByStaffIdAndFirstNameLettersWithResourcesTest() {
         Assert.assertEquals(7, helpRepository.findAll().size());
@@ -47,7 +47,7 @@ public class HelpRepositoryTestIT {
     }
 
     @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByDepartmentIdWithResourcesTest() {
         Assert.assertEquals(7, helpRepository.findAll().size());
@@ -59,7 +59,7 @@ public class HelpRepositoryTestIT {
     }
 
     @Test
-    @Sql(scripts = {"/scripts/help_test_data.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByDepartmentIdAndFirstNameLettersWithResourcesTest() {
         Assert.assertEquals(7, helpRepository.findAll().size());

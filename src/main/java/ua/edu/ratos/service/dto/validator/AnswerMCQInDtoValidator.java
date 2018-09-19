@@ -15,6 +15,8 @@ public class AnswerMCQInDtoValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         AnswerMCQInDto dto = (AnswerMCQInDto) o;
-        if (dto.getPercent()==0 && dto.isRequired()) errors.reject("0/true","Incorrect answers cannot be required");
+        if (dto.getPercent()==0 && dto.isRequired()) {
+            errors.reject("0/true","[dto.complex.incorrectRequired]");
+        }
     }
 }

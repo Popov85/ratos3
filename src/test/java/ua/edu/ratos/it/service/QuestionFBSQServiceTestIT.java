@@ -23,7 +23,7 @@ import java.io.File;
 public class QuestionFBSQServiceTestIT {
 
     public static final String JSON_NEW = "classpath:json/question_fbsq_in_dto_new.json";
-    public static final String QUESTION_NEW = "What interface defines the set of cascadable operations that are propagated to the associated entity?";
+    public static final String QUESTION_NEW = "Question #1";
 
     public static final String FIND = "select q from QuestionFillBlankSingle q join fetch q.answer left join fetch q.help left join fetch q.resources where q.questionId=:questionId";
 
@@ -37,6 +37,7 @@ public class QuestionFBSQServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/question_fbsq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {

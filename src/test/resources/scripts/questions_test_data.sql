@@ -1,12 +1,1 @@
-insert into organisation (name) values('ZSMU');
-insert into faculty (name, org_id) values('Medical faculty', 1);
-insert into department (name, fac_id) values('Department', 1);
-insert into role (name) values('Department instructor');
-insert into position (name) values('Instructor');
-insert into user (name, surname, password, email) values('Jakob','Zatezki','hY45lKj4','jakob.zatezki@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(1, 1, 1, 1);
-insert into course (name, created, created_by, dep_id) values('Test course', CURRENT_TIMESTAMP, 1, 1);
-insert into language (name, eng_abbreviation) values('Russian', 'ru');
-insert into language (name, eng_abbreviation) values('English', 'en');
-insert into theme (name, course_id) values('Test theme', 1);
-insert into question_type (type_id, eng_abbreviation, description) values (1, 'MCQ', 'Multiple choice question');
+insert into theme (name, course_id) values('Theme #1', 1);

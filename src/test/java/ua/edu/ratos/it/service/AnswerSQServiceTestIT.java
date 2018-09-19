@@ -30,8 +30,8 @@ public class AnswerSQServiceTestIT {
 
     public static final String FIND = "select a from AnswerSequence a left join fetch a.resources where a.answerId=:answerId";
 
-    public static final String PHRASE = "clean";
-    public static final String PHRASE_UPD = "cleaning";
+    public static final String PHRASE = "Phrase";
+    public static final String PHRASE_UPD = "Updated phrase";
     public static final String RESOURCE_DESCRIPTION_1 = "Schema#1";
     public static final String RESOURCE_LINK_1 = "https://image.slidesharecdn.com/schema01.jpg";
     public static final String RESOURCE_DESCRIPTION_2 = "Schema#2";
@@ -48,6 +48,7 @@ public class AnswerSQServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/answer_sq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
@@ -66,6 +67,7 @@ public class AnswerSQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_sq_test_data.sql", "/scripts/answer_sq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
@@ -84,6 +86,7 @@ public class AnswerSQServiceTestIT {
     }
 
     @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/answer_sq_test_data.sql", "/scripts/answer_sq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() throws Exception {

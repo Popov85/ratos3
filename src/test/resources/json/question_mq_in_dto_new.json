@@ -1,6 +1,6 @@
 {
   "questionId":null,
-  "question":"Match the following concepts",
+  "question":"Question #1",
   "level":1,
   "themeId":1,
   "questionTypeId":4,
@@ -9,18 +9,18 @@
   "resourcesIds":null,
   "answers":[
     {
-      "leftPhrase":"Interface used to interact with the second-level cache",
-      "rightPhrase":"Cache",
+      "leftPhrase":"Left phrase #1",
+      "rightPhrase":"Right phrase #1",
       "rightPhraseResourceId":1
     },
     {
-      "leftPhrase":"Type for query parameter objects",
-      "rightPhrase":"Parameter<T>",
+      "leftPhrase":"Left phrase #2",
+      "rightPhrase":"Left phrase #2",
       "rightPhraseResourceId":2
     },
     {
-      "leftPhrase":"Interface used to interact with the persistence context",
-      "rightPhrase":"EntityManager",
+      "leftPhrase":"Left phrase #3",
+      "rightPhrase":"Left phrase #3",
       "rightPhraseResourceId":3
     }
   ]

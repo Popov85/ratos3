@@ -1,5 +1,5 @@
 {
-  "question":"Order Maven build process stages in the correct way",
+  "question":"Question #1",
   "level":1,
   "themeId":1,
   "questionTypeId":5,
@@ -8,22 +8,22 @@
   "resourcesIds":[1],
   "answers":[
     {
-      "phrase":"validate",
+      "phrase":"phrase #1",
       "order":0,
       "resourceId":1
     },
     {
-      "phrase":"compile",
+      "phrase":"phrase #2",
       "order":1,
       "resourceId":2
     },
     {
-      "phrase":"test",
+      "phrase":"phrase #3",
       "order":2,
       "resourceId":3
     },
     {
-      "phrase":"package",
+      "phrase":"phrase #4",
       "order":3,
       "resourceId":4
     }

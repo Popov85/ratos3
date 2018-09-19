@@ -41,10 +41,8 @@ public class AcceptedPhraseService {
     }
 
     @Transactional
-    public void update(@NonNull AcceptedPhraseInDto dto) {
-        if (dto.getPhraseId()==null || dto.getPhraseId()==0)
-            throw new RuntimeException("Invalid AcceptedPhrase ID");
-        AcceptedPhrase phrase = transformer.fromDto(dto);
+    public void update(@NonNull Long phraseId, @NonNull AcceptedPhraseInDto dto) {
+        AcceptedPhrase phrase = transformer.fromDto(dto, phraseId);
         acceptedPhraseRepository.save(phrase);
     }
 

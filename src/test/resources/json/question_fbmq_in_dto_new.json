@@ -1,6 +1,6 @@
 {
   "questionId":null,
-  "question":"Lock modes can be specified by means of passing a LockModeType argument to one of the EntityManager methods that take locks (lock, find, or refresh)",
+  "question":"Question #1",
   "level":1,
   "themeId":1,
   "questionTypeId":3,
@@ -10,21 +10,21 @@
   "answers":[
     {
       "answerId":null,
-      "phrase":"lock",
+      "phrase":"phrase #1",
       "occurrence":2,
       "setId":1,
       "phrasesIds":[1]
     },
     {
       "answerId":null,
-      "phrase":"find",
+      "phrase":"phrase #2",
       "occurrence":1,
       "setId":1,
       "phrasesIds":[2,3]
     },
     {
       "answerId":null,
-      "phrase":"refresh",
+      "phrase":"phrase #3",
       "occurrence":1,
       "setId":1,
       "phrasesIds":[4,5,6]

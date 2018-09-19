@@ -1,7 +1,7 @@
 {
   "answerId":1,
-  "leftPhrase":"Interface used to interact with the 2d cache",
-  "rightPhrase":"Cache",
+  "leftPhrase":"Updated left phrase",
+  "rightPhrase":"Right phrase",
   "rightPhraseResourceId":2,
   "questionId":1
 }
