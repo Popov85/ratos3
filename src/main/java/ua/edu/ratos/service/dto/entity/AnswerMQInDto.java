@@ -14,30 +14,26 @@ import java.util.Objects;
 @AllArgsConstructor
 public class AnswerMQInDto {
 
-    public interface New{}
-    public interface Update{}
+    public interface NewAndUpdate{}
     public interface Include{}
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class, Include.class}, message = "Non-null answerId, {dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "Invalid answerId, {dto.pk.required}")
     private Long answerId;
 
-    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid leftPhrase, {dto.string.required}")
-    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 100, message = "Invalid leftPhrase, {dto.string.invalid}")
+    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
+    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 100, message = "{dto.string.invalid}")
     private String leftPhrase;
 
-    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid rightPhrase, {dto.string.required}")
-    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 500, message = "Invalid rightPhrase, {dto.string.invalid}")
+    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
+    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 500, message = "{dto.string.invalid}")
     private String rightPhrase;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {New.class, Update.class, Include.class}, message = "Invalid rightPhraseResourceId, {dto.fk.optional}")
+    @PositiveOrZero(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.optional}")
     private long rightPhraseResourceId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {Include.class}, message = "Non-null questionId, {dto.fk.nullable}")
-    @Positive(groups = {New.class, Update.class}, message = "Invalid questionId, {dto.fk.invalid}")
+    @Null(groups = {Include.class}, message = "{dto.fk.nullable}")
+    @Positive(groups = {NewAndUpdate.class}, message = "{dto.fk.invalid}")
     private Long questionId;
 
     @Override

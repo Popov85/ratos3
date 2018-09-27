@@ -3,7 +3,6 @@ package ua.edu.ratos.service;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +17,8 @@ import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer
 import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
 import ua.edu.ratos.service.utils.CharsetDetector;
-
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package ua.edu.ratos.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class Help {
     @Column(name = "text")
     private String help;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", updatable = false, nullable = false)
     private Staff staff;

@@ -3,7 +3,9 @@ package ua.edu.ratos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
@@ -15,6 +17,7 @@ import java.util.Date;
 
 @Slf4j
 @SpringBootApplication
+//@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class RatosApplication {
 
 	@Autowired

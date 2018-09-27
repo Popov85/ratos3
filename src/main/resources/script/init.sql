@@ -1,10 +1,18 @@
 insert into organisation (name) values('University');
 insert into faculty (name, org_id) values('Faculty', 1);
 insert into department (name, fac_id) values('Department', 1);
-insert into role (name) values('Global admin');
+insert into role (name) values('ROLE_STUDENT');
+insert into role (name) values('ROLE_INSTRUCTOR');
+insert into role (name) values('ROLE_LAB-ASSISTANT');
+insert into role (name) values('ROLE_DEP-ADMIN');
+insert into role (name) values('ROLE_FAC-ADMIN');
+insert into role (name) values('ROLE_ORG-ADMIN');
+insert into role (name) values('ROLE_GLOBAL-ADMIN');
 insert into position (name) values('System admin');
-insert into user (name, surname, password, email) values('Andrey','Popov','dT09Rx01','andrey.popov@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(1, 1, 1, 1);
+insert into user (name, surname, password, email) values('Andrey','Popov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','andrey.popov@gmail.com');
+insert into user_role(user_id, role_id) VALUES (1, 7);
+
+insert into staff (user_id, dep_id, pos_id) values(1, 1, 1);
 
 insert into language (name, eng_abbreviation) values('English', 'en');
 insert into language (name, eng_abbreviation) values('français', 'fr');

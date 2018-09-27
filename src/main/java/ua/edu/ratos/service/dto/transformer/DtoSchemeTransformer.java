@@ -17,8 +17,13 @@ public class DtoSchemeTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Scheme fromDto(@NonNull SchemeInDto dto) {
+        return fromDto(null, dto);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Scheme fromDto(Long schemeId, @NonNull SchemeInDto dto) {
         Scheme scheme = new Scheme();
-        scheme.setSchemeId(dto.getSchemeId());
+        scheme.setSchemeId(schemeId);
         scheme.setName(dto.getName());
         scheme.setActive(dto.isActive());
         scheme.setCompleted(false);

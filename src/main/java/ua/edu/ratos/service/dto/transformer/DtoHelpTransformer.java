@@ -25,7 +25,13 @@ public class DtoHelpTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Help fromDto(@NonNull HelpInDto dto) {
+        return fromDto(null, dto);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Help fromDto(Long helpId, @NonNull HelpInDto dto) {
         Help help = modelMapper.map(dto, Help.class);
+        help.setHelpId(helpId);
         help.setStaff(em.getReference(Staff.class, dto.getStaffId()));
         if (dto.getResourceId()!=0) {
             help.addResource(em.find(Resource.class, dto.getResourceId()));

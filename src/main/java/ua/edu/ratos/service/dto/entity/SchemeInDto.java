@@ -13,31 +13,26 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class SchemeInDto {
 
-    public interface New{}
-    public interface Update{}
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class}, message = "{dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long schemeId;
 
-    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
-    @Size(groups = {New.class, Update.class}, min = 1, max = 100, message = "Invalid name, {dto.string.invalid}")
+    @NotBlank(message = "{dto.string.required}")
+    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
     private String name;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid strategyId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long strategyId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid settingsId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long settingsId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid modeId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long modeId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid courseId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long courseId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid staffId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long staffId;
 
     private boolean active;

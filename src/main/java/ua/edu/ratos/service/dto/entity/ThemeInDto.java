@@ -13,18 +13,13 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ThemeInDto {
 
-    public interface New{}
-    public interface Update{}
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class}, message = "{dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long themeId;
 
-    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
-    @Size(groups = {New.class, Update.class}, min = 1, max = 100, message = "Invalid name, {dto.string.invalid}")
+    @NotBlank(message = "{dto.string.required}")
+    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
     private String name;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid courseId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long courseId;
 }

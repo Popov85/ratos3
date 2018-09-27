@@ -20,31 +20,27 @@ import java.util.Set;
  */
 public class AnswerFBMQInDto {
 
-    public interface New{}
-    public interface Update{}
+    public interface NewAndUpdate{}
     public interface Include{}
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class, Include.class}, message = "Non-null answerId, {dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long answerId;
 
-    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid phrase, {dto.string.required}")
-    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 200, message = "Invalid phrase, {dto.string.invalid}")
+    @NotBlank(groups = {NewAndUpdate.class,  Include.class}, message = "{dto.string.required}")
+    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 200, message = "{dto.string.invalid}")
     private String phrase;
 
-    @Range(groups = {New.class, Update.class, Include.class}, min=1, max=20, message = "Invalid occurrence, {dto.range.invalid}")
+    @Range(groups = {NewAndUpdate.class, Include.class}, min=1, max=20, message = "{dto.range.invalid}")
     private byte occurrence;
 
-    @Positive(groups = {New.class, Update.class, Include.class}, message = "Invalid setId, {dto.fk.required}")
+    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.required}")
     private long setId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {Include.class}, message = "Non-null questionId, {dto.fk.nullable}")
-    @Positive(groups = {New.class, Update.class}, message = "Invalid questionId, {dto.fk.required}")
+    @Null(groups = {Include.class}, message = "{dto.fk.nullable}")
+    @Positive(groups = {NewAndUpdate.class}, message = "{dto.fk.required}")
     private Long questionId;
 
-    @NotEmpty(groups = {New.class, Update.class, Include.class}, message = "Invalid phrasesIds, {dto.collection.required}")
-    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 10, message = "Invalid phrasesIds, {dto.collection.invalid}")
+    @NotEmpty(groups = {NewAndUpdate.class, Include.class}, message = "{dto.collection.required}")
+    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 10, message = "{dto.collection.invalid}")
     private Set<Long> phrasesIds;
 }

@@ -50,7 +50,7 @@ public class AnswerFBSQServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBSQInDto dto = objectMapper.readValue(json, AnswerFBSQInDto.class);
-        answerService.update(dto);
+        answerService.update(1L, dto);
         final AnswerFillBlankSingle foundAnswer =
             (AnswerFillBlankSingle) em.createQuery(FIND)
                 .setParameter("answerId",1L)

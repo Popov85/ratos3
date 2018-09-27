@@ -78,6 +78,26 @@ CREATE TABLE IF NOT EXISTS   role  (
   PRIMARY KEY ( role_id ))
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table user_role
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_role (
+  role_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (role_id, user_id),
+  INDEX fk_user_role_user_user_id_idx (user_id ASC),
+  CONSTRAINT fk_user_role_role_role_id
+  FOREIGN KEY (role_id)
+  REFERENCES role (role_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_user_role_user_user_id
+  FOREIGN KEY (user_id)
+  REFERENCES user (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table   staff
@@ -87,12 +107,10 @@ CREATE TABLE IF NOT EXISTS   staff  (
   user_id  INT UNSIGNED NOT NULL,
   dep_id  INT UNSIGNED NOT NULL,
   pos_id  INT UNSIGNED NOT NULL,
-  role_id  INT UNSIGNED NOT NULL,
   PRIMARY KEY ( staff_id ),
   INDEX  fk_staff_user_user_id_idx  ( user_id  ASC),
   INDEX  fk_staff_department_dep_id_idx  ( dep_id  ASC),
   INDEX  fk_staff_position_id_idx  ( pos_id  ASC),
-  INDEX  fk_staff_role_role_id_idx  ( role_id  ASC),
   CONSTRAINT  fk_staff_user_user_id
   FOREIGN KEY ( user_id )
   REFERENCES   user  ( user_id )
@@ -106,11 +124,6 @@ CREATE TABLE IF NOT EXISTS   staff  (
   CONSTRAINT  fk_staff_position_pos_id
   FOREIGN KEY ( pos_id )
   REFERENCES   position  ( pos_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT  fk_staff_role_role_id
-  FOREIGN KEY ( role_id )
-  REFERENCES   role  ( role_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

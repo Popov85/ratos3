@@ -15,30 +15,27 @@ import java.util.Objects;
 @AllArgsConstructor
 public class AnswerSQInDto {
 
-    public interface New{}
-    public interface Update{}
+    public interface NewAndUpdate{}
     public interface Include{}
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class, Include.class}, message = "Non-null answerId, {dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "Invalid answerid, {dto.pk.required}")
     private Long answerId;
 
-    @NotBlank(groups = {New.class, Update.class, Include.class}, message = "Invalid phrase, {dto.string.required}")
-    @Size(groups = {New.class, Update.class, Include.class}, min = 1, max = 100, message = "Invalid phrase, {dto.string.invalid}")
+    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
+    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 100, message = "{dto.string.invalid}")
     private String phrase;
 
-    @Range(groups = {New.class, Update.class, Include.class}, min = 0, max=20, message = "Invalid elementOrder, {dto.range.invalid}")
+    @Range(groups = {NewAndUpdate.class, Include.class}, min = 0, max=20, message = "{dto.range.invalid}")
     private short order;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {New.class, Update.class, Include.class}, message = "Invalid resourceId, {dto.fk.optional}")
+    @PositiveOrZero(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.optional}")
     private long resourceId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {Include.class}, message = "Non-null questionId, {dto.fk.nullable}")
-    @NotNull(groups = {New.class, Update.class}, message = "Non-null questionId, {dto.fk.nullable}")
-    @Positive(groups = {New.class, Update.class},message = "Invalid questionId, {dto.fk.required}")
+    @Null(groups = Include.class, message = "{dto.fk.nullable}")
+    @NotNull(groups = NewAndUpdate.class, message = "{dto.fk.nullable}")
+    @Positive(groups = NewAndUpdate.class, message = "{dto.fk.required}")
     private Long questionId;
 
     @Override

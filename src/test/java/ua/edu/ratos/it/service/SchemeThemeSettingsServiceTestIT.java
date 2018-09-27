@@ -59,7 +59,7 @@ public class SchemeThemeSettingsServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         SchemeThemeSettingsInDto dto = objectMapper.readValue(json, SchemeThemeSettingsInDto.class);
-        schemeThemeSettingsService.update(dto);
+        schemeThemeSettingsService.update(1L, dto);
         final SchemeThemeSettings foundSettings = em.find(SchemeThemeSettings.class, 1L);
         Assert.assertNotNull(foundSettings);
         Assert.assertEquals(1L, foundSettings.getSchemeTheme().getSchemeThemeId().longValue());

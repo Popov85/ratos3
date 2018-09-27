@@ -24,15 +24,15 @@ public class AnswerMCQService {
     }
 
     @Transactional
-    public void update(@NonNull AnswerMCQInDto dto) {
-        if (dto.getAnswerId()==null || dto.getAnswerId()==0)
-            throw new RuntimeException("Invalid ID");
-        answerRepository.save(transformer.fromDto(dto));
+    public void update(@NonNull Long answerId, @NonNull AnswerMCQInDto dto) {
+        if (!answerRepository.existsById(answerId))
+            throw new RuntimeException("Failed to update answer mcq: ID does not exist");
+        answerRepository.save(transformer.fromDto(answerId, dto));
     }
 
     @Transactional
     public void deleteById(@NonNull Long answerId) {
-        answerRepository.pseudoDeleteById(answerId);
+        answerRepository.findById(answerId).get().setDeleted(true);
     }
 
 }

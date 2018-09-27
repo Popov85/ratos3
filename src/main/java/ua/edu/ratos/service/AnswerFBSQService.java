@@ -18,9 +18,9 @@ public class AnswerFBSQService {
     private DtoAnswerTransformer transformer;
 
     @Transactional
-    public void update(@NonNull AnswerFBSQInDto dto) {
-        if (dto.getAnswerId()==null || dto.getAnswerId()==0)
-            throw new RuntimeException("ID must be present for updates");
-        answerRepository.save(transformer.fromDto(dto));
+    public void update(@NonNull Long answerId, @NonNull AnswerFBSQInDto dto) {
+        if (!answerRepository.existsById(answerId))
+            throw new RuntimeException("Failed to update answer fbsq: ID does not exist");
+        answerRepository.save(transformer.fromDto(answerId, dto));
     }
 }

@@ -26,7 +26,7 @@ public class AcceptedPhraseController {
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody AcceptedPhraseInDto dto) {
         final Long phraseId = acceptedPhraseService.save(dto);
-        log.debug("Saved phrase :: {} ", phraseId);
+        log.debug("Saved AcceptedPhrase :: {} ", phraseId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(phraseId).toUri();
@@ -37,30 +37,26 @@ public class AcceptedPhraseController {
     @ResponseStatus(value = HttpStatus.OK)
     public void update(@PathVariable Long phraseId, @Valid @RequestBody AcceptedPhraseInDto dto) {
         acceptedPhraseService.update(phraseId, dto);
-        log.debug("Updated phrase ID :: {} ", phraseId);
+        log.debug("Updated AcceptedPhrase ID :: {} ", phraseId);
     }
 
     @DeleteMapping("/{phraseId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long phraseId) {
         acceptedPhraseService.deleteById(phraseId);
-        log.debug("AcceptedPhrase to delete ID :: {}", phraseId);
+        log.debug("Deleted AcceptedPhrase ID :: {}", phraseId);
     }
 
-/*-------------------GET-----------------*/
+    /*-------------------GET-----------------*/
 
-    @GetMapping("/by-staff")
+    @GetMapping(value = "/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AcceptedPhrase> findAllByStaffId(Principal principal) {
-        final List<AcceptedPhrase> result = acceptedPhraseService.findAllLastUsedByStaffId(1L);
-        log.debug("AcceptedPhrases by staff (size) :: {}", result.size());
-        return result;
+        return acceptedPhraseService.findAllLastUsedByStaffId(1L);
     }
 
-    @GetMapping(value = "/by-staff", params = "starts")
+    @GetMapping(value = "/by-staff", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AcceptedPhrase> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Principal principal) {
-        final List<AcceptedPhrase> result = acceptedPhraseService.findAllLastUsedByStaffIdAndFirstLetters(1L, starts);
-        log.debug("AcceptedPhrases by staff and letters (size) :: {}", result.size());
-        return result;
+        return acceptedPhraseService.findAllLastUsedByStaffIdAndFirstLetters(1L, starts);
     }
 
 }

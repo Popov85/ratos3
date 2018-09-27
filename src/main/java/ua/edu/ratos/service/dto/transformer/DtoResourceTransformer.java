@@ -22,7 +22,13 @@ public class DtoResourceTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Resource fromDto(@NonNull ResourceInDto dto) {
+        return fromDto(null, dto);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Resource fromDto(Long resId, @NonNull ResourceInDto dto) {
         final Resource resource = modelMapper.map(dto, Resource.class);
+        resource.setResourceId(resId);
         resource.setStaff((em.getReference(Staff.class, dto.getStaffId())));
         resource.setLastUsed(LocalDateTime.now());
         return resource;

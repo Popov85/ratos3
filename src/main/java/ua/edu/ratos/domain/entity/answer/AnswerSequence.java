@@ -23,7 +23,7 @@ public class AnswerSequence {
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name="answer_id")
-    private long answerId;
+    private Long answerId;
 
     @Column(name="element")
     private String phrase;

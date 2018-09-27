@@ -70,7 +70,7 @@ public class AnswerMCQServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerMCQInDto dto = objectMapper.readValue(json, AnswerMCQInDto.class);
-        answerService.update(dto);
+        answerService.update(1L, dto);
         final AnswerMultipleChoice foundAnswer =
             (AnswerMultipleChoice) em.createQuery(FIND)
                 .setParameter("answerId",1L)

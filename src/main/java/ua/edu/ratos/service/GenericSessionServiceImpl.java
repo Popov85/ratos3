@@ -5,33 +5,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.domain.model.SessionData;
 import ua.edu.ratos.domain.repository.SessionRepository;
 import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
 import ua.edu.ratos.service.dto.session.BatchIn;
 import ua.edu.ratos.service.dto.session.BatchOut;
 import ua.edu.ratos.domain.model.Result;
-import ua.edu.ratos.domain.model.Session;
 
 import java.util.*;
 
 
 @Slf4j
 @Service
-public class GenericSessionImpl implements GenericSession {
-
-    private final SessionRepository sessionRepository;
+public class GenericSessionServiceImpl implements GenericSessionService {
 
     @Autowired
-    public GenericSessionImpl(SessionRepository sessionRepository) {
-        this.sessionRepository=sessionRepository;
-    }
+    private SessionRepository sessionRepository;
 
     @Override
     public String start(@NonNull String user, @NonNull String scheme) {
         String key = UUID.randomUUID().toString();
-        Session session = new Session(key, user, scheme, new ArrayList<>(40));
-        Session savedSession = sessionRepository.save(session);
-        log.info("Service: Session created: {}", savedSession);
+        SessionData session = new SessionData(key, user, scheme, new ArrayList<>(40));
+        SessionData savedSession = sessionRepository.save(session);
+        log.info("Service: SessionData created: {}", savedSession);
         return key;
     }
 
@@ -46,8 +42,8 @@ public class GenericSessionImpl implements GenericSession {
     }
 
     public BatchOut proceed(@NonNull String key) {
-        Optional<Session> session = sessionRepository.findById(key);
-        Session s = session.get();
+        Optional<SessionData> session = sessionRepository.findById(key);
+        SessionData s = session.get();
         int index = s.index;
         s.setIndex(++index);
         sessionRepository.save(s);
@@ -55,17 +51,17 @@ public class GenericSessionImpl implements GenericSession {
         batchOut.setKey(s.getKey());
         batchOut.setTimeLeft(s.getTimeout());
         batchOut.setIndex(index);
-        log.info("Service: Session proceeded: {}, next batchOut: {}", session, batchOut);
+        log.info("Service: SessionData proceeded: {}, next batchOut: {}", session, batchOut);
         return batchOut;
     }
 
-    public Session status(@NonNull String key) {
-        Optional<Session> session = sessionRepository.findById(key);
-        Session s = session.get();
+    public SessionData status(@NonNull String key) {
+        Optional<SessionData> session = sessionRepository.findById(key);
+        SessionData s = session.get();
         Response response = new ResponseMultipleChoice();
         Question question = s.getQuestions().get(s.index);
         final int result = response.evaluateWith(new EvaluatorImpl(question));
-        log.info("Service: Session startStatus: {}", s);
+        log.info("Service: SessionData startStatus: {}", s);
         return s;
     }
 
@@ -77,8 +73,8 @@ public class GenericSessionImpl implements GenericSession {
 
 
     @Override
-    public void cancel(String key) {
-
+    public Result cancel(String key) {
+        return null;
     }
 
     public Optional<Question> findById(int qid, List<Question> questions) {

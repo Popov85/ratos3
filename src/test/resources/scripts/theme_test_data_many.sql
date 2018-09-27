@@ -13,8 +13,9 @@ insert into department (name, fac_id) values('Department #6', 3);
 insert into department (name, fac_id) values('Department #7', 4);
 insert into department (name, fac_id) values('Department #8', 4);
 
-insert into user (name, surname, password, email) values('Yuri','Smirnoff','5Pf1yrtE','yuri.smirnoff@gmail.com');
-insert into staff (user_id, dep_id, pos_id, role_id) values(2, 2, 1, 1);
+insert into user (name, surname, password, email) values('Dmitri','Smirnoff','855fgUwd','dmirti.smirnoff@gmail.com');
+insert into user_role(user_id, role_id) VALUES (2, 6);
+insert into staff (user_id, dep_id, pos_id) values(2, 2, 1);
 
 insert into course (name, created, created_by, dep_id) values('IT course #2 (D1)', CURRENT_TIMESTAMP, 1, 1);
 insert into course (name, created, created_by, dep_id) values('IT course #3 (D2)', CURRENT_TIMESTAMP, 1, 1);

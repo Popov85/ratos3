@@ -15,36 +15,31 @@ import java.util.Set;
 @AllArgsConstructor
 public class QuestionInDto {
 
-    public interface New{}
-    public interface Update{}
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class}, message = "Non-null questionId, {dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "Invalid questionId, {dto.pk.required}")
     private Long questionId;
 
-    @NotBlank(groups = {New.class, Update.class,}, message = "Invalid question, {dto.string.required}")
-    @Size(groups = {New.class, Update.class}, min = 1, max = 1000, message = "Invalid question, {dto.string.invalid}")
+    @NotBlank(message = "{dto.string.required}")
+    @Size(min = 1, max = 1000, message = "{dto.string.invalid}")
     private String question;
 
-    @Range(groups = {New.class, Update.class}, min=1, max=3, message = "Invalid level, {dto.range.invalid}")
+    @Range(min=1, max=3, message = "{dto.range.invalid}")
     private byte level;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid themeId, {dto.fk.required}")
+    @Positive( message = "{dto.fk.required}")
     private long themeId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid questionTypeId, {dto.fk.required}")
-    @Range(min=1, max=5, message = "Currently only 5 question types are supported, {dto.range.invalid}")
+    @Positive(message = "{dto.fk.required}")
+    @Range(min=1, max=5, message = "{dto.range.invalid}")
     private long questionTypeId;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid langId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long langId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {New.class, Update.class}, message = "Invalid helpId, {dto.fk.optional}")
+    @PositiveOrZero(message = "{dto.fk.optional}")
     private long helpId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Size(groups = {New.class, Update.class}, min = 1, max = 3, message = "Invalid resourcesIds, {dto.collection.invalid}")
+    @Size(min = 1, max = 3, message = "{dto.collection.invalid}")
     private Set<Long> resourcesIds;
 }

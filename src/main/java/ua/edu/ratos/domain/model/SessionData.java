@@ -19,11 +19,11 @@ import java.util.concurrent.TimeUnit;
  * Scenario 1: User is inactive for longer than is set by session settings
  * 1) Data still alive in memory for 12 hours.
  * 2) Next time users requests to continue within TTL time (12 hours), the result is returned.
- * 3) Session result is stored in database, with flag expired
+ * 3) SessionData result is stored in database, with flag expired
  * 4) Key is removed from memory programmatically
  *
  * Scenario 2: User is inactive for more than 12 hours.
- * 1) Session data for this key is forever lost in memory due to timeout.
+ * 1) SessionData data for this key is forever lost in memory due to timeout.
  * 2) User gets his current result if present in incoming BatchOut object.
  * 3) ResultMock is not stored in database.
  */
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Setter
 @ToString
 @RedisHash(value = "session")
-public class Session implements Serializable {
+public class SessionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +44,7 @@ public class Session implements Serializable {
      */
     private final List<Question> questions;
 
-    public Session(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Question> questions) {
+    public SessionData(@NonNull String key, @NonNull String user, @NonNull String scheme, List<Question> questions) {
         this.key = key;
         this.user = user;
         this.scheme = scheme;

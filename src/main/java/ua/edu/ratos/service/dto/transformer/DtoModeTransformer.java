@@ -21,7 +21,13 @@ public class DtoModeTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Mode fromDto(@NonNull ModeInDto dto) {
+        return fromDto(null, dto);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Mode fromDto(Long modeId, @NonNull ModeInDto dto) {
         Mode mode = modelMapper.map(dto, Mode.class);
+        mode.setModeId(modeId);
         mode.setStaff(em.getReference(Staff.class, dto.getStaffId()));
         return mode;
     }

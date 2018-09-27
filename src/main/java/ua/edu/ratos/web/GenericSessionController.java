@@ -2,46 +2,75 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ratos.service.GenericSession;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.domain.model.Result;
+import ua.edu.ratos.domain.model.SessionData;
+import ua.edu.ratos.service.GenericSessionService;
+import ua.edu.ratos.service.dto.session.BatchIn;
 import ua.edu.ratos.service.dto.session.BatchOut;
 import javax.servlet.http.HttpSession;
-import java.util.UUID;
+import java.security.Principal;
+import java.util.ArrayList;
 
+/**
+ * 1) Long inactivity? Browser is opened.
+ * 2) Browser is suddenly closed, authentication session lost... no data kept
+ * 3) etc.
+ */
 @Slf4j
 @RestController
+@RequestMapping("/student")
 public class GenericSessionController {
 
-    private final GenericSession sessionService;
-
     @Autowired
-    public GenericSessionController(GenericSession sessionService) {
-        this.sessionService = sessionService;
+    private GenericSessionService sessionService;
+
+    @GetMapping(value = "/test")
+    public String test() {
+        return "success";
     }
 
-    @RequestMapping("/start")
-    public String start(@RequestParam String user, @RequestParam String scheme) {
-        return "Session key: "+sessionService.start(user, scheme);
+    /**
+     * 1. Check is there a session opened? If so continue (send redirect to /next), if not- create
+     * 2. Check if the scheme is available now;
+     * 3. Generate the individual sequence
+     * 4. Return first BatchOut
+     * @param schemeId requested schemeId
+     * @param session injected HttpSession obj
+     * @param principal current authorized user
+     * @return
+     */
+    @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BatchOut start(@RequestParam Long schemeId, HttpSession session, Principal principal) {
+        if (session.getAttribute("sessionData")!=null)
+            throw new RuntimeException("Learning session is already opened");
+        final String start = sessionService.start("","");
+        SessionData s = new SessionData("123","Andrey","#1", new ArrayList<>());
+        session.setAttribute("sessionData", s);
+        log.debug("SID :: {}", session.getId());
+        return new BatchOut();
     }
 
-    @RequestMapping("/proceed")
-    public BatchOut proceed(@RequestParam String key) {
-        return sessionService.proceed(key);
+    @PostMapping(value = "/next", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BatchOut next(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchIn batchIn, Principal principal) {
+        log.debug("SessionData :: {}", sessionData);
+        return new BatchOut();
     }
 
+    @PostMapping(value = "/finish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Result finish(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchIn batchIn, HttpSession session) {
+        // Process final result
+        session.removeAttribute("sessionData");
+        return new Result();
+    }
 
-    // https://github.com/denverdino/docker-spring-boot-sample-session-redis/blob/master/src/main/java/sample/session/redis/HelloRestController.java
-    @GetMapping("/uuid")
-    String uid(HttpSession session) {
-        UUID uid = (UUID) session.getAttribute("uid");
-        if (uid == null) {
-            uid = UUID.randomUUID();
-        }
-        session.setAttribute("uid", uid);
-        return uid.toString();
+    @GetMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Result cancel(@SessionAttribute("sessionData") SessionData sessionData, HttpSession session) {
+        // Process current result
+        session.removeAttribute("sessionData");
+        log.debug("Cancelled");
+        return new Result();
     }
 
 }

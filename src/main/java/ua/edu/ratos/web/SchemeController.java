@@ -2,67 +2,63 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.domain.entity.Scheme;
-import ua.edu.ratos.domain.repository.SchemeRepository;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/scheme")
+@RequestMapping(path = "/instructor/scheme")
 public class SchemeController {
 
     @Autowired
     private SchemeService schemeService;
 
-    @Autowired
-    private SchemeRepository schemeRepository;
-
-
-    @PostMapping("/")
-    public Long save(@Validated({SchemeInDto.New.class}) @RequestBody SchemeInDto dto) {
-        log.debug("Scheme dto :: {} ", dto);
-      /*  final Long generatedId = schemeService.save(dto);
-        log.debug("Saved scheme ID = {} ", generatedId);*/
-        return 1L;
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@Valid @RequestBody SchemeInDto dto) {
+        final Long schemeId = schemeService.save(dto);
+        log.debug("Saved Scheme :: {} ", schemeId);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(schemeId).toUri();
+        return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/")
-    public Long update(@Validated({SchemeInDto.Update.class}) @RequestBody SchemeInDto dto) {
-        log.debug("Scheme dto :: {} ", dto);
-      /* schemeService.update(dto);
-        log.debug("Updated scheme ID = {} ", dto.getSchemeId());*/
-        return 1L;
+    @PutMapping(value = "/{schemeId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void update(@PathVariable Long schemeId,  @Valid @RequestBody SchemeInDto dto) {
+        schemeService.update(schemeId, dto);
+        log.debug("Updated Scheme ID :: {} ", schemeId);
     }
+
+    @DeleteMapping("/{schemeId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long schemeId) {
+        schemeService.deleteById(schemeId);
+        log.debug("Deleted Scheme ID :: {}", schemeId);
+    }
+
 
     @PutMapping("/{schemeId}")
     public void reOrder(@PathVariable Long schemeId, @RequestBody List<Long> schemeThemeIds) {
         schemeService.reOrder(schemeId, schemeThemeIds);
-        log.debug("Themes were reordered :: {}", schemeThemeIds);
-    }
-
-    @DeleteMapping("/{schemeId}")
-    public void delete(@PathVariable Long schemeId) {
-        log.debug("Scheme to delete ID :: {}", schemeId);
+        log.debug("Re-ordered themes:: {}", schemeThemeIds);
     }
 
     @DeleteMapping("/{schemeId}/{themeIndex}")
     public void deleteTheme(@PathVariable Long schemeId, @PathVariable Integer themeIndex) {
         schemeService.deleteByIndex(schemeId, themeIndex);
-        log.debug("Theme's index to delete :: {}", themeIndex);
+        log.debug("Disassociated Theme index = {} with given Scheme ID={}", themeIndex, schemeId);
     }
 
-    //----------------CACHE-ABLE (delete later)--------------------
-
-    @GetMapping("/{schemeId}")
-    public void findByIdForSession(@PathVariable Long schemeId) {
-        final Scheme scheme = schemeService.findByIdForSession(schemeId);
-        log.debug("Scheme :: {}", scheme);
-        log.debug("Collection :: {}", scheme.getSchemeThemes());
-    }
+    /*-----------------SELECT---------------------*/
 
 
 

@@ -1,11 +1,13 @@
 package ua.edu.ratos.domain.entity;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,4 +32,16 @@ public class User {
 
     @Column(name = "password")
     private char[] password;
+
+    @ManyToMany
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public void addRole(@NonNull Role role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(@NonNull Role role) {
+        this.roles.remove(role);
+    }
 }

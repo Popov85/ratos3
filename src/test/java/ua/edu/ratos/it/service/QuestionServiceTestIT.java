@@ -45,7 +45,7 @@ public class QuestionServiceTestIT {
         File json = ResourceUtils.getFile(JSON_UPD);
         QuestionInDto dto = objectMapper
                 .readValue(json, QuestionInDto.class);
-        questionService.update(dto);
+        questionService.update(1L, dto);
         final QuestionMultipleChoice foundQuestion =
             (QuestionMultipleChoice) em.createQuery(FIND)
                 .setParameter("questionId", 1L)

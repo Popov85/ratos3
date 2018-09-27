@@ -59,6 +59,7 @@ public class AnswerMQServiceTestIT {
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
+        System.out.println("DTO :: "+dto);
         answerService.save(dto);
         final AnswerMatcher foundAnswer =
             (AnswerMatcher) em.createQuery(FIND)
@@ -78,7 +79,7 @@ public class AnswerMQServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
-        answerService.update(dto);
+        answerService.update(1L, dto);
         final AnswerMatcher foundAnswer =
             (AnswerMatcher) em.createQuery(FIND)
                 .setParameter("answerId",1L)

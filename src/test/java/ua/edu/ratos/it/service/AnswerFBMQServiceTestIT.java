@@ -75,7 +75,7 @@ public class AnswerFBMQServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
-        answerService.save(dto);
+        answerService.update(1l, dto);
         final AnswerFillBlankMultiple foundAnswer =
             (AnswerFillBlankMultiple) em.createQuery(FIND)
                 .setParameter("answerId",1L)

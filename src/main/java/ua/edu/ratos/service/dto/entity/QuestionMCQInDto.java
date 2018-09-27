@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class QuestionMCQInDto extends QuestionInDto {
 
-    @NotEmpty(groups = {QuestionInDto.New.class}, message = "Invalid answers, {dto.collection.required}")
-    @Size(groups = {QuestionInDto.New.class}, min = 2, max = 10, message = "Invalid answers, {dto.collection.invalid}")
+    @NotEmpty(message = "{dto.collection.required}")
+    @Size(min = 2, max = 10, message = "{dto.collection.invalid}")
     private Set<@Valid AnswerMCQInDto> answers;
 }

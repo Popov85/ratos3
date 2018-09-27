@@ -9,7 +9,6 @@ import ua.edu.ratos.domain.entity.Mode;
 import ua.edu.ratos.domain.repository.ModeRepository;
 import ua.edu.ratos.service.dto.entity.ModeInDto;
 import ua.edu.ratos.service.dto.transformer.DtoModeTransformer;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,14 +31,24 @@ public class ModeService {
     }
 
     @Transactional
-    public void update(@NonNull ModeInDto dto) {
-        if (dto.getModeId()==null || dto.getModeId()==0)
-            throw new RuntimeException("Invalid ID");
-        modeRepository.save(transformer.fromDto(dto));
+    public void update(@NonNull Long modeId, @NonNull ModeInDto dto) {
+        if (!modeRepository.existsById(modeId))
+            throw new RuntimeException("Failed to update mode: ID does not exist");
+        modeRepository.save(transformer.fromDto(modeId, dto));
     }
 
-    // Consider all like this
-    // Consider returning DTO {id , name}, not the whole list
+    @Transactional
+    public void deleteById(@NonNull Long modeId) {
+        modeRepository.findById(modeId).get().setDeleted(true);
+    }
+
+    /*-------------------SELECT----------------------*/
+
+    @Transactional(readOnly = true)
+    public List<Mode> findAll( @NonNull Pageable pageable) {
+        return modeRepository.findAll(pageable).getContent();
+    }
+
     @Transactional(readOnly = true)
     public List<Mode> findAllByStaffId(@NonNull Long staffId) {
         final Set<Mode> allDefault = modeRepository.findAllDefault();
@@ -54,24 +63,19 @@ public class ModeService {
         return modeRepository.findAllByStaffIdAndModeNameLettersContains(staffId, contains);
     }
 
+
     @Transactional(readOnly = true)
     public List<Mode> findAllByDepartmentId(@NonNull Long depId) {
-        return modeRepository.findByDepartmentId(depId, propertiesService.getInitCollectionSize()).getContent();
+        final Set<Mode> allDefault = modeRepository.findAllDefault();
+        final List<Mode> allByDepId = modeRepository.findByDepartmentId(depId, propertiesService.getInitCollectionSize()).getContent();
+        List<Mode> result = new ArrayList<>(allDefault);
+        result.addAll(allByDepId);
+        return result;
     }
 
     @Transactional(readOnly = true)
     public Set<Mode> findAllByDepartmentIdAndModeNameLettersContains(@NonNull Long depId, @NonNull String contains) {
         return modeRepository.findAllByDepartmentIdAndModeNameLettersContains(depId, contains);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Mode> findAll( @NonNull Pageable pageable) {
-        return modeRepository.findAll(pageable).getContent();
-    }
-
-    @Transactional
-    public void deleteById(@NonNull Long modeId) {
-        modeRepository.findById(modeId).get().setDeleted(true);
     }
 
 }

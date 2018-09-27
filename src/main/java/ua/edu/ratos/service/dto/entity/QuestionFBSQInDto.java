@@ -13,6 +13,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class QuestionFBSQInDto extends QuestionInDto {
 
-    @NotNull(groups = {QuestionInDto.New.class}, message = "Invalid answer, {dto.object.required}")
+    @NotNull(message = "{dto.object.required}")
     private @Valid AnswerFBSQInDto answer;
 }

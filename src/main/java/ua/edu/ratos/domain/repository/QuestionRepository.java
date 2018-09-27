@@ -1,12 +1,9 @@
 package ua.edu.ratos.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.domain.entity.question.*;
-
 import javax.persistence.QueryHint;
 import java.util.Set;
 
@@ -45,10 +42,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     Set<QuestionSequence> findAllSQWithEverythingByThemeId(Long themeId);
 
-
-    @Modifying
-    @Transactional
-    @Query("update Question q set q.deleted = true where q.questionId = ?1")
-    void pseudoDeleteById(Long questionId);
 
 }

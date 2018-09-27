@@ -15,27 +15,22 @@ import java.util.Objects;
 @AllArgsConstructor
 public class HelpInDto {
 
-    public interface New{}
-    public interface Update{}
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {New.class}, message = "{dto.pk.nullable}")
-    @NotNull(groups = {Update.class}, message = "{dto.pk.required}")
     private Long helpId;
 
-    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
-    @Size(groups = {New.class, Update.class}, min = 1, max = 100, message = "Invalid name, {dto.string.invalid}")
+    @NotBlank( message = "{dto.string.required}")
+    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
     private String name;
 
-    @NotBlank(groups = {New.class, Update.class}, message = "Invalid name, {dto.string.required}")
-    @Size(groups = {New.class, Update.class}, min = 1, max = 1000, message = "Invalid help, {dto.string.invalid}")
+    @NotBlank(message = "Invalid name, {dto.string.required}")
+    @Size(min = 1, max = 1000, message = "{dto.string.invalid}")
     private String help;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid staffId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long staffId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {New.class, Update.class}, message = "Invalid resourceId, {dto.fk.optional}")
+    @PositiveOrZero(message = "{dto.fk.optional}")
     private long resourceId;
 
     @Override

@@ -3,8 +3,8 @@ package ua.edu.ratos.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.domain.model.SessionData;
 import ua.edu.ratos.domain.repository.SessionRepository;
-import ua.edu.ratos.domain.model.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,9 @@ public class SessionStoreService {
     @Autowired
     private SessionRepository sessionRepository;
 
-    public List<Session> findAll() {
-        Iterable<Session> all = sessionRepository.findAll();
-        List<Session> target = new ArrayList<>();
+    public List<SessionData> findAll() {
+        Iterable<SessionData> all = sessionRepository.findAll();
+        List<SessionData> target = new ArrayList<>();
         all.forEach(target::add);
         log.info("All active Sessions:: {}", target);
         return target;

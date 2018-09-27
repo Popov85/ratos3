@@ -23,7 +23,7 @@ public class AnswerMatcher {
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name="answer_id")
-    private long answerId;
+    private Long answerId;
 
     @Column(name="left_phrase")
     private String leftPhrase;

@@ -9,7 +9,6 @@ import ua.edu.ratos.domain.entity.Theme;
 import ua.edu.ratos.domain.repository.ThemeRepository;
 import ua.edu.ratos.service.dto.entity.ThemeInDto;
 import ua.edu.ratos.service.dto.transformer.DtoThemeTransformer;
-
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +31,18 @@ public class ThemeService {
         return themeRepository.save(theme).getThemeId();
     }
 
+    @Transactional
+    public void update(@NonNull Long themeId, @NonNull ThemeInDto dto) {
+        themeRepository.save(transformer.fromDto(themeId, dto));
+    }
+
+    @Transactional
+    public void deleteById(Long themeId) {
+        themeRepository.findById(themeId).get().setDeleted(true);
+    }
+
+    /*-------------------------SELECT---------------------*/
+
     @Transactional(readOnly = true)
     public Set<Theme> findAllByCourseId(@NonNull Long courseId) {
         return themeRepository.findAllByCourseId(courseId);
@@ -50,19 +61,6 @@ public class ThemeService {
     @Transactional(readOnly = true)
     public List<Theme> findAllByOrganisationId(@NonNull Long depId) {
         return themeRepository.findByOrganisationId(depId, propertiesService.getInitCollectionSize()).getContent();
-    }
-
-    @Transactional
-    public void update(@NonNull ThemeInDto dto) {
-        if (dto.getThemeId()==null || dto.getThemeId()==0)
-            throw new RuntimeException("Invalid ID");
-        Theme theme = transformer.fromDto(dto);
-        themeRepository.save(theme);
-    }
-
-    @Transactional
-    public void deleteById(Long themeId) {
-        themeRepository.pseudoDeleteById(themeId);
     }
 
 }

@@ -30,6 +30,21 @@ public class AcceptedPhraseService {
         return acceptedPhraseRepository.save(phrase).getPhraseId();
     }
 
+    @Transactional
+    public void update(@NonNull Long phraseId, @NonNull AcceptedPhraseInDto dto) {
+        if (!acceptedPhraseRepository.existsById(phraseId))
+            throw new RuntimeException("Failed to update phrase: ID does not exist");
+        AcceptedPhrase phrase = transformer.fromDto(dto, phraseId);
+        acceptedPhraseRepository.save(phrase);
+    }
+
+    @Transactional
+    public void deleteById(@NonNull Long phraseId) {
+        acceptedPhraseRepository.deleteById(phraseId);
+    }
+
+    /*-----------------------SELECT----------------------*/
+
     @Transactional(readOnly = true)
     public List<AcceptedPhrase> findAllLastUsedByStaffId(@NonNull Long staffId) {
         return acceptedPhraseRepository.findAllLastUsedByStaffId(staffId, propertiesService.getInitCollectionSize()).getContent();
@@ -40,14 +55,4 @@ public class AcceptedPhraseService {
         return acceptedPhraseRepository.findAllLastUsedByStaffIdAndFirstLetters(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
     }
 
-    @Transactional
-    public void update(@NonNull Long phraseId, @NonNull AcceptedPhraseInDto dto) {
-        AcceptedPhrase phrase = transformer.fromDto(dto, phraseId);
-        acceptedPhraseRepository.save(phrase);
-    }
-
-    @Transactional
-    public void deleteById(@NonNull Long phraseId) {
-        acceptedPhraseRepository.deleteById(phraseId);
-    }
 }

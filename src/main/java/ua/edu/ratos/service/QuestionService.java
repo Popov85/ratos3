@@ -61,7 +61,6 @@ public class QuestionService {
         return savedQuestion.getQuestionId();
     }
 
-
     /**
      * Questions obtained after parsing the .rtp- .txt-files
      * @param questions
@@ -72,14 +71,19 @@ public class QuestionService {
     }
 
     @Transactional
-    public void update(@NonNull QuestionInDto dto) {
-        final Long questionId = dto.getQuestionId();
+    public void update(@NonNull Long questionId, @NonNull QuestionInDto dto) {
         final Optional<Question> optional = questionRepository.findById(questionId);
         final Question updatable = optional.orElseThrow(() ->
                 new RuntimeException("Question not found, ID = "+ questionId));
         transformer.mapDto(dto, updatable);
     }
 
+    @Transactional
+    public void deleteById(@NonNull Long questionId) {
+        questionRepository.findById(questionId).get().setDeleted(true);
+    }
+
+    /*-----------------------SELECT------------------------*/
 
     @Transactional(readOnly = true)
     public Set<Question> findAllByThemeId(@NonNull Long themeId) {
@@ -103,12 +107,6 @@ public class QuestionService {
             return questionRepository.findAllSQWithEverythingByThemeId(themeId);
         }
         throw new RuntimeException("Unsupported type");
-    }
-
-    @Transactional
-    public void deleteById(@NonNull Long questionId) {
-        questionRepository.pseudoDeleteById(questionId);
-        log.warn("Question is hidden, ID = {}", questionId);
     }
 
 }

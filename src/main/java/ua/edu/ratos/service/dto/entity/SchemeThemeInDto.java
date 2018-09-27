@@ -16,16 +16,15 @@ import java.util.Set;
 public class SchemeThemeInDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(message = "{dto.pk.nullable}")
     private Long schemeThemeId;
 
-    @Positive(message = "Invalid schemeId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long schemeId;
 
-    @Positive(message = "Invalid themeId, {dto.fk.required}")
+    @Positive(message = "{dto.fk.required}")
     private long themeId;
 
-    @PositiveOrZero(message = "Invalid order, {dto.value.positiveOrZero}")
+    @PositiveOrZero(message = "{dto.value.positiveOrZero}")
     private short order;
 
     /**
@@ -33,7 +32,7 @@ public class SchemeThemeInDto {
      */
     private boolean first;
 
-    @NotEmpty(groups = {SchemeThemeSettingsInDto.Include.class}, message = "Invalid schemeThemeSettings, {dto.collection.required}")
-    @Size(groups = {SchemeThemeSettingsInDto.Include.class}, min = 1, max = 5, message = "Invalid schemeThemeSettings, {dto.collection.invalid}")
+    @NotEmpty(groups = {SchemeThemeSettingsInDto.Include.class}, message = "{dto.collection.required}")
+    @Size(groups = {SchemeThemeSettingsInDto.Include.class}, min = 1, max = 5, message = "{dto.collection.invalid}")
     private Set<@Valid SchemeThemeSettingsInDto> schemeThemeSettings;
 }

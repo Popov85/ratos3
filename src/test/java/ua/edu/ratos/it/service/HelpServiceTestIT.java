@@ -24,6 +24,7 @@ public class HelpServiceTestIT {
 
     public static final String JSON_NEW = "classpath:json/help_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/help_in_dto_upd.json";
+
     public static final String HELP_NEW = "javax.persistence";
     public static final String HELP_TEXT = "Please, refer to https://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html";
     public static final String HELP_UPD = "JPA";
@@ -71,7 +72,7 @@ public class HelpServiceTestIT {
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         HelpInDto dto = objectMapper.readValue(json, HelpInDto.class);
-        helpService.update(dto);
+        helpService.update(1L, dto);
         final Help foundHelp =
             (Help) em.createQuery(FIND)
                 .setParameter("helpId",1L)

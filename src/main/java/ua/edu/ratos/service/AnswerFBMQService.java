@@ -17,20 +17,21 @@ public class AnswerFBMQService {
     @Autowired
     private DtoAnswerTransformer transformer;
 
-
     @Transactional
     public Long save(@NonNull AnswerFBMQInDto dto) {
         return answerRepository.save(transformer.fromDto(dto)).getAnswerId();
     }
 
     @Transactional
-    public void update(@NonNull AnswerFBMQInDto dto) {
-        answerRepository.save(transformer.fromDto(dto));
+    public void update(@NonNull Long answerId, @NonNull AnswerFBMQInDto dto) {
+        if (!answerRepository.existsById(answerId))
+            throw new RuntimeException("Failed to update answer fbmq: ID does not exist");
+        answerRepository.save(transformer.fromDto(answerId, dto));
     }
 
     @Transactional
     public void deleteById(@NonNull Long answerId) {
-        answerRepository.pseudoDeleteById(answerId);
+        answerRepository.findById(answerId).get().setDeleted(true);
     }
 
 }

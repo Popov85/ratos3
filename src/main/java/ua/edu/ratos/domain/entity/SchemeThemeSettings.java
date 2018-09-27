@@ -1,5 +1,6 @@
 package ua.edu.ratos.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,6 +21,7 @@ public class SchemeThemeSettings {
     @Column(name="type_level_id")
     private Long schemeThemeSettingsId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "scheme_theme_id")
     private SchemeTheme schemeTheme;

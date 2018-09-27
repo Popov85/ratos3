@@ -11,7 +11,6 @@ import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import ua.edu.ratos.service.dto.transformer.DtoSchemeTransformer;
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -34,21 +33,15 @@ public class SchemeService {
     }
 
     @Transactional
-    public void update(@NonNull SchemeInDto dto) {
-        if (dto.getSchemeId()==null || dto.getSchemeId()==0)
-            throw new RuntimeException("Invalid ID");
-        Scheme scheme = transformer.fromDto(dto);
-        schemeRepository.save(scheme);
+    public void update(@NonNull Long schemeId, @NonNull SchemeInDto dto) {
+        if (!schemeRepository.existsById(schemeId))
+            throw new RuntimeException("Failed to update scheme: ID does not exist");
+        schemeRepository.save(transformer.fromDto(schemeId, dto));
     }
 
-    /**
-     * Gets Scheme instance for a student session request
-     * @param schemeId
-     * @return Scheme object preferably from L2C
-     */
-    @Transactional(readOnly = true)
-    public Scheme findByIdForSession(@NonNull Long schemeId) {
-        return schemeRepository.findByIdForSession(schemeId);
+    @Transactional
+    public void deleteById(@NonNull Long schemeId) {
+        schemeRepository.findById(schemeId).get().setDeleted(true);
     }
 
     /**
@@ -83,10 +76,17 @@ public class SchemeService {
         if (scheme.getSchemeThemes().isEmpty()) scheme.setCompleted(false);
     }
 
-    @Transactional
-    public void deleteById(@NonNull Long schemeId) {
-        final Optional<Scheme> scheme = schemeRepository.findById(schemeId);
-        scheme.get().setDeleted(true);
+
+    /*---------------------SELECT-------------------*/
+
+    /**
+     * Gets Scheme instance for a student session request
+     * @param schemeId
+     * @return Scheme object preferably from L2C
+     */
+    @Transactional(readOnly = true)
+    public Scheme findByIdForSession(@NonNull Long schemeId) {
+        return schemeRepository.findByIdForSession(schemeId);
     }
 
 }

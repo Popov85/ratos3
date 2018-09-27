@@ -22,7 +22,13 @@ public class DtoThemeTransformer {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Theme fromDto(@NonNull ThemeInDto dto) {
+        return fromDto(null, dto);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Theme fromDto(Long themeId, @NonNull ThemeInDto dto) {
         Theme theme = modelMapper.map(dto, Theme.class);
+        theme.setThemeId(themeId);
         theme.setCourse(em.getReference(Course.class, dto.getCourseId()));
         return theme;
     }

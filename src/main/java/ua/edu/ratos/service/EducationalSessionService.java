@@ -6,11 +6,11 @@ import ua.edu.ratos.service.dto.session.BatchOut;
 
 /**
  * Educational session provides more possibility for students.
- * These operation only available for training sort of sessions, not knowledge control
+ * These operations only available for training sort of sessions, not knowledge control
  * @author Andrey P.
  */
 @Service
-public interface EducationalSession {
+public interface EducationalSessionService {
 
     /**
      * Stops time (for max 12 hours) while session is still alive in memory

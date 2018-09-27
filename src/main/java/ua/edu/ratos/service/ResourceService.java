@@ -29,9 +29,22 @@ public class ResourceService {
         return resourceRepository.save(transformer.fromDto(dto)).getResourceId();
     }
 
+    @Transactional
+    public void update(@NonNull Long resId, @NonNull ResourceInDto dto) {
+        if (!resourceRepository.existsById(resId))
+            throw new RuntimeException("Failed to update resource: ID does not exist");
+        resourceRepository.save(transformer.fromDto(resId, dto));
+    }
+
+    @Transactional
+    public void deleteById(@NonNull Long resourceId) {
+        resourceRepository.deleteById(resourceId);
+    }
+
+    /*-----------------SELECT--------------------*/
+
     @Transactional(readOnly = true)
     public List<Resource> findByStaffId(@NonNull Long staffId) {
-        log.debug("size = {}", propertiesService.getInitCollectionSize());
         return resourceRepository.findByStaffId(staffId, propertiesService.getInitCollectionSize()).getContent();
     }
 
@@ -48,18 +61,6 @@ public class ResourceService {
     @Transactional(readOnly = true)
     public List<Resource> findByDepartmentIdAndFirstLetters(@NonNull Long staffId, @NonNull String starts) {
         return resourceRepository.findByDepartmentIdAndFirstLetters(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
-    }
-
-    @Transactional
-    public void update(@NonNull ResourceInDto dto) {
-        if (dto.getResourceId()==null || dto.getResourceId()==0)
-            throw new RuntimeException("Invalid ID");
-        resourceRepository.save(transformer.fromDto(dto));
-    }
-
-    @Transactional
-    public void deleteById(@NonNull Long resourceId) {
-        resourceRepository.deleteById(resourceId);
     }
 
 }
