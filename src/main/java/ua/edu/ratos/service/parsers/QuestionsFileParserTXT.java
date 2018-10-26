@@ -20,7 +20,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
 
     @Override
     public void parseLine(String line) {
-        if (startStatus == false) throw new IllegalStateException("Parsing process yet not started!");
+        if (startStatus == false) throw new IllegalStateException("Parsing control yet not started!");
         if (!line.trim().isEmpty()) {
             String trimmedLine = line.trim();
             Character firstChar = trimmedLine.charAt(0);

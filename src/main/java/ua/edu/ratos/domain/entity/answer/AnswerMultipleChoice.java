@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.service.dto.session.AnswerMCQOutDto;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -69,6 +71,13 @@ public class AnswerMultipleChoice {
         if (percent < 0 || percent > 100) return false;
         if (percent==0 && isRequired) isRequired = false;
         return true;
+    }
+
+    public AnswerMCQOutDto toDto() {
+        return new AnswerMCQOutDto()
+                .setAnswerId(this.answerId)
+                .setAnswer(this.answer)
+                .setResource(this.resources.isEmpty() ? null : this.resources.iterator().next());
     }
 
 }

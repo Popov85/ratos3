@@ -1,7 +1,11 @@
 package ua.edu.ratos.domain.entity.answer;
 
 import lombok.*;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankSingle;
+import ua.edu.ratos.service.dto.session.AnswerFBSQOutDto;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,5 +57,15 @@ public class AnswerFillBlankSingle {
         if (this.acceptedPhrases==null) return false;
         if (this.acceptedPhrases.isEmpty()) return false;
         return true;
+    }
+
+    public AnswerFBSQOutDto toDto() {
+        return new AnswerFBSQOutDto()
+                .setAnswerId(this.answerId)
+                .setWordsLimit(this.settings.getWordsLimit())
+                .setSymbolsLimit(this.settings.getSymbolsLimit())
+                .setLang(this.settings.getLang())
+                .setCaseSensitive(this.settings.isCaseSensitive())
+                .setNumeric(this.settings.isNumeric());
     }
 }

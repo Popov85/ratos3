@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -37,11 +38,25 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToOne(mappedBy = "user")
+    private Student student;
+
+    @OneToOne(mappedBy = "user")
+    private Staff staff;
+
     public void addRole(@NonNull Role role) {
         this.roles.add(role);
     }
 
     public void removeRole(@NonNull Role role) {
         this.roles.remove(role);
+    }
+
+    public Optional<Student> getStudent() {
+        return Optional.of(student);
+    }
+
+    public Optional<Staff> getStaff() {
+        return Optional.of(staff);
     }
 }

@@ -11,7 +11,7 @@ import ua.edu.ratos.domain.entity.Staff;
 import ua.edu.ratos.domain.entity.Theme;
 import ua.edu.ratos.domain.entity.question.Question;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.entity.question.QuestionType;
+import ua.edu.ratos.domain.entity.QuestionType;
 import ua.edu.ratos.service.dto.entity.FileInDto;
 import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer;
 import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;

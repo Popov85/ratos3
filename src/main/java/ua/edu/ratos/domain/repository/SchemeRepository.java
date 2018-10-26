@@ -16,5 +16,7 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     Scheme findByIdForSession(Long schemeId);
 
+    @Query(value = "SELECT s FROM Scheme s left join fetch s.grading t where s.schemeId = ?1")
+    Scheme findByIdWithGrading(Long schemeId);
 
 }

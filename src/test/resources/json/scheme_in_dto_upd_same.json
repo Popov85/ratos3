@@ -1,0 +1,12 @@
+{
+  "schemeId":1,
+  "name": "Scheme #11",
+  "strategyId": 1,
+  "settingsId": 1,
+  "modeId": 1,
+  "gradingId": 1,
+  "gradingDetailsId": 2,
+  "courseId": 1,
+  "staffId": 1,
+  "active": true
+}

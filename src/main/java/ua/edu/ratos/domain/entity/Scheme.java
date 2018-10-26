@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
+import ua.edu.ratos.domain.entity.grade.Grading;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings", "mode", "course", "staff", "schemeThemes"})
+@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "schemeThemes"})
 @Entity
 @Table(name="scheme")
 @Cacheable
@@ -43,6 +44,10 @@ public class Scheme {
     private Mode mode;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grading_id")
+    private Grading grading;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 
@@ -54,7 +59,7 @@ public class Scheme {
     private LocalDateTime created;
 
     @Column(name="is_active")
-    private boolean active = true;
+    private boolean active;
 
     @Column(name="is_deleted")
     private boolean deleted;

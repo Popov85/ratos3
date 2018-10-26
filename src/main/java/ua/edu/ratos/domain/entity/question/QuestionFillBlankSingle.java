@@ -3,8 +3,12 @@ package ua.edu.ratos.domain.entity.question;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.modelmapper.ModelMapper;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankSingle;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankSingle;
+import ua.edu.ratos.service.dto.session.QuestionFBSQOutDto;
+import ua.edu.ratos.service.dto.session.QuestionOutDto;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +48,7 @@ public class QuestionFillBlankSingle extends Question {
     }
 
     public int evaluate(ResponseFillBlankSingle response) {
-        final String enteredPhrase = response.enteredPhrase;
+        final String enteredPhrase = response.getEnteredPhrase();
         List<String> acceptedPhrases = answer.getAcceptedPhrases()
                 .stream()
                 .map(p->p.getPhrase())
@@ -52,6 +56,17 @@ public class QuestionFillBlankSingle extends Question {
         // TODO check for isTypoAllowed and isCaseSensitive
         if (acceptedPhrases.contains(enteredPhrase)) return 100;
         return 0;
+    }
+
+    @Override
+    public QuestionFBSQOutDto toDto(boolean mixable) {
+        ModelMapper modelMapper = new ModelMapper();
+        final QuestionOutDto questionOutDto = super.toDto(mixable);
+        QuestionFBSQOutDto dto = modelMapper
+                .map(questionOutDto, QuestionFBSQOutDto.class);
+        dto.setAnswer(this.answer.toDto());
+        // Does not support any kind of shuffling
+        return dto;
     }
 
     @Override

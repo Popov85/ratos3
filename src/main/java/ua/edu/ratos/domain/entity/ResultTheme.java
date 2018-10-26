@@ -26,5 +26,5 @@ public class ResultTheme {
     private Theme theme;
 
     @Column(name = "percent")
-    private float percent;
+    private double percent;
 }

@@ -4,7 +4,11 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankMultiple;
+import ua.edu.ratos.service.dto.session.AnswerFBMQOutDto;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -56,6 +60,18 @@ public class AnswerFillBlankMultiple{
 
     public void removePhrase(@NonNull AcceptedPhrase phrase) {
         this.acceptedPhrases.remove(phrase);
+    }
+
+    public AnswerFBMQOutDto toDto() {
+        return new AnswerFBMQOutDto()
+                .setAnswerId(this.answerId)
+                .setPhrase(this.phrase)
+                .setOccurrence(this.occurrence)
+                .setWordsLimit(this.settings.getWordsLimit())
+                .setSymbolsLimit(this.settings.getSymbolsLimit())
+                .setLang(this.settings.getLang())
+                .setCaseSensitive(this.settings.isCaseSensitive())
+                .setNumeric(this.settings.isNumeric());
     }
 
     @Override

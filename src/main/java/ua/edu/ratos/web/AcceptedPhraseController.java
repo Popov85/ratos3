@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
 import ua.edu.ratos.service.AcceptedPhraseService;
 import ua.edu.ratos.service.dto.entity.AcceptedPhraseInDto;
 import javax.validation.Valid;

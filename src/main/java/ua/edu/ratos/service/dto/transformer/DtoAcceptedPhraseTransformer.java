@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.domain.entity.Staff;
-import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
 import ua.edu.ratos.service.dto.entity.AcceptedPhraseInDto;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;

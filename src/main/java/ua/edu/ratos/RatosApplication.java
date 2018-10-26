@@ -17,7 +17,6 @@ import java.util.Date;
 
 @Slf4j
 @SpringBootApplication
-//@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class RatosApplication {
 
 	@Autowired
@@ -37,6 +36,8 @@ public class RatosApplication {
 					new ClassPathResource("script/clear.sql"));
 			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
 					new ClassPathResource("script/init.sql"));
+			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
+					new ClassPathResource("script/populate.sql"));
 			log.info("Data initialized");
 		}
 		log.info("Launched ratos app {}", new Date());

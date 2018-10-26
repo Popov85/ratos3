@@ -4,7 +4,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
 import ua.edu.ratos.domain.repository.AcceptedPhraseRepository;
 import ua.edu.ratos.service.dto.entity.AcceptedPhraseInDto;
 import ua.edu.ratos.service.dto.transformer.DtoAcceptedPhraseTransformer;

@@ -1,24 +1,50 @@
 package ua.edu.ratos.service.dto.response;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
-import ua.edu.ratos.service.Evaluator;
-import ua.edu.ratos.service.Response;
+import ua.edu.ratos.service.session.Evaluator;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
+@Getter
 @ToString
+@AllArgsConstructor
 public class ResponseFillBlankMultiple implements Response {
-    public long questionId;
-    public List<Pair> enteredPhrases;
 
+    private final long questionId;
+    private final Set<Pair> enteredPhrases;
+
+    @Getter
+    @ToString
+    @AllArgsConstructor
     public static class Pair {
-        public Long phraseId;
-        public String enteredPhrase;
+        public final Long answerId;
+        public final String enteredPhrase;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return (enteredPhrases==null || enteredPhrases.isEmpty());
     }
 
     @Override
     public int evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResponseFillBlankMultiple that = (ResponseFillBlankMultiple) o;
+        return questionId == that.questionId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(questionId);
     }
 }

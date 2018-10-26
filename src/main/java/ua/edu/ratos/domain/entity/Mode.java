@@ -34,9 +34,15 @@ public class Mode {
     @Column(name="is_skipable")
     private boolean skipable;
 
+    /**
+     * Whether or not to show right answers to the user after each batch?
+     */
     @Column(name="is_rightans")
     private boolean rightAnswer;
 
+    /**
+     * Whether or not to disclose right answers after the end of the session?
+     */
     @Column(name="is_resultdetails")
     private boolean resultDetails;
 

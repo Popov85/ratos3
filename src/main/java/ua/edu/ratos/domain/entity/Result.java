@@ -20,7 +20,7 @@ public class Result {
     @Column(name = "res_id")
     private Long resId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "scheme_id", updatable = false)
     protected Scheme scheme;
 
@@ -29,28 +29,28 @@ public class Result {
     protected User user;
 
     @Column(name = "percent")
-    private float percent;
+    private double percent;
 
-    @Column(name = "mark")
-    private byte mark;
+    @Column(name = "grade")
+    private Number grade;
 
-    @Column(name = "ip_address")
-    private String ipAddress;
+    @Column(name = "is_passed")
+    private boolean passed;
 
-    @Column(name = "session_begin")
-    private LocalDateTime sessionBegin;
+    @Column(name = "session_ended")
+    private LocalDateTime sessionEnded;
 
-    @Column(name = "session_eng")
-    private LocalDateTime sessionEnd;
+    @Column(name = "session_lasted")
+    private long sessionLasted;
 
     @Column(name = "is_timeouted")
-    private boolean timeouted;
+    private boolean timeOuted;
 
     @OneToMany(mappedBy = "result", cascade = {CascadeType.PERSIST})
     private List<ResultTheme> resultTheme;
 
-    // Do not work out of the box
+  /*  // Does not work out of the box
     // http://justonjava.blogspot.com/2010/09/lazy-one-to-one-and-one-to-many.html
     @OneToOne(mappedBy = "result", cascade = CascadeType.PERSIST, optional = false)
-    private ResultDetails resultDetails;
+    private ResultDetails resultDetails;*/
 }

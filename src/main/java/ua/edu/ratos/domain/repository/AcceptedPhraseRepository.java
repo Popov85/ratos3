@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ua.edu.ratos.domain.entity.answer.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.AcceptedPhrase;
 
 public interface AcceptedPhraseRepository extends JpaRepository<AcceptedPhrase, Long> {
 

@@ -45,7 +45,7 @@
     </resources>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.question.QuestionType">
+  <cache alias="ua.edu.ratos.domain.entity.QuestionType">
       <heap>10</heap>
   </cache>
 
@@ -76,11 +76,11 @@
       <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AcceptedPhrase">
+  <cache alias="ua.edu.ratos.domain.entity.AcceptedPhrase">
       <heap>4000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.SettingsAnswerFillBlank">
+  <cache alias="ua.edu.ratos.domain.entity.SettingsAnswerFillBlank">
       <heap>500</heap>
   </cache>
 

@@ -5,10 +5,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.service.EvaluatorImpl;
+import ua.edu.ratos.service.session.EvaluatorImpl;
 import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -28,8 +29,7 @@ public class EvaluatorImplTest {
 
         question.setAnswers(answers);
 
-        ResponseMultipleChoice response = new ResponseMultipleChoice();
-        response.ids = Arrays.asList();
+        ResponseMultipleChoice response = new ResponseMultipleChoice(0L, new HashSet(Arrays.asList()));
         assertEquals(0, response.evaluateWith(new EvaluatorImpl(question)));
 
   /*      // All answers

@@ -8,11 +8,12 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 /**
- * Default strategies:
+ * Pre-defined strategies:
  * Theme -> Type -> Level -> Question
  * 1) Default: randomised irrespective to type and level, but observe themes order
  * 2) Full randomized: randomized irrespective to theme order, type or level
- * 3) TO be continued...
+ * 3) Types then levels.
+ * 4) To be continued...
  */
 @Getter
 @Setter

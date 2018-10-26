@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
+import org.modelmapper.ModelMapper;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankMultiple;
+import ua.edu.ratos.service.dto.session.QuestionFBMQOutDto;
+import ua.edu.ratos.service.dto.session.QuestionOutDto;
 
 import javax.persistence.*;
 import java.util.*;
@@ -34,9 +37,9 @@ public class QuestionFillBlankMultiple extends Question{
     }
 
     public int evaluate(ResponseFillBlankMultiple response) {
-        final List<ResponseFillBlankMultiple.Pair> pairs = response.enteredPhrases;
+        final Set<ResponseFillBlankMultiple.Pair> pairs = response.getEnteredPhrases();
         for (ResponseFillBlankMultiple.Pair pair : pairs) {
-            final Long phraseId = pair.phraseId;
+            final Long phraseId = pair.answerId;
             final String enteredPhrase = pair.enteredPhrase;
             Optional<AnswerFillBlankMultiple> answerFillBlankMultiple =
                     answers.stream().filter(a -> a.getAnswerId() == phraseId).findFirst();
@@ -48,6 +51,17 @@ public class QuestionFillBlankMultiple extends Question{
             if (!acceptedPhrases.contains(enteredPhrase)) return 0;
         }
         return 100;
+    }
+
+    @Override
+    public QuestionFBMQOutDto toDto(boolean mixable) {
+        ModelMapper modelMapper = new ModelMapper();
+        final QuestionOutDto questionOutDto = super.toDto(mixable);
+        QuestionFBMQOutDto dto = modelMapper
+                .map(questionOutDto, QuestionFBMQOutDto.class);
+        this.answers.forEach(a-> dto.add(a.toDto()));
+        // Does not support any kind of shuffling
+        return dto;
     }
 
     @Override

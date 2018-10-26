@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.QuestionMatcher;
+import ua.edu.ratos.service.dto.session.AnswerMQOutDto;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,5 +63,12 @@ public class AnswerMatcher {
         if (this.leftPhrase.isEmpty()) return false;
         if (this.rightPhrase.isEmpty()) return false;
         return true;
+    }
+
+    public AnswerMQOutDto toDto() {
+        return new AnswerMQOutDto()
+                .setAnswerId(this.answerId)
+                .setLeftPhrase(this.leftPhrase)
+                .setResource(this.resources.isEmpty() ? null : this.resources.iterator().next());
     }
 }

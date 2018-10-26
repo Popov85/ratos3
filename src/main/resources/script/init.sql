@@ -28,17 +28,29 @@ insert into question_type (type_id, eng_abbreviation, description) values (4, 'M
 insert into question_type (type_id, eng_abbreviation, description) values (5, 'SQ', 'Sequence question');
 
 insert into strategy(name, description)
-            values('default','Default sequence sorting strategy');
+values('default','Default sequence sorting strategy');
 insert into strategy(name, description)
-            values('random','Random sequence sorting strategy');
+values('random','Random sequence sorting strategy');
 insert into strategy(name, description)
-            values('types&levels','TypesThenLevels sequence sorting strategy');
-insert into settings(name, staff_id, seconds_per_question, questions_per_sheet, days_keep_result_details, threshold_3, threshold_4, threshold_5, level_2_coefficient, level_3_coefficient, display_percent, display_mark)
-            values('default', 1, 60, 1, 1, 50, 70, 85, 1, 1, 1, 1);
+values('types&levels','TypesThenLevels sequence sorting strategy');
+
+insert into grading(name, description) values('four-point', 'classic 4 points grading system {2, 3, 4, 5}');
+insert into grading(name, description) values('two-point', 'classic 2 points grading system {0, 1} or {passed, not passed}');
+insert into grading(name, description) values('free-point', 'universal discrete grading system {min, ..., max}');
+insert into four_point(name, threshold_3, threshold_4, threshold_5, staff_id, is_default, is_deleted, grading_id)
+values('default', 50, 70, 85, 1, 1, 0, 1);
+insert into two_point(name, threshold, staff_id, is_default, is_deleted, grading_id)
+values('default', 50, 1, 1, 0, 2);
+insert into free_point(name, min_value, pass_value, max_value, staff_id, grading_id)
+values('default', 0, 60, 200, 1, 3);
+
+insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, is_deleted, is_default)
+values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1);
+
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
-            values('exam', 1, 0, 0, 0, 0, 0, 0, 0, 1);
+values('exam', 1, 0, 0, 0, 0, 0, 0, 0, 1);
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
-            values('training', 1, 1, 1, 1, 1, 1, 1, 1, 1);
+values('training', 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('eng default', 5, 100, 0, 0, 0, 1, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ua default', 5, 100, 0, 0, 0, 5, 1);

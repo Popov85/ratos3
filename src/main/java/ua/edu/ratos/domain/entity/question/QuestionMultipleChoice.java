@@ -5,12 +5,16 @@ import lombok.NonNull;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
+import org.modelmapper.ModelMapper;
 import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
 import ua.edu.ratos.service.dto.response.ResponseMultipleChoice;
+import ua.edu.ratos.service.dto.session.QuestionMCQOutDto;
+import ua.edu.ratos.service.dto.session.QuestionOutDto;
+
 import javax.persistence.*;
 
 
@@ -89,7 +93,7 @@ public class QuestionMultipleChoice extends Question {
 
     public int evaluate(ResponseMultipleChoice response) {
         List<Long> zeroAnswers = getZeroAnswers();
-        List<Long> ids = response.ids;
+        Set<Long> ids = response.getAnswerIds();
         for (Long id: ids) {
             if (zeroAnswers.contains(id)) return 0;
         }
@@ -125,6 +129,23 @@ public class QuestionMultipleChoice extends Question {
                 .map(AnswerMultipleChoice::getAnswerId)
                 .collect(Collectors.toList()));
         return requiredAnswers;
+    }
+
+    @Override
+    public QuestionMCQOutDto toDto(boolean mixable) {
+        ModelMapper modelMapper = new ModelMapper();
+        final QuestionOutDto questionOutDto = super.toDto(mixable);
+        QuestionMCQOutDto dto = modelMapper
+                .map(questionOutDto, QuestionMCQOutDto.class)
+                .setSingle(isSingle());
+        this.answers.forEach(a-> dto.add(a.toDto()));
+        if (mixable) {
+            dto.setAnswers(collectionShuffler
+                .shuffle(dto.getAnswers())
+                .stream()
+                .collect(Collectors.toSet()));
+        }
+        return dto;
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.domain.entity.*;
+import ua.edu.ratos.domain.entity.grade.Grading;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import javax.persistence.EntityManager;
 
@@ -30,6 +31,7 @@ public class DtoSchemeTransformer {
         scheme.setStrategy(em.getReference(Strategy.class, dto.getStrategyId()));
         scheme.setSettings(em.getReference(Settings.class, dto.getSettingsId()));
         scheme.setMode(em.getReference(Mode.class, dto.getModeId()));
+        scheme.setGrading(em.getReference(Grading.class, dto.getGradingId()));
         scheme.setCourse(em.getReference(Course.class, dto.getCourseId()));
         scheme.setStaff(em.getReference(Staff.class, dto.getStaffId()));
         return scheme;

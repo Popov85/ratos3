@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.QuestionSequence;
+import ua.edu.ratos.service.dto.session.AnswerSQOutDto;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +53,14 @@ public class AnswerSequence {
 
     public void removeResource(@NonNull Resource resource) {
         this.resources.remove(resource);
+    }
+
+
+    public AnswerSQOutDto toDto() {
+        return new AnswerSQOutDto()
+                .setAnswerId(this.answerId)
+                .setPhrase(this.phrase)
+                .setResource(this.resources.isEmpty() ? null : this.resources.iterator().next());
     }
 
     public boolean isValid() {

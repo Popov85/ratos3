@@ -32,7 +32,8 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
         // try to authenticate student
         final Student student = studentRepository.findByIdForAuthentication(email);
         if (student!=null) {
-            final User authenticatedStudent = new User(student.getUser().getEmail(), new String(student.getUser().getPassword()), getAuthorities(student.getUser()));
+            final AuthenticatedUser authenticatedStudent = new AuthenticatedUser(student.getUser().getEmail(), new String(student.getUser().getPassword()), getAuthorities(student.getUser()))
+                    .setUserId(student.getStudId());
             log.debug("Found student :: {}", authenticatedStudent);
             return authenticatedStudent;
         } else {
@@ -40,14 +41,15 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
             final Staff staff = staffRepository.findByIdForAuthentication(email);
             if (staff!=null) {
                 AuthenticatedStaff authenticatedStaff = new AuthenticatedStaff(staff.getUser().getEmail(), new String(staff.getUser().getPassword()), getAuthorities(staff.getUser()));
-                authenticatedStaff.setStaffId(staff.getStaffId())
+                authenticatedStaff.setUserId(staff.getStaffId());
+                authenticatedStaff
                         .setDepId(staff.getDepartment().getDepId())
                         .setFacId(staff.getDepartment().getFaculty().getFacId())
                         .setOrgId(staff.getDepartment().getFaculty().getOrganisation().getOrgId());
                 log.debug("Found staff :: {}", authenticatedStaff);
                 return authenticatedStaff;
             } else {
-                log.info("Failed to find any user by email, {}", email);
+                log.debug("Failed to find any user by email, {}", email);
                 throw new UsernameNotFoundException("Failed to authorize by email");
             }
         }

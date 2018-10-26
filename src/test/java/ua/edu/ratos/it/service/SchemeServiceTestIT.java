@@ -1,8 +1,8 @@
 package ua.edu.ratos.it.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,22 +10,34 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.*;
+import ua.edu.ratos.domain.entity.grade.SchemeFourPoint;
+import ua.edu.ratos.domain.entity.grade.SchemeTwoPoint;
 import ua.edu.ratos.domain.repository.SchemeRepository;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.SchemeService;
+import ua.edu.ratos.service.dto.entity.SchemeInDto;
+import ua.edu.ratos.service.scheme.SchemeService;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.Cache;
 import javax.persistence.EntityManager;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class SchemeServiceTestIT {
+
+    public static final String JSON_NEW = "classpath:json/scheme_in_dto_new_1.json";
+    public static final String JSON_UPD = "classpath:json/scheme_in_dto_upd.json";
+    public static final String JSON_UPD_SAME = "classpath:json/scheme_in_dto_upd_same.json";
+
+    public static final String FIND = "select s from Scheme s where s.schemeId=:schemeId";
+    public static final String FIND_GRADING_FOUR = "select s from SchemeFourPoint s join fetch s.fourPointGrading where s.schemeId=:schemeId";
+    public static final String FIND_GRADING_TWO = "select s from SchemeTwoPoint s where s.schemeId=:schemeId";
 
     @Autowired
     private SchemeService schemeService;
@@ -33,13 +45,87 @@ public class SchemeServiceTestIT {
     @Autowired
     private SchemeRepository schemeRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EntityManager em;
+
+
+    @Test
+    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void saveTest() throws Exception {
+        File json = ResourceUtils.getFile(JSON_NEW);
+        SchemeInDto dto = objectMapper.readValue(json, SchemeInDto.class);
+        final Long returnedId = schemeService.save(dto);
+        Assert.assertEquals(1L, returnedId.longValue());
+        final Scheme foundScheme =
+                (Scheme) em.createQuery(FIND)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        Assert.assertNotNull(foundScheme);
+        final SchemeFourPoint foundFour =
+                (SchemeFourPoint) em.createQuery(FIND_GRADING_FOUR)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        Assert.assertNotNull(foundFour);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void updateTest() throws Exception {
+        File json = ResourceUtils.getFile(JSON_UPD);
+        SchemeInDto dto = objectMapper.readValue(json, SchemeInDto.class);
+        schemeService.update(1L, dto);
+        final Scheme foundScheme =
+                (Scheme) em.createQuery(FIND)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        Assert.assertNotNull(foundScheme);
+
+        final List<SchemeFourPoint> foundFour = (List<SchemeFourPoint>) em.createQuery(FIND_GRADING_FOUR)
+                .setParameter("schemeId", 1L)
+                .getResultList();
+        Assert.assertEquals(0, foundFour.size());
+
+        final SchemeTwoPoint foundTwo =
+                (SchemeTwoPoint) em.createQuery(FIND_GRADING_TWO)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        Assert.assertNotNull(foundTwo);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_two.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void updateSameTest() throws Exception {
+        File json = ResourceUtils.getFile(JSON_UPD_SAME);
+        SchemeInDto dto = objectMapper.readValue(json, SchemeInDto.class);
+        schemeService.update(1L, dto);
+        final Scheme foundScheme =
+                (Scheme) em.createQuery(FIND)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        Assert.assertNotNull(foundScheme);
+
+        final SchemeFourPoint foundFour =
+                (SchemeFourPoint) em.createQuery(FIND_GRADING_FOUR)
+                        .setParameter("schemeId", 1L)
+                        .getSingleResult();
+        final String newName = foundFour.getFourPointGrading().getName();
+        Assert.assertEquals("new grading", newName);
+    }
+
+
     @Test
     @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void reOrderTest() throws Exception {
         // 1. Given 8 themes associated with a scheme
-        // 2. Reorder elements by putting 2d index element to the top and 5th index element to the bottom
+        // 2. Reorder elements by putting 2d currentIndex element to the top and 5th currentIndex element to the bottom
         //    {1, 2, 3, 4, 5, 6, 7, 8} - > {3, 1, 2, 4, 5, 7, 8, 6}
         // 3. Make sure 8 of them are still present after manipulations and resulting lists are equal?
         // 4. Observe indexes re-built!

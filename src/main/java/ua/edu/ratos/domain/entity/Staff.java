@@ -18,7 +18,8 @@ public class Staff {
     @Column(name = "staff_id")
     private Long staffId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private User user;
 

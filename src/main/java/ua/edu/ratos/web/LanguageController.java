@@ -2,12 +2,9 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.domain.entity.Language;
 import ua.edu.ratos.domain.repository.LanguageRepository;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -24,4 +21,5 @@ public class LanguageController {
         log.debug("Principal :: {}", principal);
         return languageRepository.findAll();
     }
+
 }

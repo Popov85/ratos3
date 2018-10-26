@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface SettingsRepository extends JpaRepository<Settings, Long> {
 
-    @Query(value="select s from Settings s where s.defaultSettings = true order by s.name desc")
+    @Query(value="select s from Settings s where s.isDefault = true order by s.name desc")
     Set<Settings> findAllDefault();
 
     @Query(value="select s from Settings s join s.staff st where st.staffId = ?1 order by s.name desc")

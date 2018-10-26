@@ -13,7 +13,7 @@ import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.Scheme;
 import ua.edu.ratos.domain.entity.SchemeTheme;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.SchemeThemeService;
+import ua.edu.ratos.service.scheme.SchemeThemeService;
 import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import javax.persistence.EntityManager;
 import java.io.File;

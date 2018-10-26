@@ -4,12 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
+import org.modelmapper.ModelMapper;
 import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
 import ua.edu.ratos.service.dto.response.ResponseMatcher;
+import ua.edu.ratos.service.dto.session.QuestionMQOutDto;
+import ua.edu.ratos.service.dto.session.QuestionOutDto;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Match.
@@ -46,7 +52,7 @@ public class QuestionMatcher extends Question {
     }
 
     public int evaluate(ResponseMatcher response) {
-        final List<ResponseMatcher.Triple> responses = response.responses;
+        final Set<ResponseMatcher.Triple> responses = response.getMatchedPhrases();
         for (ResponseMatcher.Triple r : responses) {
             final long answerId = r.answerId;
             final String obtainedLeftPhrase = r.leftPhrase;
@@ -58,6 +64,21 @@ public class QuestionMatcher extends Question {
             if (!obtainedLeftPhrase.equals(correctLeftPhrase) || !obtainedRightPhrase.equals(correctRightPhrase)) return 0;
         }
         return 100;
+    }
+
+    @Override
+    public QuestionMQOutDto toDto(boolean mixable) {
+        ModelMapper modelMapper = new ModelMapper();
+        final QuestionOutDto questionOutDto = super.toDto(mixable);
+        QuestionMQOutDto dto = modelMapper
+                .map(questionOutDto, QuestionMQOutDto.class);
+        this.answers.forEach(a-> dto.addLeftPhrase(a.toDto()));
+        this.answers.forEach(a-> dto.addRightPhrase(a.getRightPhrase()));
+        if (mixable) {
+            dto.setLeftPhrases(collectionShuffler.shuffle(dto.getLeftPhrases()).stream().collect(Collectors.toSet()));
+            dto.setRightPhrases(collectionShuffler.shuffle(dto.getRightPhrases()).stream().collect(Collectors.toSet()));
+        }
+        return dto;
     }
 
     @Override

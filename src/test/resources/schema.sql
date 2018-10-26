@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS user (
   user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   surname VARCHAR(100) NOT NULL,
-  password VARCHAR(61) NOT NULL,
+  password VARCHAR(70) NOT NULL,
   email VARCHAR(200) NOT NULL,
   PRIMARY KEY (user_id),
   UNIQUE INDEX email_UNIQUE (email ASC));
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS user_role (
 -- -----------------------------------------------------
 -- Table   staff
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   staff  (
+CREATE TABLE IF NOT EXISTS  staff  (
   staff_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id  INT UNSIGNED NOT NULL,
   dep_id  INT UNSIGNED NOT NULL,
@@ -127,7 +127,6 @@ CREATE TABLE IF NOT EXISTS   staff  (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table   course
@@ -606,16 +605,15 @@ CREATE TABLE IF NOT EXISTS   settings  (
   set_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name  VARCHAR(100) NOT NULL,
   staff_id  INT UNSIGNED NOT NULL,
-  seconds_per_question  INT UNSIGNED NOT NULL DEFAULT 60,
+  seconds_per_question  INT UNSIGNED NOT NULL DEFAULT -1,
+  strict_seconds_per_question TINYINT(1) NOT NULL DEFAULT 0,
   questions_per_sheet  INT UNSIGNED NOT NULL DEFAULT 1,
   days_keep_result_details  INT UNSIGNED NOT NULL DEFAULT 1,
-  threshold_3  INT UNSIGNED NOT NULL DEFAULT 50,
-  threshold_4  INT UNSIGNED NOT NULL DEFAULT 75,
-  threshold_5  INT UNSIGNED NOT NULL DEFAULT 90,
   level_2_coefficient  FLOAT UNSIGNED NOT NULL DEFAULT 1,
   level_3_coefficient  FLOAT UNSIGNED NOT NULL DEFAULT 1,
   display_percent  TINYINT(1) NOT NULL DEFAULT 1,
   display_mark  TINYINT(1) NOT NULL DEFAULT 1,
+  display_theme_results  TINYINT(1) NOT NULL DEFAULT 0,
   is_default  TINYINT(1) NOT NULL DEFAULT 0,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( set_id ),
@@ -656,11 +654,20 @@ CREATE TABLE IF NOT EXISTS   mode  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table  ratos3 . grading
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS grading  (
+  grading_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(100) NOT NULL,
+  description  TEXT(500) NOT NULL,
+  PRIMARY KEY ( grading_id ))
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table   scheme
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   scheme  (
+CREATE TABLE IF NOT EXISTS  scheme  (
   scheme_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name  VARCHAR(400) NOT NULL,
   is_active  TINYINT(1) NOT NULL,
@@ -672,6 +679,7 @@ CREATE TABLE IF NOT EXISTS   scheme  (
   created_by  INT UNSIGNED NOT NULL,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   is_completed  TINYINT(1) NOT NULL DEFAULT 0,
+  grading_id  INT UNSIGNED NOT NULL,
   PRIMARY KEY ( scheme_id ),
   INDEX  fk_scheme_staff_created_by_idx  ( created_by  ASC),
   INDEX  fk_scheme_strategy_strategy_id_idx  ( strategy_id  ASC),
@@ -679,33 +687,184 @@ CREATE TABLE IF NOT EXISTS   scheme  (
   INDEX  fk_scheme_mode_mode_id_idx  ( mode_id  ASC),
   INDEX  fk_scheme_course_course_id_idx  ( course_id  ASC),
   UNIQUE INDEX  name_course_UNIQUE  ( name  ASC,  course_id  ASC),
+  INDEX  fk_scheme_grading_grading_id_idx  ( grading_id  ASC),
   CONSTRAINT  fk_scheme_staff_created_by
   FOREIGN KEY ( created_by )
-  REFERENCES   staff  ( staff_id )
+  REFERENCES  staff  ( staff_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_scheme_strategy_strategy_id
   FOREIGN KEY ( strategy_id )
-  REFERENCES   strategy  ( str_id )
+  REFERENCES  strategy  ( str_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_scheme_settings_settings_id
   FOREIGN KEY ( settings_id )
-  REFERENCES   settings  ( set_id )
+  REFERENCES  settings  ( set_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_scheme_mode_mode_id
   FOREIGN KEY ( mode_id )
-  REFERENCES   mode  ( mode_id )
+  REFERENCES  mode  ( mode_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_scheme_course_course_id
   FOREIGN KEY ( course_id )
-  REFERENCES   course  ( course_id )
+  REFERENCES  course  ( course_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_scheme_grading_grading_id
+  FOREIGN KEY ( grading_id )
+  REFERENCES  grading  ( grading_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table  ratos3 . four_point
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  four_point  (
+  four_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(100) NOT NULL,
+  threshold_3  INT NOT NULL,
+  threshold_4  INT NOT NULL,
+  threshold_5  INT NOT NULL,
+  staff_id  INT UNSIGNED NOT NULL,
+  is_default  TINYINT(1) NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL,
+  grading_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( four_id ),
+  INDEX  fk_four_point_staff_staff_id_idx  ( staff_id  ASC),
+  INDEX  fk_four_point_grading_grading_id_idx  ( grading_id  ASC),
+  CONSTRAINT  fk_four_point_staff_staff_id
+  FOREIGN KEY ( staff_id )
+  REFERENCES  staff  ( staff_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_four_point_grading_grading_id
+  FOREIGN KEY ( grading_id )
+  REFERENCES  grading  ( grading_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  ratos3 . scheme_four_point
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  scheme_four_point  (
+  scheme_id  INT UNSIGNED NOT NULL,
+  four_point_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( scheme_id ),
+  INDEX  fk_scheme_four_point_four_point_id_idx  ( four_point_id  ASC),
+  CONSTRAINT  fk_scheme_four_point_scheme_id
+  FOREIGN KEY ( scheme_id )
+  REFERENCES  scheme  ( scheme_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_scheme_four_point_four_point_id
+  FOREIGN KEY ( four_point_id )
+  REFERENCES  four_point  ( four_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  ratos3 . two_point
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS two_point  (
+  two_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(100) NOT NULL,
+  threshold  INT NOT NULL,
+  is_default  TINYINT(1) NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL,
+  grading_id  INT UNSIGNED NOT NULL,
+  staff_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( two_id ),
+  INDEX  fk_two_point_grading_grading_id_idx  ( grading_id  ASC),
+  INDEX  fk_two_point_staff_staff_id_idx  ( staff_id  ASC),
+  CONSTRAINT  fk_two_point_grading_grading_id
+  FOREIGN KEY ( grading_id )
+  REFERENCES  grading  ( grading_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_two_point_staff_staff_id
+  FOREIGN KEY ( staff_id )
+  REFERENCES  staff  ( staff_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  ratos3 . scheme_two_point
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS  scheme_two_point  (
+  scheme_id  INT UNSIGNED NOT NULL,
+  two_point_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( scheme_id ),
+  INDEX  fk_scheme_two_point_scheme_scheme_id_idx  ( scheme_id  ASC),
+  CONSTRAINT  fk_scheme_two_point_two_point_two_point_id
+  FOREIGN KEY ( two_point_id )
+  REFERENCES  two_point  ( two_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_scheme_two_point_scheme_scheme_id
+  FOREIGN KEY ( scheme_id )
+  REFERENCES  scheme  ( scheme_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  ratos3 . free_point
+-- ----------------------------------------------------
+CREATE TABLE IF NOT EXISTS free_point  (
+  free_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(100) NOT NULL,
+  min_value  INT NOT NULL,
+  pass_value  INT NOT NULL,
+  max_value  INT NOT NULL,
+  staff_id  INT UNSIGNED NOT NULL,
+  grading_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( free_id ),
+  INDEX  fk_free_point_staff_staff_id_idx  ( staff_id  ASC),
+  INDEX  fk_free_point_grading_grading_id_idx  ( grading_id  ASC),
+  CONSTRAINT  fk_free_point_staff_staff_id
+  FOREIGN KEY ( staff_id )
+  REFERENCES  staff  ( staff_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_free_point_grading_grading_id
+  FOREIGN KEY ( grading_id )
+  REFERENCES  grading  ( grading_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  ratos3 . scheme_free_point
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  scheme_free_point  (
+  scheme_id  INT UNSIGNED NOT NULL,
+  free_point_id  INT UNSIGNED NOT NULL,
+  PRIMARY KEY ( scheme_id ),
+  INDEX  fk_scheme_free_point_scheme_scheme_id_idx  ( scheme_id  ASC),
+  CONSTRAINT  fk_scheme_free_point_free_point_id
+  FOREIGN KEY ( free_point_id )
+  REFERENCES  free_point  ( free_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_scheme_free_point_scheme_id
+  FOREIGN KEY ( scheme_id )
+  REFERENCES  scheme  ( scheme_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table   scheme_theme
@@ -760,27 +919,27 @@ CREATE TABLE IF NOT EXISTS   type_level  (
 -- -----------------------------------------------------
 -- Table   result
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   result  (
+CREATE TABLE IF NOT EXISTS  result  (
   result_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
   scheme_id  INT UNSIGNED NOT NULL,
   user_id  INT UNSIGNED NOT NULL,
-  percent  FLOAT UNSIGNED NOT NULL,
-  mark  TINYINT(1) UNSIGNED NOT NULL,
-  ip_address  VARCHAR(15) NOT NULL,
-  session_begin  TIMESTAMP NULL,
-  session_end  TIMESTAMP NULL,
+  percent  DOUBLE UNSIGNED NOT NULL,
+  mark  DOUBLE UNSIGNED NOT NULL,
+  is_passed  TINYINT(1) NOT NULL DEFAULT 0,
+  session_ended  TIMESTAMP NOT NULL,
+  session_lasted  INT NOT NULL,
   is_timeouted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( result_id ),
   INDEX  fk_result_scheme_scheme_id_idx  ( scheme_id  ASC),
   INDEX  fk_result_user_user_id_idx  ( user_id  ASC),
   CONSTRAINT  fk_result_scheme_scheme_id
   FOREIGN KEY ( scheme_id )
-  REFERENCES   scheme  ( scheme_id )
+  REFERENCES  scheme  ( scheme_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_result_user_user_id
   FOREIGN KEY ( user_id )
-  REFERENCES   user  ( user_id )
+  REFERENCES  user  ( user_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

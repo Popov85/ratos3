@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.service.SchemeThemeService;
+import ua.edu.ratos.service.scheme.SchemeThemeService;
 import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import javax.validation.Valid;
 import java.net.URI;

@@ -3,7 +3,7 @@ package ua.edu.ratos.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.model.SessionData;
+import ua.edu.ratos.service.session.domain.SessionData;
 import ua.edu.ratos.domain.repository.SessionRepository;
 
 import java.util.ArrayList;

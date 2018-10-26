@@ -56,9 +56,9 @@ public abstract class AbstractQuestionsFileParser implements QuestionsFileParser
     }
 
     /**
-     * Gets index at which header ends and questions start (first line starting with '#')
+     * Gets currentIndex at which header ends and questions start (first line starting with '#')
      * @param lines list of lines of the source file
-     * @return index in the list from which file body starts
+     * @return currentIndex in the list from which file body starts
      */
     private int getSentinel(List<String> lines) {
         StringBuilder stringBuilder = new StringBuilder();

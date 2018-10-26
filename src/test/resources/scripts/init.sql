@@ -1,15 +1,15 @@
 insert into organisation (name) values('University');
 insert into faculty (name, org_id) values('Faculty', 1);
 insert into department (name, fac_id) values('Department', 1);
-insert into role (name) values('STUDENT');
-insert into role (name) values('INSTRUCTOR');
-insert into role (name) values('LAB-ASSISTANT');
-insert into role (name) values('DEP-ADMIN');
-insert into role (name) values('FAC-ADMIN');
-insert into role (name) values('ORG-ADMIN');
-insert into role (name) values('GLOBAL_ADMIN');
+insert into role (name) values('ROLE_STUDENT');
+insert into role (name) values('ROLE_INSTRUCTOR');
+insert into role (name) values('ROLE_LAB-ASSISTANT');
+insert into role (name) values('ROLE_DEP-ADMIN');
+insert into role (name) values('ROLE_FAC-ADMIN');
+insert into role (name) values('ROLE_ORG-ADMIN');
+insert into role (name) values('ROLE_GLOBAL-ADMIN');
 insert into position (name) values('System admin');
-insert into user (name, surname, password, email) values('Andrey','Popov','dT09Rx01','andrey.popov@gmail.com');
+insert into user (name, surname, password, email) values('Andrey','Popov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','andrey.popov@gmail.com');
 insert into user_role(user_id, role_id) VALUES (1, 7);
 
 insert into staff (user_id, dep_id, pos_id) values(1, 1, 1);
@@ -27,14 +27,26 @@ insert into question_type (type_id, eng_abbreviation, description) values (3, 'F
 insert into question_type (type_id, eng_abbreviation, description) values (4, 'MQ', 'Matcher question');
 insert into question_type (type_id, eng_abbreviation, description) values (5, 'SQ', 'Sequence question');
 
-insert into settings(name, staff_id, seconds_per_question, questions_per_sheet, days_keep_result_details, threshold_3, threshold_4, threshold_5, level_2_coefficient, level_3_coefficient, display_percent, display_mark, is_default)
-            values('default', 1, 60, 1, 1, 50, 70, 85, 1, 1, 1, 1, 1);
 insert into strategy(name, description)
             values('default','Default sequence sorting strategy');
 insert into strategy(name, description)
             values('random','Random sequence sorting strategy');
 insert into strategy(name, description)
             values('types&levels','TypesThenLevels sequence sorting strategy');
+
+insert into grading(name, description) values('four-point', 'classic 4 points grading system {2, 3, 4, 5}');
+insert into grading(name, description) values('two-point', 'classic 2 points grading system {0, 1} or {passed, not passed}');
+insert into grading(name, description) values('free-point', 'universal discrete grading system {min, ..., max}');
+insert into four_point(name, threshold_3, threshold_4, threshold_5, staff_id, is_default, is_deleted, grading_id)
+            values('default', 50, 70, 85, 1, 1, 0, 1);
+insert into two_point(name, threshold, staff_id, is_default, is_deleted, grading_id)
+            values('default', 50, 1, 1, 0, 2);
+insert into free_point(name, min_value, pass_value, max_value, staff_id, grading_id)
+            values('default', 0, 60, 200, 1, 3);
+
+insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, is_deleted, is_default)
+            values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 1);
+
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
             values('exam', 1, 0, 0, 0, 0, 0, 0, 0, 1);
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)

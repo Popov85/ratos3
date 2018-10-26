@@ -1,41 +1,54 @@
 package ua.edu.ratos.service;
 
-import org.springframework.cache.annotation.Cacheable;
-import ua.edu.ratos.config.TrackTime;
-import ua.edu.ratos.domain.model.ResultMock;
-import ua.edu.ratos.domain.repository.ResultDao;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.domain.entity.Result;
+import ua.edu.ratos.domain.entity.ResultTheme;
+import ua.edu.ratos.domain.entity.Theme;
+import ua.edu.ratos.domain.entity.User;
+import ua.edu.ratos.domain.repository.ResultRepository;
+import ua.edu.ratos.domain.repository.ThemeRepository;
+import ua.edu.ratos.domain.repository.UserRepository;
+import ua.edu.ratos.service.session.domain.ResultOut;
+import ua.edu.ratos.service.session.domain.SessionData;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ResultService {
 
     @Autowired
-    private ResultDao resultDAO;
+    private ResultRepository resultRepository;
 
-    @TrackTime
-    public List<ResultMock> findAll() {
-        return resultDAO.findAll();
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ThemeRepository themeRepository;
+
+    public Long save(@NonNull final SessionData sessionData, @NonNull final ResultOut result, boolean timeOuted) {
+        Result r = new Result();
+        r.setScheme(sessionData.getScheme());
+        r.setUser(userRepository.getOne(sessionData.getUserId()));
+        r.setPassed(result.isPassed());
+        r.setGrade(result.getGrade());
+        r.setPercent(result.getPercent());
+        r.setSessionLasted(sessionData.getProgressData().getTimeSpent());
+        r.setSessionEnded(LocalDateTime.now());
+        r.setTimeOuted(timeOuted);
+        List<ResultTheme> resultPerThemes = new ArrayList<>();
+        result.getThemeResults().forEach(res -> {
+            ResultTheme resultTheme = new ResultTheme();
+            resultTheme.setTheme(themeRepository.getOne(res.getThemeId()));
+            resultTheme.setResult(r);
+            resultTheme.setPercent(res.getPercent());
+            resultPerThemes.add(resultTheme);
+        });
+        r.setResultTheme(resultPerThemes);
+        resultRepository.save(r);
+        return r.getResId();
     }
-
-
-    @TrackTime
-    @Cacheable("result")
-    public ResultMock findOne(long id) {
-        simulateSlowService();
-        return resultDAO.findOne(id);
-    }
-
-    private void simulateSlowService() {
-        try {
-            long time = 3000L;
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-
 }

@@ -24,7 +24,7 @@ public class ResultDetails {
     private LocalDateTime whenRemove;
 
     @MapsId
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "result_id")
     private Result result;
 

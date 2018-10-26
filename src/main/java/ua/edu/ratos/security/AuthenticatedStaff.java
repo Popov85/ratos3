@@ -15,9 +15,8 @@ import java.util.Collection;
 @Setter
 @ToString(callSuper = true)
 @Accessors(chain = true)
-public class AuthenticatedStaff extends User {
+public class AuthenticatedStaff extends AuthenticatedUser {
 
-    private Long staffId;
     private Long depId;
     private Long facId;
     private Long orgId;

@@ -1,8 +1,6 @@
 package ua.edu.ratos.web.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +13,28 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Autowired
-    private MessageSource messageSource;
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse unknownException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
-                new ExceptionResponse(getLocalizedMessage("advice.exception", request.getLocale()), ex.getMessage());
-        log.error("Error has occurred :: {}", ex);
+                new ExceptionResponse(ex.getMessage(), request.toString());
+        log.error("Unknown error has occurred :: {}", ex.getMessage());
+        return exceptionResponse;
+    }
+
+    @ExceptionHandler(value = {RunOutOfTimeException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionResponse timeException(Exception ex, WebRequest request) {
+        final ExceptionResponse exceptionResponse =
+                new ExceptionResponse("RunOutOfTimeException", ex.getMessage());
+        log.error("Time limit is exceeded for user :: {}", request.getUserPrincipal().getName());
         return exceptionResponse;
     }
 
@@ -42,14 +46,8 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
             fieldValidationResponses
                     .add(new FieldValidationResponse(e.getField(), e.getRejectedValue(), e.getDefaultMessage())));
         final ValidationExceptionResponse exceptionResponse =
-                new ValidationExceptionResponse(getLocalizedMessage("advice.validation", request.getLocale()), fieldValidationResponses);
-        log.error("Error has occurred :: {}", ex);
+                new ValidationExceptionResponse("Validation error", fieldValidationResponses);
+        log.error("Validation error has occurred :: {}", fieldValidationResponses);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
-
-    private String getLocalizedMessage(String code, Locale locale) {
-        return messageSource.getMessage(code, null, locale);
-    }
-
-
 }

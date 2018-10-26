@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import ua.edu.ratos.domain.entity.question.QuestionType;
+
 import javax.persistence.*;
 
 @Setter

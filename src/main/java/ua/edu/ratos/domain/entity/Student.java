@@ -24,7 +24,8 @@ public class Student {
     @Column(name = "class")
     private String className;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private User user;
 

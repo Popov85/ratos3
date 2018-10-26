@@ -1,24 +1,50 @@
 package ua.edu.ratos.service.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
-import ua.edu.ratos.service.Evaluator;
-import ua.edu.ratos.service.Response;
+import ua.edu.ratos.service.session.Evaluator;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
+@Getter
 @ToString
+@AllArgsConstructor
 public class ResponseMatcher implements Response {
-    public long questionId;
-    public List<Triple> responses;
 
+    private final long questionId;
+    private final Set<Triple> matchedPhrases;
+
+    @Getter
+    @ToString
+    @AllArgsConstructor
     public static class Triple {
-        public long answerId;
-        public String leftPhrase;
-        public String rightPhrase;
+        public final long answerId;
+        public final String leftPhrase;
+        public final String rightPhrase;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return (matchedPhrases==null || matchedPhrases.isEmpty());
     }
 
     @Override
     public int evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResponseMatcher that = (ResponseMatcher) o;
+        return questionId == that.questionId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(questionId);
     }
 }

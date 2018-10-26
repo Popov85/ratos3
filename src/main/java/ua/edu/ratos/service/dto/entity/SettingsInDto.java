@@ -39,18 +39,6 @@ public class SettingsInDto {
     @Max(value = 365, groups = {New.class, Update.class}, message = "Invalid daysKeepResultDetails, max=365")
     private short daysKeepResultDetails;
 
-    @Positive(groups = {New.class, Update.class}, message = "Invalid threshold3, {dto.value.positive}")
-    @Max(value = 100, groups = {New.class, Update.class}, message = "Invalid threshold3, max=100")
-    private byte threshold3;
-
-    @Positive(groups = {New.class, Update.class}, message = "Invalid threshold4, {dto.value.positive}")
-    @Max(value = 100, groups = {New.class, Update.class}, message = "Invalid threshold4, max=100")
-    private byte threshold4;
-
-    @Positive(groups = {New.class, Update.class}, message = "Invalid threshold5, {dto.value.positive}")
-    @Max(value = 100, groups = {New.class, Update.class}, message = "Invalid threshold5, max=100")
-    private byte threshold5;
-
     @Positive(groups = {New.class, Update.class}, message = "Invalid level2Coefficient, {dto.value.positive}")
     @Min(value = 1, groups = {New.class, Update.class}, message = "Invalid level2Coefficient, max=1")
     @Max(value = 10, groups = {New.class, Update.class}, message = "Invalid level2Coefficient, max=10")
@@ -64,6 +52,8 @@ public class SettingsInDto {
     private boolean displayPercent;
 
     private boolean displayMark;
+
+    private boolean displayThemeResults;
 
     @Positive(groups = {New.class, Update.class}, message = "Invalid staffId, {dto.fk.required}")
     private long staffId;

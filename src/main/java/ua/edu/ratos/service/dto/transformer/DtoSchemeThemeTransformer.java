@@ -10,7 +10,7 @@ import ua.edu.ratos.domain.entity.Scheme;
 import ua.edu.ratos.domain.entity.SchemeTheme;
 import ua.edu.ratos.domain.entity.SchemeThemeSettings;
 import ua.edu.ratos.domain.entity.Theme;
-import ua.edu.ratos.domain.entity.question.QuestionType;
+import ua.edu.ratos.domain.entity.QuestionType;
 import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import javax.persistence.EntityManager;
 

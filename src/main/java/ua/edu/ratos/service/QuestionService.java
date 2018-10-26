@@ -88,7 +88,7 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public Set<Question> findAllByThemeId(@NonNull Long themeId) {
         Set<Question> questions = new HashSet<>();
-        // First, find all existing types (ids) in this theme
+        // First, find all existing types (answerIds) in this theme
         questionRepository.findTypes(themeId).forEach(typeId->questions.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
         return questions;
     }

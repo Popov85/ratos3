@@ -29,6 +29,20 @@ public class SchemeInDto {
     @Positive(message = "{dto.fk.required}")
     private long modeId;
 
+    /**
+     * Grading type {four-point, two-point, free-point}
+     */
+    @Positive(message = "{dto.fk.required}")
+    private long gradingId;
+
+    /**
+     * Details differ depending on what an instructor has selected in grading type above;
+     * It can be ID of either FourPointGrading or TwoPointGrading or FreePointGrading, etc.
+     * We manage it separately from the main Scheme object on condition
+     */
+    @Positive(message = "{dto.fk.required}")
+    private long gradingDetailsId;
+
     @Positive(message = "{dto.fk.required}")
     private long courseId;
 

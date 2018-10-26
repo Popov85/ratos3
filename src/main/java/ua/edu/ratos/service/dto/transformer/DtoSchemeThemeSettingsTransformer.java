@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.domain.entity.SchemeTheme;
 import ua.edu.ratos.domain.entity.SchemeThemeSettings;
-import ua.edu.ratos.domain.entity.question.QuestionType;
+import ua.edu.ratos.domain.entity.QuestionType;
 import ua.edu.ratos.service.dto.entity.SchemeThemeSettingsInDto;
 import javax.persistence.EntityManager;
 
