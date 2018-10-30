@@ -31,13 +31,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Set<QuestionFillBlankMultiple> findAllFBMQWithEverythingByThemeId(Long themeId);
 
     @Query(value = "SELECT DISTINCT q FROM QuestionMatcher q " +
-            "join fetch q.answers a left join fetch a.resources left join fetch q.help h left join fetch h.resources left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
+            "join fetch q.answers a join fetch a.leftPhrase join fetch a.rightPhrase left join fetch q.help h left join fetch h.resources left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     Set<QuestionMatcher> findAllMQWithEverythingByThemeId(Long themeId);
 
     @Query(value = "SELECT DISTINCT q FROM QuestionSequence q " +
-            "join fetch q.answers a left join fetch a.resources left join fetch q.help h left join fetch h.resources left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
+            "join fetch q.answers a join fetch a.phrase left join fetch q.help h left join fetch h.resources left join fetch q.resources join fetch q.theme join fetch q.type join fetch q.lang " +
             "where q.theme.themeId = ?1")
     @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     Set<QuestionSequence> findAllSQWithEverythingByThemeId(Long themeId);

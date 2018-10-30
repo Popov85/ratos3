@@ -36,6 +36,9 @@ public class Resource {
     @JoinColumn(name = "staff_id")
     protected Staff staff;
 
+    @Column(name="is_deleted")
+    private boolean deleted;
+
     public Resource(String link, String description) {
         this.link = link;
         this.description = description;

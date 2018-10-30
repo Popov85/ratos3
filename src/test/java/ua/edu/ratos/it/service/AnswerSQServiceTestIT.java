@@ -11,7 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.domain.entity.Resource;
-import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
 import ua.edu.ratos.domain.entity.answer.AnswerSequence;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerSQService;
@@ -28,15 +27,10 @@ public class AnswerSQServiceTestIT {
     public static final String JSON_NEW = "classpath:json/answer_sq_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/answer_sq_in_dto_upd.json";
 
-    public static final String FIND = "select a from AnswerSequence a left join fetch a.resources where a.answerId=:answerId";
+    public static final String FIND = "select a from AnswerSequence a where a.answerId=:answerId";
 
-    public static final String PHRASE = "Phrase";
-    public static final String PHRASE_UPD = "Updated phrase";
-    public static final String RESOURCE_DESCRIPTION_1 = "Schema#1";
-    public static final String RESOURCE_LINK_1 = "https://image.slidesharecdn.com/schema01.jpg";
-    public static final String RESOURCE_DESCRIPTION_2 = "Schema#2";
-    public static final String RESOURCE_LINK_2 = "https://image.slidesharecdn.com/schema02.jpg";
-
+    public static final String PHRASE = "phrase";
+    public static final String PHRASE_UPD = "updated phrase";
 
     @PersistenceContext
     private EntityManager em;
@@ -60,10 +54,8 @@ public class AnswerSQServiceTestIT {
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
-        Assert.assertEquals(PHRASE, foundAnswer.getPhrase());
+        Assert.assertEquals(PHRASE, foundAnswer.getPhrase().getPhrase());
         Assert.assertEquals(0, foundAnswer.getOrder());
-        Assert.assertEquals(1, foundAnswer.getResources().size());
-        Assert.assertTrue(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_1, RESOURCE_DESCRIPTION_1)));
     }
 
     @Test
@@ -79,10 +71,8 @@ public class AnswerSQServiceTestIT {
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
-        Assert.assertEquals(PHRASE_UPD, foundAnswer.getPhrase());
+        Assert.assertEquals(PHRASE_UPD, foundAnswer.getPhrase().getPhrase());
         Assert.assertEquals(1, foundAnswer.getOrder());
-        Assert.assertEquals(1, foundAnswer.getResources().size());
-        Assert.assertTrue(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_2, RESOURCE_DESCRIPTION_2)));
     }
 
     @Test

@@ -21,16 +21,11 @@ public class AnswerSQInDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long answerId;
 
-    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
-    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 100, message = "{dto.string.invalid}")
-    private String phrase;
+    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.required}")
+    private Long phraseId;
 
     @Range(groups = {NewAndUpdate.class, Include.class}, min = 0, max=20, message = "{dto.range.invalid}")
     private short order;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.optional}")
-    private long resourceId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Null(groups = Include.class, message = "{dto.fk.nullable}")
@@ -43,11 +38,11 @@ public class AnswerSQInDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnswerSQInDto that = (AnswerSQInDto) o;
-        return Objects.equals(phrase, that.phrase);
+        return Objects.equals(phraseId, that.phraseId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(phrase);
+        return Objects.hash(phraseId);
     }
 }

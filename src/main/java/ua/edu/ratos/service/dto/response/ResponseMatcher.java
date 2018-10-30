@@ -21,8 +21,8 @@ public class ResponseMatcher implements Response {
     @AllArgsConstructor
     public static class Triple {
         public final long answerId;
-        public final String leftPhrase;
-        public final String rightPhrase;
+        public final long leftPhraseId;
+        public final long rightPhraseId;
     }
 
     @Override

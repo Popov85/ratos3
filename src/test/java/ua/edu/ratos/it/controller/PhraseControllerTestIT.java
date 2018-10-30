@@ -1,6 +1,5 @@
 package ua.edu.ratos.it.controller;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.AcceptedPhraseService;
+import ua.edu.ratos.service.PhraseService;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AcceptedPhraseControllerTestIT {
+public class PhraseControllerTestIT {
 
     public static final String JSON_NEW = "{\"phrase\": \"phrase #1\", \"staffId\": 1}";
     public static final String JSON_UPD = "classpath:json/accepted_phrase_in_dto_upd.json";
@@ -33,21 +33,21 @@ public class AcceptedPhraseControllerTestIT {
     @Autowired
     private MockMvc mvc;
 
-    /*@MockBean
-    private AcceptedPhraseService acceptedPhraseService;*/
+    @MockBean
+    private PhraseService phraseService;
 
     @Test
     @WithMockUser(authorities = {"ROLE_INSTRUCTOR"})
     @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
-
-        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/accepted-phrases/").with(csrf())
+        when(phraseService.save(any())).thenReturn(1L);
+        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/phrases/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON_NEW)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "http://localhost/instructor/accepted-phrases/1"))
+                .andExpect(header().string("location", "http://localhost/instructor/phrases/1"))
                 .andExpect(content().string(""));
     }
 }

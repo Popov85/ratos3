@@ -2,6 +2,7 @@ package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,6 @@ import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
 import ua.edu.ratos.service.dto.response.ResponseMatcher;
 import ua.edu.ratos.service.dto.session.QuestionMQOutDto;
 import ua.edu.ratos.service.dto.session.QuestionOutDto;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
  * @author Andrey P.
  */
 
+@Slf4j
 @Setter
 @Getter
 @Entity
@@ -46,24 +47,33 @@ public class QuestionMatcher extends Question {
         answer.setQuestion(this);
     }
 
-    public void removeAnswer(AnswerMatcher answer) {
-        this.answers.remove(answer);
-        answer.setQuestion(null);
-    }
-
+    /**
+     * Not strict match, each match contributes to the resulting score!
+     * @param response
+     * @return
+     */
     public int evaluate(ResponseMatcher response) {
         final Set<ResponseMatcher.Triple> responses = response.getMatchedPhrases();
-        for (ResponseMatcher.Triple r : responses) {
-            final long answerId = r.answerId;
-            final String obtainedLeftPhrase = r.leftPhrase;
-            final String obtainedRightPhrase = r.rightPhrase;
-            final Optional<AnswerMatcher> answerMatcher =
-                    answers.stream().filter(a -> a.getAnswerId() == answerId).findFirst();
-            final String correctLeftPhrase = answerMatcher.get().getLeftPhrase();
-            final String correctRightPhrase = answerMatcher.get().getRightPhrase();
-            if (!obtainedLeftPhrase.equals(correctLeftPhrase) || !obtainedRightPhrase.equals(correctRightPhrase)) return 0;
+        // Traverse through all the answers of this question
+        int matchCounter = 0;
+        int totalMatches = answers.size();
+        for (AnswerMatcher answer : answers) {
+            final Long nextAnswerId = answer.getAnswerId();
+            final Optional<ResponseMatcher.Triple> responseMatcher = responses
+                    .stream()
+                    .filter(r -> r.getAnswerId() == nextAnswerId)
+                    .findFirst();
+            if (responseMatcher.isPresent()) {
+                final Long correctLeftPhraseId = answer.getLeftPhrase().getPhraseId();
+                final Long correctRightPhraseId = answer.getRightPhrase().getPhraseId();
+                final long responseLeftPhraseId = responseMatcher.get().getLeftPhraseId();
+                final long responseRightPhraseId = responseMatcher.get().getRightPhraseId();
+                if (correctLeftPhraseId == responseLeftPhraseId && correctRightPhraseId == responseRightPhraseId)
+                    matchCounter++;
+            }// else consider this matcher as incorrect, go to the next answer (matcher)
         }
-        return 100;
+        // calculate the final score based on totalMatcher value and matchCounter
+        return (int) (matchCounter*100d/totalMatches);
     }
 
     @Override

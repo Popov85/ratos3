@@ -10,19 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.answer.AnswerMatcher;
-import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
-import ua.edu.ratos.domain.entity.question.QuestionMatcher;
-import ua.edu.ratos.domain.repository.AnswerMQRepository;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerMQService;
-import ua.edu.ratos.service.dto.entity.AnswerMCQInDto;
 import ua.edu.ratos.service.dto.entity.AnswerMQInDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
-import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,15 +26,12 @@ public class AnswerMQServiceTestIT {
     public static final String JSON_NEW = "classpath:json/answer_mq_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/answer_mq_in_dto_upd.json";
 
-    public static final String FIND = "select a from AnswerMatcher a left join fetch a.resources where a.answerId=:answerId";
+    public static final String FIND = "select a from AnswerMatcher a where a.answerId=:answerId";
 
-    public static final String LEFT_PHRASE = "Left phrase";
-    public static final String LEFT_PHRASE_UPD = "Updated left phrase";
-    public static final String RIGHT_PHRASE = "Right phrase";
-    public static final String RESOURCE_LINK_1 = "https://image.slidesharecdn.com/schema01.jpg";
-    public static final String RESOURCE_DESCRIPTION_1 = "Schema#1";
-    public static final String RESOURCE_LINK_2 = "https://image.slidesharecdn.com/schema02.jpg";
-    public static final String RESOURCE_DESCRIPTION_2 = "Schema#2";
+    public static final String LEFT_PHRASE = "left phrase";
+    public static final String RIGHT_PHRASE = "right phrase";
+    public static final String RIGHT_PHRASE_UPDATE = "right phrase updated";
+
 
     @PersistenceContext
     private EntityManager em;
@@ -59,17 +50,14 @@ public class AnswerMQServiceTestIT {
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
-        System.out.println("DTO :: "+dto);
         answerService.save(dto);
         final AnswerMatcher foundAnswer =
             (AnswerMatcher) em.createQuery(FIND)
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
-        Assert.assertEquals(LEFT_PHRASE, foundAnswer.getLeftPhrase());
-        Assert.assertEquals(RIGHT_PHRASE, foundAnswer.getRightPhrase());
-        Assert.assertEquals(1, foundAnswer.getResources().size());
-        Assert.assertTrue(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_1, RESOURCE_DESCRIPTION_1)));
+        Assert.assertEquals(LEFT_PHRASE, foundAnswer.getLeftPhrase().getPhrase());
+        Assert.assertEquals(RIGHT_PHRASE, foundAnswer.getRightPhrase().getPhrase());
     }
 
     @Test
@@ -85,11 +73,9 @@ public class AnswerMQServiceTestIT {
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
-        Assert.assertEquals(LEFT_PHRASE_UPD, foundAnswer.getLeftPhrase());
-        Assert.assertEquals(RIGHT_PHRASE, foundAnswer.getRightPhrase());
-        Assert.assertEquals(1, foundAnswer.getResources().size());
-        Assert.assertFalse(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_1, RESOURCE_DESCRIPTION_1)));
-        Assert.assertTrue(foundAnswer.getResources().contains(new Resource(RESOURCE_LINK_2, RESOURCE_DESCRIPTION_2)));
+        Assert.assertEquals(LEFT_PHRASE, foundAnswer.getLeftPhrase().getPhrase());
+        Assert.assertEquals(RIGHT_PHRASE_UPDATE, foundAnswer.getRightPhrase().getPhrase());
+
     }
 
     @Test

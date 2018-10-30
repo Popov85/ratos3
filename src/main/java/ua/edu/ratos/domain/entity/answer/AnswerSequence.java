@@ -4,17 +4,14 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
-import ua.edu.ratos.domain.entity.Resource;
+import ua.edu.ratos.domain.entity.Phrase;
 import ua.edu.ratos.domain.entity.question.QuestionSequence;
 import ua.edu.ratos.service.dto.session.AnswerSQOutDto;
-
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"question", "resources"})
+@ToString(exclude = {"question"})
 @Entity
 @Table(name = "answer_sq")
 @Cacheable
@@ -27,10 +24,11 @@ public class AnswerSequence {
     @Column(name="answer_id")
     private Long answerId;
 
-    @Column(name="element")
-    private String phrase;
+    @ManyToOne
+    @JoinColumn(name = "phrase_id")
+    private Phrase phrase;
 
-    @Column(name="element_order")
+    @Column(name="phrase_order")
     private short order;
 
     @Column(name="is_deleted")
@@ -40,32 +38,9 @@ public class AnswerSequence {
     @JoinColumn(name = "question_id")
     private QuestionSequence question;
 
-    @Setter(AccessLevel.NONE)
-    @ManyToMany(cascade = {CascadeType.MERGE})
-    @JoinTable(name = "answer_sq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    private Set<Resource> resources = new HashSet<>(1);
-
-    public void addResource(@NonNull Resource resource) {
-        if (!this.resources.isEmpty()) throw
-                new IllegalStateException("Currently, only one resource associated with an answer is supported");
-        this.resources.add(resource);
-    }
-
-    public void removeResource(@NonNull Resource resource) {
-        this.resources.remove(resource);
-    }
-
-
     public AnswerSQOutDto toDto() {
         return new AnswerSQOutDto()
                 .setAnswerId(this.answerId)
-                .setPhrase(this.phrase)
-                .setResource(this.resources.isEmpty() ? null : this.resources.iterator().next());
-    }
-
-    public boolean isValid() {
-        if (this.phrase==null || this.phrase.isEmpty()) return false;
-        if (order<0 || order>100) return false;
-        return true;
+                .setPhrase(this.phrase);
     }
 }

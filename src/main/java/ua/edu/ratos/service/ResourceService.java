@@ -32,7 +32,7 @@ public class ResourceService {
     @Transactional
     public void update(@NonNull Long resId, @NonNull ResourceInDto dto) {
         if (!resourceRepository.existsById(resId))
-            throw new RuntimeException("Failed to update resource: ID does not exist");
+            throw new RuntimeException("Failed to update phraseResource: ID does not exist");
         resourceRepository.save(transformer.fromDto(resId, dto));
     }
 

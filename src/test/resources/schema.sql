@@ -297,21 +297,51 @@ CREATE TABLE IF NOT EXISTS   answer_fbsq  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table   phrase
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS   phrase  (
+  phrase_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  phrase  VARCHAR(100) NOT NULL,
+  staff_id  INT UNSIGNED NOT NULL,
+  last_used TIMESTAMP NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY ( phrase_id ),
+  UNIQUE INDEX  phrase_staff_UNIQUE  ( phrase  ASC,  staff_id  ASC),
+  INDEX  fk_accepted_phrase_staff_id_idx  ( staff_id  ASC),
+  CONSTRAINT  fk_accepted_phrase_staff_staff_id
+  FOREIGN KEY ( staff_id )
+  REFERENCES   staff  ( staff_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table   answer_mq
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   answer_mq  (
+CREATE TABLE IF NOT EXISTS  answer_mq  (
   answer_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  left_phrase  VARCHAR(200) NOT NULL,
-  right_phrase  VARCHAR(200) NOT NULL,
+  left_phrase_id  INT UNSIGNED NOT NULL,
+  right_phrase_id  INT UNSIGNED NOT NULL,
   question_id  INT UNSIGNED NOT NULL,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( answer_id ),
   INDEX  fk_answer_mq_question_question_id_idx  ( question_id  ASC),
+  INDEX  fk_answer_mq_phrase1_idx  ( left_phrase_id  ASC),
+  INDEX  fk_answer_mq_phrase2_idx  ( right_phrase_id  ASC),
   CONSTRAINT  fk_answer_mq_question_question_id
   FOREIGN KEY ( question_id )
-  REFERENCES   question  ( question_id )
+  REFERENCES  question  ( question_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_answer_mq_phrase_left_phrase_id
+  FOREIGN KEY ( left_phrase_id )
+  REFERENCES  phrase  ( phrase_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_answer_mq_phrase_right_phrase_id
+  FOREIGN KEY ( right_phrase_id )
+  REFERENCES  phrase  ( phrase_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -320,17 +350,23 @@ CREATE TABLE IF NOT EXISTS   answer_mq  (
 -- -----------------------------------------------------
 -- Table   answer_sq
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   answer_sq  (
+CREATE TABLE IF NOT EXISTS  answer_sq  (
   answer_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  element  VARCHAR(200) NOT NULL,
-  element_order  TINYINT(2) UNSIGNED NOT NULL,
+  phrase_id  INT UNSIGNED NOT NULL,
+  phrase_order  TINYINT(2) UNSIGNED NOT NULL,
   question_id  INT UNSIGNED NOT NULL,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( answer_id ),
   INDEX  fk_answer_sq_question_question_id_idx  ( question_id  ASC),
+  INDEX  fk_answer_sq_phrase_phrase_id_idx  ( phrase_id  ASC),
   CONSTRAINT  fk_answer_sq_question_question_id
   FOREIGN KEY ( question_id )
-  REFERENCES   question  ( question_id )
+  REFERENCES  question  ( question_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_answer_sq_phrase_phrase_id
+  FOREIGN KEY ( phrase_id )
+  REFERENCES  phrase  ( phrase_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -374,7 +410,7 @@ CREATE TABLE IF NOT EXISTS question_help (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table   resource
+-- Table   phraseResource
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   resource  (
   resource_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -382,6 +418,7 @@ CREATE TABLE IF NOT EXISTS   resource  (
   description  VARCHAR(200) NOT NULL,
   staff_id  INT UNSIGNED NOT NULL,
   last_used TIMESTAMP NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( resource_id ),
   UNIQUE INDEX  resource_link_UNIQUE  ( hyperlink  ASC),
   INDEX  fk_resource_staff_staff_id_idx  ( staff_id  ASC),
@@ -392,21 +429,22 @@ CREATE TABLE IF NOT EXISTS   resource  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
--- Table   accepted_phrase
+-- Table  ratos3 . phrase_resource
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   accepted_phrase  (
-  phrase_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  phrase  VARCHAR(100) NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  last_used TIMESTAMP NOT NULL,
+CREATE TABLE IF NOT EXISTS  phrase_resource  (
+  phrase_id  INT UNSIGNED NOT NULL,
+  resource_id  INT UNSIGNED NOT NULL,
   PRIMARY KEY ( phrase_id ),
-  UNIQUE INDEX  phrase_staff_UNIQUE  ( phrase  ASC,  staff_id  ASC),
-  INDEX  fk_accepted_phrase_staff_id_idx  ( staff_id  ASC),
-  CONSTRAINT  fk_accepted_phrase_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES   staff  ( staff_id )
+  INDEX  fk_phrase_resource_resource_resource_id_idx  ( resource_id  ASC),
+  CONSTRAINT  fk_phrase_resource_phrase_phrase_id
+  FOREIGN KEY ( phrase_id )
+  REFERENCES  phrase  ( phrase_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_phrase_resource_resource_resource_id
+  FOREIGN KEY ( resource_id )
+  REFERENCES  resource  ( resource_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -423,7 +461,7 @@ CREATE TABLE IF NOT EXISTS   fbsq_phrase  (
   PRIMARY KEY ( answer_id ,  phrase_id ),
   CONSTRAINT  fk_bfsq_phrase_accepted_phrase_phrase_id
   FOREIGN KEY ( phrase_id )
-  REFERENCES   accepted_phrase  ( phrase_id )
+  REFERENCES   phrase  ( phrase_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_fbsq_phrase_answer_fbsq_answer_id
@@ -476,7 +514,7 @@ CREATE TABLE IF NOT EXISTS   fbmq_phrase  (
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_fbmq_phrase_accepted_phrase_phrase_id
   FOREIGN KEY ( phrase_id )
-  REFERENCES   accepted_phrase  ( phrase_id )
+  REFERENCES   phrase  ( phrase_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -502,49 +540,6 @@ CREATE TABLE IF NOT EXISTS   help_resource  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table   answer_mq_resource
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   answer_mq_resource  (
-  answer_id  INT UNSIGNED NOT NULL,
-  resource_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( answer_id ,  resource_id ),
-  INDEX  fk_answer_mq_resource_resource_resource_id_idx  ( resource_id  ASC),
-  CONSTRAINT  fk_answer_mq_resource_answer_mq_answer_id
-  FOREIGN KEY ( answer_id )
-  REFERENCES   answer_mq  ( answer_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT  fk_answer_mq_resource_resource_resource_id
-  FOREIGN KEY ( resource_id )
-  REFERENCES   resource  ( resource_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-  ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table   answer_sq_resource
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   answer_sq_resource  (
-  answer_id  INT UNSIGNED NOT NULL,
-  resource_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( answer_id ,  resource_id ),
-  INDEX  fk_answer_sq_resource_resource_resource_id_idx  ( resource_id  ASC),
-  CONSTRAINT  fk_answer_sq_resource_answer_sq_answer_id
-  FOREIGN KEY ( answer_id )
-  REFERENCES   answer_sq  ( answer_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT  fk_answer_sq_resource_resource_resource_id
-  FOREIGN KEY ( resource_id )
-  REFERENCES   resource  ( resource_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-  ENGINE = InnoDB;
-
-
 -- -----------------------------------------------------
 -- Table   question_resource
 -- -----------------------------------------------------
@@ -569,19 +564,19 @@ CREATE TABLE IF NOT EXISTS   question_resource  (
 -- -----------------------------------------------------
 -- Table   answer_mcq_resource
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   answer_mcq_resource  (
+CREATE TABLE IF NOT EXISTS  answer_mcq_resource  (
   answer_id  INT UNSIGNED NOT NULL,
   resource_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( answer_id ,  resource_id ),
+  PRIMARY KEY ( answer_id ),
   INDEX  fk_answer_mcq_resource_resource_resource_id_idx  ( resource_id  ASC),
   CONSTRAINT  fk_answer_mcq_resource_answer_mcq_answer_id
   FOREIGN KEY ( answer_id )
-  REFERENCES   answer_mcq  ( answer_id )
+  REFERENCES  answer_mcq  ( answer_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_answer_mcq_resource_resource_resource_id
   FOREIGN KEY ( resource_id )
-  REFERENCES   resource  ( resource_id )
+  REFERENCES  resource  ( resource_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

@@ -7,9 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.domain.entity.AcceptedPhrase;
-import ua.edu.ratos.service.AcceptedPhraseService;
-import ua.edu.ratos.service.dto.entity.AcceptedPhraseInDto;
+import ua.edu.ratos.domain.entity.Phrase;
+import ua.edu.ratos.service.PhraseService;
+import ua.edu.ratos.service.dto.entity.PhraseInDto;
 import javax.validation.Valid;
 import java.net.URI;
 import java.security.Principal;
@@ -17,16 +17,16 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor/accepted-phrases")
-public class AcceptedPhraseController {
+@RequestMapping("/instructor/phrases")
+public class PhraseController {
 
     @Autowired
-    private AcceptedPhraseService acceptedPhraseService;
+    private PhraseService phraseService;
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody AcceptedPhraseInDto dto) {
-        final Long phraseId = acceptedPhraseService.save(dto);
-        log.debug("Saved AcceptedPhrase :: {} ", phraseId);
+    public ResponseEntity<?> save(@Valid @RequestBody PhraseInDto dto) {
+        final Long phraseId = phraseService.save(dto);
+        log.debug("Saved Phrase :: {} ", phraseId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(phraseId).toUri();
@@ -35,28 +35,28 @@ public class AcceptedPhraseController {
 
     @PutMapping(value = "/{phraseId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long phraseId, @Valid @RequestBody AcceptedPhraseInDto dto) {
-        acceptedPhraseService.update(phraseId, dto);
-        log.debug("Updated AcceptedPhrase ID :: {} ", phraseId);
+    public void update(@PathVariable Long phraseId, @Valid @RequestBody PhraseInDto dto) {
+        phraseService.update(phraseId, dto);
+        log.debug("Updated Phrase ID :: {} ", phraseId);
     }
 
     @DeleteMapping("/{phraseId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long phraseId) {
-        acceptedPhraseService.deleteById(phraseId);
-        log.debug("Deleted AcceptedPhrase ID :: {}", phraseId);
+        phraseService.deleteById(phraseId);
+        log.debug("Deleted Phrase ID :: {}", phraseId);
     }
 
     /*-------------------GET-----------------*/
 
     @GetMapping(value = "/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AcceptedPhrase> findAllByStaffId(Principal principal) {
-        return acceptedPhraseService.findAllLastUsedByStaffId(1L);
+    public List<Phrase> findAllByStaffId(Principal principal) {
+        return phraseService.findAllLastUsedByStaffId(1L);
     }
 
     @GetMapping(value = "/by-staff", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AcceptedPhrase> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Principal principal) {
-        return acceptedPhraseService.findAllLastUsedByStaffIdAndFirstLetters(1L, starts);
+    public List<Phrase> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Principal principal) {
+        return phraseService.findAllLastUsedByStaffIdAndFirstLetters(1L, starts);
     }
 
 }

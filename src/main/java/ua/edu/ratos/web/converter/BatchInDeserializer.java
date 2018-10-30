@@ -98,8 +98,8 @@ public class BatchInDeserializer extends JsonDeserializer<BatchIn> {
         n.path("matchedPhrases").forEach(pair -> {
             final long answerId = pair.path("answerId").asLong();
             if (answerId <= 0) throw new RuntimeException(PARSING_ERROR);
-            final String leftPhrase = pair.path("leftPhrase").asText();
-            final String rightPhrase = pair.path("rightPhrase").asText();
+            final long leftPhrase = pair.path("leftPhraseId").asLong();
+            final long rightPhrase = pair.path("rightPhraseId").asLong();
             matchedPhrases.add(new ResponseMatcher.Triple(answerId, leftPhrase, rightPhrase));
         });
         return new ResponseMatcher(questionId, matchedPhrases);

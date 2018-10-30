@@ -76,7 +76,7 @@
       <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.AcceptedPhrase">
+  <cache alias="ua.edu.ratos.domain.entity.Phrase">
       <heap>4000</heap>
   </cache>
 

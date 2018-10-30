@@ -9,19 +9,16 @@
   "resourcesIds":null,
   "answers":[
     {
-      "leftPhrase":"Left phrase #1",
-      "rightPhrase":"Right phrase #1",
-      "rightPhraseResourceId":1
+      "leftPhraseId":1,
+      "rightPhraseId":2
     },
     {
-      "leftPhrase":"Left phrase #2",
-      "rightPhrase":"Left phrase #2",
-      "rightPhraseResourceId":2
+      "leftPhraseId":3,
+      "rightPhraseId":4
     },
     {
-      "leftPhrase":"Left phrase #3",
-      "rightPhrase":"Left phrase #3",
-      "rightPhraseResourceId":3
+      "leftPhraseId":5,
+      "rightPhraseId":6
     }
   ]
 }

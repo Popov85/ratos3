@@ -1,6 +1,5 @@
 {
-  "leftPhrase":"Left phrase",
-  "rightPhrase":"Right phrase",
-  "rightPhraseResourceId":1,
+  "leftPhraseId":1,
+  "rightPhraseId":2,
   "questionId":1
 }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import ua.edu.ratos.domain.entity.Phrase;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,20 +16,20 @@ import java.util.Set;
 public class QuestionMQOutDto extends QuestionOutDto {
 
     /**
-     * Set of leftPhrases with possible resources
+     * Randomized set of AnswerMQOutDto: {answerId; leftPhraseId}
      */
     private Set<AnswerMQOutDto> leftPhrases = new HashSet<>();
 
     /**
      * Randomized set of rightPhrases
      */
-    private Set<String> rightPhrases = new HashSet<>();
+    private Set<Phrase> rightPhrases = new HashSet<>();
 
     public void addLeftPhrase(AnswerMQOutDto leftPhrase) {
         this.leftPhrases.add(leftPhrase);
     }
 
-    public void addRightPhrase(String rightPhrase) {
+    public void addRightPhrase(Phrase rightPhrase) {
         this.rightPhrases.add(rightPhrase);
     }
 

@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.Phrase;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBMQService;
@@ -63,9 +63,9 @@ public class AnswerFBMQServiceTestIT {
         Assert.assertEquals(PHRASE, foundAnswer.getPhrase());
         Assert.assertEquals(1, foundAnswer.getOccurrence());
         Assert.assertEquals(1, foundAnswer.getSettings().getSettingsId().longValue());
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE1)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE2)));
-        Assert.assertFalse(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE1)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE2)));
+        Assert.assertFalse(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE3)));
     }
 
     @Test
@@ -84,9 +84,9 @@ public class AnswerFBMQServiceTestIT {
         Assert.assertEquals(PHRASE_UPD, foundAnswer.getPhrase());
         Assert.assertEquals(2, foundAnswer.getOccurrence());
         Assert.assertEquals(2, foundAnswer.getSettings().getSettingsId().longValue());
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE1)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE2)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(ACCEPTED_PHRASE3)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE1)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE2)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(ACCEPTED_PHRASE3)));
     }
 
     @Test

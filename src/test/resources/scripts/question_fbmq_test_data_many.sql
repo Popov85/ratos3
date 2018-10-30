@@ -48,75 +48,75 @@ insert into question_help(question_id, help_id) values(5,5);
 
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #11 (Q1)', 1, 1, 1);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q1)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q1)',1, '2018-07-18 10:32:19.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q1)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q1)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q1)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q1)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(1, 1);
 insert into fbmq_phrase(answer_id, phrase_id) values(1, 2);
 insert into fbmq_phrase(answer_id, phrase_id) values(1, 3);
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #21 (Q1)', 1, 1, 1);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q1)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q1)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q1)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q1)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(2, 4);
 insert into fbmq_phrase(answer_id, phrase_id) values(2, 5);
 
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #11 (Q2)', 1, 1, 2);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q2)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q2)',1, '2018-07-18 10:32:19.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q2)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q2)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q2)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q2)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(3, 6);
 insert into fbmq_phrase(answer_id, phrase_id) values(3, 7);
 insert into fbmq_phrase(answer_id, phrase_id) values(3, 8);
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #21 (Q2)', 1, 1, 2);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q2)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q2)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q2)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q2)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(4, 9);
 insert into fbmq_phrase(answer_id, phrase_id) values(4, 10);
 
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #11 (Q3)', 1, 1, 3);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q3)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q3)',1, '2018-07-18 10:32:19.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q3)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q3)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q3)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q3)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(5, 11);
 insert into fbmq_phrase(answer_id, phrase_id) values(5, 12);
 insert into fbmq_phrase(answer_id, phrase_id) values(5, 13);
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #21 (Q3)', 1, 1, 3);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q3)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q3)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q3)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q3)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(6, 14);
 insert into fbmq_phrase(answer_id, phrase_id) values(6, 15);
 
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #11 (Q4)', 1, 1, 4);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q4)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q4)',1, '2018-07-18 10:32:19.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q4)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q4)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q4)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q4)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(7, 16);
 insert into fbmq_phrase(answer_id, phrase_id) values(7, 17);
 insert into fbmq_phrase(answer_id, phrase_id) values(7, 18);
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #21 (Q4)', 1, 1, 4);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q4)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q4)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q4)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q4)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(8, 19);
 insert into fbmq_phrase(answer_id, phrase_id) values(8, 20);
 
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #11 (Q5)', 1, 1, 5);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q5)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q5)',1, '2018-07-18 10:32:19.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q5)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #11 (Q5)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #12 (Q5)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #13 (Q5)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(9, 21);
 insert into fbmq_phrase(answer_id, phrase_id) values(9, 22);
 insert into fbmq_phrase(answer_id, phrase_id) values(9, 23);
 
 insert into answer_fbmq(phrase, occurrence, set_id, question_id) values('phrase #21 (Q5)', 1, 1, 5);
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q5)',1, '2018-07-18 10:30:15.999999999');
-insert into accepted_phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q5)',1, '2018-07-18 10:32:19.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #21 (Q5)',1, '2018-07-18 10:30:15.999999999');
+insert into phrase(phrase, staff_id, last_used) values('accepted phrase #22 (Q5)',1, '2018-07-18 10:32:19.999999999');
 insert into fbmq_phrase(answer_id, phrase_id) values(10, 24);
 insert into fbmq_phrase(answer_id, phrase_id) values(10, 25);

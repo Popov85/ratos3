@@ -1,4 +1,4 @@
-insert into answer_sq(element, element_order, question_id, is_deleted) values('Element #1', 0, 1, 0);
-insert into answer_sq_resource(answer_id, resource_id) values(1, 1);
+insert into phrase(phrase, staff_id) values('updated phrase', 1);
+insert into answer_sq(phrase_id, phrase_order, question_id) values(1, 0, 1);
 
 

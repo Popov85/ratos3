@@ -7,20 +7,20 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Setter
 @Getter
 @ToString(exclude = "staff")
 @NoArgsConstructor
 @Entity
-@Table(name = "accepted_phrase")
+@Table(name = "phrase")
 @Cacheable
 @DynamicUpdate
-public class AcceptedPhrase {
+public class Phrase {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -39,7 +39,20 @@ public class AcceptedPhrase {
     @Column(name="last_used", nullable = false)
     private LocalDateTime lastUsed = LocalDateTime.now();
 
-    public AcceptedPhrase(String phrase) {
+    @Column(name="is_deleted")
+    private boolean deleted;
+
+    /**
+     * Applicable only to Matcher and Sequence types
+     */
+    @OneToOne(mappedBy = "phrase", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private PhraseResource phraseResource;
+
+    public Optional<PhraseResource> getPhraseResource() {
+        return Optional.of(phraseResource);
+    }
+
+    public Phrase(String phrase) {
         this.phrase = phrase;
     }
 
@@ -47,7 +60,7 @@ public class AcceptedPhrase {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AcceptedPhrase that = (AcceptedPhrase) o;
+        Phrase that = (Phrase) o;
         return Objects.equals(phrase, that.phrase);
     }
 

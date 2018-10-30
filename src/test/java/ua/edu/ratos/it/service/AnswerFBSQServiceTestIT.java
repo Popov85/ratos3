@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.Phrase;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankSingle;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBSQService;
@@ -58,8 +58,8 @@ public class AnswerFBSQServiceTestIT {
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(SETTINGS_ID_UPD, foundAnswer.getSettings().getSettingsId().longValue());
         Assert.assertEquals(3, foundAnswer.getAcceptedPhrases().size());
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(PHRASE1)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(PHRASE2)));
-        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new AcceptedPhrase(PHRASE3_UPD)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(PHRASE1)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(PHRASE2)));
+        Assert.assertTrue(foundAnswer.getAcceptedPhrases().contains(new Phrase(PHRASE3_UPD)));
     }
 }

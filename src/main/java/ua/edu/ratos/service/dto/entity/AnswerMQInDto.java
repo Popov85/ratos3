@@ -19,17 +19,11 @@ public class AnswerMQInDto {
 
     private Long answerId;
 
-    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
-    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 100, message = "{dto.string.invalid}")
-    private String leftPhrase;
+    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.invalid}")
+    private Long leftPhraseId;
 
-    @NotBlank(groups = {NewAndUpdate.class, Include.class}, message = "{dto.string.required}")
-    @Size(groups = {NewAndUpdate.class, Include.class}, min = 1, max = 500, message = "{dto.string.invalid}")
-    private String rightPhrase;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.optional}")
-    private long rightPhraseResourceId;
+    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.invalid}")
+    private Long rightPhraseId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Null(groups = {Include.class}, message = "{dto.fk.nullable}")
@@ -41,12 +35,12 @@ public class AnswerMQInDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnswerMQInDto that = (AnswerMQInDto) o;
-        return Objects.equals(leftPhrase, that.leftPhrase) &&
-                Objects.equals(rightPhrase, that.rightPhrase);
+        return Objects.equals(leftPhraseId, that.leftPhraseId) &&
+                Objects.equals(rightPhraseId, that.rightPhraseId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftPhrase, rightPhrase);
+        return Objects.hash(leftPhraseId, rightPhraseId);
     }
 }

@@ -125,8 +125,9 @@ public class QuestionRepositoryTestIT {
             Assert.assertTrue(question.getQuestion().startsWith("Matcher question"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswers()));
             question.getAnswers().forEach(a->{
-                Assert.assertTrue(Hibernate.isInitialized(a.getResources()));
-                Assert.assertEquals(1, a.getResources().size());
+                Assert.assertTrue(Hibernate.isInitialized(a.getLeftPhrase()));
+                Assert.assertTrue(Hibernate.isInitialized(a.getRightPhrase()));
+                Assert.assertTrue(Hibernate.isInitialized(a.getRightPhrase().getPhraseResource().get().getResource()));
             });
             Assert.assertTrue(Hibernate.isInitialized(question.getLang()));
             Assert.assertTrue(Hibernate.isInitialized(question.getType()));
@@ -152,8 +153,8 @@ public class QuestionRepositoryTestIT {
             Assert.assertTrue(question.getQuestion().startsWith("Sequence question"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswers()));
             question.getAnswers().forEach(a->{
-                Assert.assertTrue(Hibernate.isInitialized(a.getResources()));
-                Assert.assertEquals(1, a.getResources().size());
+                Assert.assertTrue(Hibernate.isInitialized(a.getPhrase()));
+                Assert.assertTrue(Hibernate.isInitialized(a.getPhrase().getPhraseResource().get().getResource()));
             });
             Assert.assertTrue(Hibernate.isInitialized(question.getLang()));
             Assert.assertTrue(Hibernate.isInitialized(question.getType()));

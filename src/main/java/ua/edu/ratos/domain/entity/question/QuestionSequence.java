@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 /**
  * Process.
- * This type of question matches the right sequence/steps/phases/stages of a control.
- * Objective is to currentRow the provided steps in the right sequence.
- * Wrong sequence of e leads to wrong answerIds.
+ * This type of question matches the right sequence/steps/phases/stages to a control.
+ * Objective is to check the provided response in the right sequence.
+ * Wrong sequence of elements leads to the negative evaluation outcome.
  * @author Andrey P.
  */
 
@@ -41,11 +41,12 @@ public class QuestionSequence extends Question {
         answer.setQuestion(this);
     }
 
-    public void removeAnswer(AnswerSequence answer) {
-        this.answers.remove(answer);
-        answer.setQuestion(null);
-    }
-
+    /**
+     * Strict match of sequences: correct and obtained sequence must be identical, {146, 222, 281, 300, 312} = {146, 222, 281, 300, 312}
+     * If at least one mis-order or mis-match - result is fully incorrect  response (0)
+     * @param response
+     * @return
+     */
     public int evaluate(ResponseSequence response) {
         final Set<Long> responseSequence = response.getAnswerIds();
         if (responseSequence.equals(findAll())) return 100;

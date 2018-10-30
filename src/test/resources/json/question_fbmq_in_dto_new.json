@@ -10,21 +10,21 @@
   "answers":[
     {
       "answerId":null,
-      "phrase":"phrase #1",
+      "phrase":"phrase to hide #1",
       "occurrence":2,
       "setId":1,
       "phrasesIds":[1]
     },
     {
       "answerId":null,
-      "phrase":"phrase #2",
+      "phrase":"phrase to hide #2",
       "occurrence":1,
       "setId":1,
       "phrasesIds":[2,3]
     },
     {
       "answerId":null,
-      "phrase":"phrase #3",
+      "phrase":"phrase to hide #3",
       "occurrence":1,
       "setId":1,
       "phrasesIds":[4,5,6]

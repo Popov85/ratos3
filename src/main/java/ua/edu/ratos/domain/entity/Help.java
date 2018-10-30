@@ -40,7 +40,7 @@ public class Help {
 
     public void addResource(Resource resource) {
         if (!this.resources.isEmpty()) throw
-            new IllegalStateException("Currently, only one resource can be associated with a help object");
+            new IllegalStateException("Currently, only one phraseResource can be associated with a help object");
         this.resources.add(resource);
     }
 

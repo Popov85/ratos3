@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.Phrase;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.answer.*;
@@ -42,18 +42,18 @@ public class DtoAnswerTransformer {
             answer.getResources().clear();
         }
         answer.setAnswerId(answerId);
-        answer.setQuestion(em.getReference(QuestionMultipleChoice.class, dto.getQuestionId()));
+        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionMultipleChoice.class, dto.getQuestionId()));
         return answer;
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerFillBlankSingle fromDto(@NonNull Long answerId, @NonNull AnswerFBSQInDto dto) {
+    public AnswerFillBlankSingle fromDto(Long answerId, @NonNull AnswerFBSQInDto dto) {
         if ( dto.getPhrasesIds().isEmpty() || dto.getPhrasesIds().size()<1)
             throw new RuntimeException("Answer fbsq does not make sense without any accepted phrases!");
         AnswerFillBlankSingle answer = modelMapper.map(dto, AnswerFillBlankSingle.class);
         answer.setAnswerId(answerId);
         answer.setSettings(em.getReference(SettingsAnswerFillBlank.class, dto.getSetId()));
-        dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(AcceptedPhrase.class, id)));
+        dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(Phrase.class, id)));
         return answer;
     }
 
@@ -68,9 +68,9 @@ public class DtoAnswerTransformer {
             throw new RuntimeException("Answer fbmq does not make sense without any accepted phrases!");
         AnswerFillBlankMultiple answer = modelMapper.map(dto, AnswerFillBlankMultiple.class);
         answer.setAnswerId(answerId);
-        answer.setQuestion(em.getReference(QuestionFillBlankMultiple.class, dto.getQuestionId()));
+        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionFillBlankMultiple.class, dto.getQuestionId()));
         answer.setSettings(em.getReference(SettingsAnswerFillBlank.class, dto.getSetId()));
-        dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(AcceptedPhrase.class, id)));
+        dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(Phrase.class, id)));
         return answer;
     }
 
@@ -83,14 +83,10 @@ public class DtoAnswerTransformer {
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMatcher fromDto(Long answerId, @NonNull AnswerMQInDto dto) {
         AnswerMatcher answer = modelMapper.map(dto, AnswerMatcher.class);
-        if (dto.getRightPhraseResourceId()!=0) {
-            // No need to clear() first
-            answer.addResource(em.find(Resource.class, dto.getRightPhraseResourceId()));
-        } else {
-            answer.getResources().clear();
-        }
         answer.setAnswerId(answerId);
-        answer.setQuestion(em.getReference(QuestionMatcher.class, dto.getQuestionId()));
+        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionMatcher.class, dto.getQuestionId()));
+        answer.setLeftPhrase(em.getReference(Phrase.class, dto.getLeftPhraseId()));
+        answer.setRightPhrase(em.getReference(Phrase.class, dto.getRightPhraseId()));
         return answer;
     }
 
@@ -102,13 +98,9 @@ public class DtoAnswerTransformer {
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerSequence fromDto(Long answerId, @NonNull AnswerSQInDto dto) {
         AnswerSequence answer = modelMapper.map(dto, AnswerSequence.class);
-        if (dto.getResourceId()!=0) {
-            // No need to clear() first
-            answer.addResource(em.find(Resource.class, dto.getResourceId()));
-        } else {
-            answer.getResources().clear();
-        }answer.setAnswerId(answerId);
-        answer.setQuestion(em.getReference(QuestionSequence.class, dto.getQuestionId()));
+        answer.setAnswerId(answerId);
+        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionSequence.class, dto.getQuestionId()));
+        answer.setPhrase(em.getReference(Phrase.class, dto.getPhraseId()));
         return answer;
     }
 

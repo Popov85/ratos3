@@ -1,7 +1,7 @@
 package ua.edu.ratos.domain.entity.answer;
 
 import lombok.*;
-import ua.edu.ratos.domain.entity.AcceptedPhrase;
+import ua.edu.ratos.domain.entity.Phrase;
 import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.question.QuestionFillBlankSingle;
 import ua.edu.ratos.service.dto.session.AnswerFBSQOutDto;
@@ -38,13 +38,13 @@ public class AnswerFillBlankSingle {
 
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "fbsq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
-    private Set<AcceptedPhrase> acceptedPhrases = new HashSet<>();
+    private Set<Phrase> acceptedPhrases = new HashSet<>();
 
-    public void addPhrase(@NonNull AcceptedPhrase phrase) {
+    public void addPhrase(@NonNull Phrase phrase) {
         this.acceptedPhrases.add(phrase);
     }
 
-    public void removePhrase(@NonNull AcceptedPhrase phrase) {
+    public void removePhrase(@NonNull Phrase phrase) {
         this.acceptedPhrases.remove(phrase);
     }
 
