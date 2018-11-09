@@ -42,13 +42,14 @@ public class QuestionSequence extends Question {
     }
 
     /**
+     * We only compare list of answers (to contain all the elements and to be in the right order of elements)
      * Strict match of sequences: correct and obtained sequence must be identical, {146, 222, 281, 300, 312} = {146, 222, 281, 300, 312}
      * If at least one mis-order or mis-match - result is fully incorrect  response (0)
      * @param response
      * @return
      */
     public int evaluate(ResponseSequence response) {
-        final Set<Long> responseSequence = response.getAnswerIds();
+        final List<Long> responseSequence = response.getAnswerIds();
         if (responseSequence.equals(findAll())) return 100;
         return 0;
     }

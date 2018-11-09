@@ -4,19 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import ua.edu.ratos.service.session.Evaluator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @ToString
 @AllArgsConstructor
 public class ResponseSequence implements Response {
 
-    private final long questionId;
-    private final Set<Long> answerIds;
+    private final Long questionId;
+    private final List<Long> answerIds;
 
     @Override
-    public int evaluateWith(Evaluator evaluator) {
+    public Double evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
     }
 

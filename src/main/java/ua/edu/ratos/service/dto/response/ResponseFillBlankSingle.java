@@ -12,7 +12,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ResponseFillBlankSingle implements Response {
 
-    private final long questionId;
+    private final Long questionId;
     private final String enteredPhrase;
 
     @Override
@@ -21,7 +21,7 @@ public class ResponseFillBlankSingle implements Response {
     }
 
     @Override
-    public int evaluateWith(Evaluator evaluator) {
+    public Double evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
     }
 

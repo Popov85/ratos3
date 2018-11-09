@@ -7,7 +7,7 @@ import ua.edu.ratos.service.dto.response.Response;
 @Service
 public class ResponseEvaluatorService {
 
-    public int evaluate(Response r, Question q) {
+    public double evaluate(Response r, Question q) {
         return r.evaluateWith(new EvaluatorImpl(q));
     }
 }

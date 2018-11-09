@@ -39,7 +39,7 @@ public class BatchEvaluatorService {
             final Response response = batchIn.getResponses().get(questionId);
             final Question question = questionsMap.get(questionId);
             if (response != null) {// if found, evaluate
-                final int score = (response.isNullable() ? 0 : evaluator.evaluate(response, question));
+                final double score = (response.isNullable() ? 0 : evaluator.evaluate(response, question));
                 responsesEvaluated.put(questionId, new ResponseEvaluated(question, response, score));
                 log.debug("Evaluated response, ID :: {}, score :: {}", questionId, score);
             } else {// if not found, consider incorrect

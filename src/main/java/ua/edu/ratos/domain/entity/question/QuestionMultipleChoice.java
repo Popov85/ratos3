@@ -91,21 +91,28 @@ public class QuestionMultipleChoice extends Question {
         return true;
     }
 
+    /**
+     * 3-step algorithm:
+     * 1. Check if response contains any WRONG answers, if so - the whole response count as incorrect;
+     * 2. Check if response contains all REQUIRED answers, if not all - the whole response count as incorrect;
+     * 3. Calculate the total score
+     * @param response
+     * @return result of evaluation: a number [0-100]
+     */
     public int evaluate(ResponseMultipleChoice response) {
         List<Long> zeroAnswers = getZeroAnswers();
-        Set<Long> ids = response.getAnswerIds();
-        for (Long id: ids) {
-            if (zeroAnswers.contains(id)) return 0;
+        Set<Long> responseIds = response.getAnswerIds();
+        for (Long responseId: responseIds) {
+            if (zeroAnswers.contains(responseId)) return 0;
         }
         List<Long> requiredAnswers = getRequiredAnswers();
         for (Long requiredAnswer : requiredAnswers) {
-            if(!this.answers.contains(requiredAnswer)) return 0;
+            if(!responseIds.contains(requiredAnswer)) return 0;
         }
         int result = 0;
-        for (Long id: ids) {
+        for (Long responseId: responseIds) {
             for (AnswerMultipleChoice answer : this.answers) {
-                if (id==(answer.getAnswerId()))
-                    result+=answer.getPercent();
+                if (responseId.equals(answer.getAnswerId())) result+=answer.getPercent();
             }
         }
         return result;

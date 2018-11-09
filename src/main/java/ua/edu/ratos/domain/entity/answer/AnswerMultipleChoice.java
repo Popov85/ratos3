@@ -7,7 +7,6 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.domain.entity.Resource;
 import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
 import ua.edu.ratos.service.dto.session.AnswerMCQOutDto;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +43,10 @@ public class AnswerMultipleChoice {
     @JoinColumn(name = "question_id")
     private QuestionMultipleChoice question;
 
+    /**
+     * One-to-one actually, but for the sake of simplicity (so that not to create a separate class like PhraseResource),
+     * we use Many-to-many
+     */
     @Setter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))

@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS   question  (
   theme_id  INT UNSIGNED NOT NULL,
   lang_id  INT UNSIGNED NOT NULL,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
+  is_partial  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( question_id ),
   INDEX  fk_question_theme_theme_id_idx  ( theme_id  ASC),
   INDEX  fk_question_question_type_type_id_idx  ( type_id  ASC),

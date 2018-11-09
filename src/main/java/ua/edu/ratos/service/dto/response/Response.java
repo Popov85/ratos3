@@ -3,7 +3,7 @@ package ua.edu.ratos.service.dto.response;
 import ua.edu.ratos.service.session.Evaluator;
 
 public interface Response{
-    long getQuestionId();
+    Long getQuestionId();
     boolean isNullable();
-    int evaluateWith(Evaluator evaluator);
+    Double evaluateWith(Evaluator evaluator);
 }

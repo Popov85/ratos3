@@ -13,16 +13,16 @@ import java.util.Set;
 @AllArgsConstructor
 public class ResponseMatcher implements Response {
 
-    private final long questionId;
+    private final Long questionId;
     private final Set<Triple> matchedPhrases;
 
     @Getter
     @ToString
     @AllArgsConstructor
     public static class Triple {
-        public final long answerId;
-        public final long leftPhraseId;
-        public final long rightPhraseId;
+        public final Long answerId;
+        public final Long leftPhraseId;
+        public final Long rightPhraseId;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ResponseMatcher implements Response {
     }
 
     @Override
-    public int evaluateWith(Evaluator evaluator) {
+    public Double evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
     }
 

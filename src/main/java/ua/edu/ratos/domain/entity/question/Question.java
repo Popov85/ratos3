@@ -60,6 +60,15 @@ public abstract class Question {
     @JoinTable(name = "question_resource", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     protected Set<Resource> resources = new HashSet<>();
 
+    /**
+     * Only applicable to FBMQ & MQ (in MCQ's partiality is managed by isRequired flag);
+     * Specifies whether partial correct response is allowed or not;
+     * For example, you matched correctly 3 out of 5 phrases in MQ, then you would get 0 if false, or 3/5 if true;
+     * For example, you entered correctly 1 out of 3 phrases in FBMQ, then you would get 0 if false, or 1/3 if true;
+     */
+    @Column(name = "is_partial")
+    protected boolean partialResponseAllowed;
+
     protected transient CollectionShuffler collectionShuffler = new CollectionShuffler();
 
     public Question(String question, byte level) {

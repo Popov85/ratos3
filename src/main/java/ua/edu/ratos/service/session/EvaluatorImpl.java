@@ -14,7 +14,7 @@ public class EvaluatorImpl implements Evaluator {
     private final Question question;
 
     @Override
-    public int evaluate(@NonNull final ResponseMultipleChoice response) {
+    public double evaluate(@NonNull final ResponseMultipleChoice response) {
         if (!(question instanceof QuestionMultipleChoice))
             throw new IllegalStateException("Type mismatch: expected :: QuestionMultipleChoice.class"+
                     " actual :: "+question.getClass());
@@ -22,7 +22,7 @@ public class EvaluatorImpl implements Evaluator {
     }
 
     @Override
-    public int evaluate(@NonNull final ResponseFillBlankSingle response) {
+    public double evaluate(@NonNull final ResponseFillBlankSingle response) {
         if (!(question instanceof QuestionFillBlankSingle))
             throw new IllegalStateException("Type mismatch: expected :: QuestionFillBlankSingle.class"+
                     " actual :: "+question.getClass());
@@ -30,7 +30,7 @@ public class EvaluatorImpl implements Evaluator {
     }
 
     @Override
-    public int evaluate(@NonNull final ResponseFillBlankMultiple response) {
+    public double evaluate(@NonNull final ResponseFillBlankMultiple response) {
         if (!(question instanceof QuestionFillBlankMultiple))
             throw new IllegalStateException("Type mismatch: expected :: QuestionFillBlankMultiple.class"+
                     " actual :: "+question.getClass());
@@ -39,7 +39,7 @@ public class EvaluatorImpl implements Evaluator {
     }
 
     @Override
-    public int evaluate(@NonNull final ResponseMatcher response) {
+    public double evaluate(@NonNull final ResponseMatcher response) {
         if (!(question instanceof QuestionMatcher))
             throw new IllegalStateException("Type mismatch: expected :: QuestionMatcher.class"+
                     " actual :: "+question.getClass());
@@ -47,7 +47,7 @@ public class EvaluatorImpl implements Evaluator {
     }
 
     @Override
-    public int evaluate(@NonNull final ResponseSequence response) {
+    public double evaluate(@NonNull final ResponseSequence response) {
         if (!(question instanceof QuestionSequence))
             throw new IllegalStateException("Type mismatch: expected :: QuestionSequence.class"+
                     " actual :: "+question.getClass());

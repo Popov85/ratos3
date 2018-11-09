@@ -1,14 +1,15 @@
 package ua.edu.ratos.domain.entity.question;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import org.modelmapper.ModelMapper;
+import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankSingle;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankSingle;
 import ua.edu.ratos.service.dto.session.QuestionFBSQOutDto;
 import ua.edu.ratos.service.dto.session.QuestionOutDto;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,16 +48,32 @@ public class QuestionFillBlankSingle extends Question {
         return true;
     }
 
-    public int evaluate(ResponseFillBlankSingle response) {
-        final String enteredPhrase = response.getEnteredPhrase();
+    /**
+     * Strict comparison: if entered phrase is equal to any of the accepted phrases, then correct 100%
+     * otherwise - not correct 0%
+     * @param response
+     * @return result of evaluation 0 or 100
+     */
+    public int evaluate(@NonNull final ResponseFillBlankSingle response) {
+        final String enteredPhrase = response.getEnteredPhrase().trim();
         List<String> acceptedPhrases = answer.getAcceptedPhrases()
                 .stream()
-                .map(p->p.getPhrase())
+                .map(p -> p.getPhrase())
                 .collect(Collectors.toList());
-        // TODO check for isTypoAllowed and isCaseSensitive
+        // Normal process
         if (acceptedPhrases.contains(enteredPhrase)) return 100;
+        // Process case sensitivity
+        SettingsAnswerFillBlank settings = answer.getSettings();
+        if (!settings.isCaseSensitive()) {
+            if (settings.checkCaseInsensitiveMatch(enteredPhrase, acceptedPhrases)) return 100;
+        }
+        // Process typos
+        if (settings.isTypoAllowed()) {
+            if (settings.checkSingleTypoMatch(enteredPhrase, acceptedPhrases)) return 100;
+        }
         return 0;
     }
+
 
     @Override
     public QuestionFBSQOutDto toDto(boolean mixable) {

@@ -12,10 +12,7 @@ import ua.edu.ratos.service.dto.session.BatchIn;
 import ua.edu.ratos.service.dto.session.OptionsDto;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 @Slf4j
@@ -106,7 +103,7 @@ public class BatchInDeserializer extends JsonDeserializer<BatchIn> {
     }
 
     private ResponseSequence sq(JsonNode n, Long questionId) {
-        Set<Long> answersIds = new HashSet<>();
+        List<Long> answersIds = new ArrayList<>();
         n.path("orderedPhrases").forEach(id -> answersIds.add(id.asLong()));
         return new ResponseSequence(questionId, answersIds);
     }

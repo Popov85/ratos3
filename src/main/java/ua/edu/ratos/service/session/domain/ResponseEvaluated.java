@@ -18,7 +18,7 @@ public class ResponseEvaluated {
      *  Raw score, calculated by a corresponding question evaluator
      *  0 <= score <= 100
      */
-    private final int score;
+    private final double score;
 
     /**
      * Used in case when a user did not manage to provide any answer to this question

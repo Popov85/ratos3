@@ -13,11 +13,11 @@ import java.util.Set;
 @AllArgsConstructor
 public class ResponseMultipleChoice implements Response {
 
-    private final long questionId;
+    private final Long questionId;
     private final Set<Long> answerIds;
 
     @Override
-    public int evaluateWith(Evaluator evaluator) {
+    public Double evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
     }
 

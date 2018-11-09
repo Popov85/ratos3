@@ -5,11 +5,11 @@ import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import org.modelmapper.ModelMapper;
+import ua.edu.ratos.domain.entity.SettingsAnswerFillBlank;
 import ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple;
 import ua.edu.ratos.service.dto.response.ResponseFillBlankMultiple;
 import ua.edu.ratos.service.dto.session.QuestionFBMQOutDto;
 import ua.edu.ratos.service.dto.session.QuestionOutDto;
-
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,22 +36,51 @@ public class QuestionFillBlankMultiple extends Question{
         answer.setQuestion(null);
     }
 
-    public int evaluate(ResponseFillBlankMultiple response) {
+    public double evaluate(ResponseFillBlankMultiple response) {
+        int matchCounter = 0;
         final Set<ResponseFillBlankMultiple.Pair> pairs = response.getEnteredPhrases();
-        for (ResponseFillBlankMultiple.Pair pair : pairs) {
-            final Long phraseId = pair.answerId;
-            final String enteredPhrase = pair.enteredPhrase;
-            Optional<AnswerFillBlankMultiple> answerFillBlankMultiple =
-                    answers.stream().filter(a -> a.getAnswerId() == phraseId).findFirst();
-            if (!answerFillBlankMultiple.isPresent()) throw new RuntimeException("Corrupt answerId");
-            List<String> acceptedPhrases = answerFillBlankMultiple.get().getAcceptedPhrases()
+        for (AnswerFillBlankMultiple answer : answers) {
+            Long answerId = answer.getAnswerId();
+            // find this answerId in pairs, if not found - consider incorrect
+            Optional<ResponseFillBlankMultiple.Pair> responseOnAnswerId = pairs
                     .stream()
-                    .map(p->p.getPhrase())
-                    .collect(Collectors.toList());
-            if (!acceptedPhrases.contains(enteredPhrase)) return 0;
+                    .filter(p -> answerId.equals(p.getAnswerId()))
+                    .findFirst();
+            if (responseOnAnswerId.isPresent()) {
+                String enteredPhrase = responseOnAnswerId.get().getEnteredPhrase();
+                List<String> acceptedPhrases = answer.getAcceptedPhrases()
+                        .stream()
+                        .map(p -> p.getPhrase())
+                        .collect(Collectors.toList());
+                acceptedPhrases.add(answer.getPhrase());
+
+                // Normal process
+                if (acceptedPhrases.contains(enteredPhrase)) {
+                    matchCounter++;
+                    continue;
+                }
+                // Process case sensitivity
+                SettingsAnswerFillBlank settings = answer.getSettings();
+                if (!settings.isCaseSensitive()) {
+                    if (settings.checkCaseInsensitiveMatch(enteredPhrase, acceptedPhrases)) {
+                        matchCounter++;
+                        continue;
+                    }
+                }
+                // Process typos
+                if (settings.isTypoAllowed()) {
+                    if (settings.checkSingleTypoMatch(enteredPhrase, acceptedPhrases)) matchCounter++;
+                }
+            }
         }
-        return 100;
+        // calculate correctCounter and all answers
+        int totalAnswers = answers.size();
+        // Check for partial response possibility
+        if (!this.partialResponseAllowed && matchCounter<totalAnswers) return 0;
+
+        return matchCounter*100d/totalAnswers;
     }
+
 
     @Override
     public QuestionFBMQOutDto toDto(boolean mixable) {

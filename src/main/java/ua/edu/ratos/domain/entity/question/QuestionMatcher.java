@@ -48,32 +48,33 @@ public class QuestionMatcher extends Question {
     }
 
     /**
-     * Not strict match, each match contributes to the resulting score!
+     * If allowed, not strict match, each match contributes to the resulting score!
      * @param response
-     * @return
+     * @return result of evaluation
      */
-    public int evaluate(ResponseMatcher response) {
+    public double evaluate(ResponseMatcher response) {
         final Set<ResponseMatcher.Triple> responses = response.getMatchedPhrases();
         // Traverse through all the answers of this question
         int matchCounter = 0;
         int totalMatches = answers.size();
         for (AnswerMatcher answer : answers) {
-            final Long nextAnswerId = answer.getAnswerId();
+            final Long answerId = answer.getAnswerId();
             final Optional<ResponseMatcher.Triple> responseMatcher = responses
                     .stream()
-                    .filter(r -> r.getAnswerId() == nextAnswerId)
+                    .filter(r -> answerId.equals(r.getAnswerId()))
                     .findFirst();
             if (responseMatcher.isPresent()) {
                 final Long correctLeftPhraseId = answer.getLeftPhrase().getPhraseId();
                 final Long correctRightPhraseId = answer.getRightPhrase().getPhraseId();
-                final long responseLeftPhraseId = responseMatcher.get().getLeftPhraseId();
-                final long responseRightPhraseId = responseMatcher.get().getRightPhraseId();
-                if (correctLeftPhraseId == responseLeftPhraseId && correctRightPhraseId == responseRightPhraseId)
+                final Long responseLeftPhraseId = responseMatcher.get().getLeftPhraseId();
+                final Long responseRightPhraseId = responseMatcher.get().getRightPhraseId();
+                if (correctLeftPhraseId.equals(responseLeftPhraseId) && correctRightPhraseId.equals(responseRightPhraseId))
                     matchCounter++;
             }// else consider this matcher as incorrect, go to the next answer (matcher)
         }
-        // calculate the final score based on totalMatcher value and matchCounter
-        return (int) (matchCounter*100d/totalMatches);
+        // Get evaluating settings
+        if (!this.partialResponseAllowed && matchCounter<totalMatches) return 0;
+        return matchCounter*100d/totalMatches;
     }
 
     @Override

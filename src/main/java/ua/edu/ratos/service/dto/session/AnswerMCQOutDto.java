@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.domain.entity.Resource;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter

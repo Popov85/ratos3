@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import ua.edu.ratos.service.session.Evaluator;
-
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,15 +13,15 @@ import java.util.Set;
 @AllArgsConstructor
 public class ResponseFillBlankMultiple implements Response {
 
-    private final long questionId;
+    private final Long questionId;
     private final Set<Pair> enteredPhrases;
 
     @Getter
     @ToString
     @AllArgsConstructor
     public static class Pair {
-        public final Long answerId;
-        public final String enteredPhrase;
+        private final Long answerId;
+        private final String enteredPhrase;
     }
 
     @Override
@@ -31,7 +30,7 @@ public class ResponseFillBlankMultiple implements Response {
     }
 
     @Override
-    public int evaluateWith(Evaluator evaluator) {
+    public Double evaluateWith(Evaluator evaluator) {
         return evaluator.evaluate(this);
     }
 
