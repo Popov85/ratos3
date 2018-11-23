@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.session.sequence;
 
-import ua.edu.ratos.domain.entity.SchemeTheme;
-import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.entity.question.Question;
 import java.util.List;
 
 /**

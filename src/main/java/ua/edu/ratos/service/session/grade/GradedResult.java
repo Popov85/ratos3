@@ -9,5 +9,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class GradedResult {
     private final boolean passed;
-    private final Number grade;
+    private final double grade;
 }

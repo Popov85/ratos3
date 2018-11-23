@@ -6,12 +6,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.edu.ratos.domain.entity.Language;
-import ua.edu.ratos.domain.entity.Staff;
-import ua.edu.ratos.domain.entity.Theme;
-import ua.edu.ratos.domain.entity.question.Question;
-import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.entity.QuestionType;
+import ua.edu.ratos.dao.entity.Language;
+import ua.edu.ratos.dao.entity.Staff;
+import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.service.dto.entity.FileInDto;
 import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer;
 import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
@@ -70,7 +70,7 @@ public class QuestionsFileParserService {
     }
 
     private void save(@NonNull List<QuestionMultipleChoice> parsedQuestions, @NonNull FileInDto dto) {
-        // First, Enrich questions with Theme, Language and Type, second for each non-null help, enrich it with Staff
+        // First, Enrich questions with Theme, Language and Type, second for each non-null helpAvailable, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Language language = em.getReference(Language.class, dto.getLangId());

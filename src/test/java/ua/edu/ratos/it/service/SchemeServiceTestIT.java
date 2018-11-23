@@ -11,10 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.*;
-import ua.edu.ratos.domain.entity.grade.SchemeFourPoint;
-import ua.edu.ratos.domain.entity.grade.SchemeTwoPoint;
-import ua.edu.ratos.domain.repository.SchemeRepository;
+import ua.edu.ratos.dao.entity.*;
+import ua.edu.ratos.dao.entity.grade.SchemeFourPoint;
+import ua.edu.ratos.dao.entity.grade.SchemeTwoPoint;
+import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import ua.edu.ratos.service.scheme.SchemeService;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class SchemeServiceTestIT {
 
-    public static final String JSON_NEW = "classpath:json/scheme_in_dto_new_1.json";
-    public static final String JSON_UPD = "classpath:json/scheme_in_dto_upd.json";
-    public static final String JSON_UPD_SAME = "classpath:json/scheme_in_dto_upd_same.json";
+    private static final String JSON_NEW = "classpath:json/scheme_in_dto_new_1.json";
+    private static final String JSON_UPD = "classpath:json/scheme_in_dto_upd.json";
+    private static final String JSON_UPD_SAME = "classpath:json/scheme_in_dto_upd_same.json";
 
-    public static final String FIND = "select s from Scheme s where s.schemeId=:schemeId";
-    public static final String FIND_GRADING_FOUR = "select s from SchemeFourPoint s join fetch s.fourPointGrading where s.schemeId=:schemeId";
-    public static final String FIND_GRADING_TWO = "select s from SchemeTwoPoint s where s.schemeId=:schemeId";
+    private static final String FIND = "select s from Scheme s where s.schemeId=:schemeId";
+    private static final String FIND_GRADING_FOUR = "select s from SchemeFourPoint s join fetch s.fourPointGrading where s.schemeId=:schemeId";
+    private static final String FIND_GRADING_TWO = "select s from SchemeTwoPoint s where s.schemeId=:schemeId";
 
     @Autowired
     private SchemeService schemeService;

@@ -14,11 +14,11 @@ insert into resource (hyperlink, description, staff_id) values('https://image.sl
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema09.jpg', 'HelpSchema#4', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema10.jpg', 'HelpSchema#5', 1);
 
-insert into help(name, text, staff_id) values('help name #1', 'Please, refer to schema #1', 1);
-insert into help(name, text, staff_id) values('help name #2', 'Please, refer to schema #2', 1);
-insert into help(name, text, staff_id) values('help name #3', 'Please, refer to schema #3', 1);
-insert into help(name, text, staff_id) values('help name #4', 'Please, refer to schema #4', 1);
-insert into help(name, text, staff_id) values('help name #5', 'Please, refer to schema #5', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #1', 'Please, refer to schema #1', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #2', 'Please, refer to schema #2', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #3', 'Please, refer to schema #3', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #4', 'Please, refer to schema #4', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #5', 'Please, refer to schema #5', 1);
 
 insert into help_resource(help_id, resource_id) values(1, 6);
 insert into help_resource(help_id, resource_id) values(2, 7);

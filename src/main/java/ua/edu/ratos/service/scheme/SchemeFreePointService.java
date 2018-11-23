@@ -2,9 +2,9 @@ package ua.edu.ratos.service.scheme;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.grade.FreePointGrading;
-import ua.edu.ratos.domain.entity.grade.SchemeFreePoint;
-import ua.edu.ratos.domain.repository.SchemeFreePointRepository;
+import ua.edu.ratos.dao.entity.grade.FreePointGrading;
+import ua.edu.ratos.dao.entity.grade.SchemeFreePoint;
+import ua.edu.ratos.dao.repository.SchemeFreePointRepository;
 
 import javax.persistence.EntityManager;
 

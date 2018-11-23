@@ -1,13 +1,14 @@
 package ua.edu.ratos.service.session.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import ua.edu.ratos.domain.entity.Scheme;
-import ua.edu.ratos.domain.entity.question.Question;
-import ua.edu.ratos.service.dto.session.BatchOut;
+import ua.edu.ratos.service.session.domain.question.Question;
+import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.serializer.SessionDataDeserializer;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,72 +16,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 /**
  * Scenario 0: Normal finish
- * 1) ResultMock is stored in database
+ * 1) Result is stored in database
  * 2) User gets result
- * 3) Key is removed from memory programmatically
+ * 3) Key is removed from memory (auth. session) programmatically
  *
- * Scenario 1: User is inactive for longer than is set by session settings
+ * Scenario 1: User is inactive for longer than is set by session settings (business time limit)
  * 1) Data still alive in memory for 12 hours.
- * 2) Next time users requests to continue within TTL time (12 hours), the result is returned.
- * 3) SessionData result is stored in database, with flag expired
- * 4) Key is removed from memory programmatically
+ * 2) Next time user requests to continue within TTL time (12 hours), the result is returned.
+ * 3) Result is stored in database, with flag expired
+ * 4) Key is removed from memory (auth) programmatically
  *
  * Scenario 2: User is inactive for more than 12 hours.
  * 1) SessionData data for this key is forever lost in memory due to timeout.
  * 2) User gets his current result if present in incoming BatchOut object.
- * 3) ResultMock is not stored in database.
+ * 3) Result is not stored in database.
  */
 @Getter
 @Setter
 @ToString
-@RedisHash(value = "session")
+@RedisHash(value = "sessionData")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(using = SessionDataDeserializer.class)
 public class SessionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String BUILD_ERROR = "Wrong object state";
+    private static final String BUILD_ERROR = "Failed to build SessionData: wrong object state";
 
     @Id
     private final String key;
+
     private final Long userId;
+
     private final Scheme scheme;
-    /**
-     * Individual list of questions
-     */
+
     private final List<Question> questions;
-
-    /**
-     * Exceptionally for look-up by questionId purpose
-     */
     @JsonIgnore
-    private final Map<Long, Question> questionsMap;
+    private final Map<Long, Question> questionsMap;//Exceptionally for look-up by questionId purpose
 
-    /**
-     * Business time limitation for the whole session, when we consider the session to get timed-out due to business restrictions
-     * if LocalDateTime.MAX - not limited in time
-     */
     private final LocalDateTime sessionTimeout;
 
-    /**
-     * Business time limitation per single question;
-     * if <=0, not limited in time
-     */
     private final long perQuestionTimeLimit;
 
-    /**
-     * In normal case, it is equal to the questionsPerSheet;
-     * In fallback cases, it is equal to the size of array
-     */
     private final int questionsPerBatch;
-
 
     private SessionData(String key,
                 Long userId,
                 Scheme scheme,
                 List<Question> questions,
+                Map<Long, Question> questionsMap,
                 int questionsPerBatch,
                 LocalDateTime sessionTimeout,
                 long perQuestionTimeLimit) {
@@ -88,10 +74,10 @@ public class SessionData implements Serializable {
         this.userId = userId;
         this.scheme = scheme;
         this.questions = questions;
+        this.questionsMap = questionsMap;
         this.questionsPerBatch = questionsPerBatch;
         this.sessionTimeout = sessionTimeout;
         this.perQuestionTimeLimit = perQuestionTimeLimit;
-        this.questionsMap = this.questions.stream().collect(Collectors.toMap(q -> q.getQuestionId(), q -> q));
     }
 
     public static class Builder {
@@ -99,6 +85,7 @@ public class SessionData implements Serializable {
         private Long userId;
         private Scheme scheme;
         private List<Question> questions;
+        private Map<Long, Question> questionsMap;
         private int questionsPerBatch;
         private LocalDateTime sessionTimeout;
         private long perQuestionTimeLimit;
@@ -118,24 +105,39 @@ public class SessionData implements Serializable {
             return this;
         }
 
+        /**
+         * Individual list of questions(previously selected based on a corresponding SequenceProducer)
+         */
         public Builder withIndividualSequence(List<Question> sequence) {
             this.questions = sequence;
+            this.questionsMap = this.questions.stream().collect(Collectors.toMap(q -> q.getQuestionId(), q -> q));
             return this;
         }
 
-
-        public Builder withQuestionsPerBatch(int questionsPerBatch) {
-            this.questionsPerBatch = questionsPerBatch;
-            return this;
-        }
-
+        /**
+         * Business time limitation for the whole session, when we consider the session to get timed-out due to business restrictions
+         * if LocalDateTime.MAX - not limited in time
+         */
         public Builder withSessionTimeout(LocalDateTime sessionTimeout) {
             this.sessionTimeout = sessionTimeout;
             return this;
         }
 
+        /**
+         * Business time limitation per single question;
+         * if <=0, not limited in time
+         */
         public Builder withPerQuestionTimeLimit(long perQuestionTimeLimit) {
             this.perQuestionTimeLimit = perQuestionTimeLimit;
+            return this;
+        }
+
+        /**
+         * In normal case, it is equal to the questionsPerSheet;
+         * In fallback cases, it is equal to the size of array
+         */
+        public Builder withQuestionsPerBatch(int questionsPerBatch) {
+            this.questionsPerBatch = questionsPerBatch;
             return this;
         }
 
@@ -150,18 +152,12 @@ public class SessionData implements Serializable {
                     userId,
                     scheme,
                     questions,
+                    questionsMap,
                     questionsPerBatch,
                     sessionTimeout,
                     perQuestionTimeLimit);
         }
     }
-
-    /**
-     * Metadata about Question born in the interaction between a user;
-     * only for educational sessions, not exams
-     * Key is the question's ID
-     */
-    private Map<Long, MetaData> metaData = new HashMap<>();
 
     /**
      * Current question index in array, index starting from which we provide questions for the next batch;
@@ -187,12 +183,19 @@ public class SessionData implements Serializable {
      * When the current batch was created and sent to user
      * (for tracking time spend on a batch)
      */
-    private LocalDateTime currentBatchIssued;
+    private LocalDateTime currentBatchIssued = LocalDateTime.now();
 
     /**
      * Data holder for tracking the current progress;
      * Init with default values
      */
     private ProgressData progressData = new ProgressData();
+
+    /**
+     * Metadata about Question born in the interaction between a user;
+     * only for educational sessions, not exams
+     * Key is the question's ID
+     */
+    private Map<Long, MetaData> metaData = new HashMap<>();
 
 }

@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import ua.edu.ratos.domain.entity.question.Question;
-import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
 import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.session.domain.question.Question;
+import ua.edu.ratos.service.session.domain.question.QuestionMCQ;
 
 import java.util.*;
 import static org.mockito.Mockito.times;
@@ -69,7 +69,7 @@ public class ShiftServiceTest {
     }
 
     private Question question(Long id, String title) {
-        Question q = new QuestionMultipleChoice();
+        Question q = new QuestionMCQ();
         q.setQuestionId(id);
         q.setQuestion(title);
         return q;

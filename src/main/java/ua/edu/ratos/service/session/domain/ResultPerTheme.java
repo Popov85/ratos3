@@ -19,7 +19,7 @@ public class ResultPerTheme {
 
     private final double percent;
 
-    private final Number mark;
+    private final double grade;
 
 
 }

@@ -4,10 +4,10 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Scheme;
-import ua.edu.ratos.domain.entity.SchemeTheme;
-import ua.edu.ratos.domain.repository.SchemeRepository;
-import ua.edu.ratos.domain.repository.SchemeThemeRepository;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.repository.SchemeRepository;
+import ua.edu.ratos.dao.repository.SchemeThemeRepository;
 import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.transformer.DtoSchemeThemeTransformer;
 
@@ -19,7 +19,7 @@ import java.util.Optional;
  * 2) Remove an existing theme from the scheme (AJAX): load the List<SchemeTheme> of the given Scheme by SchemeId, and remove the currentIndex from it,
  *    save the list back;
  * 3) Edit a theme's content: get SchemeTheme by Id with type-settings associated (open a corresponding window) JS;
- * 4) The window: add (save) a new type (new window) for the current SchemeTheme (AJAX);
+ * 4) The window: addAnswer (save) a new type (new window) for the current SchemeTheme (AJAX);
  * 5) The window: edit type settings (L1, L2, L3) AJAX;
  * 6) The window: deleted an existing type for the current SchemeTheme (AJAX);
  * 7) Re-order themes within a scheme by sending List<Long> and by updating each SchemeTheme with new order parameter.

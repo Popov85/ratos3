@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.entity.QuestionMCQInDto;

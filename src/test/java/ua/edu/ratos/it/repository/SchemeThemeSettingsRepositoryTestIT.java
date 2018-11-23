@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.SchemeThemeSettings;
-import ua.edu.ratos.domain.repository.SchemeThemeSettingsRepository;
+import ua.edu.ratos.dao.entity.SchemeThemeSettings;
+import ua.edu.ratos.dao.repository.SchemeThemeSettingsRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.Set;

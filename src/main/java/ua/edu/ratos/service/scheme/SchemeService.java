@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Scheme;
-import ua.edu.ratos.domain.entity.SchemeTheme;
-import ua.edu.ratos.domain.repository.SchemeRepository;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import ua.edu.ratos.service.dto.transformer.DtoSchemeTransformer;
 import javax.persistence.EntityManager;
@@ -117,7 +117,7 @@ public class SchemeService {
     /*---------------------SELECT-------------------*/
 
     /**
-     * Gets Scheme instance for a student session request
+     * Gets Scheme instance for a student dto request
      * @param schemeId
      * @return Scheme object preferably from L2C
      */

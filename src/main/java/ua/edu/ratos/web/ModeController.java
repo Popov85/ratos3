@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.domain.entity.Mode;
+import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.service.ModeService;
 import ua.edu.ratos.service.dto.entity.ModeInDto;
 

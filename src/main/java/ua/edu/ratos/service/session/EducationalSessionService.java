@@ -1,74 +1,79 @@
 package ua.edu.ratos.service.session;
 
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.Help;
-import ua.edu.ratos.service.dto.session.BatchOut;
+import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.ComplaintInDto;
+import ua.edu.ratos.service.session.domain.Help;
 
 /**
  * Educational session provides more possibility for students.
- * These operations only available for training sort of sessions, not knowledge control
+ * These operations only available for training sort of sessions, not for knowledge control
  * @author Andrey P.
  */
 @Service
 public interface EducationalSessionService {
 
     /**
-     * Stops time (for max 12 hours) while session is still alive in memory
-     * @param key
+     * Stops time (for max 12 hours) while SessionData is still alive in memory
+     * @param sessionData
      */
-    void pause(String key);
+    void pause(SessionData sessionData);
 
     /**
-     * Resumes paused session
-     * @param key
+     * Resumes paused learning session within authentication session
+     * @param sessionData
      * @return
      */
-    BatchOut resume(String key);
+    BatchOut resume(SessionData sessionData);
 
     /**
-     * Serialize session state to database
-     * @param key
+     * Serialize SessionData state to database
+     * @param sessionData
      */
-    void preserve(String key);
+    void preserve(SessionData sessionData);
 
     /**
-     * Retrieves preserved session
+     * Retrieves preserved dto
      * @param key id in database
-     * @return a newly generated key for im-memory storage
+     * @return a newly generated key for in-memory storage
      */
     String retrieve(String key);
 
 
     /*--------------Ajax-------------*/
-
-
-    Object answer(String key, long qid);
+    /*---------All without timing control---------*/
 
     /**
-     * Provides help for the given question
-     * @param key
-     * @param qid
+     * Provides helpAvailable for the given question
+     * @param questionId
+     * @param sessionData
      * @return
      */
-    Help help(String key, long qid);
+    Help help(Long questionId, SessionData sessionData);
 
     /**
      * Skips the question, puts it to the end of the list to appear in the following batches
-     * @param key
-     * @param qid
+     * @param questionId
+     * @param sessionData
      */
-    void skip(String key, long qid);
+    void skip(Long questionId, SessionData sessionData);
+
 
     /**
-     * There are the following types of complaints supported:
-     * -Incorrect statement of question
-     * -Typo in question
-     * -Typo in an answerIds
-     * -Bad question formatting
-     * -Bad answerIds formatting
-     * @param qid
-     * @param complaint
+     * Star a question with 1 to 5 stars for future review by user himself
+     * @param star
+     * @param questionId
+     * @param userId
+     * @param sessionData
      */
-    void complain(String complaint, long qid);
+    void star(byte star, Long questionId, Long userId, SessionData sessionData);
 
+    /**
+     * Complain about a question
+     * @param complaint
+     * @param questionId
+     * @param sessionData
+     */
+    void complain(ComplaintInDto complaint, Long questionId, SessionData sessionData);
 }

@@ -2,8 +2,8 @@ package ua.edu.ratos.service.session;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import ua.edu.ratos.domain.entity.question.*;
-import ua.edu.ratos.service.dto.response.*;
+import ua.edu.ratos.service.session.domain.question.*;
+import ua.edu.ratos.service.session.domain.response.*;
 
 /**
  * @link https://stackoverflow.com/questions/30527947/polymorphism-and-dto-object-creation
@@ -15,43 +15,43 @@ public class EvaluatorImpl implements Evaluator {
 
     @Override
     public double evaluate(@NonNull final ResponseMultipleChoice response) {
-        if (!(question instanceof QuestionMultipleChoice))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionMultipleChoice.class"+
+        if (!(question instanceof QuestionMCQ))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionMCQ.class"+
                     " actual :: "+question.getClass());
-        return ((QuestionMultipleChoice) question).evaluate(response);
+        return ((QuestionMCQ) question).evaluate(response);
     }
 
     @Override
     public double evaluate(@NonNull final ResponseFillBlankSingle response) {
-        if (!(question instanceof QuestionFillBlankSingle))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionFillBlankSingle.class"+
+        if (!(question instanceof QuestionFBSQ))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionFBSQ.class"+
                     " actual :: "+question.getClass());
-        return ((QuestionFillBlankSingle) question).evaluate(response);
+        return ((QuestionFBSQ) question).evaluate(response);
     }
 
     @Override
     public double evaluate(@NonNull final ResponseFillBlankMultiple response) {
-        if (!(question instanceof QuestionFillBlankMultiple))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionFillBlankMultiple.class"+
+        if (!(question instanceof QuestionFBMQ))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionFBMQ.class"+
                     " actual :: "+question.getClass());
-        return ((QuestionFillBlankMultiple) question).evaluate(response);
+        return ((QuestionFBMQ) question).evaluate(response);
 
     }
 
     @Override
     public double evaluate(@NonNull final ResponseMatcher response) {
-        if (!(question instanceof QuestionMatcher))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionMatcher.class"+
+        if (!(question instanceof QuestionMQ))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionMQ.class"+
                     " actual :: "+question.getClass());
-        return ((QuestionMatcher) question).evaluate(response);
+        return ((QuestionMQ) question).evaluate(response);
     }
 
     @Override
     public double evaluate(@NonNull final ResponseSequence response) {
-        if (!(question instanceof QuestionSequence))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionSequence.class"+
+        if (!(question instanceof QuestionSQ))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionSQ.class"+
                     " actual :: "+question.getClass());
-        return ((QuestionSequence) question).evaluate(response);
+        return ((QuestionSQ) question).evaluate(response);
     }
 
 }

@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.Resource;
-import ua.edu.ratos.domain.repository.ResourceRepository;
+import ua.edu.ratos.dao.entity.Resource;
+import ua.edu.ratos.dao.repository.ResourceRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.List;

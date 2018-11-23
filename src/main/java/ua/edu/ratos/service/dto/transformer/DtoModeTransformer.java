@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Mode;
-import ua.edu.ratos.domain.entity.Staff;
+import ua.edu.ratos.dao.entity.Mode;
+import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.dto.entity.ModeInDto;
 import javax.persistence.EntityManager;
 

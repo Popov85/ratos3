@@ -1,21 +1,23 @@
 delete from answer_mcq_resource;
-delete from answer_mq_resource;
-delete from answer_sq_resource;
 delete from help_resource;
 delete from question_resource;
 delete from fbsq_phrase;
 delete from fbmq_phrase;
-
+delete from phrase_resource;
 delete from question_help;
+delete from user_question_starred;
+delete from result_theme;
+delete from result_details;
+delete from result;
 delete from resource;
 delete from help;
-delete from accepted_phrase;
 delete from answer_mcq;
 delete from answer_fbsq;
 delete from answer_fbmq;
 delete from answer_mq;
 delete from answer_sq;
 delete from settings_fbq;
+delete from phrase;
 delete from question;
 delete from language;
 

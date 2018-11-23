@@ -1,22 +1,20 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.Result;
-import ua.edu.ratos.domain.entity.ResultTheme;
-import ua.edu.ratos.domain.entity.Theme;
-import ua.edu.ratos.domain.entity.User;
-import ua.edu.ratos.domain.repository.ResultRepository;
-import ua.edu.ratos.domain.repository.ThemeRepository;
-import ua.edu.ratos.domain.repository.UserRepository;
-import ua.edu.ratos.service.session.domain.ResultOut;
+import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.dao.entity.User;
+import ua.edu.ratos.dao.repository.ResultRepository;
+import ua.edu.ratos.service.session.domain.Result;
 import ua.edu.ratos.service.session.domain.SessionData;
-
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@Slf4j
 @Service
 public class ResultService {
 
@@ -24,31 +22,26 @@ public class ResultService {
     private ResultRepository resultRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EntityManager em;
 
-    @Autowired
-    private ThemeRepository themeRepository;
-
-    public Long save(@NonNull final SessionData sessionData, @NonNull final ResultOut result, boolean timeOuted) {
-        Result r = new Result();
-        r.setScheme(sessionData.getScheme());
-        r.setUser(userRepository.getOne(sessionData.getUserId()));
+    @Transactional
+    public Long save(@NonNull final SessionData sessionData, @NonNull final Result result, boolean timeOuted) {
+        ua.edu.ratos.dao.entity.Result r = new ua.edu.ratos.dao.entity.Result();
+        r.setScheme(em.getReference(Scheme.class, sessionData.getScheme().getSchemeId()));
+        r.setUser(em.getReference(User.class, sessionData.getUserId()));
         r.setPassed(result.isPassed());
         r.setGrade(result.getGrade());
         r.setPercent(result.getPercent());
         r.setSessionLasted(sessionData.getProgressData().getTimeSpent());
         r.setSessionEnded(LocalDateTime.now());
         r.setTimeOuted(timeOuted);
-        List<ResultTheme> resultPerThemes = new ArrayList<>();
-        result.getThemeResults().forEach(res -> {
-            ResultTheme resultTheme = new ResultTheme();
-            resultTheme.setTheme(themeRepository.getOne(res.getThemeId()));
-            resultTheme.setResult(r);
-            resultTheme.setPercent(res.getPercent());
-            resultPerThemes.add(resultTheme);
+
+        result.getThemeResults().forEach(t -> {
+            Theme theme = em.getReference(Theme.class, t.getThemeId());
+            r.addResultTheme(theme, r.getPercent());
         });
-        r.setResultTheme(resultPerThemes);
         resultRepository.save(r);
-        return r.getResId();
+
+        return r.getResultId();
     }
 }

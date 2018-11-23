@@ -7,13 +7,13 @@ insert into course (name, created, created_by, dep_id) values('Test course #2', 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema01.jpg', 'Schema#1', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema02.jpg', 'Schema#2', 1);
 
-insert into help(name, text, staff_id) values('help name #1', 'Please, refer to schema #1', 1);
+insert into help(name, text, staff_id) values('helpAvailable name #1', 'Please, refer to schema #1', 1);
 insert into help(name, text, staff_id) values('assist scheme #2', 'Please, refer to schema #2', 1);
 insert into help(name, text, staff_id) values('assist scheme #3', 'Please, refer to schema #3', 1);
-insert into help(name, text, staff_id) values('help name #4', 'Please, refer to schema #4', 2);
-insert into help(name, text, staff_id) values('help name #5', 'Please, refer to schema #5', 2);
-insert into help(name, text, staff_id) values('help name #6', 'Please, refer to schema #6', 2);
-insert into help(name, text, staff_id) values('help name #7', 'Please, refer to schema #7', 2);
+insert into help(name, text, staff_id) values('helpAvailable name #4', 'Please, refer to schema #4', 2);
+insert into help(name, text, staff_id) values('helpAvailable name #5', 'Please, refer to schema #5', 2);
+insert into help(name, text, staff_id) values('helpAvailable name #6', 'Please, refer to schema #6', 2);
+insert into help(name, text, staff_id) values('helpAvailable name #7', 'Please, refer to schema #7', 2);
 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema03.jpg', 'Schema#3', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema04.jpg', 'Schema#4', 1);

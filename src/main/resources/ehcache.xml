@@ -12,87 +12,87 @@
 
   <!--Scheme related cache-->
 
-  <cache alias="ua.edu.ratos.domain.entity.Scheme">
+  <cache alias="ua.edu.ratos.dao.entity.Scheme">
     <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Mode">
+  <cache alias="ua.edu.ratos.dao.entity.Mode">
       <heap>500</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Settings">
+  <cache alias="ua.edu.ratos.dao.entity.Settings">
       <heap>500</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Strategy">
+  <cache alias="ua.edu.ratos.dao.entity.Strategy">
       <heap>10</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.SchemeTheme">
+  <cache alias="ua.edu.ratos.dao.entity.SchemeTheme">
       <heap>2000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.SchemeThemeSettings">
+  <cache alias="ua.edu.ratos.dao.entity.SchemeThemeSettings">
       <heap>2000</heap>
   </cache>
 
   <!--Questions related cache-->
 
-  <cache alias="ua.edu.ratos.domain.entity.question.Question">
+  <cache alias="ua.edu.ratos.dao.entity.question.Question">
     <resources>
       <heap>5000</heap>
       <offheap unit="MB">100</offheap>
     </resources>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.QuestionType">
+  <cache alias="ua.edu.ratos.dao.entity.QuestionType">
       <heap>10</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Theme">
+  <cache alias="ua.edu.ratos.dao.entity.Theme">
       <heap>2000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Language">
+  <cache alias="ua.edu.ratos.dao.entity.Language">
       <heap>10</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Help">
+  <cache alias="ua.edu.ratos.dao.entity.Help">
       <heap>500</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Resource">
+  <cache alias="ua.edu.ratos.dao.entity.Resource">
       <heap>500</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice">
+  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMultipleChoice">
     <resources>
       <heap>20000</heap>
       <offheap unit="MB">400</offheap>
     </resources>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerFillBlankSingle">
+  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFillBlankSingle">
       <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.Phrase">
+  <cache alias="ua.edu.ratos.dao.entity.Phrase">
       <heap>4000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.SettingsAnswerFillBlank">
+  <cache alias="ua.edu.ratos.dao.entity.SettingsAnswerFillBlank">
       <heap>500</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerFillBlankMultiple">
+  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFillBlankMultiple">
       <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerMatcher">
+  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMatcher">
       <heap>1000</heap>
   </cache>
 
-  <cache alias="ua.edu.ratos.domain.entity.answer.AnswerSequence">
+  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerSequence">
       <heap>1000</heap>
   </cache>
 

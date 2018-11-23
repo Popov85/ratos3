@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.QuestionsFileParserService;
 import ua.edu.ratos.service.dto.entity.*;

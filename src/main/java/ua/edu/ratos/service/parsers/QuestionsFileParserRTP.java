@@ -1,9 +1,9 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.edu.ratos.domain.entity.Help;
-import ua.edu.ratos.domain.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.domain.entity.answer.AnswerMultipleChoice;
+import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.answer.AnswerMultipleChoice;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

@@ -2,8 +2,8 @@ package ua.edu.ratos.service.session.grade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.domain.entity.grade.SchemeFreePoint;
-import ua.edu.ratos.domain.repository.SchemeFreePointRepository;
+import ua.edu.ratos.dao.entity.grade.SchemeFreePoint;
+import ua.edu.ratos.dao.repository.SchemeFreePointRepository;
 import java.util.Optional;
 
 @Component

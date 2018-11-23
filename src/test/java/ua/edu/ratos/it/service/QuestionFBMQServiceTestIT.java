@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.question.QuestionFillBlankMultiple;
+import ua.edu.ratos.dao.entity.question.QuestionFillBlankMultiple;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.entity.QuestionFBMQInDto;
@@ -26,7 +26,7 @@ public class QuestionFBMQServiceTestIT {
     public static final String JSON_NEW = "classpath:json/question_fbmq_in_dto_new.json";
     public static final String QUESTION_NEW = "Question #1";
 
-    public static final String FIND = "select q from QuestionFillBlankMultiple q join fetch q.answers left join fetch q.help left join fetch q.resources where q.questionId=:questionId";
+    public static final String FIND = "select q from QuestionFillBlankMultiple q join fetch q.answers left join fetch q.helpAvailable left join fetch q.resources where q.questionId=:questionId";
 
     @Autowired
     private QuestionService questionService;

@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Staff;
-import ua.edu.ratos.domain.entity.Student;
-import ua.edu.ratos.domain.repository.StaffRepository;
-import ua.edu.ratos.domain.repository.StudentRepository;
+import ua.edu.ratos.dao.entity.Staff;
+import ua.edu.ratos.dao.entity.Student;
+import ua.edu.ratos.dao.repository.StaffRepository;
+import ua.edu.ratos.dao.repository.StudentRepository;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +55,7 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
         }
     }
 
-    private Set<GrantedAuthority> getAuthorities(ua.edu.ratos.domain.entity.User user){
+    private Set<GrantedAuthority> getAuthorities(ua.edu.ratos.dao.entity.User user){
         Set<GrantedAuthority> authorities =  new HashSet<>();
         if (user.getRoles()==null || user.getRoles().isEmpty()) return authorities;
         user.getRoles().forEach(a -> {

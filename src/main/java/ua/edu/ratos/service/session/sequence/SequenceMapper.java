@@ -2,8 +2,8 @@ package ua.edu.ratos.service.session.sequence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.SchemeThemeSettings;
-import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.dao.entity.SchemeThemeSettings;
+import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.*;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * Helper class that
- * serves the purpose of extracting questions from DB for learning session on a given Scheme's Theme;
+ * serves the purpose of extracting questions from DB for learning dto on a given Scheme's Theme;
  * Provides 2 interface methods to gather all found questions into either list or map
  */
 @Service

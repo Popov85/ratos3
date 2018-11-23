@@ -6,7 +6,6 @@ import ua.edu.ratos.service.session.domain.BatchEvaluated;
 import ua.edu.ratos.service.session.domain.ProgressData;
 import ua.edu.ratos.service.session.domain.ResponseEvaluated;
 import ua.edu.ratos.service.session.domain.SessionData;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +14,11 @@ public class ProgressDataService {
 
     /**
      * Create a new ProgressData object based on previous state kept in SessionData
-     * Then the old one will be replaced by this new created object
+     * Then the old one in SessionData is replaced by this new created object
      * @param sessionData
      * @param batchEvaluated
-     * @return newly created ProgressData obj with updated state
      */
-    public ProgressData getUpdated (@NonNull SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
+    public void update(@NonNull SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
         ProgressData updatedProgressData = new ProgressData();
         final ProgressData currentProgressData = sessionData.getProgressData();
         final double updatedScore = getUpdatedScore(sessionData, batchEvaluated);
@@ -31,7 +29,8 @@ public class ProgressDataService {
                 new ArrayList<>(currentProgressData.getBatchesEvaluated());
         batchesEvaluated.add(batchEvaluated);
         updatedProgressData.setBatchesEvaluated(batchesEvaluated);
-        return updatedProgressData;
+        // set SessionData
+        sessionData.setProgressData(updatedProgressData);
     }
 
     /**
@@ -62,7 +61,7 @@ public class ProgressDataService {
     }
 
     /**
-     * Get effective score for intermediary result
+     * Get current effective score for intermediary result
      * @param sessionData
      * @return
      */

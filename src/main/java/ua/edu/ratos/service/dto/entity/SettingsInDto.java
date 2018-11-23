@@ -41,12 +41,12 @@ public class SettingsInDto {
 
     @Positive(groups = {New.class, Update.class}, message = "Invalid level2Coefficient, {dto.value.positive}")
     @Min(value = 1, groups = {New.class, Update.class}, message = "Invalid level2Coefficient, max=1")
-    @Max(value = 10, groups = {New.class, Update.class}, message = "Invalid level2Coefficient, max=10")
+    @Max(value = 2, groups = {New.class, Update.class}, message = "Invalid level2Coefficient, max=2")
     private float level2Coefficient;
 
     @Positive(groups = {New.class, Update.class}, message = "Invalid level3Coefficient, {dto.value.positive}")
     @Min(value = 1, groups = {New.class, Update.class}, message = "Invalid level3Coefficient, max=1")
-    @Max(value = 10, groups = {New.class, Update.class}, message = "Invalid level3Coefficient, max=10")
+    @Max(value = 2, groups = {New.class, Update.class}, message = "Invalid level3Coefficient, max=2")
     private float level3Coefficient;
 
     private boolean displayPercent;

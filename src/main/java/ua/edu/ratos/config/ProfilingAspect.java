@@ -15,7 +15,7 @@ public class ProfilingAspect {
 
     private static final long WARN_THRESHOLD = 500;
 
-    @Pointcut("execution(* ua.edu.ratos.domain.*.*(..))")
+    @Pointcut("execution(* ua.edu.ratos.dao.*.*(..))")
     public void domain(){}
 
     @Pointcut("execution(*  ua.edu.ratos.service.*.*(..))")
@@ -25,7 +25,7 @@ public class ProfilingAspect {
     @Pointcut("execution(public * *(..))")
     private void anyPublicOperation() {}
 
-/*    @Around("service() || domain()")
+/*    @Around("service() || dao()")
     public Object aroundServiceAndDomain(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime(joinPoint);
     }*/

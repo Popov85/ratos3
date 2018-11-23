@@ -2,9 +2,9 @@ package ua.edu.ratos.service.scheme;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.grade.FourPointGrading;
-import ua.edu.ratos.domain.entity.grade.SchemeFourPoint;
-import ua.edu.ratos.domain.repository.SchemeFourPointRepository;
+import ua.edu.ratos.dao.entity.grade.FourPointGrading;
+import ua.edu.ratos.dao.entity.grade.SchemeFourPoint;
+import ua.edu.ratos.dao.repository.SchemeFourPointRepository;
 
 import javax.persistence.EntityManager;
 

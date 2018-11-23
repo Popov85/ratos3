@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.domain.entity.Help;
-import ua.edu.ratos.domain.entity.Resource;
+import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.HelpService;
 import ua.edu.ratos.service.dto.entity.HelpInDto;
@@ -25,16 +25,17 @@ public class HelpServiceTestIT {
     public static final String JSON_NEW = "classpath:json/help_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/help_in_dto_upd.json";
 
-    public static final String HELP_NEW = "javax.persistence";
-    public static final String HELP_TEXT = "Please, refer to https://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html";
-    public static final String HELP_UPD = "JPA";
-    public static final String HELP_TEXT_UPD = "Please, refer to https://javaee.github.io/javaee-spec/javadocs";
+    public static final String HELP_NEW = "help name";
+    public static final String HELP_TEXT = "Please, refer to section #1 T#1";
+
+    public static final String HELP_UPD = "help name upd";
+    public static final String HELP_TEXT_UPD = "Please, refer to section #2 T#1";
     public static final String RESOURCE_NAME = "Schema#1";
     public static final String RESOURCE_LINK = "https://image.slidesharecdn.com/schema01.jpg";
     public static final String RESOURCE_NAME_UPD = "Schema#2";
     public static final String RESOURCE_LINK_UPD = "https://image.slidesharecdn.com/schema02.jpg";
 
-    public static final String FIND = "select h from Help h left join fetch h.resources where h.helpId=:helpId";
+    public static final String FIND = "select h from Help h left join fetch h.helpResource r join fetch r.resource where h.helpId=:helpId";
 
     @Autowired
     private EntityManager em;
@@ -61,8 +62,8 @@ public class HelpServiceTestIT {
         Assert.assertNotNull(foundHelp);
         Assert.assertEquals(HELP_NEW, foundHelp.getName());
         Assert.assertEquals(HELP_TEXT, foundHelp.getHelp());
-        Assert.assertEquals(1, foundHelp.getResources().size());
-        Assert.assertTrue(foundHelp.getResources().contains(new Resource(RESOURCE_LINK, RESOURCE_NAME)));
+        Assert.assertNotNull(foundHelp.getHelpResource().get().getResource());
+        Assert.assertEquals(new Resource(RESOURCE_LINK, RESOURCE_NAME), foundHelp.getHelpResource().get().getResource());
     }
 
     @Test
@@ -80,8 +81,8 @@ public class HelpServiceTestIT {
         Assert.assertNotNull(foundHelp);
         Assert.assertEquals(HELP_UPD, foundHelp.getName());
         Assert.assertEquals(HELP_TEXT_UPD, foundHelp.getHelp());
-        Assert.assertEquals(1, foundHelp.getResources().size());
-        Assert.assertTrue(foundHelp.getResources().contains(new Resource(RESOURCE_LINK_UPD, RESOURCE_NAME_UPD)));
+        Assert.assertNotNull(foundHelp.getHelpResource().get().getResource());
+        Assert.assertEquals(new Resource(RESOURCE_LINK_UPD, RESOURCE_NAME_UPD), foundHelp.getHelpResource().get().getResource());
     }
 
 

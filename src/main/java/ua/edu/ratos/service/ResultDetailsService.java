@@ -3,12 +3,14 @@ package ua.edu.ratos.service;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.ResultDetails;
-import ua.edu.ratos.domain.repository.ResultDetailsRepository;
-import ua.edu.ratos.domain.repository.ResultRepository;
+import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.config.TrackTime;
+import ua.edu.ratos.dao.entity.Result;
+import ua.edu.ratos.dao.entity.ResultDetails;
+import ua.edu.ratos.dao.repository.ResultDetailsRepository;
 import ua.edu.ratos.service.session.domain.SessionData;
 import ua.edu.ratos.service.session.serializer.SessionDataSerializer;
-
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
 @Service
@@ -18,16 +20,17 @@ public class ResultDetailsService {
     private ResultDetailsRepository resultDetailsRepository;
 
     @Autowired
-    private ResultRepository resultRepository;
+    private EntityManager em;
 
     @Autowired
     private SessionDataSerializer serializer;
 
+    @TrackTime
+    @Transactional
     public Long save(@NonNull final SessionData sessionData, @NonNull final Long resultId) {
-
         ResultDetails resultDetails = new ResultDetails();
-        resultDetails.setDetailId(resultId);
-        resultDetails.setResult(resultRepository.getOne(resultId));
+        // no resultDetails.getDetailId() should be set, it cases exception
+        resultDetails.setResult(em.getReference(Result.class, resultId));
         resultDetails.setWhenRemove(calculateWhenRemove(sessionData));
         resultDetails.setJsonData(serializer.serialize(sessionData));
         resultDetailsRepository.save(resultDetails);

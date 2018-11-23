@@ -13,6 +13,9 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class PhraseInDto {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long phraseId;
+
     @NotBlank(message = "{dto.string.required}")
     @Size(min = 1, max = 100, message = "{dto.string.invalid}")
     private String phrase;
@@ -21,6 +24,6 @@ public class PhraseInDto {
     private long staffId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Positive(message = "{dto.fk.invalid}")
+    @PositiveOrZero(message = "{dto.fk.optional}")
     private Long resourceId;
 }

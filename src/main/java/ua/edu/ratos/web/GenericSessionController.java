@@ -4,18 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.service.dto.session.ResultOutDto;
+import ua.edu.ratos.service.session.dto.ResultOutDto;
 import ua.edu.ratos.service.session.domain.SessionData;
 import ua.edu.ratos.security.AuthenticatedUser;
 import ua.edu.ratos.service.session.GenericSessionService;
-import ua.edu.ratos.service.dto.session.BatchIn;
-import ua.edu.ratos.service.dto.session.BatchOut;
+import ua.edu.ratos.service.session.domain.batch.BatchIn;
+import ua.edu.ratos.service.session.domain.batch.BatchOut;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 /**
- * 1) Long inactivity? Browser is opened. (Default authentication session timeout 2 hours), no data to keep
- * 2) TODO Case: browser is suddenly closed (PC trouble or electricity), authentication session lost... save data by tracking session lost event
+ * 1) Long inactivity? Browser is opened. (Default authentication dto timeout 2 hours), no data to keep
+ * 2) TODO Case: browser is suddenly closed (PC trouble or electricity), authentication dto lost... save data by tracking dto lost event
  * 3) etc.
  */
 @Slf4j
@@ -35,7 +35,7 @@ public class GenericSessionController {
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public BatchOut start(@RequestParam Long schemeId, HttpSession session, Principal principal) {
         if (session.getAttribute("sessionData")!=null)
-            throw new RuntimeException("Learning session is already opened");
+            throw new RuntimeException("Learning dto is already opened");
         final SessionData sessionData = sessionService.start(session.getId(), ((AuthenticatedUser) principal).getUserId(), 1L);
         session.setAttribute("sessionData", sessionData);
         log.debug("Started :: {}", session.getId());
@@ -59,7 +59,7 @@ public class GenericSessionController {
     }
     /**
      * Client script invokes this method as a result of exception handling in case of business time out
-     * (not auth. session timeout)
+     * (not auth. dto timeout)
      * @param sessionData
      * @param batchIn
      * @param session

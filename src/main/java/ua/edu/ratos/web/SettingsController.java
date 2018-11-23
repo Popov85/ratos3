@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.domain.entity.Settings;
+import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.service.SettingsService;
 import ua.edu.ratos.service.dto.entity.SettingsInDto;
 import java.util.List;

@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.Help;
-import ua.edu.ratos.domain.repository.HelpRepository;
+import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.dao.repository.HelpRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 
@@ -30,9 +30,9 @@ public class HelpRepositoryTestIT {
         Assert.assertEquals(7, helpRepository.findAll().size());
         Page<Help> helps = helpRepository.findByStaffIdWithResources(1L, PageRequest.of(0, 20));
         Assert.assertEquals(3, helps.getContent().size());
-        Assert.assertEquals(1, helps.getContent().get(0).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(1).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(2).getResources().size());
+        Assert.assertNotNull(helps.getContent().get(0).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(1).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(2).getHelpResource().get().getResource());
     }
 
     @Test
@@ -42,8 +42,8 @@ public class HelpRepositoryTestIT {
         Assert.assertEquals(7, helpRepository.findAll().size());
         Page<Help> helps = helpRepository.findByStaffIdAndFirstNameLettersWithResources(1L, "assist", PageRequest.of(0, 20));
         Assert.assertEquals(2, helps.getContent().size());
-        Assert.assertEquals(1, helps.getContent().get(0).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(1).getResources().size());
+        Assert.assertNotNull(helps.getContent().get(0).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(1).getHelpResource().get().getResource());
     }
 
     @Test
@@ -53,9 +53,9 @@ public class HelpRepositoryTestIT {
         Assert.assertEquals(7, helpRepository.findAll().size());
         Page<Help> helps = helpRepository.findByDepartmentIdWithResources(1L, PageRequest.of(0, 20));
         Assert.assertEquals(3, helps.getContent().size());
-        Assert.assertEquals(1, helps.getContent().get(0).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(1).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(2).getResources().size());
+        Assert.assertNotNull(helps.getContent().get(0).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(1).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(2).getHelpResource().get().getResource());
     }
 
     @Test
@@ -65,8 +65,8 @@ public class HelpRepositoryTestIT {
         Assert.assertEquals(7, helpRepository.findAll().size());
         Page<Help> helps = helpRepository.findByDepartmentIdAndFirstNameLettersWithResources(1L, "assist", PageRequest.of(0, 20));
         Assert.assertEquals(2, helps.getContent().size());
-        Assert.assertEquals(1, helps.getContent().get(0).getResources().size());
-        Assert.assertEquals(1, helps.getContent().get(1).getResources().size());
+        Assert.assertNotNull(helps.getContent().get(0).getHelpResource().get().getResource());
+        Assert.assertNotNull(helps.getContent().get(1).getHelpResource().get().getResource());
     }
 
 }

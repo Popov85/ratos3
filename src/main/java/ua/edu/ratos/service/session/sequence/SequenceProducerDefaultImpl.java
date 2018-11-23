@@ -2,9 +2,9 @@ package ua.edu.ratos.service.session.sequence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.SchemeTheme;
-import ua.edu.ratos.domain.entity.SchemeThemeSettings;
-import ua.edu.ratos.domain.entity.question.Question;
+import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.entity.SchemeThemeSettings;
+import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.*;
 

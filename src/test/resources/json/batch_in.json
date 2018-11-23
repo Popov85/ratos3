@@ -1,0 +1,142 @@
+{
+  "responses": {
+    "101": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseMultipleChoice",
+      "questionId": 101,
+      "answerIds": [
+        456,
+        458,
+        458
+      ]
+    },
+    "102": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseMultipleChoice",
+      "questionId": 102,
+      "answerIds": [
+        556,
+        558,
+        558
+      ]
+    },
+    "103": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankSingle",
+      "questionId": 103,
+      "enteredPhrase": "entered phrase"
+    },
+    "104": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankSingle",
+      "questionId": 104,
+      "enteredPhrase": "entered phrase"
+    },
+    "105": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankMultiple",
+      "questionId": 105,
+      "enteredPhrases": [
+        {
+          "answerId": 501,
+          "enteredPhrase": "entered phrase for FBMQ answer #501"
+        },
+        {
+          "answerId": 502,
+          "enteredPhrase": "entered phrase for FBMQ answer #502"
+        },
+        {
+          "answerId": 503,
+          "enteredPhrase": "entered phrase for FBMQ answer #503"
+        }
+      ]
+    },
+    "106": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankMultiple",
+      "questionId": 106,
+      "enteredPhrases": [
+        {
+          "answerId": 504,
+          "enteredPhrase": "entered phrase for FBMQ answer #504"
+        },
+        {
+          "answerId": 505,
+          "enteredPhrase": "entered phrase for FBMQ answer #505"
+        },
+        {
+          "answerId": 506,
+          "enteredPhrase": "entered phrase for FBMQ answer #506"
+        }
+      ]
+    },
+    "107": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseMatcher",
+      "questionId": 107,
+      "matchedPhrases": [
+        {
+          "answerId": 688,
+          "leftPhraseId": 25,
+          "rightPhraseId": 26
+        },
+        {
+          "answerId": 689,
+          "leftPhraseId": 23,
+          "rightPhraseId": 24
+        },
+        {
+          "answerId": 670,
+          "leftPhraseId": 21,
+          "rightPhraseId": 22
+        },
+        {
+          "answerId": 671,
+          "leftPhraseId": 27,
+          "rightPhraseId": 28
+        }
+      ]
+    },
+    "108": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseMatcher",
+      "questionId": 108,
+      "matchedPhrases": [
+        {
+          "answerId": 672,
+          "leftPhraseId": 29,
+          "rightPhraseId": 30
+        },
+        {
+          "answerId": 673,
+          "leftPhraseId": 31,
+          "rightPhraseId": 32
+        },
+        {
+          "answerId": 674,
+          "leftPhraseId": 33,
+          "rightPhraseId": 34
+        },
+        {
+          "answerId": 675,
+          "leftPhraseId": 35,
+          "rightPhraseId": 36
+        }
+      ]
+    },
+    "109": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseSequence",
+      "questionId": 109,
+      "answerIds": [
+        629,
+        640,
+        631,
+        612,
+        639
+      ]
+    },
+    "110": {
+      "className": "ua.edu.ratos.service.session.domain.response.ResponseSequence",
+      "questionId": 110,
+      "answerIds": [
+        611,
+        638,
+        620,
+        647,
+        699
+      ]
+    }
+  }
+}

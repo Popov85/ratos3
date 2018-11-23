@@ -4,8 +4,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.Help;
-import ua.edu.ratos.domain.repository.HelpRepository;
+import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.dao.repository.HelpRepository;
 import ua.edu.ratos.service.dto.entity.HelpInDto;
 import ua.edu.ratos.service.dto.transformer.DtoHelpTransformer;
 import java.util.List;
@@ -31,7 +31,7 @@ public class HelpService {
     @Transactional
     public void update(@NonNull Long helpId, @NonNull HelpInDto dto) {
         if (!helpRepository.existsById(helpId))
-            throw new RuntimeException("Failed to update help: ID does not exist");
+            throw new RuntimeException("Failed to update helpAvailable: ID does not exist");
         helpRepository.save(transformer.fromDto(helpId, dto));
     }
 

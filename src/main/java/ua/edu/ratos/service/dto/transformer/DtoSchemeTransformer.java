@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.domain.entity.*;
-import ua.edu.ratos.domain.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.*;
+import ua.edu.ratos.dao.entity.grade.Grading;
 import ua.edu.ratos.service.dto.entity.SchemeInDto;
 import javax.persistence.EntityManager;
 

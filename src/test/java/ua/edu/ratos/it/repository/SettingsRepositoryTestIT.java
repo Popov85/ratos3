@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.repository.SettingsRepository;
+import ua.edu.ratos.dao.repository.SettingsRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 @RunWith(SpringRunner.class)

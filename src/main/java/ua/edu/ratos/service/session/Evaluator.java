@@ -1,6 +1,6 @@
 package ua.edu.ratos.service.session;
 
-import ua.edu.ratos.service.dto.response.*;
+import ua.edu.ratos.service.session.domain.response.*;
 
 public interface Evaluator {
     double evaluate(ResponseMultipleChoice response);

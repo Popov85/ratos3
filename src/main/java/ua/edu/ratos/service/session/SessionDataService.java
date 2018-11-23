@@ -3,8 +3,7 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.dto.session.BatchOut;
-import ua.edu.ratos.service.session.domain.ProgressData;
+import ua.edu.ratos.service.session.domain.batch.BatchOut;
 import ua.edu.ratos.service.session.domain.SessionData;
 
 import java.time.LocalDateTime;
@@ -16,7 +15,7 @@ public class SessionDataService {
     private TimingService timingService;
 
     /**
-     * Update the state of the current session based on a new batchOut provided
+     * Update the state of the current dto based on a new batchOut provided
      * @param sessionData
      * @param batchOut
      */
@@ -31,16 +30,17 @@ public class SessionDataService {
             sessionData.setCurrentBatchTimeOut(
                     LocalDateTime
                             .now()
-                            .plusSeconds(batchOut.getBatchTimeControl()));
+                            .plusSeconds(batchOut.getBatchTimeLimit()));
         }
     }
 
     /**
-     * Update the state of ProgressData after evaluating BatchIn
+     * Reset currentBach related fields in case of normal finish
      * @param sessionData
-     * @param progressData
      */
-    public void update(@NonNull final SessionData sessionData, @NonNull final ProgressData progressData) {
-        sessionData.setProgressData(progressData);
+    public void finalize(@NonNull final SessionData sessionData) {
+        sessionData.setCurrentBatch(null);
+        sessionData.setCurrentBatchTimeOut(null);
+        sessionData.setCurrentBatchIssued(null);
     }
 }

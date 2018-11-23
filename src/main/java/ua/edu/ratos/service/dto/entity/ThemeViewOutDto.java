@@ -3,7 +3,7 @@ package ua.edu.ratos.service.dto.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import ua.edu.ratos.domain.entity.ThemeView;
+import ua.edu.ratos.dao.entity.ThemeView;
 
 import java.util.List;
 

@@ -9,8 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.question.*;
-import ua.edu.ratos.domain.repository.QuestionRepository;
+import ua.edu.ratos.dao.entity.question.*;
+import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.*;
@@ -56,7 +56,7 @@ public class QuestionRepositoryTestIT {
             Assert.assertEquals(1, question.getResources().get().size());
             Assert.assertTrue(Hibernate.isInitialized(question.getHelp()));
             Assert.assertEquals(1, question.getHelp().get().size());
-            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getResources())));
+            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getHelpResource().get().getResource())));
         }
     }
 
@@ -81,7 +81,7 @@ public class QuestionRepositoryTestIT {
             Assert.assertEquals(1, question.getResources().get().size());
             Assert.assertTrue(Hibernate.isInitialized(question.getHelp()));
             Assert.assertEquals(1, question.getHelp().get().size());
-            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getResources())));
+            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getHelpResource().get().getResource())));
         }
     }
 
@@ -108,7 +108,7 @@ public class QuestionRepositoryTestIT {
             Assert.assertEquals(1, question.getResources().get().size());
             Assert.assertTrue(Hibernate.isInitialized(question.getHelp()));
             Assert.assertEquals(1, question.getHelp().get().size());
-            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getResources())));
+            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getHelpResource().get().getResource())));
         }
     }
 
@@ -136,7 +136,7 @@ public class QuestionRepositoryTestIT {
             Assert.assertEquals(1, question.getResources().get().size());
             Assert.assertTrue(Hibernate.isInitialized(question.getHelp()));
             Assert.assertEquals(1, question.getHelp().get().size());
-            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getResources())));
+            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getHelpResource().get().getResource())));
         }
     }
 
@@ -163,7 +163,7 @@ public class QuestionRepositoryTestIT {
             Assert.assertEquals(1, question.getResources().get().size());
             Assert.assertTrue(Hibernate.isInitialized(question.getHelp()));
             Assert.assertEquals(1, question.getHelp().get().size());
-            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getResources())));
+            question.getHelp().get().forEach(h->Assert.assertTrue(Hibernate.isInitialized(h.getHelpResource().get().getResource())));
         }
     }
 

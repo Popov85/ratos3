@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.edu.ratos.domain.entity.Theme;
-import ua.edu.ratos.domain.repository.ThemeRepository;
+import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.dao.repository.ThemeRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
 import java.util.Set;

@@ -374,7 +374,7 @@ CREATE TABLE IF NOT EXISTS  answer_sq  (
 
 
 -- -----------------------------------------------------
--- Table   help
+-- Table   helpAvailable
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS help (
   help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -524,19 +524,19 @@ CREATE TABLE IF NOT EXISTS   fbmq_phrase  (
 -- -----------------------------------------------------
 -- Table   help_resource
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   help_resource  (
+CREATE TABLE IF NOT EXISTS  help_resource  (
   help_id  INT UNSIGNED NOT NULL,
   resource_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( help_id ,  resource_id ),
+  PRIMARY KEY ( help_id ),
   INDEX  fk_help_resource_resource_id_idx  ( resource_id  ASC),
   CONSTRAINT  fk_help_resource_help_help_id
   FOREIGN KEY ( help_id )
-  REFERENCES   help  ( help_id )
+  REFERENCES  help  ( help_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT  fk_help_resource_resource_resource_id
   FOREIGN KEY ( resource_id )
-  REFERENCES   resource  ( resource_id )
+  REFERENCES  resource  ( resource_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -638,6 +638,7 @@ CREATE TABLE IF NOT EXISTS   mode  (
   is_pauseable  TINYINT(1) NOT NULL DEFAULT 0,
   is_preservable  TINYINT(1) NOT NULL DEFAULT 0,
   is_reportable  TINYINT(1) NOT NULL DEFAULT 0,
+  is_starrable  TINYINT(1) NOT NULL DEFAULT 0,
   is_default  TINYINT(1) NOT NULL DEFAULT 0,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( mode_id ),
@@ -920,7 +921,7 @@ CREATE TABLE IF NOT EXISTS  result  (
   scheme_id  INT UNSIGNED NOT NULL,
   user_id  INT UNSIGNED NOT NULL,
   percent  DOUBLE UNSIGNED NOT NULL,
-  mark  DOUBLE UNSIGNED NOT NULL,
+  grade  DOUBLE UNSIGNED NOT NULL,
   is_passed  TINYINT(1) NOT NULL DEFAULT 0,
   session_ended  TIMESTAMP NOT NULL,
   session_lasted  INT NOT NULL,
@@ -967,13 +968,13 @@ CREATE TABLE IF NOT EXISTS   result_theme  (
 -- Table   result_details
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   result_details  (
-  detail_id  INT UNSIGNED NOT NULL,
-  data  TEXT NOT NULL,
+  result_id  INT UNSIGNED NOT NULL,
+  json_data  TEXT NOT NULL,
   when_remove  TIMESTAMP NOT NULL,
-  PRIMARY KEY ( detail_id ),
-  INDEX  fk_result_details_result_details_id_idx  ( detail_id  ASC),
-  CONSTRAINT  fk_result_details_result_details_id
-  FOREIGN KEY ( detail_id )
+  PRIMARY KEY ( result_id ),
+  INDEX  fk_result_details_result_result_id_idx  ( result_id  ASC),
+  CONSTRAINT  fk_result_details_result_id
+  FOREIGN KEY ( result_id )
   REFERENCES   result  ( result_id )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -1034,6 +1035,27 @@ CREATE TABLE IF NOT EXISTS   student  (
 -- Placeholder table for view   theme_type
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   theme_type  (org_id  INT, fac_id INT, dep_id  INT, course_id  INT,  theme_id  INT,  type_id  INT,  theme  INT,  type  INT,  L1  INT,  L2  INT,  L3  INT,  total  INT);
+
+-- -----------------------------------------------------
+-- Table   user_question_starred
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS   user_question_starred  (
+  user_id  INT UNSIGNED NOT NULL,
+  question_id  INT UNSIGNED NOT NULL,
+  star  INT NOT NULL DEFAULT 0,
+  PRIMARY KEY ( user_id ,  question_id ),
+  INDEX  fk_user_question_starred_user_id_idx  ( user_id  ASC),
+  CONSTRAINT  fk_user_question_starred_question_id
+  FOREIGN KEY ( question_id )
+  REFERENCES   question  ( question_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT  fk_user_question_starred_user_id
+  FOREIGN KEY ( user_id )
+  REFERENCES   user  ( user_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- View   theme_type

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ratos.domain.entity.Language;
-import ua.edu.ratos.domain.repository.LanguageRepository;
+import ua.edu.ratos.dao.entity.Language;
+import ua.edu.ratos.dao.repository.LanguageRepository;
 
 import java.security.Principal;
 

@@ -2,9 +2,9 @@ package ua.edu.ratos.service.scheme;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.domain.entity.grade.SchemeTwoPoint;
-import ua.edu.ratos.domain.entity.grade.TwoPointGrading;
-import ua.edu.ratos.domain.repository.SchemeTwoPointRepository;
+import ua.edu.ratos.dao.entity.grade.SchemeTwoPoint;
+import ua.edu.ratos.dao.entity.grade.TwoPointGrading;
+import ua.edu.ratos.dao.repository.SchemeTwoPointRepository;
 import javax.persistence.EntityManager;
 
 @Service

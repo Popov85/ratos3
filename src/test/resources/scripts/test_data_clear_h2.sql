@@ -5,6 +5,10 @@ delete from fbsq_phrase;
 delete from fbmq_phrase;
 delete from phrase_resource;
 delete from question_help;
+delete from user_question_starred;
+delete from result_theme;
+delete from result_details;
+delete from result;
 delete from resource;
 delete from help;
 delete from answer_mcq;
@@ -74,6 +78,8 @@ ALTER TABLE answer_fbmq ALTER COLUMN answer_id RESTART WITH 1;
 ALTER TABLE phrase ALTER COLUMN phrase_id RESTART WITH 1;
 ALTER TABLE answer_mq ALTER COLUMN answer_id RESTART WITH 1;
 ALTER TABLE answer_sq ALTER COLUMN answer_id RESTART WITH 1;
+
+ALTER TABLE result ALTER COLUMN result_id RESTART WITH 1;
 
 
 

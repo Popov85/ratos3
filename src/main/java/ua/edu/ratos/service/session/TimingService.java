@@ -9,7 +9,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class TimingService {
     /**
      * Add 3 or more seconds (experimental value) to compensate the network round trips time;
-     * Normally, the  client script would initiate the request to server in case of time-out either session or batch;
+     * Normally, the  client script would initiate the request to server in case of time-out either dto or batch;
      * In turn, server also must check the timeout, but adds 3 or more sec to compensate the network traverse time
      */
     private static final long ADD_SECONDS = 3;
@@ -52,7 +52,7 @@ public class TimingService {
     public void control(LocalDateTime sessionTimeout, LocalDateTime batchTimeOut) {
         if (isLimited(sessionTimeout)) {
             if (isExpired(sessionTimeout.plusSeconds(ADD_SECONDS))) {
-                // session expired
+                // dto expired
                 throw new RunOutOfTimeException(true, false);
             }
             if (isExpired(batchTimeOut.plusSeconds(ADD_SECONDS))) {

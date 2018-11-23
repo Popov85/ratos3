@@ -1,6 +1,6 @@
 {
-  "name":"javax.persistence",
-  "help":"Please, refer to https://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html",
+  "name":"help name",
+  "help":"Please, refer to section #1 T#1",
   "staffId":1,
   "resourceId":1
 }

@@ -3,7 +3,6 @@ package ua.edu.ratos.service.dto.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
-
 import javax.validation.constraints.*;
 import java.util.Objects;
 

@@ -35,6 +35,7 @@ public class QuestionInDto {
     @Positive(message = "{dto.fk.required}")
     private long langId;
 
+    // Currently only one Help can be associated with a question
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @PositiveOrZero(message = "{dto.fk.optional}")
     private long helpId;

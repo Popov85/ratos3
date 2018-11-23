@@ -13,9 +13,10 @@ import lombok.experimental.Accessors;
 @ToString
 @Accessors(chain = true)
 public class MetaData {
-    private short help; // times a help for a question was requested by user
+    private short help; // times a helpAvailable for a question was requested by user
     private short skipped; // times a question was skipped
     private short incorrect; // times a question was answered incorrectly, 1 or more
-    private boolean starred; // is this question was starred by user?
+    private Byte starred; // is this question was starred by user? null if not starred
+    // TODO complained with some text
     private boolean complained; // did user complain about this question?
 }
