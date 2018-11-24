@@ -13,7 +13,7 @@ import java.util.List;
  * list, just like we did with skipped questions;
  */
 @Service
-public class PyramidProcessorService {
+public class PyramidService {
 
     @Autowired
     private ShiftService shiftService;

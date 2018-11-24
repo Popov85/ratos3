@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Usage: when settings require to return the result of evaluation after each BatchIn
+ * Usage: when settings require to return the result of evaluation after each BatchInDto
  * For educational dto only
  */
 @Getter
@@ -17,7 +17,7 @@ public class PreviousBatchResult {
      * if so far user answered 10 out of 20 question
      * and all 10 are answered correctly, then
      * this values would be 50.00 (%)
-     * Usage: for immediate feedback after BatchIn evaluation
+     * Usage: for immediate feedback after BatchInDto evaluation
      */
     private final double currentScore;
     /**
@@ -26,7 +26,7 @@ public class PreviousBatchResult {
      * if so far user answered 10 out of 20 question
      * and all 10 are answered correctly, then
      * this values would be 100.00 (%);
-     * Usage: for immediate feedback after BatchIn evaluation
+     * Usage: for immediate feedback after BatchInDto evaluation
      */
     private final double effectiveScore;
 

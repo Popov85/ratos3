@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.service.session.dto.batch.BatchInDto;
 import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.batch.BatchIn;
 import ua.edu.ratos.service.session.domain.response.Response;
 import ua.edu.ratos.service.session.domain.ResponseEvaluated;
 import ua.edu.ratos.service.session.domain.SessionData;
@@ -23,15 +23,15 @@ public class BatchEvaluatorService {
     private LevelsEvaluatorService levelsEvaluatorService;
 
     /**
-     * Evaluates the whole non-empty BatchIn coming from user, skipped questions are ignored (since deleted from BatchOut);
+     * Evaluates the whole non-empty BatchInDto coming from user, skipped questions are ignored (since deleted from BatchOutDto);
      * Levels processing, response may be evaluated with a score higher than 100
      *   In case the result is 100% correct and the corresponding coefficient is more than 1
      *   Even if the result is not 100% correct but the corresponding coefficient is rather big, a score may appear to be higher than 100
-     * @param batchIn
+     * @param batchInDto
      * @param sessionData
      * @return result of evaluation
      */
-    public Map<Long, ResponseEvaluated> doEvaluate(@NonNull final BatchIn batchIn, @NonNull final SessionData sessionData) {
+    public Map<Long, ResponseEvaluated> doEvaluate(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
 
         Map<Long, ResponseEvaluated> responsesEvaluated = new HashMap<>();
 
@@ -39,12 +39,12 @@ public class BatchEvaluatorService {
 
         List<Long> toEvaluate = sessionData.getCurrentBatch().getBatch().stream().map(dto->dto.getQuestionId()).collect(Collectors.toList());
 
-        // Try to look up responses for each question in BatchOut and evaluate them
+        // Try to look up responses for each question in BatchOutDto and evaluate them
         for (Long questionId : toEvaluate) {
             // look up question in sessionData
             final Question question = questionsMap.get(questionId);
-            // look up response in BatchIn
-            final Response response = batchIn.getResponses().get(questionId);
+            // look up response in BatchInDto
+            final Response response = batchInDto.getResponses().get(questionId);
             if (response != null) {// if found, evaluate
                 double score = (response.isNullable() ? 0 : responseEvaluatorService.evaluate(response, question));
                 // Levels processing

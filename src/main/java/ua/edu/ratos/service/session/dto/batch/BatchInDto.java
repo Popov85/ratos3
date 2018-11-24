@@ -1,4 +1,4 @@
-package ua.edu.ratos.service.session.domain.batch;
+package ua.edu.ratos.service.session.dto.batch;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,14 +9,14 @@ import java.util.Map;
 
 @Getter
 @ToString
-public class BatchIn {
+public class BatchInDto {
     /**
      * Key - questionId, Response - the corresponding response provided by a user
      */
     private final Map<Long, Response> responses;
 
     @JsonCreator
-    public BatchIn(@JsonProperty("responses") Map<Long, Response> responses) {
+    public BatchInDto(@JsonProperty("responses") Map<Long, Response> responses) {
         this.responses = responses;
     }
 }

@@ -1,18 +1,18 @@
-package ua.edu.ratos.service.session.serializer;
+package ua.edu.ratos.service.session;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.session.domain.SessionData;
 
 import java.io.IOException;
 
-@Component
-public class SessionDataSerializer {
+@Service
+public class SessionDataSerializerService {
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -7,8 +7,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
-import ua.edu.ratos.service.session.serializer.SessionDataDeserializer;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.session.deserializer.SessionDataDeserializer;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  *
  * Scenario 2: User is inactive for more than 12 hours.
  * 1) SessionData data for this key is forever lost in memory due to timeout.
- * 2) User gets his current result if present in incoming BatchOut object.
+ * 2) User gets his current result if present in incoming BatchOutDto object.
  * 3) Result is not stored in database.
  */
 @Getter
@@ -46,7 +46,7 @@ public class SessionData implements Serializable {
     private static final String BUILD_ERROR = "Failed to build SessionData: wrong object state";
 
     @Id
-    private final String key;
+    private final String key; //if preserved then retrieved the key doesn't change
 
     private final Long userId;
 
@@ -167,14 +167,14 @@ public class SessionData implements Serializable {
     private int currentIndex = 0;
 
     /**
-     * Current BatchOut, convenience state for BatchIn completeness comparison:
-     * Whether all the provided questions from BatchOut were found in BatchIn?
+     * Current BatchOutDto, convenience state for BatchInDto completeness comparison:
+     * Whether all the provided questions from BatchOutDto were found in BatchInDto?
      */
-    private BatchOut currentBatch = null;
+    private BatchOutDto currentBatch = null;
 
     /**
-     * Current BatchOut timeout, if expired - all the questions in the batch (without answer!!!) are considered wrong answered;
-     * Client script initiates a new BatchOut request when this time is expired;
+     * Current BatchOutDto timeout, if expired - all the questions in the batch (without answer!!!) are considered wrong answered;
+     * Client script initiates a new BatchOutDto request when this time is expired;
      * Default value is MAX (unlimited in time)
      */
     private LocalDateTime currentBatchTimeOut = LocalDateTime.MAX;
@@ -197,5 +197,9 @@ public class SessionData implements Serializable {
      * Key is the question's ID
      */
     private Map<Long, MetaData> metaData = new HashMap<>();
+
+    public boolean isMoreQuestions() {
+        return (currentIndex < questions.size());
+    }
 
 }

@@ -3,10 +3,12 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.domain.question.Question;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.domain.SessionData;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SessionDataService {
@@ -15,22 +17,19 @@ public class SessionDataService {
     private TimingService timingService;
 
     /**
-     * Update the state of the current dto based on a new batchOut provided
+     * Update the state of the current dto based on a new batchOutDto provided
      * @param sessionData
-     * @param batchOut
+     * @param batchOutDto
      */
-    public void update(@NonNull final SessionData sessionData, @NonNull final BatchOut batchOut) {
-        int newIndex = sessionData.getCurrentIndex()+batchOut.getBatch().size();
+    public void update(@NonNull final SessionData sessionData, @NonNull final BatchOutDto batchOutDto) {
+        int newIndex = sessionData.getCurrentIndex()+ batchOutDto.getBatch().size();
         sessionData.setCurrentIndex(newIndex);
-        sessionData.setCurrentBatch(batchOut);
+        sessionData.setCurrentBatch(batchOutDto);
         sessionData.setCurrentBatchIssued(LocalDateTime.now());
         // Update batch timing if needed;
         final long perQuestionTimeLimit = sessionData.getPerQuestionTimeLimit();
         if (timingService.isLimited(perQuestionTimeLimit)) {
-            sessionData.setCurrentBatchTimeOut(
-                    LocalDateTime
-                            .now()
-                            .plusSeconds(batchOut.getBatchTimeLimit()));
+            sessionData.setCurrentBatchTimeOut(LocalDateTime.now().plusSeconds(batchOutDto.getBatchTimeLimit()));
         }
     }
 

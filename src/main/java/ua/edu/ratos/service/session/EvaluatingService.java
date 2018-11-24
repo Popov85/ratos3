@@ -3,7 +3,7 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.batch.BatchIn;
+import ua.edu.ratos.service.session.dto.batch.BatchInDto;
 import ua.edu.ratos.service.session.domain.BatchEvaluated;
 import ua.edu.ratos.service.session.domain.ResponseEvaluated;
 import ua.edu.ratos.service.session.domain.SessionData;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluatingService {
 
-    private static final String EMPTY_BATCH_OUT = "Empty BatchOut, all questions in the current batch were probably skipped";
+    private static final String EMPTY_BATCH_OUT = "Empty BatchOutDto, all questions in the current batch were probably skipped";
 
     @Autowired
     private BatchEvaluatorService batchEvaluatorService;
@@ -22,17 +22,16 @@ public class EvaluatingService {
     @Autowired
     private BatchEvaluatedBuilder batchEvaluatedBuilderService;
 
-
     /**
-     * Evaluates BatchIn, make sure BatchIn to contain non-empty collection of responses
-     * @param batchIn
+     * Evaluates BatchInDto, make sure BatchInDto to contain non-empty collection of responses
+     * @param batchInDto
      * @param sessionData
      * @return BatchEvaluated object
      */
-    public BatchEvaluated getBatchEvaluated(@NonNull final BatchIn batchIn, @NonNull SessionData sessionData) {
+    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull SessionData sessionData) {
         if (sessionData.getCurrentBatch().getBatch().isEmpty()) throw new IllegalArgumentException(EMPTY_BATCH_OUT);
         // job to evaluate
-        final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchIn, sessionData);
+        final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
         // select ids with incorrect responses
         List<Long> incorrectResponseIds = getIncorrectResponseIds(responseEvaluated);
         return batchEvaluatedBuilderService.build(responseEvaluated, incorrectResponseIds, sessionData);

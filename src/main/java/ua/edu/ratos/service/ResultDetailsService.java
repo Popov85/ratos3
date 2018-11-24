@@ -9,7 +9,7 @@ import ua.edu.ratos.dao.entity.Result;
 import ua.edu.ratos.dao.entity.ResultDetails;
 import ua.edu.ratos.dao.repository.ResultDetailsRepository;
 import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.serializer.SessionDataSerializer;
+import ua.edu.ratos.service.session.SessionDataSerializerService;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
@@ -23,7 +23,7 @@ public class ResultDetailsService {
     private EntityManager em;
 
     @Autowired
-    private SessionDataSerializer serializer;
+    private SessionDataSerializerService serializer;
 
     @TrackTime
     @Transactional

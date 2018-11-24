@@ -10,12 +10,13 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.service.ResultDetailsService;
 import ua.edu.ratos.service.ResultService;
 import ua.edu.ratos.service.scheme.SchemeService;
+import ua.edu.ratos.service.session.decorator.NextProcessorTemplate;
 import ua.edu.ratos.service.session.domain.Result;
+import ua.edu.ratos.service.session.dto.batch.BatchInDto;
 import ua.edu.ratos.service.session.dto.*;
 import ua.edu.ratos.service.session.domain.BatchEvaluated;
 import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.domain.batch.BatchIn;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     private TimingService timingService;
 
     @Autowired
-    private PyramidProcessorService pyramidProcessorService;
+    private PyramidService pyramidService;
 
     @Autowired
     private ResultBuilder resultBuilder;
@@ -72,45 +73,41 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         final Scheme scheme = schemeService.findByIdForSession(schemeId);
         if (scheme==null || !scheme.isActive() || !scheme.isCompleted() || scheme.isDeleted())
             throw new IllegalStateException(NOT_AVAILABLE);
-
         // Build SessionData
         final SessionData sessionData = sessionDataBuilder.build(key, userId, scheme);
-
-        // Build first BatchOut
-        final BatchOut batchOut = batchBuilder.build(sessionData);
-
+        // Build first BatchOutDto
+        final BatchOutDto batchOutDto = batchBuilder.build(sessionData);
         // Update SessionData
-        sessionDataService.update(sessionData, batchOut);
-
+        sessionDataService.update(sessionData, batchOutDto);
         log.debug("SessionData is built :: {}", sessionData);
         return sessionData;
     }
 
+
     /**
-     * Front-end must ensure to call this method only if there is some non-null BatchOuts left
-     * Algorithm:
-     * 1. Timing control: back-end check if the Session or BatchOut is time-outed;
-     *    if time-outed, client script should initiate the finish request with the same parameters!
-     * 2. Evaluating if there is smth. to evaluate (non-empty BatchOut)
-     *   (if empty BatchIn, then all non-skipped questions consider to be incorrectly answered)
-     * 3. Return BatchOut
-     * @param batchIn currentBatch with user's provided responses
+     * Does all processing of incoming request
+     * @param batchInDto currentBatch with user's provided answers
      * @param sessionData
-     * @return next batch for user
+     * @return BatchOutDto
      */
     @Override
     @TrackTime
-    public BatchOut next(@NonNull final BatchIn batchIn, @NonNull SessionData sessionData) {
-        // Consider the client script to initiate request after either session or batch timeout, call finish then
+    public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull SessionData sessionData) {
+        // Consider Decorator pattern
+        // @Autowire NextProcessorTemplate nextProcessorTemplate
+        /* BatchOutDto batchOut = nextProcessorTemplate.process(batchInDto, sessionData);*/
+
+        // Consider the client script to initiate finish request after either batch timeout or session timeout
         timingService.control(sessionData.getSessionTimeout(), sessionData.getCurrentBatchTimeOut());
-        // Build next BatchOut
-        BatchOut batchOut;
-        // If current BatchOut contains smth. (we check because in case of skipping we remove elements from it)
-        if (!sessionData.getCurrentBatch().getBatch().isEmpty()) {
 
-            final BatchEvaluated batchEvaluated = evaluatingService.getBatchEvaluated(batchIn, sessionData);
 
-            // Updates
+        // Build next BatchOutDto
+        BatchOutDto batchOutDto;
+        // If current BatchOutDto contains smth. (we check because in case of skipping we remove elements from it)
+        if (!sessionData.getCurrentBatch().isEmpty()) {
+
+            final BatchEvaluated batchEvaluated = evaluatingService.getBatchEvaluated(batchInDto, sessionData);
+
             // update ProgressData
             progressDataService.update(sessionData, batchEvaluated);
             // update incorrect in MetaData if any
@@ -118,55 +115,58 @@ public class GenericSessionServiceImpl implements GenericSessionService {
             if (!incorrectResponseIds.isEmpty())
                 metaDataService.createOrUpdateIncorrect(sessionData, incorrectResponseIds);
 
-            // Pyramid
-            boolean pyramid = sessionData.getScheme().getMode().isPyramid();
-            if (pyramid) { // Process Pyramid mode (only if enabled)
-                pyramidProcessorService.process(sessionData, batchEvaluated);
+            // Pyramid mode processing if enabled
+            if (sessionData.getScheme().getMode().isPyramid()) {
+                pyramidService.process(sessionData, batchEvaluated);
             }
 
-            batchOut = batchBuilder.build(sessionData, batchEvaluated);
+            if (!sessionData.isMoreQuestions()) {
+                batchOutDto = BatchOutDto.buildEmpty();
+            } else {
+                batchOutDto = batchBuilder.build(sessionData, batchEvaluated);
+            }
         } else {// All questions were skipped: nothing to evaluate
-            // Build BatchOut with no batchEvaluated
-            batchOut = batchBuilder.build(sessionData);
+            if (!sessionData.isMoreQuestions()) {
+                batchOutDto = BatchOutDto.buildEmpty();
+            } else {
+                // Build BatchOutDto with no batchEvaluated
+                batchOutDto = batchBuilder.build(sessionData);
+            }
         }
         // update SessionData
-        sessionDataService.update(sessionData, batchOut);
-        return batchOut;
+        if (!batchOutDto.isEmpty()) sessionDataService.update(sessionData, batchOutDto);
+        log.debug("Next batch :: {}", batchOutDto);
+        return batchOutDto;
     }
 
+
     /**
-     * 1. Check for time-out (if not time-outed call)
-     * 2. Evaluate
-     * 3. Build Result
-     * 4-5. Save all the results
-     * 6. Build ResultOutDto and return it
-     * @param batchIn last BatchIn of questions
+     * Front-end calls this method as soon as
+     *   1) method next() returns an batch with empty questions list {},
+     *      which means that there are no more questions left in the current session
+     *      OR
+     *   2) method next() throws time-out exception
+     *      OR
+     *   3) it decides that time-out event is fired (with flag timeOuted=true)
      * @param sessionData
      * @param timeOuted
-     * @return ResultOutDto
+     * @return result
      */
     @Override
     @TrackTime
     @Transactional
-    public ResultOutDto finish(@NonNull final BatchIn batchIn, @NonNull SessionData sessionData, boolean timeOuted) {
-        // 1. Check if the Session or BatchOut is time-outed, if so throw exception
-        if (!timeOuted) {
-            timingService.control(sessionData.getSessionTimeout(), sessionData.getCurrentBatchTimeOut());
-        }
-        // 2. Evaluate
-        evaluatingService.getBatchEvaluated(batchIn, sessionData);
-        // 3. Build and return Result
+    public ResultOutDto finish(@NonNull SessionData sessionData, boolean timeOuted) {
+        // 1. Build Result object
         final Result result = resultBuilder.build(sessionData);
-        // 3.1 Reset currentBatch related fields
+        // 2 Reset currentBatch related fields to null
         if (!timeOuted) sessionDataService.finalize(sessionData);
-        // 4. Save results to DB {result, result_theme}
+        // 3. Save results to DB
         Long resultId = resultService.save(sessionData, result, timeOuted);
-        // 5. Save serialised data {result_details}
+        // 4. Save result details to DB
         resultDetailsService.save(sessionData, resultId);
-        // 6. Build resultDto based on settings and mode and Result object
-        final ResultOutDto resultOutDto = resultDtoBuilder.build(sessionData, result);
-        // 7. Return resultDto
-        return resultOutDto;
+        // 5. Build resultDto based on settings, mode and calculated Result object
+        log.debug("Result :: {}", result);
+        return resultDtoBuilder.build(sessionData, result);
     }
 
     /**

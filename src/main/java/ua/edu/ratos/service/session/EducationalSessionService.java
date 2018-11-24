@@ -2,7 +2,7 @@ package ua.edu.ratos.service.session;
 
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.dto.ComplaintInDto;
 import ua.edu.ratos.service.session.domain.Help;
 
@@ -25,24 +25,25 @@ public interface EducationalSessionService {
      * @param sessionData
      * @return
      */
-    BatchOut resume(SessionData sessionData);
+    BatchOutDto resume(SessionData sessionData);
 
     /**
      * Serialize SessionData state to database
      * @param sessionData
+     * @return key for retrieval this session from DB
      */
-    void preserve(SessionData sessionData);
+    String preserve(SessionData sessionData);
 
     /**
-     * Retrieves preserved dto
+     * Retrieves preserved session
      * @param key id in database
-     * @return a newly generated key for in-memory storage
+     * @return deserialized SessionData object from DB to put back in auth. session
      */
-    String retrieve(String key);
+    SessionData retrieve(String key);
 
 
-    /*--------------Ajax-------------*/
-    /*---------All without timing control---------*/
+    //-------------------Ajax-------------
+    //---------All without timing control---------
 
     /**
      * Provides helpAvailable for the given question

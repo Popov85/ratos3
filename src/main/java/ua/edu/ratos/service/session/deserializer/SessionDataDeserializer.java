@@ -1,4 +1,4 @@
-package ua.edu.ratos.service.session.serializer;
+package ua.edu.ratos.service.session.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,24 +7,19 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.session.domain.*;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.domain.question.Question;
 import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public SessionData deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
@@ -72,7 +67,7 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         return sessionData;
     }
 
-    private BatchOut getCurrentBatch(JsonNode node) throws IOException {
+    private BatchOutDto getCurrentBatch(JsonNode node) throws IOException {
         List<QuestionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionOutDto>>() {
         }).readValue(node.path("batch"));
         Mode mode = objectMapper.treeToValue(node.path("mode"), Mode.class);
@@ -81,7 +76,7 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         long batchTimeLimit = node.path("batchTimeLimit").asLong();
         int batchesLeft = node.path("batchesLeft").asInt();
 
-        BatchOut batchOut = new BatchOut.Builder()
+        BatchOutDto batchOutDto = new BatchOutDto.Builder()
                 .withQuestions(questions)
                 .inMode(mode)
                 .withTimeLeft(timeLeft)
@@ -94,9 +89,9 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         JsonNode previousBatchResult = node.path("previousBatchResult");
         if (!previousBatchResult.isMissingNode()) {
             PreviousBatchResult pbr = objectMapper.treeToValue(node.path("previousBatchResult"), PreviousBatchResult.class);
-            batchOut.setPreviousBatchResult(pbr);
+            batchOutDto.setPreviousBatchResult(pbr);
         }
-        return batchOut;
+        return batchOutDto;
     }
 
 }

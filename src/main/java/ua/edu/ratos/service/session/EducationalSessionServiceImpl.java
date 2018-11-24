@@ -3,25 +3,29 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.SessionPreserved;
+import ua.edu.ratos.dao.entity.User;
+import ua.edu.ratos.dao.repository.SessionPreservedRepository;
 import ua.edu.ratos.service.session.domain.Mode;
 import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.dto.ComplaintInDto;
 import ua.edu.ratos.service.session.domain.Help;
 import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
+
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class EducationalSessionServiceImpl implements EducationalSessionService {
 
     private static final String NO_SUCH_QUESTION = "No such questionId found in the current batch";
-
     private static final String OPERATION_NOT_ALLOWED = "This operation is not allowed by scheme settings";
-
-    private static final String NO_HELP_PRESENT = "No helpAvailable is available for this question";
-
-    private static final String STAR_OUT_OF_BOUND = "Unsupported star value, only 1 to 5 stares are allowed";
+    private static final String NO_HELP_PRESENT = "No help is available for this question";
+    private static final String STAR_OUT_OF_BOUND = "Unsupported star value, only 1 to 5 stars are allowed";
 
     @Autowired
     private ShiftService shiftService;
@@ -32,29 +36,53 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     @Autowired
     private UserQuestionStarredService userQuestionStarredService;
 
+    @Autowired
+    private SessionDataSerializerService serializer;
+
+    @Autowired
+    private SessionPreservedRepository sessionPreservedRepository;
+
+    @Autowired
+    private EntityManager em;
+
     @Override
     public void pause(@NonNull final SessionData sessionData) {
         // TODO
     }
 
     @Override
-    public BatchOut resume(@NonNull final SessionData sessionData) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public void preserve(@NonNull final SessionData sessionData) {
-        // TODO
-    }
-
-    @Override
-    public String retrieve(@NonNull final String key) {
+    public BatchOutDto resume(@NonNull final SessionData sessionData) {
         // TODO
         return null;
     }
 
 
+
+    @Override
+    @Transactional
+    public String preserve(@NonNull final SessionData sessionData) {
+        Mode mode = sessionData.getScheme().getMode();
+        if (!mode.isPreservable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
+        String data = serializer.serialize(sessionData);
+        SessionPreserved sessionPreserved = new SessionPreserved();
+        sessionPreserved.setKey(sessionData.getKey());
+        sessionPreserved.setData(data);
+        sessionPreserved.setScheme(em.getReference(Scheme.class, sessionData.getScheme().getSchemeId()));
+        sessionPreserved.setUser(em.getReference(User.class, sessionData.getUserId()));
+        sessionPreserved.setWhenPreserved(LocalDateTime.now());
+        sessionPreservedRepository.save(sessionPreserved);
+        // save to DB and return key
+        return sessionPreserved.getKey();
+    }
+
+    @Override
+    @Transactional
+    public SessionData retrieve(@NonNull final String key) {
+        SessionPreserved sessionPreserved = sessionPreservedRepository.findById(key)
+                .orElseThrow(()->new IllegalStateException(key));
+        sessionPreservedRepository.deleteById(key);
+        return serializer.deserialize(sessionPreserved.getData());
+    }
 
     /*---------------------AJAX---------------------*/
 
@@ -64,7 +92,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
      * Front-end must ensure that Help is present and is allowed by settings before calling this method
      * @param questionId
      * @param sessionData
-     * @return Help dto or nullable optional object if no Help is associated with this question
+     * @return Help DTO (domain actually) or nullable optional object if no Help is associated with this question
      */
     @Override
     public Help help(@NonNull final Long questionId, @NonNull final SessionData sessionData) {

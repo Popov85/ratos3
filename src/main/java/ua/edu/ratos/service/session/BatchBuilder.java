@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
 import ua.edu.ratos.service.session.domain.PreviousBatchResult;
 import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
 import ua.edu.ratos.service.session.domain.BatchEvaluated;
@@ -14,6 +14,7 @@ import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
 public class BatchBuilder {
 
     /**
-     * If true, randomizes answers of questions;
+     * If true, randomizes answers of questions where possible;
      * True by default
      */
-    private static final boolean MIXABLE = true;
+    private static final boolean SHUFFLE_ENABLED = true;
 
     @Autowired
     private TimingService timingService;
@@ -37,34 +38,34 @@ public class BatchBuilder {
     private CollectionShuffler collectionShuffler;
 
 
-    public BatchOut build(@NonNull final SessionData sessionData) {
-        final BatchOut batchOut = buildRegular(sessionData);
-        log.debug("BatchOut is built :: {}", batchOut);
-        return batchOut;
+    public BatchOutDto build(@NonNull final SessionData sessionData) {
+        final BatchOutDto batchOutDto = buildRegular(sessionData);
+        log.debug("BatchOutDto is built :: {}", batchOutDto);
+        return batchOutDto;
     }
 
-    public BatchOut build(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
-        final boolean includeRightAnswer = sessionData.getScheme().getMode().isRightAnswer();
-        final BatchOut batchOut = buildRegular(sessionData);
-        if (includeRightAnswer) {
+    public BatchOutDto build(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
+        final BatchOutDto batchOutDto = buildRegular(sessionData);
+        if (sessionData.getScheme().getMode().isRightAnswer()) {
             final double currentScore = progressDataService.getCurrentScore(sessionData);
             final double effectiveScore = progressDataService.getEffectiveScore(sessionData);
             PreviousBatchResult previousBatchResult =
                     new PreviousBatchResult(currentScore, effectiveScore, batchEvaluated);
-            batchOut.setPreviousBatchResult(previousBatchResult);
-            log.debug("Extended BatchOut is built :: {}", batchOut);
-            return batchOut;
+            batchOutDto.setPreviousBatchResult(previousBatchResult);
+            log.debug("Extended BatchOutDto is built :: {}", batchOutDto);
+            return batchOutDto;
         }
-        log.debug("Regular BatchOut is built :: {}", batchOut);
-        return batchOut;
+        log.debug("Regular BatchOutDto is built :: {}", batchOutDto);
+        return batchOutDto;
     }
 
 
+    private BatchOutDto buildRegular(@NonNull final SessionData sessionData) {
+        final List<QuestionOutDto> batchQuestions = getBatchQuestions(sessionData);
 
+        if (SHUFFLE_ENABLED) batchQuestions.forEach(q->{ if (q.isShufflingSupported()) q.shuffle(collectionShuffler);});
 
-    private BatchOut buildRegular(@NonNull final SessionData sessionData) {
-        final List<QuestionOutDto> batchQuestionsDto = shuffleBatchQuestions(sessionData);
-        final int currentBatchSize = batchQuestionsDto.size();
+        final int currentBatchSize = batchQuestions.size();
         // Timing resolution
         long timeLeft = getTimeLeft(sessionData);
         long batchTimeLimit = getBatchTimeLimit(sessionData, currentBatchSize);
@@ -72,31 +73,26 @@ public class BatchBuilder {
         final int questionsLeft = getQuestionsLeft(sessionData, currentBatchSize);
         // Batches left
         int batchesLeft = getBatchesLeft(sessionData, currentBatchSize);
-        return new BatchOut.Builder()
-                .withQuestions(batchQuestionsDto)
+        return new BatchOutDto.Builder()
+                .withQuestions(batchQuestions)
                 .inMode(sessionData.getScheme().getMode())
                 .withTimeLeft(timeLeft)
                 .withQuestionsLeft(questionsLeft)
                 .withBatchTimeLimit(batchTimeLimit)
-                .withBatchesLeft(batchesLeft).build();
+                .withBatchesLeft(batchesLeft)
+                .build();
     }
 
-    private List<QuestionOutDto> shuffleBatchQuestions(@NonNull final SessionData sessionData) {
-        List<QuestionOutDto> batchQuestionsDto = getBatchQuestions(sessionData);
-        batchQuestionsDto.forEach(q->{
-            if (MIXABLE && q.isShufflingSupported()) q.shuffle(collectionShuffler);
-        });
-        return batchQuestionsDto;
-    }
+
 
     private List<QuestionOutDto> getBatchQuestions(@NonNull final SessionData sessionData) {
         final List<Question> questions = sessionData.getQuestions();
-        final int currentIndex = sessionData.getCurrentIndex();
-        final int questionsPerBatch = sessionData.getQuestionsPerBatch();
         final int size = questions.size();
+        final int currentIndex = sessionData.getCurrentIndex();
 
-        if (currentIndex >= size - 1)
-            throw new IllegalStateException("oops, no more questions");
+        if (currentIndex >= size) throw new RuntimeException("Ooops, no more questions!");
+
+        final int questionsPerBatch = sessionData.getQuestionsPerBatch();
 
         List<Question> result;
         if (currentIndex + questionsPerBatch<= size) {

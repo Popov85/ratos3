@@ -1,4 +1,4 @@
-package ua.edu.ratos.service.session.domain.batch;
+package ua.edu.ratos.service.session.dto.batch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,6 +8,8 @@ import lombok.ToString;
 import ua.edu.ratos.service.session.domain.Mode;
 import ua.edu.ratos.service.session.domain.PreviousBatchResult;
 import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,11 +17,11 @@ import java.util.stream.Collectors;
 @Getter
 @ToString(exclude = "batchMap")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BatchOut {
+public class BatchOutDto {
 
-    private static final String BUILD_ERROR = "Failed to build BatchOut: wrong object state";
+    private static final String BUILD_ERROR = "Failed to build BatchOutDto: wrong object state";
 
-    private static final String TIMEOUT_ERROR = "Failed to build BatchOut: no time left for the next batch";
+    private static final String TIMEOUT_ERROR = "Failed to build BatchOutDto: no time left for the next batch";
 
     private final List<QuestionOutDto> batch;
 
@@ -42,7 +44,7 @@ public class BatchOut {
     @Setter
     private PreviousBatchResult previousBatchResult;
 
-    private BatchOut(List<QuestionOutDto> batch, Map<Long, QuestionOutDto> batchMap, Mode mode, long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft) {
+    private BatchOutDto(List<QuestionOutDto> batch, Map<Long, QuestionOutDto> batchMap, Mode mode, long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft) {
         this.batch = batch;
         this.mode = mode;
         this.timeLeft = timeLeft;
@@ -50,6 +52,17 @@ public class BatchOut {
         this.batchTimeLimit = batchTimeLimit;
         this.batchesLeft = batchesLeft;
         this.batchMap = batchMap;
+    }
+
+    public static BatchOutDto buildEmpty() {
+        return new BatchOutDto.Builder()
+                .withNoQuestions()
+                .inMode(null)
+                .withTimeLeft(-1)
+                .withQuestionsLeft(0)
+                .withBatchTimeLimit(-1)
+                .withBatchesLeft(0)
+                .build();
     }
 
     public static class Builder {
@@ -67,6 +80,16 @@ public class BatchOut {
         public Builder withQuestions(List<QuestionOutDto> questions) {
             this.batch = questions;
             this.batchMap = questions.stream().collect(Collectors.toMap(q -> q.getQuestionId(), q -> q));
+            return this;
+        }
+
+        /**
+         * Use it when no more questions left
+         * @return
+         */
+        public Builder withNoQuestions() {
+            this.batch = new ArrayList<>();
+            this.batchMap = new HashMap<>();
             return this;
         }
 
@@ -112,7 +135,7 @@ public class BatchOut {
             return this;
         }
 
-        public BatchOut build() {
+        public BatchOutDto build() {
             if (batch== null || batch.isEmpty()) throw new IllegalStateException(BUILD_ERROR);
             if (batchMap == null || batchMap.isEmpty()) throw new IllegalStateException(BUILD_ERROR);
             if (mode == null) throw new IllegalStateException(BUILD_ERROR);
@@ -120,7 +143,11 @@ public class BatchOut {
                 throw new IllegalStateException(TIMEOUT_ERROR);
             if (questionsLeft<0) throw new IllegalStateException(BUILD_ERROR);
             if (batchesLeft<0) throw new IllegalStateException(BUILD_ERROR);
-            return new BatchOut(batch, batchMap, mode, timeLeft, questionsLeft, batchTimeControl, batchesLeft);
+            return new BatchOutDto(batch, batchMap, mode, timeLeft, questionsLeft, batchTimeControl, batchesLeft);
         }
+    }
+
+    public boolean isEmpty() {
+        return this.batch.isEmpty();
     }
 }

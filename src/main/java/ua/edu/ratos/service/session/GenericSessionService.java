@@ -1,9 +1,11 @@
 package ua.edu.ratos.service.session;
 
-import ua.edu.ratos.service.session.domain.batch.BatchIn;
-import ua.edu.ratos.service.session.domain.batch.BatchOut;
+import ua.edu.ratos.service.session.dto.batch.BatchInDto;
+import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
 import ua.edu.ratos.service.session.dto.ResultOutDto;
 import ua.edu.ratos.service.session.domain.SessionData;
+
+import java.util.Optional;
 
 /**
  * Generic session interface. Defines generic learning session operations in batches;
@@ -17,26 +19,25 @@ public interface GenericSessionService {
      * @param key
      * @param userId
      * @param schemeId
-     * @return the SessionData with BatchOut as a part
+     * @return the SessionData with BatchOutDto as a part
      */
     SessionData start(String key, Long userId, Long schemeId);
 
     /**
-     * Provides a new currentBatch of questions
-     * @param batchIn currentBatch with user's provided answers
+     * Provides a new batch of questions for user
+     * @param batchInDto currentBatch with user's provided answers
      * @param sessionData
-     * @return next batchOut
+     * @return next batchOutDto
      */
-    BatchOut next(BatchIn batchIn, SessionData sessionData);
+    BatchOutDto next(BatchInDto batchInDto, SessionData sessionData);
 
     /**
-     * Normal finish, provides results for dto
-     * @param batchIn last BatchIn of questions
+     * Normal finish, provides results for current learning session
      * @param sessionData
      * @param timeOuted
-     * @return result on this session
+     * @return result of this session
      */
-    ResultOutDto finish(BatchIn batchIn, SessionData sessionData, boolean timeOuted);
+    ResultOutDto finish(SessionData sessionData, boolean timeOuted);
 
     /**
      * Cancel the current dto
