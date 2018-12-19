@@ -131,12 +131,12 @@ public class SchemeServiceTestIT {
         // 4. Observe indexes re-built!
         final List<Long> edit = Arrays.asList(3L, 1L, 2L, 4L, 5L, 7L, 8L, 6L);
         schemeService.reOrder(1L, edit);
-        final List<SchemeTheme> schemeThemes = schemeRepository.findByIdWithThemes(1L).getSchemeThemes();
+        final List<SchemeTheme> schemeThemes = schemeRepository.findByIdWithThemes(1L).getThemes();
         final List<Long> actual = schemeThemes.stream().map(SchemeTheme::getSchemeThemeId)
                 .collect(Collectors.toList());
         Assert.assertEquals(8, actual.size());
         Assert.assertEquals(edit, actual);
-        //schemeThemes.forEach(System.out::println);
+        //themes.forEach(System.out::println);
     }
 
     @Test
@@ -148,12 +148,12 @@ public class SchemeServiceTestIT {
         // 2. Delete the 4th one
         // 3. Make sure only 7 of they are left, make sure the Scheme is still completed
         // 4. Observe indexes updated!
-        Assert.assertEquals(8, schemeRepository.findByIdWithThemes(1L).getSchemeThemes().size());
+        Assert.assertEquals(8, schemeRepository.findByIdWithThemes(1L).getThemes().size());
         schemeService.deleteByIndex(1L, 4);
         final Scheme foundScheme = schemeRepository.findByIdWithThemes(1L);
-        Assert.assertEquals(7, foundScheme.getSchemeThemes().size());
+        Assert.assertEquals(7, foundScheme.getThemes().size());
         Assert.assertTrue(foundScheme.isCompleted());
-        //schemeThemes.forEach(System.out::println);
+        //themes.forEach(System.out::println);
     }
 
     @Test
@@ -165,11 +165,11 @@ public class SchemeServiceTestIT {
         // 2. Delete it single theme
         // 3. Make sure 0 of them are left
         // 4. Make sure the Scheme became incomplete
-        Assert.assertEquals(1, schemeRepository.findByIdWithThemes(1L).getSchemeThemes().size());
+        Assert.assertEquals(1, schemeRepository.findByIdWithThemes(1L).getThemes().size());
         schemeService.deleteByIndex(1L, 0);
         final Scheme foundScheme = schemeRepository.findByIdWithThemes(1L);
-        Assert.assertEquals(0, foundScheme.getSchemeThemes().size());
+        Assert.assertEquals(0, foundScheme.getThemes().size());
         Assert.assertFalse(foundScheme.isCompleted());
-        foundScheme.getSchemeThemes().forEach(System.out::println);
+        foundScheme.getThemes().forEach(System.out::println);
     }
 }

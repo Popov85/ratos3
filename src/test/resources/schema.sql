@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS user (
   surname VARCHAR(100) NOT NULL,
   password VARCHAR(70) NOT NULL,
   email VARCHAR(200) NOT NULL,
+  is_active TINYINT(1) NOT NULL,
   PRIMARY KEY (user_id),
   UNIQUE INDEX email_UNIQUE (email ASC));
 
@@ -41,8 +42,45 @@ CREATE TABLE IF NOT EXISTS   faculty  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table  class
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  class (
+  class_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  fac_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (class_id),
+  INDEX fk_class_faculty_fac_id_idx (fac_id ASC),
+  CONSTRAINT fk_class_faculty_fac_id
+  FOREIGN KEY (fac_id)
+  REFERENCES  faculty (fac_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table  student
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  student (
+  stud_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  class_id INT UNSIGNED NOT NULL,
+  entrance_year YEAR NOT NULL COMMENT 'Year when this student/employee has entered the educational organisation',
+  PRIMARY KEY (stud_id),
+  INDEX fk_student_user_user_id_idx (user_id ASC),
+  INDEX fk_student_class_class_id_idx (class_id ASC),
+  CONSTRAINT fk_student_user_user_id
+  FOREIGN KEY (user_id)
+  REFERENCES  user (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_student_class_class_id
+  FOREIGN KEY (class_id)
+  REFERENCES  class (class_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table   department
 -- -----------------------------------------------------
@@ -912,31 +950,130 @@ CREATE TABLE IF NOT EXISTS   type_level  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table  lti_version
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS  lti_version ;
+
+CREATE TABLE IF NOT EXISTS  lti_version (
+  version_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  version VARCHAR(20) NOT NULL,
+  PRIMARY KEY (version_id))
+  ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
--- Table   result
+-- Table  lti1p0_credentials
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  result  (
-  result_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  scheme_id  INT UNSIGNED NOT NULL,
-  user_id  INT UNSIGNED NOT NULL,
-  percent  DOUBLE UNSIGNED NOT NULL,
-  grade  DOUBLE UNSIGNED NOT NULL,
-  is_passed  TINYINT(1) NOT NULL DEFAULT 0,
-  session_ended  TIMESTAMP NOT NULL,
-  session_lasted  INT NOT NULL,
-  is_timeouted  TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY ( result_id ),
-  INDEX  fk_result_scheme_scheme_id_idx  ( scheme_id  ASC),
-  INDEX  fk_result_user_user_id_idx  ( user_id  ASC),
-  CONSTRAINT  fk_result_scheme_scheme_id
-  FOREIGN KEY ( scheme_id )
-  REFERENCES  scheme  ( scheme_id )
+CREATE TABLE IF NOT EXISTS  lti1p0_credentials (
+  credentials_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  lti_consumer_key VARCHAR(1000) NOT NULL,
+  lti_client_secret VARCHAR(1000) NOT NULL,
+  PRIMARY KEY (credentials_id))
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  lms
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  lms (
+  lms_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  lti_version_id INT UNSIGNED NOT NULL,
+  org_id INT UNSIGNED NOT NULL,
+  credentials_id INT UNSIGNED NULL,
+  PRIMARY KEY (lms_id),
+  INDEX fk_lms_lti_version_version_id_idx (lti_version_id ASC),
+  INDEX fk_lms_organisation_org_id_idx (org_id ASC),
+  INDEX fk_lms_oauthv1p0_credentials_credentials_id_idx (credentials_id ASC),
+  CONSTRAINT fk_lms_lti_version_version_id
+  FOREIGN KEY (lti_version_id)
+  REFERENCES  lti_version (version_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_result_user_user_id
-  FOREIGN KEY ( user_id )
-  REFERENCES  user  ( user_id )
+  CONSTRAINT fk_lms_organisation_org_id
+  FOREIGN KEY (org_id)
+  REFERENCES  organisation (org_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_lms_oauthv1p0_credentials_credentials_id
+  FOREIGN KEY (credentials_id)
+  REFERENCES  lti1p0_credentials (credentials_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table  lms_origin
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  lms_origin (
+  origin_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  link VARCHAR(500) NOT NULL,
+  lms_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (origin_id),
+  INDEX fk_lms_origin_lms_lms_id_idx (lms_id ASC),
+  CONSTRAINT fk_lms_origin_lms_lms_id
+  FOREIGN KEY (lms_id)
+  REFERENCES  lms (lms_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  lms_course
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  lms_course (
+  lms_course_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  course_id INT UNSIGNED NOT NULL,
+  lms_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (lms_course_id),
+  INDEX fk_lms_course_course_course_id_idx (course_id ASC),
+  INDEX fk_lms_course_lms_lms_id_idx (lms_id ASC),
+  CONSTRAINT fk_lms_course_course_course_id
+  FOREIGN KEY (course_id)
+  REFERENCES  course (course_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_lms_course_lms_lms_id
+  FOREIGN KEY (lms_id)
+  REFERENCES  lms (lms_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  result
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  result (
+  result_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  scheme_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  percent DOUBLE UNSIGNED NOT NULL,
+  grade DOUBLE UNSIGNED NOT NULL,
+  is_passed TINYINT(1) NOT NULL DEFAULT 0,
+  session_ended TIMESTAMP NOT NULL,
+  session_lasted INT NOT NULL,
+  is_timeouted TINYINT(1) NOT NULL DEFAULT 0,
+  lms_id INT UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (result_id),
+  INDEX fk_result_scheme_scheme_id_idx (scheme_id ASC),
+  INDEX fk_result_user_user_id_idx (user_id ASC),
+  INDEX fk_result_lms1_idx (lms_id ASC),
+  CONSTRAINT fk_result_scheme_scheme_id
+  FOREIGN KEY (scheme_id)
+  REFERENCES  scheme (scheme_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_result_user_user_id
+  FOREIGN KEY (user_id)
+  REFERENCES  user (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_result_lms1
+  FOREIGN KEY (lms_id)
+  REFERENCES  lms (lms_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -1005,32 +1142,6 @@ CREATE TABLE IF NOT EXISTS   session_preserved  (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table   student
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   student  (
-  stud_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  entrance_year  YEAR NOT NULL ,
-  class  VARCHAR(50) NOT NULL,
-  user_id  INT UNSIGNED NOT NULL,
-  is_active  TINYINT(1) NOT NULL,
-  fac_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( stud_id ),
-  INDEX  fk_student_user_user_id_idx  ( user_id  ASC),
-  INDEX  fk_student_faculty_fac_id_idx  ( fac_id  ASC),
-  CONSTRAINT  fk_student_user_user_id
-  FOREIGN KEY ( user_id )
-  REFERENCES   user  ( user_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT  fk_student_faculty_fac_id
-  FOREIGN KEY ( fac_id )
-  REFERENCES   faculty  ( fac_id )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-  ENGINE = InnoDB;
-
 -- -----------------------------------------------------
 -- Placeholder table for view   theme_type
 -- -----------------------------------------------------
@@ -1053,6 +1164,66 @@ CREATE TABLE IF NOT EXISTS   user_question_starred  (
   CONSTRAINT  fk_user_question_starred_user_id
   FOREIGN KEY ( user_id )
   REFERENCES   user  ( user_id )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  group
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  groups (
+  group_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  staff_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (group_id),
+  INDEX fk_group_staff_staff_id_idx (staff_id ASC),
+  CONSTRAINT fk_group_staff_staff_id
+  FOREIGN KEY (staff_id)
+  REFERENCES  staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  student_group
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  student_group (
+  stud_id INT UNSIGNED NOT NULL,
+  group_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (stud_id, group_id),
+  INDEX fk_student_group_group_group_id_idx (group_id ASC),
+  CONSTRAINT fk_student_group_student_student_id
+  FOREIGN KEY (stud_id)
+  REFERENCES  student (stud_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_student_group_group_student_id
+  FOREIGN KEY (group_id)
+  REFERENCES  groups (group_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table  group_scheme
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS  group_scheme (
+  group_id INT UNSIGNED NOT NULL,
+  scheme_id INT UNSIGNED NOT NULL,
+  is_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (group_id, scheme_id),
+  INDEX fk_group_scheme_scheme_scheme_id_idx (scheme_id ASC),
+  CONSTRAINT fk_group_scheme_group_group_id
+  FOREIGN KEY (group_id)
+  REFERENCES  groups (group_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_group_scheme_scheme_group_id
+  FOREIGN KEY (scheme_id)
+  REFERENCES  scheme (scheme_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

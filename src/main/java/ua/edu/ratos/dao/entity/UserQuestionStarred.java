@@ -15,7 +15,7 @@ public class UserQuestionStarred {
     @EmbeddedId
     private UserQuestionStarredId userQuestionStarredId = new UserQuestionStarredId();
 
-    @MapsId("userId")
+    @MapsId("lmsUserId")
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

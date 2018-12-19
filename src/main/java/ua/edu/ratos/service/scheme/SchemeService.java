@@ -89,7 +89,7 @@ public class SchemeService {
     @Transactional
     public void reOrder(@NonNull Long schemeId, @NonNull List<Long> schemeThemeIds) {
         final Scheme scheme = schemeRepository.findByIdWithThemes(schemeId);
-        if (scheme.getSchemeThemes().size()!=schemeThemeIds.size())
+        if (scheme.getThemes().size()!=schemeThemeIds.size())
             throw new RuntimeException("Unequal list size: cannot reorder");
         scheme.clearSchemeTheme();
         schemeThemeIds.forEach(id -> {
@@ -108,9 +108,9 @@ public class SchemeService {
         if (index<0 || index>100)
             throw new RuntimeException("Wrong currentIndex to delete");
         final Scheme scheme = schemeRepository.findByIdWithThemes(schemeId);
-        final SchemeTheme schemeTheme = scheme.getSchemeThemes().get(index);
+        final SchemeTheme schemeTheme = scheme.getThemes().get(index);
         scheme.removeSchemeTheme(schemeTheme);
-        if (scheme.getSchemeThemes().isEmpty()) scheme.setCompleted(false);
+        if (scheme.getThemes().isEmpty()) scheme.setCompleted(false);
     }
 
 

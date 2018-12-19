@@ -27,7 +27,7 @@ public class SessionDataBuilder {
 
         // Obtain individual sequence of questions
         final SequenceProducer sequenceProducer = sequenceFactory.getSequenceProducer(scheme.getStrategy());
-        final List<Question> sequence = sequenceProducer.getSequence(scheme.getSchemeThemes());
+        final List<Question> sequence = sequenceProducer.getSequence(scheme.getThemes());
         log.debug("Individual sequence is built of size :: {}", sequence.size());
 
         // Time control processing

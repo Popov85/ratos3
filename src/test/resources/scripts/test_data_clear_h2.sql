@@ -8,6 +8,8 @@ delete from question_help;
 delete from user_question_starred;
 delete from result_theme;
 delete from result_details;
+delete from student_group;
+delete from group_scheme;
 delete from result;
 delete from resource;
 delete from help;
@@ -28,6 +30,7 @@ delete from question_type;
 delete from scheme_four_point;
 delete from scheme_two_point;
 delete from scheme_free_point;
+delete from groups;
 delete from scheme;
 delete from mode;
 delete from settings;
@@ -37,18 +40,26 @@ delete from two_point;
 delete from free_point;
 delete from grading;
 
+delete from lms_course;
 delete from course;
+delete from student;
 delete from staff;
 delete from user_role;
 delete from user;
 delete from role;
 delete from position;
 delete from department;
+delete from class;
 delete from faculty;
+delete from lms_origin;
+delete from lms;
 delete from organisation;
+delete from lti1p0_credentials;
+delete from lti_version;
 
 ALTER TABLE organisation ALTER COLUMN org_id RESTART WITH 1;
 ALTER TABLE faculty ALTER COLUMN fac_id RESTART WITH 1;
+ALTER TABLE class ALTER COLUMN class_id RESTART WITH 1;
 ALTER TABLE department ALTER COLUMN dep_id RESTART WITH 1;
 ALTER TABLE role ALTER COLUMN role_id RESTART WITH 1;
 ALTER TABLE position ALTER COLUMN pos_id RESTART WITH 1;
@@ -80,6 +91,14 @@ ALTER TABLE answer_mq ALTER COLUMN answer_id RESTART WITH 1;
 ALTER TABLE answer_sq ALTER COLUMN answer_id RESTART WITH 1;
 
 ALTER TABLE result ALTER COLUMN result_id RESTART WITH 1;
+
+ALTER TABLE groups ALTER COLUMN group_id RESTART WITH 1;
+
+ALTER TABLE lms_course ALTER COLUMN lms_course_id RESTART WITH 1;
+ALTER TABLE lms ALTER COLUMN lms_id RESTART WITH 1;
+ALTER TABLE lms_origin ALTER COLUMN origin_id RESTART WITH 1;
+ALTER TABLE lti_version ALTER COLUMN version_id RESTART WITH 1;
+ALTER TABLE lti1p0_credentials ALTER COLUMN credentials_id RESTART WITH 1;
 
 
 

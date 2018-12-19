@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 /**
  * Scenario 0: Normal finish
  * 1) Result is stored in database
- * 2) User gets result
+ * 2) LISUser gets result
  * 3) Key is removed from memory (auth. session) programmatically
  *
- * Scenario 1: User is inactive for longer than is set by session settings (business time limit)
+ * Scenario 1: LISUser is inactive for longer than is set by session settings (business time limit)
  * 1) Data still alive in memory for 12 hours.
  * 2) Next time user requests to continue within TTL time (12 hours), the result is returned.
  * 3) Result is stored in database, with flag expired
  * 4) Key is removed from memory (auth) programmatically
  *
- * Scenario 2: User is inactive for more than 12 hours.
+ * Scenario 2: LISUser is inactive for more than 12 hours.
  * 1) SessionData data for this key is forever lost in memory due to timeout.
- * 2) User gets his current result if present in incoming BatchOutDto object.
+ * 2) LISUser gets his current result if present in incoming BatchOutDto object.
  * 3) Result is not stored in database.
  */
 @Getter

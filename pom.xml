@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ua.edu.zsmu</groupId>
+	<groupId>ua.edu.ratos</groupId>
 	<artifactId>ratos</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -21,7 +21,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+        <java.version>1.8</java.version>
+		<spring.security.oauth>2.3.4.RELEASE</spring.security.oauth>
 		<h2.version>1.4.197</h2.version>
 		<mysql.version>8.0.11</mysql.version>
 		<mapper.version>2.1.0</mapper.version>
@@ -30,6 +31,7 @@
 		<hibernate-jcache.version>5.2.17.Final</hibernate-jcache.version>
 		<ehcache.version>3.6.0</ehcache.version>
 		<jackson.jsr310>2.9.7</jackson.jsr310>
+		<jackson.xml>2.9.7</jackson.xml>
 		<jsonassert>1.5.0</jsonassert>
 	</properties>
 
@@ -82,6 +84,11 @@
 		<!-- Off standard libs -->
 
 		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth</artifactId>
+			<version>${spring.security.oauth}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -128,6 +135,12 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${jackson.jsr310}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson.xml}</version>
 		</dependency>
 
 		<dependency>

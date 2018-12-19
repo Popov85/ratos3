@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"faculty", "user"})
+@ToString(exclude = {"group"})
 @Entity
 @Table(name = "student")
 public class Student {
@@ -18,18 +18,15 @@ public class Student {
     @Column(name = "stud_id")
     private Long studId;
 
-    @Column(name = "entrance_year")
-    private int entranceYear;
-
-    @Column(name = "class")
-    private String className;
-
     @MapsId
     @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fac_id")
-    protected Faculty faculty;
+    @JoinColumn(name = "class_id")
+    private Class studentClass;
+
+    @Column(name = "entrance_year")
+    private int entranceYear;
 }

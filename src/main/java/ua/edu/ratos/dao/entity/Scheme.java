@@ -11,11 +11,13 @@ import ua.edu.ratos.dao.entity.grade.Grading;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "schemeThemes"})
+@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "themes", "groups"})
 @Entity
 @Table(name="scheme")
 @Cacheable
@@ -74,21 +76,33 @@ public class Scheme {
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private List<SchemeTheme> schemeThemes = new ArrayList<>();
+    private List<SchemeTheme> themes = new ArrayList<>();
 
     public void addSchemeTheme(@NonNull SchemeTheme schemeTheme) {
-        this.schemeThemes.add(schemeTheme);
+        this.themes.add(schemeTheme);
         schemeTheme.setScheme(this);
     }
 
     public void removeSchemeTheme(@NonNull SchemeTheme schemeTheme) {
-        this.schemeThemes.remove(schemeTheme);
+        this.themes.remove(schemeTheme);
         schemeTheme.setScheme(null);
     }
 
     public void clearSchemeTheme() {
-        this.schemeThemes.clear();
+        this.themes.clear();
     }
+
+    @OneToMany(mappedBy = "scheme", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<GroupScheme> groups = new HashSet<>();
+
+    public void addGroup(Group group) {
+        GroupScheme groupScheme = new GroupScheme();
+        groupScheme.setGroup(group);
+        groupScheme.setScheme(this);
+        groupScheme.setEnabled(true);
+        this.groups.add(groupScheme);
+    }
+
 
     public ua.edu.ratos.service.session.domain.Scheme toDomain() {
         return new ua.edu.ratos.service.session.domain.Scheme()

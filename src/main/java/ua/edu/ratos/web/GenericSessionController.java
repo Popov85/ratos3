@@ -15,7 +15,7 @@ import java.security.Principal;
 
 /**
  * 1) Long inactivity? Browser is opened. (Default authentication session timeout 2 hours), no data to keep
- * 2) TODO Case: browser is suddenly closed (PC trouble or electricity), authentication dto lost... save data by tracking session lost event
+ * 2) TODO Case: browser is suddenly closed (PC trouble or electricity), authentication session lost... save data by tracking session lost event
  * 3) etc.
  */
 @Slf4j

@@ -134,7 +134,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     }
 
     /**
-     * User can star questions with 1 up to 5 stars for future review via his own account
+     * LISUser can star questions with 1 up to 5 stars for future review via his own account
      * @param star
      * @param questionId
      * @param userId

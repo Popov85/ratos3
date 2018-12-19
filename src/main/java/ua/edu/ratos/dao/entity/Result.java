@@ -4,14 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import ua.edu.ratos.dao.entity.lms.LMS;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
-@ToString(exclude = {"resultTheme"})
+@ToString(exclude = {"resultTheme", "lms", "user", "scheme"})
 @Entity
 @Table(name = "result")
 public class Result {
@@ -47,6 +50,10 @@ public class Result {
     @Column(name = "is_timeouted")
     private boolean timeOuted;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lms_id")
+    private LMS lms;
+
     @OneToMany(mappedBy = "result", cascade = {CascadeType.ALL})
     private List<ResultTheme> resultTheme = new ArrayList<>();
 
@@ -58,4 +65,7 @@ public class Result {
         this.resultTheme.add(resultTheme);
     }
 
+    public Optional<LMS> getLms() {
+        return Optional.ofNullable(lms);
+    }
 }

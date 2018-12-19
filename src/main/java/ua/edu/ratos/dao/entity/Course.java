@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"staff", "department"})
 @Entity
 @Table(name = "course")
 public class Course {
@@ -32,6 +32,6 @@ public class Course {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dep_id")
-    protected Department department;
+    private Department department;
 
 }

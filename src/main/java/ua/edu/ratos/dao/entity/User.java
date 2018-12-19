@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"roles", "student", "staff"})
 @Entity
 @Table(name = "user")
 public class User {
@@ -43,6 +43,9 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Staff staff;
+
+    @Column(name="is_active")
+    private boolean active;
 
     public void addRole(@NonNull Role role) {
         this.roles.add(role);

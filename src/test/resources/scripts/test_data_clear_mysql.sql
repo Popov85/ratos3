@@ -28,6 +28,7 @@ delete from question_type;
 delete from scheme_four_point;
 delete from scheme_two_point;
 delete from scheme_free_point;
+delete from groups;
 delete from scheme;
 delete from mode;
 delete from settings;
@@ -47,8 +48,10 @@ delete from department;
 delete from faculty;
 delete from organisation;
 
+
 ALTER TABLE organisation AUTO_INCREMENT = 1;
 ALTER TABLE faculty AUTO_INCREMENT = 1;
+ALTER TABLE class AUTO_INCREMENT = 1;
 ALTER TABLE department AUTO_INCREMENT = 1;
 ALTER TABLE role AUTO_INCREMENT = 1;
 ALTER TABLE position AUTO_INCREMENT = 1;
@@ -73,6 +76,14 @@ ALTER TABLE language AUTO_INCREMENT = 1;
 ALTER TABLE settings_fbq AUTO_INCREMENT = 1;
 ALTER TABLE answer_mcq AUTO_INCREMENT = 1;
 ALTER TABLE answer_fbmq AUTO_INCREMENT = 1;
-ALTER TABLE accepted_phrase AUTO_INCREMENT = 1;
+ALTER TABLE phrase AUTO_INCREMENT = 1;
 ALTER TABLE answer_mq AUTO_INCREMENT = 1;
 ALTER TABLE answer_sq AUTO_INCREMENT = 1;
+ALTER TABLE result AUTO_INCREMENT = 1;
+ALTER TABLE groups AUTO_INCREMENT = 1;
+
+ALTER TABLE lms_course AUTO_INCREMENT = 1;
+ALTER TABLE lms AUTO_INCREMENT = 1;
+ALTER TABLE lms_origin AUTO_INCREMENT = 1;
+ALTER TABLE lti_version AUTO_INCREMENT = 1;
+ALTER TABLE lti1p0_credentials AUTO_INCREMENT = 1;
