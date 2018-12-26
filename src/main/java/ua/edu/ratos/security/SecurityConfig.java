@@ -19,6 +19,9 @@ import ua.edu.ratos.security.lti.LTIAwareAccessDeniedHandler;
 import ua.edu.ratos.security.lti.LTIAwareUsernamePasswordAuthenticationFilter;
 import ua.edu.ratos.security.lti.LTISecurityUtils;
 
+/**
+ * Global security config, LTI aware
+ */
 @Order(2)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -42,10 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // LTI Pre- bean
     @Bean
     public LTIAwareUsernamePasswordAuthenticationFilter ltiAwareUsernamePasswordAuthenticationFilter() throws Exception {
-        LTIAwareUsernamePasswordAuthenticationFilter filter = new LTIAwareUsernamePasswordAuthenticationFilter();
+        LTIAwareUsernamePasswordAuthenticationFilter filter = new LTIAwareUsernamePasswordAuthenticationFilter(ltiSecurityUtils);
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"));
-        filter.setLtiSecurityUtils(ltiSecurityUtils);
         return filter;
     }
 

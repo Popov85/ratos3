@@ -11,6 +11,7 @@ import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.OAuthAuthenticationHandler;
 import org.springframework.security.oauth.provider.token.OAuthAccessProviderToken;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.repository.UserRepository;
@@ -62,6 +63,7 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      */
     @Override
+    @Transactional(readOnly = true)
     public Authentication createAuthentication(HttpServletRequest request, ConsumerAuthentication authentication, OAuthAccessProviderToken authToken) {
 
         // Parse request for LTI-specific parameters

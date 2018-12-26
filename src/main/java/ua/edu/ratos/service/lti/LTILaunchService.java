@@ -10,9 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LTILaunchService {
 
-    @Value("${ratos.lti.launch}")
+    @Value("${ratos.lti.1p0.properties.launch.url}")
     private String baseLaunchUrl;
 
+    /**
+     * This URL is prepared to be inserted by an instructor directly to LMS settings
+     * @param schemeId
+     * @return URL of LMS-launch request
+     */
     public String getLaunchURL(Long schemeId) {
         return baseLaunchUrl+"?schemeId="+schemeId;
     }

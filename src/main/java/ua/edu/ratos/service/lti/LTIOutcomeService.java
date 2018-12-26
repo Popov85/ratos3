@@ -1,39 +1,42 @@
 package ua.edu.ratos.service.lti;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import lombok.NonNull;
+
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.oauth.consumer.BaseProtectedResourceDetails;
+import org.springframework.security.oauth.consumer.client.OAuthClientHttpRequestFactory;
 import org.springframework.security.oauth.consumer.client.OAuthRestTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 import ua.edu.ratos.security.lti.LTIOutcomeParams;
 import ua.edu.ratos.security.lti.LTIUserConsumerCredentials;
-import ua.edu.ratos.service.lti.domain.*;
-import javax.annotation.PostConstruct;
 import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class LTIOutcomeService {
-    // Not a bean as it affects the global configuration
-    // For controllers, in http request, use "Accept" header to specify which output format is wanted
-    // As per LTI 1.1.1 specification only XML format type is accepted
-    private XmlMapper xmlMapper;
 
-    @PostConstruct
-    public void init() {
-        xmlMapper = new XmlMapper();
-        xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-    }
+    @Autowired
+    private XMLRequestBodyBuilder xmlRequestBodyBuilder;
+
+    @Autowired
+    private LTIRetryOutcomeService ltiRetryOutcomeService;
+
+    @Value("${ratos.lti.1p0.properties.launch.url.fix}")
+    private boolean fixProtocol;
 
     /**
      * Sends score to Learning Management System (LMS) if it was configured to allow sending outcomes,
@@ -43,23 +46,25 @@ public class LTIOutcomeService {
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      * @throws Exception
      */
-    public void sendOutcome(@NonNull final Authentication authentication, @NonNull final Double score) throws Exception {
+    public void sendOutcome(final Authentication authentication, final String protocol, final Long schemeId, final Double score) {
         LTIUserConsumerCredentials principal = (LTIUserConsumerCredentials)authentication.getPrincipal();
+        String email= principal.getEmail().get();
         Optional<LTIOutcomeParams> outcome = principal.getOutcome();
-
         if (!outcome.isPresent()) {
-            log.debug("Outcome parameters are not included, result is not sent to LMS :: {}", score);
+            log.warn("Outcome parameters are not included by LMS, result on scheme {}, by user {} with score {} is not sent to LMS",
+                    schemeId, email, score);
             return;
         }
-
-        // Create a client secret-aware rest template for posting score to LMS
-        BaseProtectedResourceDetails resourceDetails = new BaseProtectedResourceDetails();
-        resourceDetails.setConsumerKey(principal.getConsumerKey());
-        resourceDetails.setSharedSecret((SignatureSecret) authentication.getCredentials());
-        OAuthRestTemplate authRestTemplate = new OAuthRestTemplate(resourceDetails);
+        OAuthRestTemplate authRestTemplate = getOAuthRestTemplate(authentication, principal);
 
         String sourcedId = outcome.get().getSourcedId();
         String outcomeURL = outcome.get().getOutcomeURL();
+
+        String actualOutcomeURL = new String(outcomeURL);
+
+        if (fixProtocol) actualOutcomeURL = fixProtocol(outcomeURL, protocol);
+
+        URI uri = UriComponentsBuilder.fromUriString(actualOutcomeURL).build().toUri();
 
         // Just to keep things simple, create a value of milliseconds since 1970
         String messageIdentifier = Long.toString(new Date().getTime());
@@ -68,36 +73,90 @@ public class LTIOutcomeService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
 
-        IMSXPOXEnvelopeRequest envelopeRequest = getEnvelopeRequest(sourcedId, messageIdentifier, textScore);
-        String body = xmlMapper.writeValueAsString(envelopeRequest);
+        String body = xmlRequestBodyBuilder.build(sourcedId, messageIdentifier, textScore);
+
+        // Add additional oauth_body_hash parameter as per OAuth extension
+        addAdditionalParam(authRestTemplate, body);
 
         HttpEntity<String> request = new HttpEntity<String>(body, headers);
 
-        ResponseEntity<String> result = authRestTemplate.postForEntity(new URI(outcomeURL),request, String.class);
+        // try to send multiple times for sure
+        ltiRetryOutcomeService.doSend(authRestTemplate, uri, request, email, schemeId);
 
-        log.debug("Result :: {} is sent with status code :: {}", score, result.getStatusCode());
+    }
+
+
+    /**
+     * Create a client-secret-aware rest template instance for posting score to LMS
+     * @param authentication
+     * @param principal
+     * @return rest template
+     */
+    private OAuthRestTemplate getOAuthRestTemplate(final Authentication authentication,
+                                                   LTIUserConsumerCredentials principal) {
+        BaseProtectedResourceDetails resourceDetails = new BaseProtectedResourceDetails();
+        resourceDetails.setConsumerKey(principal.getConsumerKey());
+        resourceDetails.setSharedSecret((SignatureSecret) authentication.getCredentials());
+        OAuthRestTemplate authRestTemplate = new OAuthRestTemplate(resourceDetails);
+        return authRestTemplate;
+    }
+
+
+    /**
+     * In some cases, LMS expects TP to send the outcome to a different protocol than is actually used;
+     * This service method is optional, decide if you need to use it, if not just omit it
+     * e.g. (actual HTTP & expected HTTP)
+     * @param initialURL, like  https://open-edx.org/outcome-service
+     * @param actualProtocol {http, https, ftp}
+     * @return fixed URL
+     */
+    private String fixProtocol(String initialURL, String actualProtocol) {
+        int end = initialURL.indexOf(':');
+        String initialProtocol = initialURL.substring(0, end);
+        log.debug("Initial protocol :: {}, actual protocol :: {} ", initialProtocol, actualProtocol);
+        if (!initialProtocol.equals(actualProtocol)) {
+            // replace the initial protocol with the actual one
+            String fixedURL = initialURL.replace(initialProtocol, actualProtocol);
+            log.debug("Fixed url :: {}", fixedURL);
+            return fixedURL;
+        }
+        return initialURL;
     }
 
     /**
-     * Create a Java-object ready for XML serialization according to LTI v1.1.1 specification
-     * @param sourcedId a value needed to posting score to LMS as per LTI specification
-     * @param messageIdentifier Some value for identifying messages (in our case the number of milliseconds since 1970)
-     * @param textScore score between 0-1 gained by a user after learning session completion
-     * @return fully populated object ready to be XML-serialised according to LTI specification
-     * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
+     * Add an additional parameter, specifically: oauth_body_hash
+     * @param authRestTemplate
+     * @param body
+     * @throws NoSuchAlgorithmException
      */
-    private IMSXPOXEnvelopeRequest getEnvelopeRequest(String sourcedId, String messageIdentifier, String textScore) {
-        return new IMSXPOXEnvelopeRequest()
-                .setIMSXPOXHeader(new IMSXPOXHeader()
-                        .setImsxPOXRequestHeaderInfo(new IMSXPOXRequestHeaderInfo()
-                                .setImsxMessageIdentifier(messageIdentifier)))
-                .setIMSXPOXBody(new IMSXPOXBody()
-                        .setReplaceResultRequest(new ReplaceResultRequest()
-                                .setResultRecord(new ResultRecord()
-                                        .setSourcedGUID(new SourcedGUID()
-                                                .setSourcedId(sourcedId))
-                                        .setResult(new Result()
-                                                .setResultScore(new ResultScore()
-                                                        .setTextString(textScore))))));
+    private void addAdditionalParam(OAuthRestTemplate authRestTemplate, String body) {
+        OAuthClientHttpRequestFactory requestFactory = (OAuthClientHttpRequestFactory) authRestTemplate.getRequestFactory();
+        Map<String, String> additionalOAuthParameters = new HashMap<>();
+        String hash = doXMLBodyHashSHA1(body);
+        additionalOAuthParameters.put("oauth_body_hash", hash);
+        requestFactory.setAdditionalOAuthParameters(additionalOAuthParameters);
+        log.debug("oauth_body_hash:: "+hash);
+    }
+
+    /**
+     * As per LTI v 1.1.1 specification the request's XML body has to be hashed with SHA-1;
+     * The oauth_body_hash [OBH, 11] is computed using a SHA-1 hash of the body contents and added to the Authorization header.
+     * @param body
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    private String doXMLBodyHashSHA1(String body) {
+        String algorithmCode = "SHA-1";
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance(algorithmCode);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Failed to hash XML body :: {}", body);
+            throw new RuntimeException("Failed to hash XML body", e);
+        }
+        md.update(body.getBytes());
+        byte[] output = Base64.encodeBase64(md.digest());
+        String hash = new String(output);
+        return hash;
     }
 }

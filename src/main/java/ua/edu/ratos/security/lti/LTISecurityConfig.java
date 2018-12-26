@@ -1,6 +1,7 @@
 package ua.edu.ratos.security.lti;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
@@ -22,12 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * LTI v1.1.1 security config
+ */
 @Order(1)
 @EnableWebSecurity
 public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private Environment environment;
+
+    @Value("${ratos.lti.1p0.properties.launch.path}")
+    private String ltiLaunchPath;
 
     @Autowired
     private LMSOriginRepository lmsOriginRepository;
@@ -37,6 +44,9 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LTIAuthenticationHandler ltiAuthenticationHandler;
+
+    @Autowired
+    private LTISecurityUtils ltiSecurityUtils;
 
     // CORS bean
     @Bean
@@ -65,7 +75,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public ProtectedResourceProcessingFilter ltiAwareProtectedResourceProcessingFilter() {
         ProtectedResourceProcessingFilter filter =
-                new LTIAwareProtectedResourceProcessingFilter();
+                new LTIAwareProtectedResourceProcessingFilter(ltiSecurityUtils);
         filter.setConsumerDetailsService(ltiConsumerDetailsService);
         filter.setAuthHandler(ltiAuthenticationHandler);
         filter.setTokenServices(oauthProviderTokenServices());
@@ -80,7 +90,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
     public FilterRegistrationBean ltiAwareProtectedResourceProcessingFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(ltiAwareProtectedResourceProcessingFilter());
-        registration.addUrlPatterns("/lti/1p0/launch");
+        registration.addUrlPatterns(ltiLaunchPath);
         registration.setName("ltiAwareProtectedResourceProcessingFilter");
         registration.setOrder(1);
         // Use it only in the security chain
@@ -95,7 +105,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .cors()
             .and()
-            .antMatcher("/lti/1p0/launch")
+            .antMatcher(ltiLaunchPath)
             .addFilterBefore(ltiAwareProtectedResourceProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
             .anyRequest().hasRole("LTI")
