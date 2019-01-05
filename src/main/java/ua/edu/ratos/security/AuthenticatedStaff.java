@@ -18,7 +18,7 @@ public class AuthenticatedStaff extends AuthenticatedUser {
     private Long facId;
     private Long orgId;
 
-    protected AuthenticatedStaff(Long staffId, Long depId, Long facId, Long orgId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    private AuthenticatedStaff(Long staffId, Long depId, Long facId, Long orgId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(staffId, username, password, authorities);
         this.depId = depId;
         this.facId = facId;

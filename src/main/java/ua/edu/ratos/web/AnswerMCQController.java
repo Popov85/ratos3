@@ -10,8 +10,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerMCQService;
-import ua.edu.ratos.service.dto.entity.AnswerMCQInDto;
-import ua.edu.ratos.service.dto.validator.AnswerMCQInDtoValidator;
+import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
+import ua.edu.ratos.service.validator.AnswerMCQInDtoValidator;
 import java.net.URI;
 
 /**

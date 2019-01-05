@@ -12,10 +12,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_question_starred")
 public class UserQuestionStarred {
+
     @EmbeddedId
     private UserQuestionStarredId userQuestionStarredId = new UserQuestionStarredId();
 
-    @MapsId("lmsUserId")
+    @MapsId("userId")
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

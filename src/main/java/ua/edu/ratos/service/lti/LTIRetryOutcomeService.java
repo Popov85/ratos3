@@ -15,34 +15,35 @@ import java.net.URI;
 @Slf4j
 @Service
 public class LTIRetryOutcomeService {
-
 	/**
 	 * Tries to post the outcome multiple times just to be on the safe side;
 	 * Response arrives in XML format, see interpretation below
-	 * @param oAuthRestTemplate
-	 * @param uri
-	 * @param entity
+	 * @param oAuthRestTemplate rest template with wired security
+	 * @param uri uri to where to send the score
+	 * @param entity ready in object to be sent to LMS to post a score
 	 * @see <a href="https://www.imsglobal.org/gws/gwsv1p0/imsgws_wsdlBindv1p0.html"> IMS General Web Services WSDL Binding Guidelines</a>
 	 */
+	@SuppressWarnings("SpellCheckingInspection")
 	@Retryable(maxAttempts = 6, value = RestClientException.class, backoff = @Backoff(delay = 500, multiplier = 2))
 	public void doSend(OAuthRestTemplate oAuthRestTemplate, URI uri, HttpEntity<String> entity, String email, Long schemeId) {
 		IMSXPOXEnvelopeResponse response = oAuthRestTemplate.postForObject(uri, entity, IMSXPOXEnvelopeResponse.class);
 		IMSXStatusInfo imsxStatusInfo = response.getIMSXPOXHeader().getImsxPOXResponseHeaderInfo().getImsxStatusInfo();
 		String imsxCodeMajor = imsxStatusInfo.getImsxCodeMajor();
 		String imsxDescription = imsxStatusInfo.getImsxDescription();
-		if (!imsxCodeMajor.equals("success")) {
-			log.warn("Outcome was rejected by LMS server by user :: {}, having taken the scheme :: {}, with code :: {}, and description :: {} ",
+		if (!"success".equals(imsxCodeMajor)) {
+			log.warn("Outcome was rejected by LMS server by user :: {}, having taken the gradingDomain :: {}, with code :: {}, and description :: {} ",
 					email,  schemeId, imsxCodeMajor, imsxDescription);
 			return;
 		}
-		log.debug("Outcome was successfully accepted by LMS server, by user :: {}, having taken the scheme :: {}, with code :: {}, and description :: {}",
+		log.debug("Outcome was successfully accepted by LMS server, by user :: {}, having taken the gradingDomain :: {}, with code :: {}, and description :: {}",
 				email, schemeId, imsxCodeMajor, imsxDescription);
 	}
 
 	@Recover
+	@SuppressWarnings("unused")
 	public void recover(OAuthRestTemplate oAuthRestTemplate, URI uri, HttpEntity<String> entity, String email, Long schemeId) {
-		log.error("Failed to send the outcome to LMS by user :: {}, having taken the scheme :: {}, with reason :: probably the LTI service is off",
-				email,schemeId);
+		log.error("Failed to send the outcome to LMS by user :: {}, having taken the gradingDomain :: {}, with reason :: probably the LTI service is off",
+				email, schemeId);
 	}
 
 }

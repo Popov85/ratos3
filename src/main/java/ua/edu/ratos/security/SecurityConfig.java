@@ -1,6 +1,8 @@
 package ua.edu.ratos.security;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
@@ -26,20 +28,24 @@ import ua.edu.ratos.security.lti.LTISecurityUtils;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AuthenticatedUserDetailsService authenticatedUserDetailsService;
+    private final String profile;
+
+    private final AuthenticatedUserDetailsService authenticatedUserDetailsService;
+
+    private final LTISecurityUtils ltiSecurityUtils;
 
     @Autowired
-    private LTISecurityUtils ltiSecurityUtils;
+    public SecurityConfig(final AuthenticatedUserDetailsService authenticatedUserDetailsService,
+                          final LTISecurityUtils ltiSecurityUtils,
+                          @NonNull final @Value("${spring.profiles.active}") String profile) {
+        this.profile = profile;
+        this.authenticatedUserDetailsService = authenticatedUserDetailsService;
+        this.ltiSecurityUtils = ltiSecurityUtils;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Override
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        return authenticatedUserDetailsService;
     }
 
     // LTI Pre- bean
@@ -52,8 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterRegistrationBean ltiAwareUsernamePasswordAuthenticationFilterRegistration() throws Exception {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<LTIAwareUsernamePasswordAuthenticationFilter> ltiAwareUsernamePasswordAuthenticationFilterRegistration() throws Exception {
+        FilterRegistrationBean<LTIAwareUsernamePasswordAuthenticationFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(ltiAwareUsernamePasswordAuthenticationFilter());
         registration.addUrlPatterns("/login");
         registration.setName("ltiAwareUsernamePasswordAuthenticationFilter");
@@ -65,9 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // LTI access denied handler bean
     @Bean
     public AccessDeniedHandler ltiAwareAccessDeniedHandler() {
-        LTIAwareAccessDeniedHandler accessDeniedHandler = new LTIAwareAccessDeniedHandler();
-        accessDeniedHandler.setLtiSecurityUtils(ltiSecurityUtils);
-        return accessDeniedHandler;
+        return new LTIAwareAccessDeniedHandler(ltiSecurityUtils);
     }
 
     @Override
@@ -85,7 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/fac-admin/**").hasAnyRole("FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/org-admin/**").hasAnyRole("ORG-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/global-admin/**").hasRole("GLOBAL-ADMIN")
-            .and()
+            .antMatchers("/lms/**").hasRole("LMS-USER")
+                .and()
                 .formLogin()
             .and()
                 .headers()
@@ -94,20 +99,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(ltiAwareAccessDeniedHandler());
     }
 
-
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
-        auth.inMemoryAuthentication()
-            .withUser("andrey").password("{noop}dT09Rx06").roles("STUDENT")
-            .and()
-            .withUser("instructor").password("{noop}dT09Rx06").roles("STUDENT", "INSTRUCTOR")
-            .and()
-            .withUser("admin").password("{noop}dT09Rx06").roles("STUDENT", "INSTRUCTOR", "GLOBAL-ADMIN");
+    public UserDetailsService userDetailsServiceBean() {
+        return authenticatedUserDetailsService;
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    @SuppressWarnings("SpellCheckingInspection")
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
+        if ("dev".equals(profile)) {
+            auth.inMemoryAuthentication()
+                    .withUser("student").password("{noop}dT09Rx06").roles("LTI", "STUDENT")
+                    .and()
+                    .withUser("instructor").password("{noop}dT09Rx06").roles("INSTRUCTOR")
+                    .and()
+                    .withUser("admin").password("{noop}dT09Rx06").roles("GLOBAL-ADMIN");
+        }
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/static/**");
     }
 }

@@ -6,18 +6,19 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
+import ua.edu.ratos.security.RatosUser;
 
 @Getter
 @Setter
 @ToString
 @Accessors(chain = true)
-public class LTIUserConsumerCredentials extends LTIToolConsumerCredentials {
+public class LTIUserConsumerCredentials extends LTIToolConsumerCredentials implements RatosUser {
     /**
      * Unique identifier of a user within TP
      */
     private final Long userId;
 
-    protected LTIUserConsumerCredentials(Long userId, Long lmsId, String consumerKey, String signature, String signatureMethod, String signatureBaseString, String token) {
+    private LTIUserConsumerCredentials(Long userId, Long lmsId, String consumerKey, String signature, String signatureMethod, String signatureBaseString, String token) {
         super(lmsId, consumerKey, signature, signatureMethod, signatureBaseString, token);
         this.userId = userId;
     }
@@ -30,20 +31,5 @@ public class LTIUserConsumerCredentials extends LTIToolConsumerCredentials {
                 consumerCredentials.getSignatureMethod(),
                 consumerCredentials.getSignatureBaseString(),
                 consumerCredentials.getToken());
-    }
-
-    public static LTIUserConsumerCredentials create(@NonNull final Long userId, @NonNull final String email, @NonNull final LTIToolConsumerCredentials consumerCredentials) {
-        LTIUserConsumerCredentials ltiUserConsumerCredentials = new LTIUserConsumerCredentials(
-                userId, consumerCredentials.getLmsId(),
-                consumerCredentials.getConsumerKey(),
-                consumerCredentials.getSignature(),
-                consumerCredentials.getSignatureMethod(),
-                consumerCredentials.getSignatureBaseString(),
-                consumerCredentials.getToken());
-        ltiUserConsumerCredentials.setEmail(email);
-        ltiUserConsumerCredentials.setUser(consumerCredentials.getUser().orElse(null));
-        ltiUserConsumerCredentials.setOutcome(consumerCredentials.getOutcome().orElse(null));
-        return ltiUserConsumerCredentials;
-
     }
 }

@@ -4,17 +4,17 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.PreviousBatchResult;
-import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.config.properties.AppProperties;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.PreviousBatchResult;
+import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class BatchBuilder {
 
-    /**
-     * If true, randomizes answers of questions where possible;
-     * True by default
-     */
-    private static final boolean SHUFFLE_ENABLED = true;
+    @Autowired
+    private AppProperties appProperties;
 
     @Autowired
     private TimingService timingService;
@@ -46,7 +43,7 @@ public class BatchBuilder {
 
     public BatchOutDto build(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
         final BatchOutDto batchOutDto = buildRegular(sessionData);
-        if (sessionData.getScheme().getMode().isRightAnswer()) {
+        if (sessionData.getSchemeDomain().getModeDomain().isRightAnswer()) {
             final double currentScore = progressDataService.getCurrentScore(sessionData);
             final double effectiveScore = progressDataService.getEffectiveScore(sessionData);
             PreviousBatchResult previousBatchResult =
@@ -63,7 +60,8 @@ public class BatchBuilder {
     private BatchOutDto buildRegular(@NonNull final SessionData sessionData) {
         final List<QuestionOutDto> batchQuestions = getBatchQuestions(sessionData);
 
-        if (SHUFFLE_ENABLED) batchQuestions.forEach(q->{ if (q.isShufflingSupported()) q.shuffle(collectionShuffler);});
+        if (appProperties.getSession().isShuffle_enabled())
+            batchQuestions.forEach(q->{ if (q.isShufflingSupported()) q.shuffle(collectionShuffler);});
 
         final int currentBatchSize = batchQuestions.size();
         // Timing resolution
@@ -75,7 +73,7 @@ public class BatchBuilder {
         int batchesLeft = getBatchesLeft(sessionData, currentBatchSize);
         return new BatchOutDto.Builder()
                 .withQuestions(batchQuestions)
-                .inMode(sessionData.getScheme().getMode())
+                .inMode(sessionData.getSchemeDomain().getModeDomain())
                 .withTimeLeft(timeLeft)
                 .withQuestionsLeft(questionsLeft)
                 .withBatchTimeLimit(batchTimeLimit)
@@ -86,21 +84,16 @@ public class BatchBuilder {
 
 
     private List<QuestionOutDto> getBatchQuestions(@NonNull final SessionData sessionData) {
-        final List<Question> questions = sessionData.getQuestions();
-        final int size = questions.size();
+        final List<QuestionDomain> questionDomains = sessionData.getQuestionDomains();
+        final int size = questionDomains.size();
         final int currentIndex = sessionData.getCurrentIndex();
-
         if (currentIndex >= size) throw new RuntimeException("Ooops, no more questions!");
-
         final int questionsPerBatch = sessionData.getQuestionsPerBatch();
-
-        List<Question> result;
-        if (currentIndex + questionsPerBatch<= size) {
-            // normal
-            result = new ArrayList<>(questions.subList(currentIndex, currentIndex+questionsPerBatch));
-        } else {
-            // to the end
-            result =  new ArrayList<>(questions.subList(currentIndex, size));
+        List<QuestionDomain> result;
+        if (currentIndex + questionsPerBatch<= size) {// normal
+            result = new ArrayList<>(questionDomains.subList(currentIndex, currentIndex+questionsPerBatch));
+        } else {// to the end
+            result =  new ArrayList<>(questionDomains.subList(currentIndex, size));
         }
         return result.stream().map(q->q.toDto()).collect(Collectors.toList());
     }
@@ -131,14 +124,14 @@ public class BatchBuilder {
 
     private int getQuestionsLeft(@NonNull final SessionData sessionData, int questionsPerBatch) {
         final int currentIndex = sessionData.getCurrentIndex();
-        final int totalQuestionsNumber = sessionData.getQuestions().size();
+        final int totalQuestionsNumber = sessionData.getQuestionDomains().size();
         int questionsLeft = totalQuestionsNumber-(currentIndex+questionsPerBatch);
         return questionsLeft;
     }
 
     private int getBatchesLeft(@NonNull final SessionData sessionData, int questionsPerBatch) {
         final int currentIndex = sessionData.getCurrentIndex();
-        final int totalQuestionsNumber = sessionData.getQuestions().size();
+        final int totalQuestionsNumber = sessionData.getQuestionDomains().size();
         if (currentIndex>=totalQuestionsNumber-1) return 0;
         int quantity = (totalQuestionsNumber - currentIndex)/questionsPerBatch;
         if ((totalQuestionsNumber - currentIndex)%questionsPerBatch==0) {

@@ -3,9 +3,8 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
-import org.modelmapper.ModelMapper;
-
 import javax.persistence.*;
 
 @Getter
@@ -14,7 +13,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "mode")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("SpellCheckingInspection")
 public class Mode {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -40,7 +42,7 @@ public class Mode {
     private boolean rightAnswer;
 
     /**
-     * Whether or not to disclose right answers after the end of the dto?
+     * Whether or not to disclose right answers after the end of the learning session?
      */
     @Column(name="is_resultdetails")
     private boolean resultDetails;
@@ -66,9 +68,4 @@ public class Mode {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     private Staff staff;
-
-    public ua.edu.ratos.service.session.domain.Mode toDomain() {
-        return  new ModelMapper().map(this, ua.edu.ratos.service.session.domain.Mode.class);
-    }
-
 }

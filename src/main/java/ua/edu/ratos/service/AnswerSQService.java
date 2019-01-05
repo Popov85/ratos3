@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.AnswerSQRepository;
-import ua.edu.ratos.service.dto.entity.AnswerSQInDto;
-import ua.edu.ratos.service.dto.transformer.DtoAnswerTransformer;
+import ua.edu.ratos.service.dto.in.AnswerSQInDto;
+import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 
 @Service
 public class AnswerSQService {
@@ -19,14 +19,14 @@ public class AnswerSQService {
 
     @Transactional
     public Long save(@NonNull AnswerSQInDto dto) {
-        return answerRepository.save(transformer.fromDto(dto)).getAnswerId();
+        return answerRepository.save(transformer.toEntity(dto)).getAnswerId();
     }
 
     @Transactional
     public void update(@NonNull Long answerId, @NonNull AnswerSQInDto dto) {
         if (!answerRepository.existsById(answerId))
             throw new RuntimeException("Failed to update answer sq: ID does not exist");
-        answerRepository.save(transformer.fromDto(answerId, dto));
+        answerRepository.save(transformer.toEntity(answerId, dto));
     }
 
     @Transactional

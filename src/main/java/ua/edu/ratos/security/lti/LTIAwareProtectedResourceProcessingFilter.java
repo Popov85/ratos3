@@ -19,11 +19,11 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
      * So if previous authentication was null, it will be again null after this filter has done its job.
      * Now we need to override this, by resetting back to previous only in case of failed attempt to authenticate with OAuth
      * Otherwise let this new authentication to remain and create authentication session
-     * with ROLE_LTI (or ROLE_STUDENT as well if e-mail parameter has proven the user identity)
-     * Also, in case we already had an authenticated full-fledged user (LTI+STUDENT) before the launch,
+     * with ROLE_LTI (or ROLE_LMS-USER if e-mail parameter has proven the user identity)
+     * Also, in case we already had an authenticated full-fledged user (LMS-USER) before the launch,
      * do not lose his authentication,
-     * but rather merge the new OAuth launch credentials with the existing STUDENT role.
-     * @param previousAuthentication
+     * but rather merge the new OAuth launch credentials with the existing LMS-USER role.
+     * @param previousAuthentication previous authentication that was in the security context before running the launch request
      */
     @Override
     protected void resetPreviousAuthentication(Authentication previousAuthentication) {
@@ -34,14 +34,13 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
             super.resetPreviousAuthentication(previousAuthentication);
             return;
         }
-        // If OAuth authentication just provided only LTI role (but failed to provide STUDENT role)
-        // and previous authentication was LTI & STUDENT, merge them and set to the context
+        // If OAuth authentication just provided only LTI role (but failed to provide LMS-USER role)
+        // and previous authentication was LMS-USER, merge them and set to the context
         if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(oauthAuthentication)
-                && ltiSecurityUtils.isLMSUserWithLTIAndSTUDENTRoles(previousAuthentication)) {
-            log.debug("Try to merge authentication (existing STUDENT and new LTI)");
+                && ltiSecurityUtils.isLMSUserWithFullUSERRole(previousAuthentication)) {
+            log.debug("Try to merge authentication (existing LMS-USER and new LTI)");
             Authentication resultingAuthentication = mergeAuthentication(previousAuthentication, oauthAuthentication);
             super.resetPreviousAuthentication(resultingAuthentication);
-            return;
         }
     }
 
@@ -60,7 +59,8 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
 
         // We have an updated principal and updated signatureSecret
 
-        Authentication resultingAuthentication = new UsernamePasswordAuthenticationToken(resultingPrincipal, updatedSignatureSecret, previousAuthentication.getAuthorities());
+        Authentication resultingAuthentication =
+                new UsernamePasswordAuthenticationToken(resultingPrincipal, updatedSignatureSecret, previousAuthentication.getAuthorities());
         log.debug("Merged authentication (Password+new LTI) for user ID :: {} ", previousPrincipal.getUserId());
         return resultingAuthentication;
     }

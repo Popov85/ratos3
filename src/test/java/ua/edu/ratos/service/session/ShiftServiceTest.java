@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.question.QuestionMCQ;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.domain.question.QuestionMCQDomain;
 
 import java.util.*;
 import static org.mockito.Mockito.times;
@@ -20,9 +20,9 @@ public class ShiftServiceTest {
 
     private ShiftService shiftService;
 
-    private List<Question> questions;
+    private List<QuestionDomain> questionDomains;
 
-    private Map<Long, Question> questionsMap;
+    private Map<Long, QuestionDomain> questionsMap;
 
     List<Long> idsToShift;
 
@@ -33,7 +33,7 @@ public class ShiftServiceTest {
     public void init() {
         shiftService = new ShiftService();
 
-        questions = new ArrayList<>(Arrays.asList(
+        questionDomains = new ArrayList<>(Arrays.asList(
                 question(1L, "Q1"),
                 question(2L, "Q2"),
                 question(3L, "Q3"),
@@ -52,24 +52,24 @@ public class ShiftServiceTest {
 
     @Test
     public void doShiftTest() {
-        Mockito.<List<Question>>when(sessionData.getQuestions()).thenReturn(questions);
-        Mockito.<Map<Long, Question>>when(sessionData.getQuestionsMap()).thenReturn(questionsMap);
+        Mockito.<List<QuestionDomain>>when(sessionData.getQuestionDomains()).thenReturn(questionDomains);
+        Mockito.<Map<Long, QuestionDomain>>when(sessionData.getQuestionsMap()).thenReturn(questionsMap);
         shiftService.doShift(idsToShift, sessionData);
 
-        verify(sessionData, times(1)).getQuestions();
+        verify(sessionData, times(1)).getQuestionDomains();
         verify(sessionData, times(1)).getQuestionsMap();
 
         // Expected list IDs :: {1, 3, 5, 2, 4}
-        Assert.assertEquals(5, questions.size());
-        Assert.assertEquals(1L, questions.get(0).getQuestionId().longValue());
-        Assert.assertEquals(3L, questions.get(1).getQuestionId().longValue());
-        Assert.assertEquals(5L, questions.get(2).getQuestionId().longValue());
-        Assert.assertEquals(2L, questions.get(3).getQuestionId().longValue());
-        Assert.assertEquals(4L, questions.get(4).getQuestionId().longValue());
+        Assert.assertEquals(5, questionDomains.size());
+        Assert.assertEquals(1L, questionDomains.get(0).getQuestionId().longValue());
+        Assert.assertEquals(3L, questionDomains.get(1).getQuestionId().longValue());
+        Assert.assertEquals(5L, questionDomains.get(2).getQuestionId().longValue());
+        Assert.assertEquals(2L, questionDomains.get(3).getQuestionId().longValue());
+        Assert.assertEquals(4L, questionDomains.get(4).getQuestionId().longValue());
     }
 
-    private Question question(Long id, String title) {
-        Question q = new QuestionMCQ();
+    private QuestionDomain question(Long id, String title) {
+        QuestionDomain q = new QuestionMCQDomain();
         q.setQuestionId(id);
         q.setQuestion(title);
         return q;

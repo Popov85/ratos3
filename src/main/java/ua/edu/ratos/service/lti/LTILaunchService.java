@@ -1,24 +1,25 @@
 package ua.edu.ratos.service.lti;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ua.edu.ratos.config.properties.AppProperties;
 
-@Getter
-@Setter
 @Component
 public class LTILaunchService {
 
-    @Value("${ratos.lti.1p0.properties.launch.url}")
-    private String baseLaunchUrl;
+    private final AppProperties appProperties;
+
+    @Autowired
+    public LTILaunchService(final AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     /**
-     * This URL is prepared to be inserted by an instructor directly to LMS settings
+     * This URL is prepared to be inserted by an instructor directly to LMS settingsDomain
      * @param schemeId
      * @return URL of LMS-launch request
      */
     public String getLaunchURL(Long schemeId) {
-        return baseLaunchUrl+"?schemeId="+schemeId;
+        return appProperties.getLti().getLaunch_url()+"?schemeId="+schemeId;
     }
 }

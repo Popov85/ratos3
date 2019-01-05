@@ -4,11 +4,11 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.response.Response;
-import ua.edu.ratos.service.session.domain.ResponseEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.domain.ResponseEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,22 +35,22 @@ public class BatchEvaluatorService {
 
         Map<Long, ResponseEvaluated> responsesEvaluated = new HashMap<>();
 
-        final Map<Long, Question> questionsMap = sessionData.getQuestionsMap();
+        final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
 
         List<Long> toEvaluate = sessionData.getCurrentBatch().getBatch().stream().map(dto->dto.getQuestionId()).collect(Collectors.toList());
 
         // Try to look up responses for each question in BatchOutDto and evaluate them
         for (Long questionId : toEvaluate) {
             // look up question in sessionData
-            final Question question = questionsMap.get(questionId);
+            final QuestionDomain questionDomain = questionsMap.get(questionId);
             // look up response in BatchInDto
             final Response response = batchInDto.getResponses().get(questionId);
             if (response != null) {// if found, evaluate
-                double score = (response.isNullable() ? 0 : responseEvaluatorService.evaluate(response, question));
+                double score = (response.isNullable() ? 0 : responseEvaluatorService.evaluate(response, questionDomain));
                 // Levels processing
-                final byte level = question.getLevel();
+                final byte level = questionDomain.getLevel();
                 if (level>1 && score>0) score =
-                        levelsEvaluatorService.evaluateLevels(score, level, sessionData.getScheme().getSettings());
+                        levelsEvaluatorService.evaluateLevels(score, level, sessionData.getSchemeDomain().getSettingsDomain());
                 responsesEvaluated.put(questionId, new ResponseEvaluated(questionId, response, score));
                 log.debug("Evaluated response, ID :: {}, score :: {}", questionId, score);
             } else {// if not found, consider incorrect

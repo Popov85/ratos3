@@ -12,12 +12,12 @@
                 <sourcedGUID>
                     <sourcedId>3124567</sourcedId>
                 </sourcedGUID>
-                <result>
+                <resultDomain>
                     <resultScore>
                         <language>en</language>
                         <textString>0.92</textString>
                     </resultScore>
-                </result>
+                </resultDomain>
             </resultRecord>
         </replaceResultRequest>
     </imsx_POXBody>

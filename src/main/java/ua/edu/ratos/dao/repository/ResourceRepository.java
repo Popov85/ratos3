@@ -8,6 +8,9 @@ import ua.edu.ratos.dao.entity.Resource;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
+    @Query(value="SELECT r FROM Resource r order by r.description desc")
+    Page<Resource> findAll(Pageable pageable);
+
     @Query(value = "SELECT r FROM Resource r join r.staff s where s.staffId=?1 order by r.lastUsed desc")
     Page<Resource> findByStaffId(Long staId, Pageable pageable);
 

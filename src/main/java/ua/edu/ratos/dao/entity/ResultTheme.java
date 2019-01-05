@@ -3,7 +3,6 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import javax.persistence.*;
 
 @Setter
@@ -12,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "result_theme")
 public class ResultTheme {
+
     @EmbeddedId
     private ResultThemeId resultThemeId = new ResultThemeId();
 

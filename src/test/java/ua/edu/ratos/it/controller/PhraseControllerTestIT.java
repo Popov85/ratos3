@@ -41,12 +41,12 @@ public class PhraseControllerTestIT {
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         when(phraseService.save(any())).thenReturn(1L);
-        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/phrases/")
+        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/phrase")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON_NEW)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "http://localhost/instructor/phrases/1"))
+                .andExpect(header().string("location", "http://localhost/instructor/phrase/1"))
                 .andExpect(content().string(""));
     }
 }

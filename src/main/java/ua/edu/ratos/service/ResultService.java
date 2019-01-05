@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.entity.User;
+import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.repository.ResultRepository;
-import ua.edu.ratos.service.session.domain.Result;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.ResultDomain;
+import ua.edu.ratos.service.domain.SessionData;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
@@ -25,18 +26,19 @@ public class ResultService {
     private EntityManager em;
 
     @Transactional
-    public Long save(@NonNull final SessionData sessionData, @NonNull final Result result, boolean timeOuted) {
+    public Long save(@NonNull final SessionData sessionData, @NonNull final ResultDomain resultDomain, boolean timeOuted) {
         ua.edu.ratos.dao.entity.Result r = new ua.edu.ratos.dao.entity.Result();
-        r.setScheme(em.getReference(Scheme.class, sessionData.getScheme().getSchemeId()));
+        r.setScheme(em.getReference(Scheme.class, sessionData.getSchemeDomain().getSchemeId()));
         r.setUser(em.getReference(User.class, sessionData.getUserId()));
-        r.setPassed(result.isPassed());
-        r.setGrade(result.getGrade());
-        r.setPercent(result.getPercent());
+        if (sessionData.isLMSSession())
+            r.setLms(em.getReference(LMS.class, sessionData.getLMSId().get()));
+        r.setPassed(resultDomain.isPassed());
+        r.setGrade(resultDomain.getGrade());
+        r.setPercent(resultDomain.getPercent());
         r.setSessionLasted(sessionData.getProgressData().getTimeSpent());
         r.setSessionEnded(LocalDateTime.now());
         r.setTimeOuted(timeOuted);
-
-        result.getThemeResults().forEach(t -> {
+        resultDomain.getThemeResults().forEach(t -> {
             Theme theme = em.getReference(Theme.class, t.getThemeId());
             r.addResultTheme(theme, r.getPercent());
         });

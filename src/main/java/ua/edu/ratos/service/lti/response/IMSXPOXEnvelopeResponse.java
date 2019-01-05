@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
+@SuppressWarnings("ALL")
 @JacksonXmlRootElement(localName = "imsx_POXEnvelopeResponse")
 public class IMSXPOXEnvelopeResponse {
 	
@@ -17,10 +18,6 @@ public class IMSXPOXEnvelopeResponse {
 	public void setXmlns(String xmlns) {
 		this.xmlns = xmlns;
 	}
-	
-	public String getXmlns() {
-		return xmlns;
-	}
 
 	public IMSXPOXResponseHeader getIMSXPOXHeader() {
 		return imsxPOXHeader;
@@ -30,10 +27,6 @@ public class IMSXPOXEnvelopeResponse {
 	public IMSXPOXEnvelopeResponse setIMSXPOXHeader(IMSXPOXResponseHeader IMSXPOXHeader) {
 		this.imsxPOXHeader = IMSXPOXHeader;
 		return this;
-	}
-
-	public IMSXPOXResponseBody getIMSXPOXBody() {
-		return imsxPOXBody;
 	}
 
 	@JacksonXmlProperty(localName = "imsx_POXBody")

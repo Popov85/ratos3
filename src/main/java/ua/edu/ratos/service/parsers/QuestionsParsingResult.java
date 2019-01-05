@@ -1,7 +1,8 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.*;
-import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,14 +13,14 @@ import java.util.stream.Collectors;
 public class QuestionsParsingResult {
     private final String charset;
     private final String header;
-    private final List<QuestionMultipleChoice> questions;
+    private final List<QuestionMCQ> questions;
     private final List<QuestionsParsingIssue> issues;
     /**
      * Number of filtered (invalid) questions
      */
     private int invalid;
 
-    public QuestionsParsingResult(@NonNull String charset, @NonNull String header, @NonNull List<QuestionMultipleChoice> questions, @NonNull List<QuestionsParsingIssue> issues) {
+    public QuestionsParsingResult(@NonNull String charset, @NonNull String header, @NonNull List<QuestionMCQ> questions, @NonNull List<QuestionsParsingIssue> issues) {
         this.charset = charset;
         this.header = header;
         this.questions = validate(questions);
@@ -32,7 +33,7 @@ public class QuestionsParsingResult {
      * @param questions initial list of questions
      * @return filtered list of questions
      */
-    private List<QuestionMultipleChoice> validate(List<QuestionMultipleChoice> questions) {
+    private List<QuestionMCQ> validate(List<QuestionMCQ> questions) {
         return questions.stream().filter(q -> q.isValid()).collect(Collectors.toList());
     }
 

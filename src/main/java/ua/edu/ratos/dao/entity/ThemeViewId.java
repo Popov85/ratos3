@@ -14,6 +14,8 @@ import java.util.Objects;
 @Embeddable
 public class ThemeViewId implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Column(name = "org_id")
     private Long orgId;
 
@@ -47,7 +49,6 @@ public class ThemeViewId implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(orgId, facId, depId, courseId, themeId, typeId);
     }
 }

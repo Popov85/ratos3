@@ -1,13 +1,13 @@
 package ua.edu.ratos.service.session;
 
-import ua.edu.ratos.service.session.domain.response.*;
+import ua.edu.ratos.service.domain.response.*;
 
 public interface Evaluator {
-    double evaluate(ResponseMultipleChoice response);
-    double evaluate(ResponseFillBlankSingle response);
+    double evaluate(ResponseMCQ response);
+    double evaluate(ResponseFBSQ response);
     // Partial response!
-    double evaluate(ResponseFillBlankMultiple response);
+    double evaluate(ResponseFBMQ response);
     // Partial response!
-    double evaluate(ResponseMatcher response);
-    double evaluate(ResponseSequence response);
+    double evaluate(ResponseMQ response);
+    double evaluate(ResponseSQ response);
 }

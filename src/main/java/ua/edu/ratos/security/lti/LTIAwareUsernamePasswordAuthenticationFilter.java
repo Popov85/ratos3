@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ua.edu.ratos.security.AuthenticatedUser;
@@ -13,14 +14,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Overrides the default behaviour of UsernamePasswordAuthenticationFilter in order to pick up specific LTI information
- * wired into a corresponding Authentication object. In order to do so, we check for the presence of LMS authentication
+ * wired into a corresponding Authentication object. In order to do so, we check for the presence of LTI authentication
  * and if exists, remember this authentication, clear security context, try to authenticate with UsernamePasswordAuthenticationFilter
  * and(if successful) add the previous LTI-specific authentication to the new authentication. That's it.
  */
@@ -37,7 +36,7 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
         if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(previousAuth)) {
             log.debug("LTI authentication exists, try to authenticate with UsernamePasswordAuthenticationFilter in the usual way");
             SecurityContextHolder.clearContext();
-            Authentication passwordAuthentication = null;
+            Authentication passwordAuthentication;
             try {// Attempt to authenticate with standard UsernamePasswordAuthenticationFilter
                 passwordAuthentication = super.attemptAuthentication(request, response);
             } catch (AuthenticationException e) {
@@ -46,9 +45,8 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
                 SecurityContextHolder.getContext().setAuthentication(previousAuth);
                 throw e;
             }
-            log.debug("Try to merge authentication (existing LTI and new STUDENT)");
-            Authentication resultingAuthentication = mergeAuthentication(previousAuth, passwordAuthentication);
-            return resultingAuthentication;
+            log.debug("Try to merge authentication (existing LTI and new USER)");
+            return mergeAuthentication(previousAuth, passwordAuthentication);
         }
         log.debug("No LTI authentication exists, try to authenticate with UsernamePasswordAuthenticationFilter in the usual way");
         return super.attemptAuthentication(request, response);
@@ -59,7 +57,6 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
         AuthenticatedUser passwordPrincipal = (AuthenticatedUser) passwordAuth.getPrincipal();
         Long userId = passwordPrincipal.getUserId();
         String email = passwordPrincipal.getUsername();
-        Collection<GrantedAuthority> passwordAuthorities = passwordPrincipal.getAuthorities();
 
         LTIToolConsumerCredentials previousPrincipal = (LTIToolConsumerCredentials) previousAuth.getPrincipal();
         LTIUserConsumerCredentials resultingPrincipal =
@@ -68,12 +65,11 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
         resultingPrincipal.setUser(previousPrincipal.getUser().orElse(null));
         resultingPrincipal.setEmail(email);
 
-        List<GrantedAuthority> updatedAuthorities = new ArrayList<>(passwordAuthorities);
-        updatedAuthorities.addAll(previousAuth.getAuthorities());
+        List<GrantedAuthority> updatedAuthorities = AuthorityUtils.createAuthorityList("ROLE_LMS-USER");
 
         Authentication resultingAuthentication = new UsernamePasswordAuthenticationToken(
                 resultingPrincipal, previousAuth.getCredentials(), Collections.unmodifiableList(updatedAuthorities));
-        log.debug("Merged authentication (LTI+new STUDENT) for user ID :: {} ", userId);
+        log.debug("Merged authentication (LTI+new USER) for the user ID :: {} ", userId);
         return resultingAuthentication;
     }
 
@@ -82,11 +78,11 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
             throws IOException, ServletException {
         Authentication previousAuth = SecurityContextHolder.getContext().getAuthentication();
         if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(previousAuth)) {
-            log.debug("Unsuccessful authentication upgrade for LTI user, fallback to previous authentication");
+            log.debug("Unsuccessful authentication upgrade for an LTI user, fallback to previous authentication");
             super.unsuccessfulAuthentication(request, response, failed);
             SecurityContextHolder.getContext().setAuthentication(previousAuth);
         } else {
-            log.debug("Unsuccessful authentication for non-LTI user with UsernamePasswordAuthenticationFilter");
+            log.debug("Unsuccessful authentication for a non-LTI user with UsernamePasswordAuthenticationFilter");
             super.unsuccessfulAuthentication(request, response, failed);
         }
     }

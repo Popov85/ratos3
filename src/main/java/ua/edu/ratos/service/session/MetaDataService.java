@@ -2,8 +2,8 @@ package ua.edu.ratos.service.session;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.MetaData;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.MetaData;
+import ua.edu.ratos.service.domain.SessionData;
 import java.util.List;
 import java.util.Map;
 

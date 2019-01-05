@@ -21,6 +21,7 @@ import java.util.Set;
 @Entity
 @Table(name="scheme")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Where(clause = "is_deleted = 0")
 public class Scheme {
 
@@ -63,12 +64,15 @@ public class Scheme {
     @Column(name="is_active")
     private boolean active;
 
+    @Column(name="lms_only")
+    private boolean lmsOnly;
+
     @Column(name="is_deleted")
     private boolean deleted;
 
     /**
-     * Scheme becomes completed as soon as at least one Theme is associated with it and all other settings are set;
-     * if the last Theme associated with a Scheme gets deleted, the Scheme becomes incomplete
+     * SchemeDomain becomes completed as soon as at least one ThemeDomain is associated with it and all other settingsDomain are set;
+     * if the last ThemeDomain associated with a SchemeDomain gets deleted, the SchemeDomain becomes incomplete
      */
     @Column(name="is_completed")
     private boolean completed;
@@ -93,6 +97,7 @@ public class Scheme {
     }
 
     @OneToMany(mappedBy = "scheme", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<GroupScheme> groups = new HashSet<>();
 
     public void addGroup(Group group) {
@@ -102,16 +107,4 @@ public class Scheme {
         groupScheme.setEnabled(true);
         this.groups.add(groupScheme);
     }
-
-
-    public ua.edu.ratos.service.session.domain.Scheme toDomain() {
-        return new ua.edu.ratos.service.session.domain.Scheme()
-                .setSchemeId(schemeId)
-                .setName(name)
-                .setStrategy(strategy.toDomain())
-                .setSettings(settings.toDomain())
-                .setMode(mode.toDomain())
-                .setGrading(grading.toDomain());
-    }
-
 }

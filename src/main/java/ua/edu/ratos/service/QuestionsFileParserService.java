@@ -10,11 +10,11 @@ import ua.edu.ratos.dao.entity.Language;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.entity.question.Question;
-import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.dao.entity.QuestionType;
-import ua.edu.ratos.service.dto.entity.FileInDto;
-import ua.edu.ratos.service.dto.transformer.QuestionsParsingResultDtoTransformer;
-import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.dto.in.FileInDto;
+import ua.edu.ratos.service.transformer.domain_to_dto.QuestionsParsingResultDtoTransformer;
+import ua.edu.ratos.service.dto.out.view.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
 import ua.edu.ratos.service.utils.CharsetDetector;
 import javax.persistence.EntityManager;
@@ -53,8 +53,6 @@ public class QuestionsFileParserService {
         QuestionsFileParser parser = getParser(extension);
         final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
         final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
-        //parsingResult.getQuestions().forEach(System.out::println);
-        //return transformer.toDto(parsingResult, false);
         if (dto.isConfirmed()) {
             save(parsingResult.getQuestions(), dto);
             log.debug("Saved questions into the DB after confirmation, {}", parsingResult.getQuestions().size());
@@ -69,8 +67,8 @@ public class QuestionsFileParserService {
         }
     }
 
-    private void save(@NonNull List<QuestionMultipleChoice> parsedQuestions, @NonNull FileInDto dto) {
-        // First, Enrich questions with Theme, Language and Type, second for each non-null helpAvailable, enrich it with Staff
+    private void save(@NonNull List<QuestionMCQ> parsedQuestions, @NonNull FileInDto dto) {
+        // First, Enrich questions with ThemeDomain, Language and Type, second for each non-null helpAvailable, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Language language = em.getReference(Language.class, dto.getLangId());
@@ -80,7 +78,7 @@ public class QuestionsFileParserService {
             q.setTheme(theme);
             q.setType(type);
             q.setLang(language);
-            if (q.getHelp().isPresent()) q.getHelp().get().forEach(h->h.setStaff(staff));
+            if (q.getHelp().isPresent()) q.getHelp().get().setStaff(staff);
             questions.add(q);
         });
         questionService.saveAll(questions);

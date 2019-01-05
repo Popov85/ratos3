@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.scheme.SchemeThemeSettingsService;
-import ua.edu.ratos.service.dto.entity.SchemeThemeSettingsInDto;
+import ua.edu.ratos.service.grading.SchemeThemeSettingsService;
+import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
 import javax.persistence.EntityManager;
 import java.io.File;
 

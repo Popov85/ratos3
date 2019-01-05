@@ -3,11 +3,10 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.*;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.dto.ResultOutDto;
-import ua.edu.ratos.service.session.dto.ResultPerQuestionOutDto;
-
+import ua.edu.ratos.service.domain.*;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.dto.session.ResultOutDto;
+import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,26 +17,26 @@ public class ResultDtoBuilder {
     @Autowired
     private ProgressDataService progressDataService;
 
-    public ResultOutDto build( @NonNull SessionData sessionData, @NonNull final Result result) {
-        final Scheme scheme = sessionData.getScheme();
-        final Settings settings = scheme.getSettings();
-        final Mode mode = scheme.getMode();
+    public ResultOutDto build( @NonNull final SessionData sessionData, @NonNull final ResultDomain resultDomain) {
+        final SchemeDomain schemeDomain = sessionData.getSchemeDomain();
+        final SettingsDomain settingsDomain = schemeDomain.getSettingsDomain();
+        final ModeDomain modeDomain = schemeDomain.getModeDomain();
 
-        ResultOutDto dto = new ResultOutDto(sessionData.getKey(), result.isPassed());
+        ResultOutDto dto = new ResultOutDto(sessionData.getKey(), resultDomain.isPassed());
 
-        if (settings.isDisplayMark()) dto.setGrade(result.getGrade());
+        if (settingsDomain.isDisplayMark()) dto.setGrade(resultDomain.getGrade());
 
-        if (settings.isDisplayPercent()) dto.setPercent(result.getPercent());
+        if (settingsDomain.isDisplayPercent()) dto.setPercent(resultDomain.getPercent());
 
-        if (settings.isDisplayThemeResults()) dto.setThemeResults(result.getThemeResults());
+        if (settingsDomain.isDisplayThemeResults()) dto.setThemeResults(resultDomain.getThemeResults());
 
-        if (mode.isResultDetails()) dto.setQuestionResults(getResultPerQuestion(sessionData));
+        if (modeDomain.isResultDetails()) dto.setQuestionResults(getResultPerQuestion(sessionData));
 
         return dto;
     }
 
     private List<ResultPerQuestionOutDto> getResultPerQuestion(@NonNull final SessionData sessionData) {
-        Map<Long, Question> questionsMap = sessionData.getQuestionsMap();
+        Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         final List<ResponseEvaluated> responsesEvaluated = progressDataService.toResponseEvaluated(sessionData);
         return responsesEvaluated
                 .stream()
@@ -49,7 +48,7 @@ public class ResultDtoBuilder {
                 .collect(Collectors.toList());
     }
 
-    private String getQuestionTitle(@NonNull final Map<Long, Question> questionsMap, @NonNull final Long questionId) {
+    private String getQuestionTitle(@NonNull final Map<Long, QuestionDomain> questionsMap, @NonNull final Long questionId) {
         return questionsMap.get(questionId).getQuestion();
     }
 }

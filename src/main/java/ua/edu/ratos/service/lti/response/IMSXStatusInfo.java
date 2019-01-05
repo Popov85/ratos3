@@ -2,6 +2,7 @@ package ua.edu.ratos.service.lti.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+@SuppressWarnings("ALL")
 public class IMSXStatusInfo {
 	
 	@JacksonXmlProperty(localName = "imsx_codeMajor")

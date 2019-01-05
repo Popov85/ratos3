@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 @Setter
@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="type_level")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SchemeThemeSettings {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

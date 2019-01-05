@@ -1,24 +1,22 @@
 package ua.edu.ratos.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import ua.edu.ratos.config.properties.AppProperties;
 import javax.annotation.PostConstruct;
 
 @Component
 public class PropertiesService {
 
-    @Value("${ratos.data.collection.size}")
-    private int initCollectionSize;
+    @Autowired
+    private AppProperties appProperties;
 
     private PageRequest collectionRequest;
 
     public PageRequest getInitCollectionSize() {
         return this.collectionRequest;
     }
-
-    @Value("${ratos.data.table.size}")
-    private int initTableSize;
 
     private PageRequest tableRequest;
 
@@ -28,8 +26,8 @@ public class PropertiesService {
 
     @PostConstruct
     private void initialize() {
-        this.collectionRequest = PageRequest.of(0, initCollectionSize);
-        this.tableRequest = PageRequest.of(0, initTableSize);
+        this.collectionRequest = PageRequest.of(0, appProperties.getData().getCollection_size());
+        this.tableRequest = PageRequest.of(0, appProperties.getData().getTable_size());
     }
 
 }

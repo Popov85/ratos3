@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public abstract class AbstractQuestionsFileParser implements QuestionsFileParser
 
     protected int currentRow;
 
-    protected List<QuestionMultipleChoice> questions = new ArrayList<>();
+    protected List<QuestionMCQ> questions = new ArrayList<>();
 
     protected List<QuestionsParsingIssue> questionsParsingIssues = new ArrayList<>();
 

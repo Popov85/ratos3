@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
+import ua.edu.ratos.security.LMSUser;
+
 import java.security.Principal;
 import java.util.Optional;
 
@@ -13,11 +15,8 @@ import java.util.Optional;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class LTIToolConsumerCredentials extends ConsumerCredentials implements Principal {
+public class LTIToolConsumerCredentials extends ConsumerCredentials implements Principal, LMSUser {
 
-    /**
-     * Unique identifier of a recognized TC (LMS) based on the pair key-secret;
-     */
     private final Long lmsId;
 
     protected LTIToolConsumerCredentials(Long lmsId, String consumerKey, String signature, String signatureMethod, String signatureBaseString, String token) {
@@ -67,6 +66,9 @@ public class LTIToolConsumerCredentials extends ConsumerCredentials implements P
         return Optional.ofNullable(outcome);
     }
 
+    /**
+     * Unique identifier of a recognized TC (LMS) based on the pair key-secret;
+     */
     @Override
     public String getName() {
         return lmsId.toString();

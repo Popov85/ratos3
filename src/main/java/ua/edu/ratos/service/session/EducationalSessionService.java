@@ -1,10 +1,10 @@
 package ua.edu.ratos.service.session;
 
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-import ua.edu.ratos.service.session.dto.ComplaintInDto;
-import ua.edu.ratos.service.session.domain.Help;
+import ua.edu.ratos.service.domain.HelpDomain;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.dto.session.ComplaintInDto;
 
 /**
  * Educational session provides more possibility for students.
@@ -51,7 +51,7 @@ public interface EducationalSessionService {
      * @param sessionData
      * @return
      */
-    Help help(Long questionId, SessionData sessionData);
+    HelpDomain help(Long questionId, SessionData sessionData);
 
     /**
      * Skips the question, puts it to the end of the list to appear in the following batches

@@ -5,13 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.entity.question.*;
+import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.dao.entity.question.QuestionFBMQ;
+import ua.edu.ratos.dao.entity.question.QuestionFBSQ;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
+import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.repository.*;
-import ua.edu.ratos.service.dto.entity.*;
-import ua.edu.ratos.service.dto.transformer.DtoQuestionTransformer;
-import ua.edu.ratos.service.utils.CollectionShuffler;
-
+import ua.edu.ratos.service.domain.question.*;
+import ua.edu.ratos.service.dto.in.*;
+import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
+import ua.edu.ratos.service.transformer.entity_to_domain.QuestionDomainTransformer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,38 +29,40 @@ public class QuestionService {
     @Autowired
     private DtoQuestionTransformer transformer;
 
+    @Autowired
+    private QuestionDomainTransformer questionDomainTransformer;
 
     @Transactional
     public Long save(@NonNull QuestionMCQInDto dto) {
-        final QuestionMultipleChoice entity = transformer.fromDto(dto);
+        final QuestionMCQ entity = transformer.toEntity(dto);
         final Question savedQuestion = questionRepository.save(entity);
         return savedQuestion.getQuestionId();
     }
 
     @Transactional
     public Long save(@NonNull QuestionFBSQInDto dto) {
-        final QuestionFillBlankSingle entity = transformer.fromDto(dto);
+        final QuestionFBSQ entity = transformer.toEntity(dto);
         final Question savedQuestion = questionRepository.save(entity);
         return savedQuestion.getQuestionId();
     }
 
     @Transactional
     public Long save(@NonNull QuestionFBMQInDto dto) {
-        final QuestionFillBlankMultiple entity = transformer.fromDto(dto);
+        final QuestionFBMQ entity = transformer.toEntity(dto);
         final Question savedQuestion = questionRepository.save(entity);
         return savedQuestion.getQuestionId();
     }
 
     @Transactional
     public Long save(@NonNull QuestionMQInDto dto) {
-        final QuestionMatcher entity = transformer.fromDto(dto);
+        final QuestionMQ entity = transformer.toEntity(dto);
         final Question savedQuestion = questionRepository.save(entity);
         return savedQuestion.getQuestionId();
     }
 
     @Transactional
     public Long save(@NonNull QuestionSQInDto dto) {
-        final QuestionSequence entity = transformer.fromDto(dto);
+        final QuestionSQ entity = transformer.toEntity(dto);
         final Question savedQuestion = questionRepository.save(entity);
         return savedQuestion.getQuestionId();
     }
@@ -86,25 +92,35 @@ public class QuestionService {
     /*-----------------------SELECT------------------------*/
 
     @Transactional(readOnly = true)
-    public Set<Question> findAllByThemeId(@NonNull Long themeId) {
-        Set<Question> questions = new HashSet<>();
+    public Set<QuestionDomain> findAllByThemeId(@NonNull Long themeId) {
+        Set<QuestionDomain> questionDomains = new HashSet<>();
         // First, find all existing types (answerIds) in this theme
-        questionRepository.findTypes(themeId).forEach(typeId->questions.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
-        return questions;
+        questionRepository.findTypes(themeId).forEach(typeId-> questionDomains.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
+        return questionDomains;
     }
 
     @Transactional(readOnly = true)
-    public Set<? extends Question> findAllByThemeIdAndTypeId(Long themeId, Long typeId) {
+    public Set<? extends QuestionDomain> findAllByThemeIdAndTypeId(Long themeId, Long typeId) {
         if (typeId==1) {
-            return questionRepository.findAllMCQWithEverythingByThemeId(themeId);
-        } else if (typeId==2) {
-            return questionRepository.findAllFBSQWithEverythingByThemeId(themeId);
-        } else if (typeId==3) {
-            return questionRepository.findAllFBMQWithEverythingByThemeId(themeId);
+            Set<QuestionMCQ> set = questionRepository.findAllMCQWithEverythingByThemeId(themeId);
+            Set<QuestionMCQDomain> result = set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
+            return result;
+        }else if (typeId==2) {
+            Set<QuestionFBSQ> set = questionRepository.findAllFBSQWithEverythingByThemeId(themeId);
+            Set<QuestionFBSQDomain> result = set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
+            return result;
+        }  else if (typeId==3) {
+            Set<QuestionFBMQ> set = questionRepository.findAllFBMQWithEverythingByThemeId(themeId);
+            Set<QuestionFBMQDomain> result = set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
+            return result;
         } else if (typeId==4) {
-            return questionRepository.findAllMQWithEverythingByThemeId(themeId);
+            Set<QuestionMQ> set = questionRepository.findAllMQWithEverythingByThemeId(themeId);
+            Set<QuestionMQDomain> result = set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
+            return result;
         } else if (typeId==5) {
-            return questionRepository.findAllSQWithEverythingByThemeId(themeId);
+            Set<QuestionSQ> set = questionRepository.findAllSQWithEverythingByThemeId(themeId);
+            Set<QuestionSQDomain> result = set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
+            return result;
         }
         throw new RuntimeException("Unsupported type");
     }

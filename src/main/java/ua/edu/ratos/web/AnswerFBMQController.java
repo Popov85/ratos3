@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerFBMQService;
-import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
+import ua.edu.ratos.service.dto.in.AnswerFBMQInDto;
 
 import java.net.URI;
 

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.AnswerFBMQRepository;
-import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
-import ua.edu.ratos.service.dto.transformer.DtoAnswerTransformer;
+import ua.edu.ratos.service.dto.in.AnswerFBMQInDto;
+import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 
 @Service
 public class AnswerFBMQService {
@@ -19,14 +19,14 @@ public class AnswerFBMQService {
 
     @Transactional
     public Long save(@NonNull AnswerFBMQInDto dto) {
-        return answerRepository.save(transformer.fromDto(dto)).getAnswerId();
+        return answerRepository.save(transformer.toEntity(dto)).getAnswerId();
     }
 
     @Transactional
     public void update(@NonNull Long answerId, @NonNull AnswerFBMQInDto dto) {
         if (!answerRepository.existsById(answerId))
             throw new RuntimeException("Failed to update answer fbmq: ID does not exist");
-        answerRepository.save(transformer.fromDto(answerId, dto));
+        answerRepository.save(transformer.toEntity(answerId, dto));
     }
 
     @Transactional

@@ -2,71 +2,81 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.security.AuthenticatedStaff;
 import ua.edu.ratos.service.HelpService;
-import ua.edu.ratos.service.dto.entity.HelpInDto;
+import ua.edu.ratos.service.dto.in.HelpInDto;
+import ua.edu.ratos.service.dto.out.HelpOutDto;
 import javax.validation.Valid;
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
-
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor/question/help")
+@RequestMapping("/instructor")
 public class HelpController {
 
     @Autowired
     private HelpService helpService;
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/question/help", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody HelpInDto dto) {
         final Long helpId = helpService.save(dto);
-        log.debug("Saved Help :: {} ", helpId);
+        log.debug("Saved Help = {} ", helpId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(helpId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{helpId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/question/help/{helpId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void update(@PathVariable Long helpId, @Valid @RequestBody HelpInDto dto) {
         helpService.update(helpId, dto);
-        log.debug("Updated Help ID :: {} ", helpId);
+        log.debug("Updated Help ID = {} ", helpId);
     }
 
-    @DeleteMapping("/{helpId}")
+    @DeleteMapping("/question/help/{helpId}")
     public void delete(@PathVariable Long helpId) {
         helpService.deleteById(helpId);
-        log.debug("Deleted Help ID :: {}", helpId);
+        log.debug("Deleted Help ID = {}", helpId);
     }
 
-    /*-------------------GET-----------------*/
+    //-------------------GET-----------------
 
-    @GetMapping(value = "/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Help> findAllByStaffId(Principal principal) {
-        return helpService.findByStaffIdWithResources(1L);
+    @GetMapping(value = "/helps", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<HelpOutDto> findAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return helpService.findAll(PageRequest.of(page, size));
     }
 
-    @GetMapping(value = "/by-staff", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Help> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Principal principal) {
-        return helpService.findByStaffIdAndFirstNameLettersWithResources(1L, starts);
+    @GetMapping(value = "/helps/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<HelpOutDto> findAllByStaffId(Authentication auth) {
+        Long userId = ((AuthenticatedStaff) auth.getPrincipal()).getUserId();
+        return helpService.findByStaffIdWithResources(userId);
     }
 
-    @GetMapping(value = "/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Help> findAllByDepartmentId(Principal principal) {
-        return helpService.findByDepartmentIdWithResources(1L);
+    @GetMapping(value = "/helps/by-staff", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<HelpOutDto> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Authentication auth) {
+        Long userId = ((AuthenticatedStaff) auth.getPrincipal()).getUserId();
+        return helpService.findByStaffIdAndFirstNameLettersWithResources(userId, starts);
     }
 
-    @GetMapping(value = "/by-department", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Help> findAllByDepartmentIdAndLettersStarts(@RequestParam String starts, Principal principal) {
-        return helpService.findByDepartmentIdAndFirstNameLettersWithResources(1L, starts);
+    @GetMapping(value = "/helps/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<HelpOutDto> findAllByDepartmentId(Authentication auth) {
+        Long depId = ((AuthenticatedStaff) auth.getPrincipal()).getDepId();
+        return helpService.findByDepartmentIdWithResources(depId);
     }
 
+    @GetMapping(value = "/helps/by-department", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<HelpOutDto> findAllByDepartmentIdAndLettersStarts(@RequestParam String starts, Authentication auth) {
+        Long depId = ((AuthenticatedStaff) auth.getPrincipal()).getDepId();
+        return helpService.findByDepartmentIdAndFirstNameLettersWithResources(depId, starts);
+    }
 }

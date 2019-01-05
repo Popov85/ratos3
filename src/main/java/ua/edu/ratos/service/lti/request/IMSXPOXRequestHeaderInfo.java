@@ -2,6 +2,7 @@ package ua.edu.ratos.service.lti.request;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+@SuppressWarnings("ALL")
 public class IMSXPOXRequestHeaderInfo {
 
 	@JacksonXmlProperty(localName = "imsx_version")
@@ -9,14 +10,6 @@ public class IMSXPOXRequestHeaderInfo {
 
 	@JacksonXmlProperty(localName = "imsx_messageIdentifier")
 	private String imsxMessageIdentifier;
-
-	public String getImsxVersion() {
-		return imsxVersion;
-	}
-
-	public String getImsxMessageIdentifier() {
-		return imsxMessageIdentifier;
-	}
 
 	public IMSXPOXRequestHeaderInfo setImsxMessageIdentifier(String imsxMessageIdentifier) {
 		this.imsxMessageIdentifier = imsxMessageIdentifier;

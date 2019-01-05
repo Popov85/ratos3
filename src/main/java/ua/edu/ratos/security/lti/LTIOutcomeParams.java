@@ -19,6 +19,7 @@ public class LTIOutcomeParams {
     /*
      * As per LTI v 1.1.1 specification the launch request parameter is called: "lis_result_sourcedid".
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private final String sourcedId;
     /**
      * As per LTI v 1.1.1 specification the launch request parameter is called: "lis_outcome_service_url"

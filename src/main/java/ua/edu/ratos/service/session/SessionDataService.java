@@ -3,12 +3,9 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-import ua.edu.ratos.service.session.domain.SessionData;
-
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.SessionData;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class SessionDataService {

@@ -1,11 +1,11 @@
 package ua.edu.ratos.security.lti;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,8 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ua.edu.ratos.dao.entity.lms.LMSOrigin;
 import ua.edu.ratos.dao.repository.lms.LMSOriginRepository;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,37 +31,46 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private Environment environment;
+    private final String profile;
 
-    @Value("${ratos.lti.1p0.properties.launch.path}")
-    private String ltiLaunchPath;
+    private final String ltiLaunchPath;
 
-    @Autowired
-    private LMSOriginRepository lmsOriginRepository;
+    private final LTIConsumerDetailsService ltiConsumerDetailsService;
 
-    @Autowired
-    private LTIConsumerDetailsService ltiConsumerDetailsService;
+    private final LTIAuthenticationHandler ltiAuthenticationHandler;
 
-    @Autowired
-    private LTIAuthenticationHandler ltiAuthenticationHandler;
+    private final LMSOriginRepository lmsOriginRepository;
+
+    private final LTISecurityUtils ltiSecurityUtils;
 
     @Autowired
-    private LTISecurityUtils ltiSecurityUtils;
+    public LTISecurityConfig(final LTIConsumerDetailsService ltiConsumerDetailsService,
+                             final LTIAuthenticationHandler ltiAuthenticationHandler,
+                             final LMSOriginRepository lmsOriginRepository,
+                             final LTISecurityUtils ltiSecurityUtils,
+                             @NonNull final @Value("${spring.profiles.active}") String profile,
+                             @NonNull final @Value("${ratos.lti.launch_path}") String ltiLaunchPath) {
+        this.profile = profile;
+        this.ltiLaunchPath = ltiLaunchPath;
+        this.ltiConsumerDetailsService = ltiConsumerDetailsService;
+        this.ltiAuthenticationHandler = ltiAuthenticationHandler;
+        this.lmsOriginRepository = lmsOriginRepository;
+        this.ltiSecurityUtils = ltiSecurityUtils;
+    }
 
     // CORS bean
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> allowedOrigins;
-        if ("dev".equals(this.environment.getProperty("spring.profiles.active")))  {
-            allowedOrigins = Arrays.asList("*");
+        if ("dev".equals(profile) || "demo".equals(profile))  {
+            allowedOrigins = Collections.singletonList("*");
         } else {
             allowedOrigins = lmsOriginRepository.findAll()
-                    .stream().map(o -> o.getLink()).collect(Collectors.toList());
+                    .stream().map(LMSOrigin::getLink).collect(Collectors.toList());
         }
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(Arrays.asList("POST"));
+        configuration.setAllowedMethods(Collections.singletonList("POST"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/lti/**/launch", configuration);
         return source;
@@ -86,9 +96,10 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+
     @Bean
-    public FilterRegistrationBean ltiAwareProtectedResourceProcessingFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<ProtectedResourceProcessingFilter> ltiAwareProtectedResourceProcessingFilterRegistration() {
+        FilterRegistrationBean<ProtectedResourceProcessingFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(ltiAwareProtectedResourceProcessingFilter());
         registration.addUrlPatterns(ltiLaunchPath);
         registration.setName("ltiAwareProtectedResourceProcessingFilter");

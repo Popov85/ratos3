@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ua.edu.ratos.service.session.domain.*;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.dto.question.QuestionOutDto;
+import ua.edu.ratos.service.domain.*;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -29,16 +29,16 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
 
         String key = root.path("key").asText();
         long userId = root.path("userId").asLong();
-        Scheme scheme = objectMapper.treeToValue(root.path("scheme"), Scheme.class);
-        List<Question> questions = objectMapper.readerFor(new TypeReference<List<Question>>(){}).readValue(root.path("questions"));
+        SchemeDomain schemeDomain = objectMapper.treeToValue(root.path("schemeDomain"), SchemeDomain.class);
+        List<QuestionDomain> questionDomains = objectMapper.readerFor(new TypeReference<List<QuestionDomain>>(){}).readValue(root.path("questionDomains"));
         String sessionTimeOut = root.path("sessionTimeout").asText();
         long perQuestionTimeLimit = root.path("perQuestionTimeLimit").asLong();
         int questionPerBatch = root.path("questionsPerBatch").asInt();
         SessionData sessionData = new SessionData.Builder()
                 .withKey(key)
                 .forUser(userId)
-                .takingScheme(scheme)
-                .withIndividualSequence(questions)
+                .takingScheme(schemeDomain)
+                .withIndividualSequence(questionDomains)
                 .withSessionTimeout(LocalDateTime.parse(sessionTimeOut))
                 .withPerQuestionTimeLimit(perQuestionTimeLimit)
                 .withQuestionsPerBatch(questionPerBatch)
@@ -68,9 +68,9 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
     }
 
     private BatchOutDto getCurrentBatch(JsonNode node) throws IOException {
-        List<QuestionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionOutDto>>() {
-        }).readValue(node.path("batch"));
-        Mode mode = objectMapper.treeToValue(node.path("mode"), Mode.class);
+        List<QuestionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionOutDto>>() {})
+                .readValue(node.path("batch"));
+        ModeDomain modeDomain = objectMapper.treeToValue(node.path("modeDomain"), ModeDomain.class);
         long timeLeft = node.path("timeLeft").asLong();
         int questionsLeft = node.path("questionsLeft").asInt();
         long batchTimeLimit = node.path("batchTimeLimit").asLong();
@@ -78,7 +78,7 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
 
         BatchOutDto batchOutDto = new BatchOutDto.Builder()
                 .withQuestions(questions)
-                .inMode(mode)
+                .inMode(modeDomain)
                 .withTimeLeft(timeLeft)
                 .withQuestionsLeft(questionsLeft)
                 .withBatchTimeLimit(batchTimeLimit)

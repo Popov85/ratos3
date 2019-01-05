@@ -8,14 +8,12 @@ import ua.edu.ratos.dao.repository.OrganisationRepository;
 @Slf4j
 @Service
 public class OrganisationService {
+
     @Autowired
     private OrganisationRepository organisationRepository;
 
-    // Warning: this method is non-transactional for Exception handling purposes
     public void deleteById(Long orgId) {
         log.warn("Organisation is to be removed, Id= {}", orgId);
-        organisationRepository.pseudoDeleteById(orgId);
+        organisationRepository.findById(orgId).get().setDeleted(true);
     }
-
-
 }

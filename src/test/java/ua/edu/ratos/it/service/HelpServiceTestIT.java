@@ -13,7 +13,7 @@ import ua.edu.ratos.dao.entity.Help;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.HelpService;
-import ua.edu.ratos.service.dto.entity.HelpInDto;
+import ua.edu.ratos.service.dto.in.HelpInDto;
 import javax.persistence.EntityManager;
 import java.io.File;
 
@@ -35,7 +35,7 @@ public class HelpServiceTestIT {
     public static final String RESOURCE_NAME_UPD = "Schema#2";
     public static final String RESOURCE_LINK_UPD = "https://image.slidesharecdn.com/schema02.jpg";
 
-    public static final String FIND = "select h from Help h left join fetch h.helpResource r join fetch r.resource where h.helpId=:helpId";
+    public static final String FIND = "select h from Help h left join fetch h.resources r where h.helpId=:helpId";
 
     @Autowired
     private EntityManager em;
@@ -62,8 +62,8 @@ public class HelpServiceTestIT {
         Assert.assertNotNull(foundHelp);
         Assert.assertEquals(HELP_NEW, foundHelp.getName());
         Assert.assertEquals(HELP_TEXT, foundHelp.getHelp());
-        Assert.assertNotNull(foundHelp.getHelpResource().get().getResource());
-        Assert.assertEquals(new Resource(RESOURCE_LINK, RESOURCE_NAME), foundHelp.getHelpResource().get().getResource());
+        Assert.assertTrue(foundHelp.getResource().isPresent());
+        Assert.assertEquals(new Resource(RESOURCE_LINK, RESOURCE_NAME), foundHelp.getResource().get());
     }
 
     @Test
@@ -81,8 +81,8 @@ public class HelpServiceTestIT {
         Assert.assertNotNull(foundHelp);
         Assert.assertEquals(HELP_UPD, foundHelp.getName());
         Assert.assertEquals(HELP_TEXT_UPD, foundHelp.getHelp());
-        Assert.assertNotNull(foundHelp.getHelpResource().get().getResource());
-        Assert.assertEquals(new Resource(RESOURCE_LINK_UPD, RESOURCE_NAME_UPD), foundHelp.getHelpResource().get().getResource());
+        Assert.assertTrue(foundHelp.getResource().isPresent());
+        Assert.assertEquals(new Resource(RESOURCE_LINK_UPD, RESOURCE_NAME_UPD), foundHelp.getResource().get());
     }
 
 

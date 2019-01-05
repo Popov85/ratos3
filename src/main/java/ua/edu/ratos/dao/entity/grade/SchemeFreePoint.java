@@ -3,17 +3,18 @@ package ua.edu.ratos.dao.entity.grade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "freePointGrading")
 @Entity
 @Table(name = "scheme_free_point")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SchemeFreePoint {
-
     @Id
     @Column(name = "scheme_id")
     private Long schemeId;

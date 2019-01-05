@@ -1,16 +1,14 @@
 package ua.edu.ratos.dao.entity.grade;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
-import org.modelmapper.ModelMapper;
-
 import javax.persistence.*;
 
 /**
- * Pre-defined types of grading systems:
+ * Pre-defined types of gradingDomain systems:
  * 1) Four-point: traditional scale for CIS countries {2, 3, 4, 5}, grade is calculated based on thresholds
  * 2) Two-point: traditional scale for CIS countries in universities {1, 0} or {passed, not passed}, grade is calculated based on threshold
  * 3) Free-point: universal discrete scale {min, ..., max}, grade is calculated based on min and max values
@@ -22,6 +20,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "grading")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Grading {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -35,7 +34,4 @@ public class Grading {
     @Column(name = "description")
     private String description;
 
-    public ua.edu.ratos.service.session.domain.Grading toDomain() {
-        return  new ModelMapper().map(this, ua.edu.ratos.service.session.domain.Grading.class);
-    }
 }

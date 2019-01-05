@@ -1,7 +1,7 @@
 {
   "responses": {
     "101": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseMultipleChoice",
+      "className": "ua.edu.ratos.service.domain.response.ResponseMCQ",
       "questionId": 101,
       "answerIds": [
         456,
@@ -10,7 +10,7 @@
       ]
     },
     "102": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseMultipleChoice",
+      "className": "ua.edu.ratos.service.domain.response.ResponseMCQ",
       "questionId": 102,
       "answerIds": [
         556,
@@ -19,17 +19,17 @@
       ]
     },
     "103": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankSingle",
+      "className": "ua.edu.ratos.service.domain.response.ResponseFBSQ",
       "questionId": 103,
       "enteredPhrase": "entered phrase"
     },
     "104": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankSingle",
+      "className": "ua.edu.ratos.service.domain.response.ResponseFBSQ",
       "questionId": 104,
       "enteredPhrase": "entered phrase"
     },
     "105": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankMultiple",
+      "className": "ua.edu.ratos.service.domain.response.ResponseFBMQ",
       "questionId": 105,
       "enteredPhrases": [
         {
@@ -47,7 +47,7 @@
       ]
     },
     "106": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankMultiple",
+      "className": "ua.edu.ratos.service.domain.response.ResponseFBMQ",
       "questionId": 106,
       "enteredPhrases": [
         {
@@ -65,7 +65,7 @@
       ]
     },
     "107": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseMatcher",
+      "className": "ua.edu.ratos.service.domain.response.ResponseMQ",
       "questionId": 107,
       "matchedPhrases": [
         {
@@ -91,7 +91,7 @@
       ]
     },
     "108": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseMatcher",
+      "className": "ua.edu.ratos.service.domain.response.ResponseMQ",
       "questionId": 108,
       "matchedPhrases": [
         {
@@ -117,7 +117,7 @@
       ]
     },
     "109": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseSequence",
+      "className": "ua.edu.ratos.service.domain.response.ResponseSQ",
       "questionId": 109,
       "answerIds": [
         629,
@@ -128,7 +128,7 @@
       ]
     },
     "110": {
-      "className": "ua.edu.ratos.service.session.domain.response.ResponseSequence",
+      "className": "ua.edu.ratos.service.domain.response.ResponseSQ",
       "questionId": 110,
       "answerIds": [
         611,

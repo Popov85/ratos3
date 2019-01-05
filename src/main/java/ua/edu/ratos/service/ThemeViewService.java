@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.ThemeView;
 import ua.edu.ratos.dao.repository.ThemeViewRepository;
-import ua.edu.ratos.service.dto.transformer.ThemeViewDtoTransformer;
-import ua.edu.ratos.service.dto.view.ThemeOutDto;
+import ua.edu.ratos.service.transformer.domain_to_dto.ThemeViewDtoTransformer;
+import ua.edu.ratos.service.dto.out.view.ThemeOutDto;
 import java.util.Set;
 
 @Service

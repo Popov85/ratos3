@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"position", "department"})
 @Entity
 @Table(name = "staff")
 public class Staff {

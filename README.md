@@ -6,4 +6,4 @@ Features:
 - 5 tried-and-true types of exercises;
 - Control and educational learning sessions;
 - Extensive reports on tests outcomes;
-- Configurable learning schemes: exercise sequence strategies, grading strategies, etc.
+- Configurable learning schemes: exercise sequence strategies, gradingDomain strategies, etc.

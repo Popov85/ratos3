@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "resource")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Resource {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
@@ -43,14 +45,6 @@ public class Resource {
         this.link = link;
         this.description = description;
     }
-
-    public ua.edu.ratos.service.session.domain.Resource toDomain() {
-        return new ua.edu.ratos.service.session.domain.Resource()
-                .setResourceId(resourceId)
-                .setDescription(description)
-                .setLink(link);
-    }
-
 
     @Override
     public boolean equals(Object o) {

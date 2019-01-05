@@ -3,8 +3,9 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.question.Question;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.domain.SessionData;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,9 +26,9 @@ public class ShiftService {
      * @param sessionData
      */
     public void doShift(@NonNull final Long idToShift, @NonNull final SessionData sessionData) {
-        final List<Question> all = sessionData.getQuestions();
-        final Map<Long, Question> questionsMap = sessionData.getQuestionsMap();
-        final Question toShift = questionsMap.get(idToShift);
+        final List<QuestionDomain> all = sessionData.getQuestionDomains();
+        final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
+        final QuestionDomain toShift = questionsMap.get(idToShift);
         // 1. Remove the skipped question from the list
         all.remove(toShift);
         // & addAnswer it to the end
@@ -47,9 +48,9 @@ public class ShiftService {
      * @param sessionData
      */
     public void doShift(@NonNull final List<Long> idsToShift, @NonNull final SessionData sessionData) {
-        final List<Question> all = sessionData.getQuestions();
-        final Map<Long, Question> questionsMap = sessionData.getQuestionsMap();
-        final List<Question> toShift = idsToShift
+        final List<QuestionDomain> all = sessionData.getQuestionDomains();
+        final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
+        final List<QuestionDomain> toShift = idsToShift
                 .stream()
                 .map(questionsId -> questionsMap.get(questionsId))
                 .collect(Collectors.toList());

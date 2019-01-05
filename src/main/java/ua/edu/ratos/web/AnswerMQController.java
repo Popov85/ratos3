@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerMQService;
 import ua.edu.ratos.service.AnswerSQService;
-import ua.edu.ratos.service.dto.entity.AnswerMQInDto;
+import ua.edu.ratos.service.dto.in.AnswerMQInDto;
 
 import javax.validation.Valid;
 import java.net.URI;

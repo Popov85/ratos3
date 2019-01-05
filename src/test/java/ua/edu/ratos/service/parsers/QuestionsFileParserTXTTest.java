@@ -33,7 +33,7 @@ public class QuestionsFileParserTXTTest {
         /*System.out.println("QUESTIONS#: "+result.questions()
                 +" INVALID#: "+result.invalid()
                 +" SINGLE#: "+result.questionsOf(true));
-        result.getQuestions().forEach(question->System.out.println(question));
+        result.getQuestionDomains().forEach(question->System.out.println(question));
 
         System.out.println("ISSUES#: "+result.issues()+
                 " MAJOR#: "+result.issuesOf(MAJOR) +

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.service.scheme.SchemeThemeService;
-import ua.edu.ratos.service.dto.entity.SchemeThemeInDto;
+import ua.edu.ratos.service.grading.SchemeThemeService;
+import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -25,7 +25,7 @@ public class SchemeThemeController {
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody SchemeThemeInDto dto) {
         final Long schemeThemeId = schemeThemeService.save(dto);
-        log.debug("Associated Theme with Scheme :: {} ", schemeThemeId);
+        log.debug("Associated ThemeDomain with SchemeDomain :: {} ", schemeThemeId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(schemeThemeId).toUri();

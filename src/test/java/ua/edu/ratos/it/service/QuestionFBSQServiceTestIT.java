@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import ua.edu.ratos.dao.entity.question.QuestionFillBlankSingle;
+import ua.edu.ratos.dao.entity.question.QuestionFBSQ;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
-import ua.edu.ratos.service.dto.entity.QuestionFBSQInDto;
+import ua.edu.ratos.service.dto.in.QuestionFBSQInDto;
 import javax.persistence.EntityManager;
 import java.io.File;
 
@@ -25,7 +25,7 @@ public class QuestionFBSQServiceTestIT {
     public static final String JSON_NEW = "classpath:json/question_fbsq_in_dto_new.json";
     public static final String QUESTION_NEW = "Question #1";
 
-    public static final String FIND = "select q from QuestionFillBlankSingle q join fetch q.answer left join fetch q.help left join fetch q.resources where q.questionId=:questionId";
+    public static final String FIND = "select q from QuestionFBSQ q join fetch q.answer left join fetch q.helps left join fetch q.resources where q.questionId=:questionId";
 
     @Autowired
     private QuestionService questionService;
@@ -44,15 +44,15 @@ public class QuestionFBSQServiceTestIT {
         File json = ResourceUtils.getFile(JSON_NEW);
         QuestionFBSQInDto dto = objectMapper.readValue(json, QuestionFBSQInDto.class);
         questionService.save(dto);
-        final QuestionFillBlankSingle foundQuestion =
-            (QuestionFillBlankSingle) em.createQuery(FIND)
+        final QuestionFBSQ foundQuestion =
+            (QuestionFBSQ) em.createQuery(FIND)
                 .setParameter("questionId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundQuestion);
         Assert.assertNotNull(foundQuestion.getAnswer());
         Assert.assertEquals(QUESTION_NEW, foundQuestion.getQuestion());
-        Assert.assertEquals(1, foundQuestion.getHelp().get().size());
-        Assert.assertEquals(1, foundQuestion.getResources().get().size());
+        Assert.assertTrue(foundQuestion.getHelp().isPresent());
+        Assert.assertEquals(1, foundQuestion.getResources().size());
     }
 
 }

@@ -3,9 +3,9 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.question.Question;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name="theme")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Theme {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
@@ -35,11 +36,4 @@ public class Theme {
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();
-
-    public ua.edu.ratos.service.session.domain.Theme toDto() {
-        return new ua.edu.ratos.service.session.domain.Theme()
-                .setThemeId(themeId)
-                .setName(name);
-    }
-
 }

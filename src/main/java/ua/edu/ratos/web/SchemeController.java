@@ -7,8 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.service.scheme.SchemeService;
-import ua.edu.ratos.service.dto.entity.SchemeInDto;
+import ua.edu.ratos.service.grading.SchemeService;
+import ua.edu.ratos.service.dto.in.SchemeInDto;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -55,7 +55,7 @@ public class SchemeController {
     @DeleteMapping("/{schemeId}/{themeIndex}")
     public void deleteTheme(@PathVariable Long schemeId, @PathVariable Integer themeIndex) {
         schemeService.deleteByIndex(schemeId, themeIndex);
-        log.debug("Disassociated Theme currentIndex = {} with given Scheme ID={}", themeIndex, schemeId);
+        log.debug("Disassociated Theme currentIndex = {} with given SchemeDomain ID={}", themeIndex, schemeId);
     }
 
     /*-----------------SELECT---------------------*/

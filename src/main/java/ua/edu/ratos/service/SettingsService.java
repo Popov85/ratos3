@@ -2,15 +2,21 @@ package ua.edu.ratos.service;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.dao.repository.SettingsRepository;
-import ua.edu.ratos.service.dto.entity.SettingsInDto;
-import ua.edu.ratos.service.dto.transformer.DtoSettingsTransformer;
+import ua.edu.ratos.service.dto.in.SettingsInDto;
+import ua.edu.ratos.service.dto.out.SettingsOutDto;
+import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.SettingsDtoTransformer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SettingsService {
@@ -23,48 +29,62 @@ public class SettingsService {
 
 
     @Autowired
-    private DtoSettingsTransformer transformer;
+    private DtoSettingsTransformer dtoSettingsTransformer;
+
+    @Autowired
+    private SettingsDtoTransformer settingsDtoTransformer;
 
     @Transactional
     public Long save(@NonNull SettingsInDto dto) {
-        return settingsRepository.save(transformer.fromDto(dto)).getSetId();
+        return settingsRepository.save(dtoSettingsTransformer.toEntity(dto)).getSetId();
     }
 
     @Transactional
-    public void update(@NonNull SettingsInDto dto) {
-        if (dto.getSetId()==null || dto.getSetId()==0)
-            throw new RuntimeException("Invalid ID");
-        settingsRepository.save(transformer.fromDto(dto));
-    }
-
-    @Transactional(readOnly = true)
-    public Set<Settings> findAllByStaffId(@NonNull Long staffId) {
-        return settingsRepository.findAllByStaffId(staffId);
-    }
-
-    @Transactional(readOnly = true)
-    public Set<Settings> findAllByStaffIdAndSettingsNameLettersContains(@NonNull Long staffId, @NonNull String contains) {
-        return settingsRepository.findAllByStaffIdAndSettingsNameLettersContains(staffId, contains);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Settings> findAllByDepartmentId(@NonNull Long depId) {
-        return settingsRepository.findByDepartmentId(depId, propertiesService.getInitCollectionSize()).getContent();
-    }
-
-    @Transactional(readOnly = true)
-    public Set<Settings> findAllByDepartmentIdAndSettingsNameLettersContains(@NonNull Long depId, @NonNull String contains) {
-        return settingsRepository.findAllByDepartmentIdAndSettingsNameLettersContains(depId, contains);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Settings> findAll( @NonNull Pageable pageable) {
-        return settingsRepository.findAll(pageable).getContent();
+    public void update(@NonNull Long setId, @NonNull SettingsInDto dto) {
+        if (!settingsRepository.existsById(setId))
+            throw new RuntimeException("Failed to update Settings: ID does not exist");
+        settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
     }
 
     @Transactional
     public void deleteById(@NonNull Long setId) {
         settingsRepository.findById(setId).get().setDeleted(true);
+    }
+
+    //-------------------SELECT----------------------
+
+    @Transactional(readOnly = true)
+    public Page<SettingsOutDto> findAll(@NonNull Pageable pageable) {
+        Page<Settings> page = settingsRepository.findAll(pageable);
+        return new PageImpl<>(toDto(page.getContent()), pageable, page.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
+    public List<SettingsOutDto> findAllByStaffId(@NonNull Long staffId) {
+        Set<Settings> content = settingsRepository.findAllByStaffId(staffId);
+        return toDto(content);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SettingsOutDto> findAllByStaffIdAndSettingsNameLettersContains(@NonNull Long staffId, @NonNull String contains) {
+        Set<Settings> content = settingsRepository.findAllByStaffIdAndSettingsNameLettersContains(staffId, contains);
+        return toDto(content);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SettingsOutDto> findAllByDepartmentId(@NonNull Long depId) {
+        List<Settings> content = settingsRepository.findByDepartmentId(depId, propertiesService.getInitCollectionSize()).getContent();
+        return toDto(content);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SettingsOutDto> findAllByDepartmentIdAndSettingsNameLettersContains(@NonNull Long depId, @NonNull String contains) {
+        Set<Settings> content = settingsRepository.findAllByDepartmentIdAndSettingsNameLettersContains(depId, contains);
+        return toDto(content);
+    }
+
+    private List<SettingsOutDto> toDto(@NonNull final Collection<Settings> content) {
+        return content.stream().map(settingsDtoTransformer::toDto).collect(Collectors.toList());
     }
 
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name="scheme_theme")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SchemeTheme {
 
     @Id
@@ -42,11 +43,6 @@ public class SchemeTheme {
     public void addSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {
         this.schemeThemeSettings.add(schemeThemeSettings);
         schemeThemeSettings.setSchemeTheme(this);
-    }
-
-    public void removeSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {
-        this.schemeThemeSettings.remove(schemeThemeSettings);
-        schemeThemeSettings.setSchemeTheme(null);
     }
 
 }

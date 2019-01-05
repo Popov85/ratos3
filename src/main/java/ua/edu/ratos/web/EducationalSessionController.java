@@ -6,8 +6,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.security.AuthenticatedUser;
 import ua.edu.ratos.service.session.EducationalSessionService;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;

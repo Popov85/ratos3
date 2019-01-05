@@ -32,12 +32,12 @@ public class LMSOrigin {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LMSOrigin lmsOrigin = (LMSOrigin) o;
-        return Objects.equals(originId, lmsOrigin.originId) &&
-                Objects.equals(link, lmsOrigin.link);
+        return Objects.equals(link, lmsOrigin.link);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originId, link);
+
+        return Objects.hash(link);
     }
 }

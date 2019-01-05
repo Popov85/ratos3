@@ -54,7 +54,7 @@ delete from faculty;
 delete from lms_origin;
 delete from lms;
 delete from organisation;
-delete from lti1p0_credentials;
+delete from lti_credentials;
 delete from lti_version;
 
 ALTER TABLE organisation ALTER COLUMN org_id RESTART WITH 1;
@@ -98,7 +98,7 @@ ALTER TABLE lms_course ALTER COLUMN lms_course_id RESTART WITH 1;
 ALTER TABLE lms ALTER COLUMN lms_id RESTART WITH 1;
 ALTER TABLE lms_origin ALTER COLUMN origin_id RESTART WITH 1;
 ALTER TABLE lti_version ALTER COLUMN version_id RESTART WITH 1;
-ALTER TABLE lti1p0_credentials ALTER COLUMN credentials_id RESTART WITH 1;
+ALTER TABLE lti_credentials ALTER COLUMN credentials_id RESTART WITH 1;
 
 
 

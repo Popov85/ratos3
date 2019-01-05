@@ -1,99 +1,140 @@
 <!-- http://www.ehcache.org/documentation/3.5/getting-started.html -->
 <!--http://www.ehcache.org/documentation/3.5/107.html-->
 <config
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
-    xmlns='http://www.ehcache.org/v3'
-    xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
 
-  <service>
-    <jsr107:defaults enable-management="true" enable-statistics="true"/>
-  </service>
+    <service>
+        <jsr107:defaults enable-management="true" enable-statistics="true"/>
+    </service>
 
-  <!--Scheme related cache-->
+    <!--Scheme related cache-->
 
-  <cache alias="ua.edu.ratos.dao.entity.Scheme">
-    <heap>1000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Scheme">
+        <heap>10000</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Mode">
-      <heap>500</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Mode">
+        <heap>500</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Settings">
-      <heap>500</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Settings">
+        <heap>500</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Strategy">
-      <heap>10</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Strategy">
+        <heap>10</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.SchemeTheme">
-      <heap>2000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.SchemeTheme">
+        <heap>2000</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.SchemeThemeSettings">
-      <heap>2000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.SchemeThemeSettings">
+        <heap>2000</heap>
+    </cache>
 
-  <!--Questions related cache-->
+    <cache alias="ua.edu.ratos.dao.entity.grade.Grading">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.question.Question">
-    <resources>
-      <heap>5000</heap>
-      <offheap unit="MB">100</offheap>
-    </resources>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.FreePointGrading">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.QuestionType">
-      <heap>10</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.FourPointGrading">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Theme">
-      <heap>2000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.TwoPointGrading">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Language">
-      <heap>10</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeFourPoint">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Help">
-      <heap>500</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeFreePoint">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Resource">
-      <heap>500</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeTwoPoint">
+        <heap>50</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMultipleChoice">
-    <resources>
-      <heap>20000</heap>
-      <offheap unit="MB">400</offheap>
-    </resources>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.GroupScheme">
+        <heap>1000</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFillBlankSingle">
-      <heap>1000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Group">
+        <heap>1000</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.Phrase">
-      <heap>4000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.Student">
+        <heap>10000</heap>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.SettingsAnswerFillBlank">
-      <heap>500</heap>
-  </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFillBlankMultiple">
-      <heap>1000</heap>
-  </cache>
+    <!--Questions related cache-->
 
-  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMatcher">
-      <heap>1000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.question.Question">
+        <resources>
+            <heap>5000</heap>
+            <offheap unit="MB">500</offheap>
+        </resources>
+    </cache>
 
-  <cache alias="ua.edu.ratos.dao.entity.answer.AnswerSequence">
-      <heap>1000</heap>
-  </cache>
+    <cache alias="ua.edu.ratos.dao.entity.QuestionType">
+        <heap>20</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.Theme">
+        <heap>2000</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.Language">
+        <heap>20</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.Help">
+        <heap>500</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.Resource">
+        <heap>500</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.Phrase">
+        <heap>10000</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.SettingsFB">
+        <heap>500</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMCQ">
+        <resources>
+            <heap>20000</heap>
+            <offheap unit="MB">400</offheap>
+        </resources>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFBSQ">
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFBMQ">
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMQ">
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="ua.edu.ratos.dao.entity.answer.AnswerSQ">
+        <heap>1000</heap>
+    </cache>
 
 </config>

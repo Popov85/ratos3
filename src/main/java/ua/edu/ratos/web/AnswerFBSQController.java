@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.AnswerFBSQService;
-import ua.edu.ratos.service.dto.entity.AnswerFBSQInDto;
+import ua.edu.ratos.service.dto.in.AnswerFBSQInDto;
 
 import javax.validation.Valid;
 

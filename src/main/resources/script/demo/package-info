@@ -1,0 +1,3 @@
+/**
+ * It uses in-memory DB H2, so do not forget to switch the scope of the maven dependency for H2 to "runtime"
+ */

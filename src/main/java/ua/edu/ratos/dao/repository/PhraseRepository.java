@@ -8,9 +8,18 @@ import ua.edu.ratos.dao.entity.Phrase;
 
 public interface PhraseRepository extends JpaRepository<Phrase, Long> {
 
-    @Query(value = "SELECT a FROM Phrase a join a.staff s where s.staffId =?1 order by a.lastUsed desc")
+    @Query(value="SELECT p FROM Phrase p order by p.phrase desc")
+    Page<Phrase> findAll(Pageable pageable);
+
+    @Query(value = "SELECT p FROM Phrase p join p.staff s where s.staffId =?1 order by p.lastUsed desc")
     Page<Phrase> findAllLastUsedByStaffId(Long staId, Pageable pageable);
 
-    @Query(value = "SELECT a FROM Phrase a join a.staff s where s.staffId =?1 and a.phrase like ?2% order by a.phrase asc")
+    @Query(value = "SELECT p FROM Phrase p join p.staff s join s.department d where d.depId =?1 order by p.lastUsed desc")
+    Page<Phrase> findAllLastUsedByDepId(Long depId, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Phrase p join p.staff s where s.staffId =?1 and p.phrase like ?2% order by p.phrase asc")
     Page<Phrase> findAllLastUsedByStaffIdAndFirstLetters(Long staId, String starts, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Phrase p join p.staff s join s.department d where d.depId =?1 and p.phrase like ?2% order by p.phrase asc")
+    Page<Phrase> findAllLastUsedByDepIdAndFirstLetters(Long depId, String starts, Pageable pageable);
 }

@@ -3,8 +3,8 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 @Setter
@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="language")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Language {
 
     @Id

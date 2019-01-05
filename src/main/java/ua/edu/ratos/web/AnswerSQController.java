@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerSQService;
-import ua.edu.ratos.service.dto.entity.AnswerSQInDto;
+import ua.edu.ratos.service.dto.in.AnswerSQInDto;
 
 import java.net.URI;
 

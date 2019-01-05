@@ -7,8 +7,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.config.TrackTime;
-import ua.edu.ratos.service.session.domain.SessionData;
-
+import ua.edu.ratos.service.domain.SessionData;
 import java.io.IOException;
 
 @Service
@@ -18,13 +17,13 @@ public class SessionDataSerializerService {
     private ObjectMapper objectMapper;
 
     /**
-     * Serialize SessionData obj int json so that to store it in DB
+     * Serialize SessionData obj into JSON so that to store it in DB
      * Usage:
      *   1) Standard store of each session data after finish during some time (1 day by default);
      *   2) Preservation mechanism (for educational session only).
      *
      * @param sessionData
-     * @return json representation of SessionData obj
+     * @return JSON representation of SessionData obj
      */
     @TrackTime
     public String serialize(@NonNull final SessionData sessionData) {

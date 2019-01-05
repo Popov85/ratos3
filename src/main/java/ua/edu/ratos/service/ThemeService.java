@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.repository.ThemeRepository;
-import ua.edu.ratos.service.dto.entity.ThemeInDto;
-import ua.edu.ratos.service.dto.transformer.DtoThemeTransformer;
+import ua.edu.ratos.service.dto.in.ThemeInDto;
+import ua.edu.ratos.service.transformer.dto_to_entity.DtoThemeTransformer;
 import java.util.List;
 import java.util.Set;
 
@@ -27,13 +27,13 @@ public class ThemeService {
 
     @Transactional
     public Long save(@NonNull ThemeInDto dto) {
-        Theme theme = transformer.fromDto(dto);
+        Theme theme = transformer.toEntity(dto);
         return themeRepository.save(theme).getThemeId();
     }
 
     @Transactional
     public void update(@NonNull Long themeId, @NonNull ThemeInDto dto) {
-        themeRepository.save(transformer.fromDto(themeId, dto));
+        themeRepository.save(transformer.toEntity(themeId, dto));
     }
 
     @Transactional

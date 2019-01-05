@@ -9,6 +9,9 @@ import java.util.Set;
 
 public interface ModeRepository extends JpaRepository<Mode, Long> {
 
+    @Query(value="select m from Mode m order by m.name desc")
+    Page<Mode> findAll(Pageable pageable);
+
     @Query(value="select m from Mode m where m.defaultMode = true order by m.name desc")
     Set<Mode> findAllDefault();
 
@@ -23,7 +26,4 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
 
     @Query(value="select m from Mode m join m.staff s join s.department d where d.depId = ?1 and m.name like %?2% order by m.name desc")
     Set<Mode> findAllByDepartmentIdAndModeNameLettersContains(Long depId, String contains);
-
-    @Query(value="select m from Mode m order by m.name desc")
-    Page<Mode> findAll(Pageable pageable);
 }

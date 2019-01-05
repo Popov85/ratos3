@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.lms.LMS;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
-@ToString(exclude = {"resultTheme", "lms", "user", "scheme"})
+@ToString(exclude = {"scheme", "user", "lms", "resultTheme"})
 @Entity
 @Table(name = "result")
 public class Result {

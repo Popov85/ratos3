@@ -3,18 +3,19 @@ package ua.edu.ratos.dao.entity.grade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
-
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"staff", "grading"})
 @Entity
 @Table(name = "four_point")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FourPointGrading {
 
     @Id

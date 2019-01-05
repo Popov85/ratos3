@@ -16,10 +16,14 @@ import ua.edu.ratos.dao.repository.lms.LTICredentialsRepository;
 @Component
 public class LTIConsumerDetailsService implements ConsumerDetailsService {
 
-    @Autowired
-    private LTICredentialsRepository ltiCredentialsRepository;
+    private final LTICredentialsRepository ltiCredentialsRepository;
 
-	@Override
+    @Autowired
+    public LTIConsumerDetailsService(final LTICredentialsRepository ltiCredentialsRepository) {
+        this.ltiCredentialsRepository = ltiCredentialsRepository;
+    }
+
+    @Override
 	public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
         LTICredentials ltiCredentials = ltiCredentialsRepository.findByConsumerKey(consumerKey);
         if (ltiCredentials!=null) {
@@ -33,7 +37,7 @@ public class LTIConsumerDetailsService implements ConsumerDetailsService {
             log.debug("LTI success: found the client secret and created basic ConsumerDetails object, {}", cd);
             return cd;
         }
-        throw new OAuthException("LTI failure: no client secret matching consumer key was found in DB");
+        throw new OAuthException("LTI authentication failure: no client secret matching consumer key was found in DB");
 	}
 
 }

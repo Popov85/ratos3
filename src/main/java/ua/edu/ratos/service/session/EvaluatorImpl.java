@@ -2,8 +2,8 @@ package ua.edu.ratos.service.session;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import ua.edu.ratos.service.session.domain.question.*;
-import ua.edu.ratos.service.session.domain.response.*;
+import ua.edu.ratos.service.domain.question.*;
+import ua.edu.ratos.service.domain.response.*;
 
 /**
  * @link https://stackoverflow.com/questions/30527947/polymorphism-and-dto-object-creation
@@ -11,47 +11,47 @@ import ua.edu.ratos.service.session.domain.response.*;
 @AllArgsConstructor
 public class EvaluatorImpl implements Evaluator {
 
-    private final Question question;
+    private final QuestionDomain questionDomain;
 
     @Override
-    public double evaluate(@NonNull final ResponseMultipleChoice response) {
-        if (!(question instanceof QuestionMCQ))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionMCQ.class"+
-                    " actual :: "+question.getClass());
-        return ((QuestionMCQ) question).evaluate(response);
+    public double evaluate(@NonNull final ResponseMCQ response) {
+        if (!(questionDomain instanceof QuestionMCQDomain))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionMCQDomain.class"+
+                    " actual :: "+ questionDomain.getClass());
+        return ((QuestionMCQDomain) questionDomain).evaluate(response);
     }
 
     @Override
-    public double evaluate(@NonNull final ResponseFillBlankSingle response) {
-        if (!(question instanceof QuestionFBSQ))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionFBSQ.class"+
-                    " actual :: "+question.getClass());
-        return ((QuestionFBSQ) question).evaluate(response);
+    public double evaluate(@NonNull final ResponseFBSQ response) {
+        if (!(questionDomain instanceof QuestionFBSQDomain))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionFBSQDomain.class"+
+                    " actual :: "+ questionDomain.getClass());
+        return ((QuestionFBSQDomain) questionDomain).evaluate(response);
     }
 
     @Override
-    public double evaluate(@NonNull final ResponseFillBlankMultiple response) {
-        if (!(question instanceof QuestionFBMQ))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionFBMQ.class"+
-                    " actual :: "+question.getClass());
-        return ((QuestionFBMQ) question).evaluate(response);
+    public double evaluate(@NonNull final ResponseFBMQ response) {
+        if (!(questionDomain instanceof QuestionFBMQDomain))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionFBMQDomain.class"+
+                    " actual :: "+ questionDomain.getClass());
+        return ((QuestionFBMQDomain) questionDomain).evaluate(response);
 
     }
 
     @Override
-    public double evaluate(@NonNull final ResponseMatcher response) {
-        if (!(question instanceof QuestionMQ))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionMQ.class"+
-                    " actual :: "+question.getClass());
-        return ((QuestionMQ) question).evaluate(response);
+    public double evaluate(@NonNull final ResponseMQ response) {
+        if (!(questionDomain instanceof QuestionMQDomain))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionMQDomain.class"+
+                    " actual :: "+ questionDomain.getClass());
+        return ((QuestionMQDomain) questionDomain).evaluate(response);
     }
 
     @Override
-    public double evaluate(@NonNull final ResponseSequence response) {
-        if (!(question instanceof QuestionSQ))
-            throw new IllegalStateException("Type mismatch: expected :: QuestionSQ.class"+
-                    " actual :: "+question.getClass());
-        return ((QuestionSQ) question).evaluate(response);
+    public double evaluate(@NonNull final ResponseSQ response) {
+        if (!(questionDomain instanceof QuestionSQDomain))
+            throw new IllegalStateException("Type mismatch: expected :: QuestionSQDomain.class"+
+                    " actual :: "+ questionDomain.getClass());
+        return ((QuestionSQDomain) questionDomain).evaluate(response);
     }
 
 }

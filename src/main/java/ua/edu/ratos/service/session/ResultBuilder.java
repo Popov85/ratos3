@@ -5,9 +5,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.*;
-import ua.edu.ratos.service.session.domain.Result;
-import ua.edu.ratos.service.session.domain.question.Question;
+import ua.edu.ratos.service.domain.*;
+import ua.edu.ratos.service.domain.ResultDomain;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,31 +30,31 @@ public class ResultBuilder {
      * @param sessionData
      * @return the result of the given dto
      */
-    public Result build(@NonNull final SessionData sessionData) {
+    public ResultDomain build(@NonNull final SessionData sessionData) {
         final ProgressData progressData = sessionData.getProgressData();
 
         // 1. Calculate percent
         final double score = progressData.getScore();
-        final int quantity = sessionData.getQuestions().size();
+        final int quantity = sessionData.getQuestionDomains().size();
         final double percent = (score*100d)/quantity;
 
         // 2. Calculate grade and if-passed verdict
-        final Scheme scheme = sessionData.getScheme();
-        final GradedResult gradedResult = gradingService.grade(percent, scheme);
+        final SchemeDomain schemeDomain = sessionData.getSchemeDomain();
+        final GradedResult gradedResult = gradingService.grade(percent, schemeDomain);
         double grade = gradedResult.getGrade();
         final boolean passed = gradedResult.isPassed();
 
-        return new Result(sessionData.getKey(), passed, percent, grade, getResultPerTheme(sessionData));
+        return new ResultDomain(sessionData.getKey(), passed, percent, grade, getResultPerTheme(sessionData));
     }
 
     /**
-     * it's 3-step process
+     * It's 3-steps process
      * @param sessionData
      * @return
      */
     private List<ResultPerTheme> getResultPerTheme(@NonNull final SessionData sessionData) {
         List<ResultPerTheme> result = new ArrayList<>();
-        Map<Long, Question> questionsMap = sessionData.getQuestionsMap();
+        Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         // 1. Conversion
         final List<ResponseEvaluated> responsesEvaluated = progressDataService.toResponseEvaluated(sessionData);
         // 2. Grouping by theme
@@ -62,27 +62,27 @@ public class ResultBuilder {
                 .stream()
                 .collect(Collectors.groupingBy(r -> getThemeId(questionsMap, r.getQuestionId())));
         // 3. Calculation
-        final Scheme scheme = sessionData.getScheme();
+        final SchemeDomain schemeDomain = sessionData.getSchemeDomain();
         groupedByTheme.forEach((themeId,responsesList)->{
             final int quantity = responsesList.size();
             final double sum = responsesList.stream().mapToDouble(x -> x.getScore() / 100d).sum();
             double percent = (sum/quantity)*100d;
-            final GradedResult gradedResult = gradingService.grade(percent, scheme);
+            final GradedResult gradedResult = gradingService.grade(percent, schemeDomain);
             double grade = gradedResult.getGrade();
             final boolean passed = gradedResult.isPassed();
-            // theme title retrieve from the first response in the list
+            // themeDomain title retrieve from the first response in the list
             final String theme = getThemeName(questionsMap, responsesList.get(0).getQuestionId());
             result.add(new ResultPerTheme(themeId, theme, quantity, passed, percent, grade));
         });
         return result;
     }
 
-    private Long getThemeId(@NonNull final Map<Long, Question> questionsMap, @NonNull final Long questionId) {
-        return questionsMap.get(questionId).getTheme().getThemeId();
+    private Long getThemeId(@NonNull final Map<Long, QuestionDomain> questionsMap, @NonNull final Long questionId) {
+        return questionsMap.get(questionId).getThemeDomain().getThemeId();
     }
 
-    private String getThemeName(@NonNull final Map<Long, Question> questionsMap, @NonNull final Long questionId) {
-        return questionsMap.get(questionId).getTheme().getName();
+    private String getThemeName(@NonNull final Map<Long, QuestionDomain> questionsMap, @NonNull final Long questionId) {
+        return questionsMap.get(questionId).getThemeDomain().getName();
     }
 
 

@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
-import ua.edu.ratos.dao.entity.question.Question;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.CreateData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.sequence.SequenceFactory;
 import ua.edu.ratos.service.session.sequence.SequenceProducer;
+import ua.edu.ratos.service.transformer.entity_to_domain.SchemeDomainTransformer;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,13 +24,45 @@ public class SessionDataBuilder {
     @Autowired
     private TimingService timingService;
 
-    public SessionData build(@NonNull String key, @NonNull Long userId, @NonNull Scheme scheme) {
+    @Autowired
+    private SchemeDomainTransformer schemeDomainTransformer;
 
-        // Obtain individual sequence of questions
+
+    public SessionData build(@NonNull final String key, @NonNull final Long userId, @NonNull final Scheme scheme) {
+        CreateData createData = getCreateData(userId, scheme);
+        // Build SessionData (no LMS)
+        return new SessionData.Builder()
+                .withKey(key)
+                .forUser(userId)
+                .noLMS()
+                .takingScheme(createData.getSchemeDomain())
+                .withIndividualSequence(createData.getSequence())
+                .withQuestionsPerBatch(createData.getQuestionsPerBatch())
+                .withSessionTimeout(createData.getSessionTimeOut())
+                .withPerQuestionTimeLimit(createData.getQuestionTimeOut())
+                .build();
+    }
+
+    public SessionData build(@NonNull final String key, @NonNull final Long userId, @NonNull final Scheme scheme, @NonNull final Long lmsId) {
+        CreateData createData = getCreateData(userId, scheme);
+        // Build SessionData (within LMS)
+        return new SessionData.Builder()
+                .withKey(key)
+                .forUser(userId)
+                .fromLMS(lmsId)
+                .takingScheme(createData.getSchemeDomain())
+                .withIndividualSequence(createData.getSequence())
+                .withQuestionsPerBatch(createData.getQuestionsPerBatch())
+                .withSessionTimeout(createData.getSessionTimeOut())
+                .withPerQuestionTimeLimit(createData.getQuestionTimeOut())
+                .build();
+    }
+
+    private CreateData getCreateData(@NonNull final Long userId, @NonNull final Scheme scheme) {
         final SequenceProducer sequenceProducer = sequenceFactory.getSequenceProducer(scheme.getStrategy());
-        final List<Question> sequence = sequenceProducer.getSequence(scheme.getThemes());
-        log.debug("Individual sequence is built of size :: {}", sequence.size());
-
+        final List<QuestionDomain> sequence = sequenceProducer.getSequence(scheme.getThemes());
+        log.debug("Individual sequence of questions is built of size = {} for the user = {} taking scheme ID = {}"
+                ,sequence.size(), userId, scheme.getSchemeId());
         // Time control processing
         final int secondsPerQuestion = scheme.getSettings().getSecondsPerQuestion();
         final boolean strictControlTimePerQuestion = scheme.getSettings().isStrictControlTimePerQuestion();
@@ -41,15 +74,11 @@ public class SessionDataBuilder {
         final short questionsPerSheet = scheme.getSettings().getQuestionsPerSheet();
         final int questionsPerBatch = (questionsPerSheet <= 0 || questionsTotal <= questionsPerSheet) ? questionsTotal : questionsPerSheet;
 
-        // Build a SessionData
-        return new SessionData.Builder()
-                .withKey(key)
-                .forUser(userId)
-                .takingScheme(scheme.toDomain())
-                .withIndividualSequence(sequence.stream().map(s->s.toDomain()).collect(Collectors.toList()))
-                .withQuestionsPerBatch(questionsPerBatch)
-                .withSessionTimeout(sessionTimeOut)
-                .withPerQuestionTimeLimit(questionTimeOut)
-                .build();
+        return new CreateData()
+                .setSchemeDomain(schemeDomainTransformer.toDomain(scheme))
+                .setSequence(sequence)
+                .setQuestionsPerBatch(questionsPerBatch)
+                .setQuestionTimeOut(questionTimeOut)
+                .setSessionTimeOut(sessionTimeOut);
     }
 }

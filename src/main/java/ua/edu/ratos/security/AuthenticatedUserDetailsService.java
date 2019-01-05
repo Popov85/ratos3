@@ -18,10 +18,15 @@ import ua.edu.ratos.dao.repository.StudentRepository;
 @Transactional(readOnly = true)
 public class AuthenticatedUserDetailsService implements UserDetailsService {
 
+    private final StudentRepository studentRepository;
+
+    private final StaffRepository staffRepository;
+
     @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private StaffRepository staffRepository;
+    public AuthenticatedUserDetailsService(final StudentRepository studentRepository, final StaffRepository staffRepository) {
+        this.studentRepository = studentRepository;
+        this.staffRepository = staffRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(@NonNull final String email) throws UsernameNotFoundException {
@@ -39,7 +44,7 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
                 log.debug("Found staff :: {}", authenticatedStaff);
                 return authenticatedStaff;
             } else {
-                log.warn("Failed to find any user by email, {}", email);
+                log.warn("Failed to find any user by email :: {}", email);
                 throw new UsernameNotFoundException("Failed to authorize by email");
             }
         }

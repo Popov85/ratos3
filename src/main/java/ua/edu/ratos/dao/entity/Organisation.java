@@ -4,18 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ResultCheckStyle;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = "deleted")
+@ToString
 @Entity
 @Table(name = "organisation")
-//@SQLDelete(sql = "UPDATE organisation SET is_deleted = 1 WHERE org_id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "is_deleted = 0")
 public class Organisation {
     @Id

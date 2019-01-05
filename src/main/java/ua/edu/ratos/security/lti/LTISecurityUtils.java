@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LTISecurityUtils {
 
+	@SuppressWarnings("RedundantIfStatement")
 	public boolean isLMSUserWithOnlyLTIRole(final Authentication auth) {
 		log.debug("Challenge whether it is an LMS user with single LTI role?");
 		if (auth == null)
@@ -22,19 +23,17 @@ public class LTISecurityUtils {
 		return true;
 	}
 
-	public boolean isLMSUserWithLTIAndSTUDENTRoles(Authentication auth) {
-		log.debug("Challenge whether it is an LMS user with both LTI & STUDENT roles?");
+	@SuppressWarnings("RedundantIfStatement")
+	public boolean isLMSUserWithFullUSERRole(Authentication auth) {
+		log.debug("Challenge whether it is an LMS user with both LMS-USER roles?");
 		if (auth == null)
 			return false;
 		if (!auth.getPrincipal().getClass().equals(LTIUserConsumerCredentials.class))
 			return false;
-		if (auth.getAuthorities().size() != 2)
+		if (auth.getAuthorities().size() != 1)
 			return false;
-		if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_LTI"))
-				|| !auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STUDENT")))
+		if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_LMS-USER")))
 			return false;
 		return true;
-
 	}
-
 }

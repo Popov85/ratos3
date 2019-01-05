@@ -1,19 +1,22 @@
 package ua.edu.ratos.dao.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"staff", "helpResource"})
-@NoArgsConstructor
+@ToString(exclude = {"staff", "resources"})
 @Entity
 @Table(name = "help")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Help {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -30,36 +33,29 @@ public class Help {
     @JoinColumn(name = "staff_id", updatable = false, nullable = false)
     private Staff staff;
 
-    @OneToOne(mappedBy = "help", cascade = {CascadeType.ALL})
-    private HelpResource helpResource;
+    // Technically many Resources can be associated with a Help, but we go for only one for now
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "help_resource", joinColumns = @JoinColumn(name = "help_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Resource> resources = new HashSet<>();
 
-    public Help(String name, String help) {
-        this.name = name;
-        this.help = help;
+    public void addResource(Resource resource) {
+        if (!this.resources.isEmpty())
+            throw new IllegalStateException("Currently, only one resource can be associated with a help");
+        this.resources.add(resource);
     }
 
-    public ua.edu.ratos.service.session.domain.Help toDomain() {
-        return new ua.edu.ratos.service.session.domain.Help()
-                .setHelpId(helpId)
-                .setName(this.name)
-                .setHelp(this.help)
-                .setResource((helpResource!=null) ? helpResource.getResource().toDomain(): null);
+    public void clearResources() {
+        this.resources.clear();
     }
 
-    public Optional<HelpResource> getHelpResource() {
-        return Optional.of(helpResource);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Help help1 = (Help) o;
-        return Objects.equals(help, help1.help);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(help);
+    public Optional<Resource> getResource() {
+        Resource resource = null;
+        if (this.resources!=null && !this.resources.isEmpty()) {
+            resource = this.resources.iterator().next();
+        }
+        return Optional.ofNullable(resource);
     }
 }

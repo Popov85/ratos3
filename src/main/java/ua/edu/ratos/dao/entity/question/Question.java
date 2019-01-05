@@ -1,21 +1,25 @@
 package ua.edu.ratos.dao.entity.question;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.service.session.domain.Resource;
 import javax.persistence.*;
 import java.util.*;
 
+@Slf4j
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "question")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_id", discriminatorType = DiscriminatorType.INTEGER)
 @Where(clause = "is_deleted = 0")
@@ -48,15 +52,6 @@ public abstract class Question {
     @JoinColumn(name = "lang_id")
     protected Language lang;
 
-    // Technically many Helps can be associated with a question, but we go for only one for now
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "question_help", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "help_id"))
-    protected Set<ua.edu.ratos.dao.entity.Help> help = new HashSet<>();
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "question_resource", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    protected Set<ua.edu.ratos.dao.entity.Resource> resources = new HashSet<>();
-
     /**
      * Only applicable to FBMQ & MQ (in MCQ's partiality is managed by isRequired flag);
      * Specifies whether partial correct response is allowed or not;
@@ -66,33 +61,54 @@ public abstract class Question {
     @Column(name = "is_partial")
     protected boolean partialResponseAllowed;
 
+    // Technically many Helps can be associated with a QuestionDomain, but we go for only one for now
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "question_help", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "help_id"))
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    protected Set<Help> helps = new HashSet<>();
+
+    // Often many Resources can be associated with a QuestionDomain (e.g. an image plus an audio), we let this opportunity to remain
+    @Setter(AccessLevel.NONE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "question_resource", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    protected Set<Resource> resources = new HashSet<>();
+
     public Question(String question, byte level) {
         this.question = question;
         this.level = level;
     }
 
     public void addHelp(Help help) {
-        this.help.add(help);
+        if (!this.helps.isEmpty())
+            throw new IllegalStateException("Currently, only one help can be associated with a question");
+        this.helps.add(help);
     }
 
-    public void removeHelp(Help help) {
-        this.help.remove(help);
+    public void clearHelps() {
+        this.helps.clear();
     }
 
-    public void addResource(ua.edu.ratos.dao.entity.Resource resource) {
-        this.resources.add(resource);
-    }
-
-    public void removeResource(ua.edu.ratos.dao.entity.Resource resource) {
-        this.resources.remove(resource);
-    }
-
-    public Optional<Set<Help>> getHelp() {
+    public Optional<Help> getHelp() {
+        Help help = null;
+        if (this.helps!=null && !this.helps.isEmpty()) {
+            help = this.helps.iterator().next();
+        }
         return Optional.ofNullable(help);
     }
 
-    public Optional<Set<ua.edu.ratos.dao.entity.Resource>> getResources() {
-        return Optional.ofNullable(resources);
+    public void addResource(Resource resource) {
+        this.resources.add(resource);
+    }
+
+    public void clearResources() {
+        this.resources.clear();
+    }
+
+    public Set<Resource> getResources() {
+        return this.resources;
     }
 
     public boolean isValid() {
@@ -102,33 +118,9 @@ public abstract class Question {
         return true;
     }
 
-    /**
-     * Converts this question to dao model for representing in a learning session;
-     * @return
-     */
-    public abstract ua.edu.ratos.service.session.domain.question.Question toDomain();
-
-    public Optional<ua.edu.ratos.service.session.domain.Help> helpToDomain() {
-        ua.edu.ratos.service.session.domain.Help help = null;
-        if (this.help!=null && !this.help.isEmpty()) {
-            Help helpEntity = this.help.iterator().next();
-            return Optional.of(helpEntity.toDomain());
-        }
-        return Optional.of(help);
-    }
-
-    public Set<Resource> resourcesToDomain() {
-        Set<Resource> resources = new HashSet<>();
-        Set<ua.edu.ratos.dao.entity.Resource> resourceEntity = this.resources;
-        if (resourceEntity != null && !resourceEntity.isEmpty()) {
-            resourceEntity.forEach(r -> resources.add(r.toDomain()));
-        }
-        return resources;
-    }
-
     @Override
     public String toString() {
-        return "Question{" +
+        return "QuestionDomain{" +
                 "questionId=" + questionId +
                 ", question='" + question + '\'' +
                 ", level=" + level +

@@ -3,20 +3,17 @@ package ua.edu.ratos.dao.entity.grade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
-import ua.edu.ratos.dao.entity.Scheme;
-import ua.edu.ratos.dao.entity.Staff;
-
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "fourPointGrading")
 @Entity
 @Table(name = "scheme_four_point")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SchemeFourPoint {
-
     @Id
     @Column(name = "scheme_id")
     private Long schemeId;
@@ -24,5 +21,4 @@ public class SchemeFourPoint {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "four_point_id")
     private FourPointGrading fourPointGrading;
-
 }

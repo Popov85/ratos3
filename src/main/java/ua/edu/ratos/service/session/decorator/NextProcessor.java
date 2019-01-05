@@ -1,9 +1,9 @@
 package ua.edu.ratos.service.session.decorator;
 
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 public interface NextProcessor {
 

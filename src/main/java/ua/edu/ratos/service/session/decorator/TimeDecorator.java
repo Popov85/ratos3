@@ -1,13 +1,14 @@
 package ua.edu.ratos.service.session.decorator;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.session.TimingService;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.web.exception.RunOutOfTimeException;
 
 @Service
@@ -28,7 +29,7 @@ public class TimeDecorator extends NextProcessorDecorator {
     }
 
     @Override
-    public BatchEvaluated getBatchEvaluated(BatchInDto batchInDto, SessionData sessionData) {
+    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         //TimingService timingService = new TimingService();
         if (timingService.isLimited(sessionData.getSessionTimeout())) {
             if (timingService.isExpired(sessionData.getSessionTimeout().plusSeconds(ADD_SECONDS))) {
@@ -44,17 +45,17 @@ public class TimeDecorator extends NextProcessorDecorator {
     }
 
     @Override
-    public void updateComponentsSessionData(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public void updateComponentsSessionData(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         nextProcessor.updateComponentsSessionData(batchEvaluated, sessionData);
     }
 
     @Override
-    public BatchOutDto getBatchOutDto(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public BatchOutDto getBatchOutDto(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         return nextProcessor.getBatchOutDto(batchEvaluated, sessionData);
     }
 
     @Override
-    public void updateSessionData(BatchOutDto batchOutDto, SessionData sessionData) {
+    public void updateSessionData(@NonNull final BatchOutDto batchOutDto, @NonNull final SessionData sessionData) {
         nextProcessor.updateSessionData(batchOutDto, sessionData);
     }
 }

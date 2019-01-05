@@ -3,17 +3,17 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
-import org.modelmapper.ModelMapper;
-
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"staff"})
 @Entity
 @Table(name = "settings")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Settings {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -69,9 +69,5 @@ public class Settings {
 
     @Column(name = "is_deleted")
     private boolean deleted;
-
-    public ua.edu.ratos.service.session.domain.Settings toDomain() {
-        return  new ModelMapper().map(this, ua.edu.ratos.service.session.domain.Settings.class);
-    }
 
 }

@@ -9,6 +9,9 @@ import java.util.Set;
 
 public interface SettingsRepository extends JpaRepository<Settings, Long> {
 
+    @Query(value="select s from Settings s order by s.name desc")
+    Page<Settings> findAll(Pageable pageable);
+
     @Query(value="select s from Settings s where s.isDefault = true order by s.name desc")
     Set<Settings> findAllDefault();
 
@@ -24,6 +27,4 @@ public interface SettingsRepository extends JpaRepository<Settings, Long> {
     @Query(value="select s from Settings s join s.staff st join st.department d where d.depId = ?1 and s.name like %?2% order by s.name desc")
     Set<Settings> findAllByDepartmentIdAndSettingsNameLettersContains(Long depId, String contains);
 
-    @Query(value="select s from Settings s order by s.name desc")
-    Page<Settings> findAll(Pageable pageable);
 }

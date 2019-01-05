@@ -3,6 +3,8 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -11,6 +13,8 @@ import java.util.Objects;
 @ToString(exclude = {"group", "scheme"})
 @Entity
 @Table(name = "group_scheme")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GroupScheme {
 
     @EmbeddedId
@@ -39,7 +43,6 @@ public class GroupScheme {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(groupSchemeId);
     }
 }

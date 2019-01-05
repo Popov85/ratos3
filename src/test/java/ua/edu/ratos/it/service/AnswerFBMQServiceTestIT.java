@@ -11,14 +11,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.dao.entity.Phrase;
-import ua.edu.ratos.dao.entity.answer.AnswerFillBlankMultiple;
+import ua.edu.ratos.dao.entity.answer.AnswerFBMQ;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBMQService;
-import ua.edu.ratos.service.dto.entity.AnswerFBMQInDto;
+import ua.edu.ratos.service.dto.in.AnswerFBMQInDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,7 +27,7 @@ public class AnswerFBMQServiceTestIT {
     public static final String JSON_NEW = "classpath:json/answer_fbmq_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/answer_fbmq_in_dto_upd.json";
 
-    public static final String FIND = "select a from AnswerFillBlankMultiple a left join fetch a.acceptedPhrases where a.answerId=:answerId";
+    public static final String FIND = "select a from AnswerFBMQ a left join fetch a.acceptedPhrases where a.answerId=:answerId";
 
     public static final String PHRASE = "Phrase";
     public static final String PHRASE_UPD = "Updated phrase";
@@ -55,8 +54,8 @@ public class AnswerFBMQServiceTestIT {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
         answerService.save(dto);
-        final AnswerFillBlankMultiple foundAnswer =
-            (AnswerFillBlankMultiple) em.createQuery(FIND)
+        final AnswerFBMQ foundAnswer =
+            (AnswerFBMQ) em.createQuery(FIND)
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
@@ -76,8 +75,8 @@ public class AnswerFBMQServiceTestIT {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
         answerService.update(1l, dto);
-        final AnswerFillBlankMultiple foundAnswer =
-            (AnswerFillBlankMultiple) em.createQuery(FIND)
+        final AnswerFBMQ foundAnswer =
+            (AnswerFBMQ) em.createQuery(FIND)
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);
@@ -94,9 +93,9 @@ public class AnswerFBMQServiceTestIT {
     @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
-        Assert.assertNotNull(em.find(AnswerFillBlankMultiple.class, 1L));
+        Assert.assertNotNull(em.find(AnswerFBMQ.class, 1L));
         answerService.deleteById(1L);
-        Assert.assertNull(em.find(AnswerFillBlankMultiple.class, 1L));
+        Assert.assertNull(em.find(AnswerFBMQ.class, 1L));
     }
 
 }

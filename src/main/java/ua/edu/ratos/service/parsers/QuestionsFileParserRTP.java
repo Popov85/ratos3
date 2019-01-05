@@ -2,10 +2,9 @@ package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.dao.entity.Help;
-import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.dao.entity.answer.AnswerMultipleChoice;
-import java.util.Arrays;
-import java.util.HashSet;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
+import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
+
 import java.util.List;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.*;
@@ -15,7 +14,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
 
     private static final String PREFIX = ".rtp/.xtt parsing error: ";
 
-    private QuestionMultipleChoice currentQuestion;
+    private QuestionMCQ currentQuestion;
 
     private boolean questionStartExpected = true;
     private boolean answerStartExpected;
@@ -51,7 +50,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, QUESTION, currentRow, currentLine));
         }
 
-        currentQuestion = QuestionMultipleChoice.createEmpty();
+        currentQuestion = QuestionMCQ.createEmpty();
 
         questions.add(currentQuestion);
 
@@ -86,7 +85,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
         try {
-            AnswerMultipleChoice answer = createAnswer(line);
+            AnswerMCQ answer = createAnswer(line);
             currentQuestion.addAnswer(answer);
         } catch (Exception e) {
             String description = PREFIX + "parsing error, answerIds skipped, details: " + e.getMessage();
@@ -112,7 +111,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         help.setName("automatic");
         help.setHelp(line);
 
-        currentQuestion.setHelp(new HashSet<>(Arrays.asList(help)));
+        currentQuestion.clearHelps();
+        currentQuestion.addHelp(help);
 
         questionStartExpected = true;
         answerStartExpected = false;
@@ -132,7 +132,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             hintStartExpected = false;
         }
         if (answerContinuationPossible) {
-            final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
+            final List<AnswerMCQ> answers = currentQuestion.getAnswers();
             String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
             (answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
 
@@ -146,7 +146,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             Help help = new Help();
             help.setName("automatic");
             help.setHelp(updatedHelp);
-            currentQuestion.setHelp(new HashSet<>(Arrays.asList(help)));
+            currentQuestion.clearHelps();
+            currentQuestion.addHelp(help);
 
             questionStartExpected = true;
             answerStartExpected = false;
@@ -155,7 +156,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
     }
 
     // Parses %!100%-like answerIds String and creates Answer object
-    private AnswerMultipleChoice createAnswer(String line) {
+    private AnswerMCQ createAnswer(String line) {
         // Try to find the second closing %-sign - the end of answerIds prefix
         int stop = line.indexOf('%', 1);
         if (stop == -1) throw new RuntimeException("Incorrect answerIds prefix!");
@@ -181,7 +182,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MINOR, ANSWER, currentRow, currentLine));
         }
         String answer = line.substring(stop + 1).trim();
-        AnswerMultipleChoice a = new AnswerMultipleChoice();
+        AnswerMCQ a = new AnswerMCQ();
         a.setAnswer(answer);
         a.setPercent((short) percent);
         a.setRequired(isRequired);

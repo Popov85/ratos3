@@ -1,11 +1,11 @@
 package ua.edu.ratos.service.session;
 
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-import ua.edu.ratos.service.session.dto.ResultOutDto;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.StartData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.dto.session.ResultOutDto;
+import ua.edu.ratos.service.domain.SessionData;
 
-import java.util.Optional;
 
 /**
  * Generic session interface. Defines generic learning session operations in batches;
@@ -16,12 +16,10 @@ public interface GenericSessionService {
 
     /**
      * Starts a new learning session: creates SessionData object to put it into http session
-     * @param key
-     * @param userId
-     * @param schemeId
+     * @param startData
      * @return the SessionData with BatchOutDto as a part
      */
-    SessionData start(String key, Long userId, Long schemeId);
+    SessionData start(StartData startData);
 
     /**
      * Provides a new batch of questions for user
@@ -34,10 +32,9 @@ public interface GenericSessionService {
     /**
      * Normal finish, provides results for current learning session
      * @param sessionData
-     * @param timeOuted
      * @return result of this session
      */
-    ResultOutDto finish(SessionData sessionData, boolean timeOuted);
+    ResultOutDto finish(SessionData sessionData);
 
     /**
      * Cancel the current dto

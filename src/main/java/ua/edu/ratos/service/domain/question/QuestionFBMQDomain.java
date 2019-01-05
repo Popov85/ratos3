@@ -1,0 +1,90 @@
+package ua.edu.ratos.service.domain.question;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.modelmapper.ModelMapper;
+import ua.edu.ratos.service.domain.SettingsFBDomain;
+import ua.edu.ratos.service.domain.answer.AnswerFBMQDomain;
+import ua.edu.ratos.service.dto.session.question.QuestionFBMQOutDto;
+import ua.edu.ratos.service.domain.response.ResponseFBMQ;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Setter
+@Getter
+@ToString
+@Accessors(chain = true)
+public class QuestionFBMQDomain extends QuestionDomain {
+
+    private Set<AnswerFBMQDomain> answers = new HashSet<>();
+
+    public void addAnswer(AnswerFBMQDomain answer) {
+        this.answers.add(answer);
+    }
+
+    public void removeAnswer(AnswerFBMQDomain answer) {
+        this.answers.remove(answer);
+    }
+
+    public double evaluate(ResponseFBMQ response) {
+        int matchCounter = 0;
+        final Set<ResponseFBMQ.Pair> pairs = response.getEnteredPhrases();
+        for (AnswerFBMQDomain answer : answers) {
+            Long answerId = answer.getAnswerId();
+            // find this answerId in pairs, if not found - consider incorrect
+            Optional<ResponseFBMQ.Pair> responseOnAnswerId = pairs
+                    .stream()
+                    .filter(p -> answerId.equals(p.getAnswerId()))
+                    .findFirst();
+            if (responseOnAnswerId.isPresent()) {
+                String enteredPhrase = responseOnAnswerId.get().getEnteredPhrase();
+                List<String> acceptedPhrases = answer.getAcceptedPhraseDomains()
+                        .stream()
+                        .map(p -> p.getPhrase())
+                        .collect(Collectors.toList());
+                acceptedPhrases.add(answer.getPhrase());
+
+                // Normal process
+                if (acceptedPhrases.contains(enteredPhrase)) {
+                    matchCounter++;
+                    continue;
+                }
+                // Process case sensitivity
+                SettingsFBDomain settings = answer.getSettings();
+                if (!settings.isCaseSensitive()) {
+                    if (settings.checkCaseInsensitiveMatch(enteredPhrase, acceptedPhrases)) {
+                        matchCounter++;
+                        continue;
+                    }
+                }
+                // Process typos
+                if (settings.isTypoAllowed()) {
+                    if (settings.checkSingleTypoMatch(enteredPhrase, acceptedPhrases)) matchCounter++;
+                }
+            }
+        }
+        // calculate correctCounter and all answers
+        int totalAnswers = answers.size();
+        // Check for partial response possibility
+        if (!this.partialResponseAllowed && matchCounter<totalAnswers) return 0;
+
+        return matchCounter*100d/totalAnswers;
+    }
+
+    @Override
+    public QuestionFBMQOutDto toDto() {
+        ModelMapper modelMapper = new ModelMapper();
+        QuestionFBMQOutDto dto = modelMapper.map(this, QuestionFBMQOutDto.class);
+        dto.setAnswers(new HashSet<>());
+        dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
+        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        answers.forEach(a->dto.addAnswer(a.toDto()));
+        return dto;
+    }
+
+}

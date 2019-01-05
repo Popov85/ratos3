@@ -12,19 +12,22 @@ import ua.edu.ratos.dao.entity.Help;
  */
 public interface HelpRepository extends JpaRepository<Help, Long> {
 
-    @Query(value = "SELECT h FROM Help h join h.staff s left join fetch h.helpResource r join fetch r.resource where s.staffId=?1 order by h.name desc",
+    @Query(value="SELECT h FROM Help h order by h.name desc")
+    Page<Help> findAll(Pageable pageable);
+
+    @Query(value = "SELECT h FROM Help h join h.staff s left join fetch h.resources where s.staffId=?1 order by h.name desc",
             countQuery = "SELECT count(h) FROM Help h join h.staff s where s.staffId=?1")
     Page<Help> findByStaffIdWithResources(Long staffId, Pageable pageable);
 
-    @Query(value = "SELECT h FROM Help h join h.staff s left join fetch h.helpResource r join fetch r.resource where s.staffId=?1 and h.name like ?2% order by h.name desc",
+    @Query(value = "SELECT h FROM Help h join h.staff s left join fetch h.resources where s.staffId=?1 and h.name like ?2% order by h.name desc",
             countQuery = "SELECT count(h) FROM Help h join h.staff s where s.staffId=?1 and h.name like ?2%")
     Page<Help> findByStaffIdAndFirstNameLettersWithResources(Long staffId, String starts, Pageable pageable);
 
-    @Query(value = "SELECT h FROM Help h join h.staff s join s.department d left join fetch h.helpResource r join fetch r.resource where d.depId=?1 order by h.name desc",
+    @Query(value = "SELECT h FROM Help h join h.staff s join s.department d left join fetch h.resources where d.depId=?1 order by h.name desc",
             countQuery = "SELECT count(h) FROM Help h join h.staff s join s.department d where d.depId=?1")
     Page<Help> findByDepartmentIdWithResources(Long depId, Pageable pageable);
 
-    @Query(value = "SELECT h FROM Help h join h.staff s join s.department d left join fetch h.helpResource r join fetch r.resource where d.depId=?1 and h.name like ?2% order by h.name desc",
+    @Query(value = "SELECT h FROM Help h join h.staff s join s.department d left join fetch h.resources where d.depId=?1 and h.name like ?2% order by h.name desc",
             countQuery = "SELECT count(h) FROM Help h join h.staff s join s.department d where d.depId=?1 and h.name like ?2%")
     Page<Help> findByDepartmentIdAndFirstNameLettersWithResources(Long depId, String starts, Pageable pageable);
 

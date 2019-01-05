@@ -1,14 +1,15 @@
 package ua.edu.ratos.service.session.decorator;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.session.*;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import java.util.List;
 
 @Slf4j
@@ -32,13 +33,13 @@ public class BasicNextProcessor implements NextProcessor {
     private BatchBuilder batchBuilder;
 
     @Override
-    public BatchEvaluated getBatchEvaluated(BatchInDto batchInDto, SessionData sessionData) {
+    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         //EvaluatingService evaluatingService = new EvaluatingService(); // Manually manage dependencies
         return evaluatingService.getBatchEvaluated(batchInDto, sessionData);
     }
 
     @Override
-    public void updateComponentsSessionData(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public void updateComponentsSessionData(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         // update ProgressData
         //ProgressDataService progressDataService = new ProgressDataService();
         progressDataService.update(sessionData, batchEvaluated);
@@ -51,9 +52,9 @@ public class BasicNextProcessor implements NextProcessor {
     }
 
     @Override
-    public BatchOutDto getBatchOutDto(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public BatchOutDto getBatchOutDto(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         //BatchBuilder batchBuilder = new BatchBuilder();
-        if (!sessionData.isMoreQuestions()) {
+        if (!sessionData.hasMoreQuestions()) {
             return BatchOutDto.buildEmpty();
         } else {
             return batchBuilder.build(sessionData, batchEvaluated);
@@ -61,7 +62,7 @@ public class BasicNextProcessor implements NextProcessor {
     }
 
     @Override
-    public void updateSessionData(BatchOutDto batchOutDto, SessionData sessionData) {
+    public void updateSessionData(@NonNull final BatchOutDto batchOutDto, @NonNull final SessionData sessionData) {
         //SessionDataService sessionDataService = new SessionDataService();
         if (!batchOutDto.isEmpty()) sessionDataService.update(sessionData, batchOutDto);
         log.debug("Next batch :: {}", batchOutDto);

@@ -3,8 +3,8 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
 import java.util.List;
 
 /**

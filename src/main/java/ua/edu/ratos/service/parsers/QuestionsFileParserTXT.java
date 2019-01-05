@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
-import ua.edu.ratos.dao.entity.question.QuestionMultipleChoice;
-import ua.edu.ratos.dao.entity.answer.AnswerMultipleChoice;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
+import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
 import java.util.List;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.MAJOR;
@@ -10,7 +10,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
 
     private static final String PREFIX = ".txt parsing error: ";
 
-    private QuestionMultipleChoice currentQuestion;
+    private QuestionMCQ currentQuestion;
 
     private boolean questionStartExpected = true;
     private boolean answerStartExpected;
@@ -41,7 +41,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, QUESTION, currentRow, currentLine));
         }
 
-        currentQuestion = QuestionMultipleChoice.createEmpty();
+        currentQuestion = QuestionMCQ.createEmpty();
 
         questions.add(currentQuestion);
 
@@ -58,7 +58,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, ANSWER, currentRow, currentLine));
         }
 
-        AnswerMultipleChoice answer = new AnswerMultipleChoice();
+        AnswerMCQ answer = new AnswerMCQ();
         answer.setAnswer("");
         answer.setPercent(correct);
 
@@ -80,7 +80,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
             answerStartExpected = true;
         }
         if (answerContinuationPossible) {
-            final List<AnswerMultipleChoice> answers = currentQuestion.getAnswers();
+            final List<AnswerMCQ> answers = currentQuestion.getAnswers();
             String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
             (answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
 

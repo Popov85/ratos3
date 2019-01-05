@@ -13,13 +13,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.SchemeTheme;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
-import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.QuestionService;
+import ua.edu.ratos.service.domain.question.*;
+import ua.edu.ratos.service.domain.question.QuestionFBSQDomain;
+import ua.edu.ratos.service.domain.question.QuestionMCQDomain;
 import ua.edu.ratos.service.session.sequence.SequenceMapper;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -43,11 +45,11 @@ public class SequenceMapperTest {
 
     private Set<SchemeThemeSettings> settings;
 
-    private Set<QuestionMultipleChoice> questionsType1;
+    private Set<QuestionMCQDomain> questionsType1;
 
-    private Set<QuestionFillBlankSingle> questionsType2;
+    private Set<QuestionFBSQDomain> questionsType2;
 
-    private Set<QuestionSequence> questionsType5;
+    private Set<QuestionSQDomain> questionsType5;
 
     private List<QuestionType> types;
 
@@ -64,45 +66,45 @@ public class SequenceMapperTest {
         settings = new HashSet<>();
         settings.addAll(Arrays.asList(set1, set2, set3));
 
-        final QuestionMultipleChoice q11 = createQuestionType1(1L, (byte) 1, "MCQ11");
-        final QuestionMultipleChoice q12 = createQuestionType1(2L, (byte) 1, "MCQ12");
-        final QuestionMultipleChoice q13 = createQuestionType1(3L, (byte) 1, "MCQ13");
+        final QuestionMCQDomain q11 = createQuestionType1(1L, (byte) 1, "MCQ11");
+        final QuestionMCQDomain q12 = createQuestionType1(2L, (byte) 1, "MCQ12");
+        final QuestionMCQDomain q13 = createQuestionType1(3L, (byte) 1, "MCQ13");
 
-        final QuestionMultipleChoice q14 = createQuestionType1(4L, (byte) 2, "MCQ14");
-        final QuestionMultipleChoice q15 = createQuestionType1(5L, (byte) 2, "MCQ15");
-        final QuestionMultipleChoice q16 = createQuestionType1(6L, (byte) 2, "MCQ16");
+        final QuestionMCQDomain q14 = createQuestionType1(4L, (byte) 2, "MCQ14");
+        final QuestionMCQDomain q15 = createQuestionType1(5L, (byte) 2, "MCQ15");
+        final QuestionMCQDomain q16 = createQuestionType1(6L, (byte) 2, "MCQ16");
 
-        final QuestionMultipleChoice q17 = createQuestionType1(7L, (byte) 3, "MCQ17");
-        final QuestionMultipleChoice q18 = createQuestionType1(8L, (byte) 3, "MCQ18");
-        final QuestionMultipleChoice q19 = createQuestionType1(9L, (byte) 3, "MCQ19");
+        final QuestionMCQDomain q17 = createQuestionType1(7L, (byte) 3, "MCQ17");
+        final QuestionMCQDomain q18 = createQuestionType1(8L, (byte) 3, "MCQ18");
+        final QuestionMCQDomain q19 = createQuestionType1(9L, (byte) 3, "MCQ19");
         questionsType1 = new HashSet<>();
         questionsType1.addAll(Arrays.asList(q11, q12, q13, q14, q15, q16, q17, q18, q19));
 
-        final QuestionFillBlankSingle q21 = createQuestionType2(10L, (byte) 1, "FBSQ21");
-        final QuestionFillBlankSingle q22 = createQuestionType2(11L, (byte) 1, "FBSQ22");
-        final QuestionFillBlankSingle q23 = createQuestionType2(12L, (byte) 1, "FBSQ23");
+        final QuestionFBSQDomain q21 = createQuestionType2(10L, (byte) 1, "FBSQ21");
+        final QuestionFBSQDomain q22 = createQuestionType2(11L, (byte) 1, "FBSQ22");
+        final QuestionFBSQDomain q23 = createQuestionType2(12L, (byte) 1, "FBSQ23");
 
-        final QuestionFillBlankSingle q24 = createQuestionType2(13L, (byte) 2, "FBSQ24");
-        final QuestionFillBlankSingle q25 = createQuestionType2(14L, (byte) 2, "FBSQ25");
-        final QuestionFillBlankSingle q26 = createQuestionType2(15L, (byte) 2, "FBSQ26");
+        final QuestionFBSQDomain q24 = createQuestionType2(13L, (byte) 2, "FBSQ24");
+        final QuestionFBSQDomain q25 = createQuestionType2(14L, (byte) 2, "FBSQ25");
+        final QuestionFBSQDomain q26 = createQuestionType2(15L, (byte) 2, "FBSQ26");
 
-        final QuestionFillBlankSingle q27 = createQuestionType2(16L, (byte) 3, "FBSQ27");
-        final QuestionFillBlankSingle q28 = createQuestionType2(17L, (byte) 3, "FBSQ28");
-        final QuestionFillBlankSingle q29 = createQuestionType2(18L, (byte) 3, "FBSQ29");
+        final QuestionFBSQDomain q27 = createQuestionType2(16L, (byte) 3, "FBSQ27");
+        final QuestionFBSQDomain q28 = createQuestionType2(17L, (byte) 3, "FBSQ28");
+        final QuestionFBSQDomain q29 = createQuestionType2(18L, (byte) 3, "FBSQ29");
         questionsType2 = new HashSet<>();
         questionsType2.addAll(Arrays.asList(q21, q22, q23, q24, q25, q26, q27, q28, q29));
 
-        final QuestionSequence q51 = createQuestionType5(19L, (byte) 1, "SQ31");
-        final QuestionSequence q52 = createQuestionType5(20L, (byte) 1, "SQ32");
-        final QuestionSequence q53 = createQuestionType5(21L, (byte) 1, "SQ33");
+        final QuestionSQDomain q51 = createQuestionType5(19L, (byte) 1, "SQ31");
+        final QuestionSQDomain q52 = createQuestionType5(20L, (byte) 1, "SQ32");
+        final QuestionSQDomain q53 = createQuestionType5(21L, (byte) 1, "SQ33");
 
-        final QuestionSequence q54 = createQuestionType5(23L, (byte) 2, "SQ34");
-        final QuestionSequence q55 = createQuestionType5(24L, (byte) 2, "SQ35");
-        final QuestionSequence q56 = createQuestionType5(25L, (byte) 2, "SQ36");
+        final QuestionSQDomain q54 = createQuestionType5(23L, (byte) 2, "SQ34");
+        final QuestionSQDomain q55 = createQuestionType5(24L, (byte) 2, "SQ35");
+        final QuestionSQDomain q56 = createQuestionType5(25L, (byte) 2, "SQ36");
 
-        final QuestionSequence q57 = createQuestionType5(26L, (byte) 3, "SQ37");
-        final QuestionSequence q58 = createQuestionType5(27L, (byte) 3, "SQ38");
-        final QuestionSequence q59 = createQuestionType5(28L, (byte) 3, "SQ39");
+        final QuestionSQDomain q57 = createQuestionType5(26L, (byte) 3, "SQ37");
+        final QuestionSQDomain q58 = createQuestionType5(27L, (byte) 3, "SQ38");
+        final QuestionSQDomain q59 = createQuestionType5(28L, (byte) 3, "SQ39");
         questionsType5 = new HashSet<>();
         questionsType5.addAll(Arrays.asList(q51, q52, q53, q54, q55, q56, q57, q58, q59));
     }
@@ -110,11 +112,11 @@ public class SequenceMapperTest {
 
     @Test
     public void getMapTest() {
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 1L)).thenReturn(questionsType1);
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 2L)).thenReturn(questionsType2);
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 5L)).thenReturn(questionsType5);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 1L)).thenReturn(questionsType1);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 2L)).thenReturn(questionsType2);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 5L)).thenReturn(questionsType5);
 
-        final Map<Long, Map<Byte, List<Question>>> map = sm.getMap(1L, settings);
+        final Map<Long, Map<Byte, List<QuestionDomain>>> map = sm.getMap(1L, settings);
 
         verify(questionService, times(1)).findAllByThemeIdAndTypeId(1L, 1L);
         verify(questionService, times(1)).findAllByThemeIdAndTypeId(1L, 2L);
@@ -126,7 +128,7 @@ public class SequenceMapperTest {
         assertThat(map, IsMapContaining.hasKey(2L));
         assertThat(map, IsMapContaining.hasKey(5L));
 
-        final Map<Byte, List<Question>> type1Map = map.get(1L);
+        final Map<Byte, List<QuestionDomain>> type1Map = map.get(1L);
 
         assertThat(type1Map.size(), CoreMatchers.is(3));
         assertThat(type1Map, IsMapContaining.hasKey((byte)1));
@@ -136,7 +138,7 @@ public class SequenceMapperTest {
         assertEquals(2, type1Map.get((byte)2).size());
         assertEquals(2, type1Map.get((byte)3).size());
 
-        final Map<Byte, List<Question>> type2Map = map.get(2L);
+        final Map<Byte, List<QuestionDomain>> type2Map = map.get(2L);
 
         assertThat(type2Map.size(), CoreMatchers.is(3));
         assertThat(type2Map, IsMapContaining.hasKey((byte)1));
@@ -146,7 +148,7 @@ public class SequenceMapperTest {
         assertEquals(1, type2Map.get((byte)2).size());
         assertEquals(1, type2Map.get((byte)3).size());
 
-        final Map<Byte, List<Question>> type5Map = map.get(5L);
+        final Map<Byte, List<QuestionDomain>> type5Map = map.get(5L);
 
         assertThat(type5Map.size(), CoreMatchers.is(1));
         assertThat(type5Map, IsMapContaining.hasKey((byte)1));
@@ -155,11 +157,11 @@ public class SequenceMapperTest {
 
     @Test
     public void getListTest() {
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 1L)).thenReturn(questionsType1);
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 2L)).thenReturn(questionsType2);
-        Mockito.<Set<? extends Question>>when(questionService.findAllByThemeIdAndTypeId(1L, 5L)).thenReturn(questionsType5);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 1L)).thenReturn(questionsType1);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 2L)).thenReturn(questionsType2);
+        Mockito.<Set<? extends QuestionDomain>>when(questionService.findAllByThemeIdAndTypeId(1L, 5L)).thenReturn(questionsType5);
 
-        final List<Question> list = sm.getList(1L, settings);
+        final List<QuestionDomain> list = sm.getList(1L, settings);
 
         verify(questionService, times(1)).findAllByThemeIdAndTypeId(1L, 1L);
         verify(questionService, times(1)).findAllByThemeIdAndTypeId(1L, 2L);
@@ -187,28 +189,28 @@ public class SequenceMapperTest {
         return set;
     }
 
-    private QuestionMultipleChoice createQuestionType1(Long id, byte level, String question) {
-        QuestionMultipleChoice q = new QuestionMultipleChoice();
+    private QuestionMCQDomain createQuestionType1(Long id, byte level, String question) {
+        QuestionMCQDomain q = new QuestionMCQDomain();
         q.setQuestionId(id);
-        q.setType(types.get(0));
+        q.setType(0);
         q.setLevel(level);
         q.setQuestion(question);
         return q;
     }
 
-    private QuestionFillBlankSingle createQuestionType2(Long id, byte level, String question) {
-        QuestionFillBlankSingle q = new QuestionFillBlankSingle();
+    private QuestionFBSQDomain createQuestionType2(Long id, byte level, String question) {
+        QuestionFBSQDomain q = new QuestionFBSQDomain();
         q.setQuestionId(id);
-        q.setType(types.get(1));
+        q.setType(1);
         q.setLevel(level);
         q.setQuestion(question);
         return q;
     }
 
-    private QuestionSequence createQuestionType5(Long id, byte level, String question) {
-        QuestionSequence q = new QuestionSequence();
+    private QuestionSQDomain createQuestionType5(Long id, byte level, String question) {
+        QuestionSQDomain q = new QuestionSQDomain();
         q.setQuestionId(id);
-        q.setType(types.get(2));
+        q.setType(2);
         q.setLevel(level);
         q.setQuestion(question);
         return q;

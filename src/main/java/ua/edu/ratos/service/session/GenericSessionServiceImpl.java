@@ -6,26 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
+import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.service.ResultDetailsService;
 import ua.edu.ratos.service.ResultService;
-import ua.edu.ratos.service.scheme.SchemeService;
-import ua.edu.ratos.service.session.decorator.NextProcessorTemplate;
-import ua.edu.ratos.service.session.domain.Result;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.*;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
-
+import ua.edu.ratos.service.domain.*;
+import ua.edu.ratos.service.dto.session.ResultOutDto;
+import ua.edu.ratos.service.grading.SchemeService;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import java.util.List;
-
 
 @Slf4j
 @Service
 public class GenericSessionServiceImpl implements GenericSessionService {
 
-    private static final String NOT_AVAILABLE = "Requested scheme is not available now";
+    static final String NOT_AVAILABLE = "Requested scheme is not available now";
+    static final String NOT_AVAILABLE_OUTSIDE_LMS = "Requested scheme is not available outside LMS";
+    static final String NOT_AVAILABLE_FOR_USER = "Requested scheme is not available for this user";
+
+    @Autowired
+    private AvailabilityService availabilityService;
+
+    @Autowired
+    private AppProperties appProperties;
 
     @Autowired
     private SchemeService schemeService;
@@ -68,18 +72,25 @@ public class GenericSessionServiceImpl implements GenericSessionService {
 
     @Override
     @TrackTime
-    public SessionData start(@NonNull final String key, @NonNull final Long userId, @NonNull final Long schemeId) {
-        // Load the requested Scheme
-        final Scheme scheme = schemeService.findByIdForSession(schemeId);
+    public SessionData start(@NonNull final StartData startData) {
+        // Load the requested Scheme and build SessionData object
+        final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
         if (scheme==null || !scheme.isActive() || !scheme.isCompleted() || scheme.isDeleted())
             throw new IllegalStateException(NOT_AVAILABLE);
-        // Build SessionData
-        final SessionData sessionData = sessionDataBuilder.build(key, userId, scheme);
+        if (scheme.isLmsOnly())
+            throw new IllegalStateException(NOT_AVAILABLE_OUTSIDE_LMS);
+        if (appProperties.getSession().isInclude_groups()) {
+            if (!availabilityService.isSchemeAvailable(scheme, startData.getUserId())) {
+                throw new IllegalStateException(NOT_AVAILABLE_FOR_USER);
+            }
+        }
+        log.debug("Found available scheme ID = {}", scheme.getSchemeId());
+        final SessionData sessionData = sessionDataBuilder.build(startData.getKey(), startData.getUserId(), scheme);
         // Build first BatchOutDto
         final BatchOutDto batchOutDto = batchBuilder.build(sessionData);
         // Update SessionData
         sessionDataService.update(sessionData, batchOutDto);
-        log.debug("SessionData is built :: {}", sessionData);
+        log.debug("SessionData is built = {}", sessionData);
         return sessionData;
     }
 
@@ -92,7 +103,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      */
     @Override
     @TrackTime
-    public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull SessionData sessionData) {
+    public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         // Consider Decorator pattern
         // @Autowire NextProcessorTemplate nextProcessorTemplate
         /* BatchOutDto batchOut = nextProcessorTemplate.process(batchInDto, sessionData);*/
@@ -116,17 +127,17 @@ public class GenericSessionServiceImpl implements GenericSessionService {
                 metaDataService.createOrUpdateIncorrect(sessionData, incorrectResponseIds);
 
             // Pyramid mode processing if enabled
-            if (sessionData.getScheme().getMode().isPyramid()) {
+            if (sessionData.getSchemeDomain().getModeDomain().isPyramid()) {
                 pyramidService.process(sessionData, batchEvaluated);
             }
 
-            if (!sessionData.isMoreQuestions()) {
+            if (!sessionData.hasMoreQuestions()) {
                 batchOutDto = BatchOutDto.buildEmpty();
             } else {
                 batchOutDto = batchBuilder.build(sessionData, batchEvaluated);
             }
         } else {// All questions were skipped: nothing to evaluate
-            if (!sessionData.isMoreQuestions()) {
+            if (!sessionData.hasMoreQuestions()) {
                 batchOutDto = BatchOutDto.buildEmpty();
             } else {
                 // Build BatchOutDto with no batchEvaluated
@@ -135,38 +146,39 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         }
         // update SessionData
         if (!batchOutDto.isEmpty()) sessionDataService.update(sessionData, batchOutDto);
-        log.debug("Next batch :: {}", batchOutDto);
         return batchOutDto;
     }
 
 
     /**
      * Front-end calls this method as soon as
-     *   1) method next() returns an batch with empty questions list {},
+     *   1) method next() returns a batch with empty questions list {},
      *      which means that there are no more questions left in the current session
      *      OR
      *   2) method next() throws time-out exception
      *      OR
-     *   3) it decides that time-out event is fired (with flag timeOuted=true)
+     *   3) Front-end timer decides that time is over and launches finish request
      * @param sessionData
-     * @param timeOuted
-     * @return result
+     * @return result object on the whole session
      */
     @Override
     @TrackTime
     @Transactional
-    public ResultOutDto finish(@NonNull SessionData sessionData, boolean timeOuted) {
+    public ResultOutDto finish(@NonNull SessionData sessionData) {
+        boolean timeOuted = !sessionData.hasMoreTime();
+        if (sessionData.hasMoreQuestions() && !timeOuted)
+            throw new IllegalStateException("Corrupt finish request, there are still some questions and time to answer!");
         // 1. Build Result object
-        final Result result = resultBuilder.build(sessionData);
-        // 2 Reset currentBatch related fields to null
+        final ResultDomain resultDomain = resultBuilder.build(sessionData);
+        // 2. Reset currentBatch related fields to null
         if (!timeOuted) sessionDataService.finalize(sessionData);
-        // 3. Save results to DB
-        Long resultId = resultService.save(sessionData, result, timeOuted);
+        // 3.  Save results to DB, optional LMS include
+        Long resultId = resultService.save(sessionData, resultDomain, timeOuted);
         // 4. Save result details to DB
         resultDetailsService.save(sessionData, resultId);
         // 5. Build resultDto based on settings, mode and calculated Result object
-        log.debug("Result :: {}", result);
-        return resultDtoBuilder.build(sessionData, result);
+        log.debug("Result :: {}", resultDomain);
+        return resultDtoBuilder.build(sessionData, resultDomain);
     }
 
     /**
@@ -177,8 +189,8 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     @Override
     @TrackTime
     public ResultOutDto cancel(@NonNull SessionData sessionData) {
-        final Result result = resultBuilder.build(sessionData);
-        return resultDtoBuilder.build(sessionData, result);
+        final ResultDomain resultDomain = resultBuilder.build(sessionData);
+        return resultDtoBuilder.build(sessionData, resultDomain);
     }
 
 }

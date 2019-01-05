@@ -11,10 +11,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.dao.entity.Phrase;
-import ua.edu.ratos.dao.entity.answer.AnswerFillBlankSingle;
+import ua.edu.ratos.dao.entity.answer.AnswerFBSQ;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBSQService;
-import ua.edu.ratos.service.dto.entity.AnswerFBSQInDto;
+import ua.edu.ratos.service.dto.in.AnswerFBSQInDto;
 import javax.persistence.EntityManager;
 import java.io.File;
 
@@ -25,7 +25,7 @@ public class AnswerFBSQServiceTestIT {
 
     public static final String JSON_UPD = "classpath:json/answer_fbsq_in_dto_upd.json";
 
-    public static final String FIND = "select a from AnswerFillBlankSingle a join fetch a.acceptedPhrases where a.answerId=:answerId";
+    public static final String FIND = "select a from AnswerFBSQ a join fetch a.acceptedPhrases where a.answerId=:answerId";
 
     public static final String PHRASE1 = "Phrase #1";
     public static final String PHRASE2 = "Phrase #2";
@@ -51,8 +51,8 @@ public class AnswerFBSQServiceTestIT {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBSQInDto dto = objectMapper.readValue(json, AnswerFBSQInDto.class);
         answerService.update(1L, dto);
-        final AnswerFillBlankSingle foundAnswer =
-            (AnswerFillBlankSingle) em.createQuery(FIND)
+        final AnswerFBSQ foundAnswer =
+            (AnswerFBSQ) em.createQuery(FIND)
                 .setParameter("answerId",1L)
                 .getSingleResult();
         Assert.assertNotNull(foundAnswer);

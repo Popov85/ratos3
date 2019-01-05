@@ -9,20 +9,20 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.QuestionsFileParserService;
-import ua.edu.ratos.service.dto.entity.*;
-import ua.edu.ratos.service.dto.view.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.service.dto.in.*;
+import ua.edu.ratos.service.dto.out.view.QuestionsParsingResultOutDto;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
 
-
 @Slf4j
 @RestController
-@RequestMapping(path = "/instructor/questions")
+@RequestMapping(path = "/questions")
 public class QuestionController {
 
     @Autowired
@@ -30,7 +30,6 @@ public class QuestionController {
 
     @Autowired
     private QuestionsFileParserService questionsFileParserService;
-
 
     @PostMapping(value = "/mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Validated({AnswerMCQInDto.Include.class}) @RequestBody QuestionMCQInDto dto) {
@@ -83,7 +82,6 @@ public class QuestionController {
         return ResponseEntity.created(location).build();
     }
 
-
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionsParsingResultOutDto saveAll(@RequestParam("file") MultipartFile multipartFile,
                                                 @RequestParam Long themeId, @RequestParam Long langId,
@@ -91,10 +89,9 @@ public class QuestionController {
         return questionsFileParserService.parseAndSave(multipartFile, new FileInDto(themeId, langId, 1L, confirmed));
     }
 
-
     @PutMapping(value = "/{questionId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long questionId,  @Valid @RequestBody QuestionInDto dto) {
+    public void update(@PathVariable Long questionId, @Valid @RequestBody QuestionInDto dto) {
         questionService.update(questionId, dto);
         log.debug("Updated Question ID :: {} ", questionId);
     }
@@ -109,13 +106,18 @@ public class QuestionController {
     /*--------------------GET-------------------------*/
 
     @GetMapping(value = "/", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Question> findAllByThemeId(@RequestParam Long themeId) {
+    public Set<QuestionDomain> findAllByThemeId(@RequestParam Long themeId) {
+        log.debug("Try to execute launch by theme");
         return questionService.findAllByThemeId(themeId);
     }
 
+    @TrackTime
     @GetMapping(value = "/", params = {"themeId", "typeId"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<? extends Question> findAllByThemeIdAndTypeId(@RequestParam Long themeId, @RequestParam Long typeId) {
-        return questionService.findAllByThemeIdAndTypeId(themeId, typeId);
+    public String findAllByThemeIdAndTypeId(@RequestParam Long themeId, @RequestParam Long typeId) {
+        log.debug("Try to execute launch by theme = {} and type = {}", themeId, typeId);
+        Set<? extends QuestionDomain> all = questionService.findAllByThemeIdAndTypeId(themeId, typeId);
+        log.debug("Converted, size = {}", all.size());
+        return "OK";
     }
 
 }

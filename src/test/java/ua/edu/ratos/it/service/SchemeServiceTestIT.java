@@ -16,8 +16,8 @@ import ua.edu.ratos.dao.entity.grade.SchemeFourPoint;
 import ua.edu.ratos.dao.entity.grade.SchemeTwoPoint;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.dto.entity.SchemeInDto;
-import ua.edu.ratos.service.scheme.SchemeService;
+import ua.edu.ratos.service.dto.in.SchemeInDto;
+import ua.edu.ratos.service.grading.SchemeService;
 
 import javax.persistence.EntityManager;
 import java.io.File;
@@ -124,7 +124,7 @@ public class SchemeServiceTestIT {
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void reOrderTest() throws Exception {
-        // 1. Given 8 themes associated with a scheme
+        // 1. Given 8 themes associated with a grading
         // 2. Reorder elements by putting 2d currentIndex element to the top and 5th currentIndex element to the bottom
         //    {1, 2, 3, 4, 5, 6, 7, 8} - > {3, 1, 2, 4, 5, 7, 8, 6}
         // 3. Make sure 8 of them are still present after manipulations and resulting lists are equal?
@@ -144,7 +144,7 @@ public class SchemeServiceTestIT {
     @Sql(scripts = "/scripts/scheme_theme_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIndexTest() throws Exception {
-        // 1. Given 8 themes associated with a scheme
+        // 1. Given 8 themes associated with a grading
         // 2. Delete the 4th one
         // 3. Make sure only 7 of they are left, make sure the Scheme is still completed
         // 4. Observe indexes updated!
@@ -161,7 +161,7 @@ public class SchemeServiceTestIT {
     @Sql(scripts = {"/scripts/scheme_theme_test_data.sql", "/scripts/scheme_theme_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIndexLastElementTest() throws Exception {
-        // 1. Given 1 theme associated with a scheme
+        // 1. Given 1 theme associated with a grading
         // 2. Delete it single theme
         // 3. Make sure 0 of them are left
         // 4. Make sure the Scheme became incomplete

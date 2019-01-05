@@ -1,13 +1,14 @@
 package ua.edu.ratos.service.session.decorator;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.session.BatchBuilder;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
-import ua.edu.ratos.service.session.dto.batch.BatchInDto;
-import ua.edu.ratos.service.session.dto.batch.BatchOutDto;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 @Service
 @Qualifier("skip")
@@ -21,7 +22,7 @@ public class SkipDecorator extends NextProcessorDecorator {
     }
 
     @Override
-    public BatchEvaluated getBatchEvaluated(BatchInDto batchInDto, SessionData sessionData) {
+    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         if (!sessionData.getCurrentBatch().isEmpty()) {
             return nextProcessor.getBatchEvaluated(batchInDto, sessionData);
         } else {
@@ -30,16 +31,16 @@ public class SkipDecorator extends NextProcessorDecorator {
     }
 
     @Override
-    public void updateComponentsSessionData(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public void updateComponentsSessionData(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         if (batchEvaluated!=null) nextProcessor.updateComponentsSessionData(batchEvaluated, sessionData);
     }
 
     @Override
-    public BatchOutDto getBatchOutDto(BatchEvaluated batchEvaluated, SessionData sessionData) {
+    public BatchOutDto getBatchOutDto(@NonNull final BatchEvaluated batchEvaluated, @NonNull final SessionData sessionData) {
         if (batchEvaluated!=null) {
             return nextProcessor.getBatchOutDto(batchEvaluated, sessionData);
         } else {
-            if (!sessionData.isMoreQuestions()) {
+            if (!sessionData.hasMoreQuestions()) {
                 return BatchOutDto.buildEmpty();
             } else {
                 // Build BatchOutDto with no batchEvaluated

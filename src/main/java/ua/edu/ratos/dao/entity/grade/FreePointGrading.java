@@ -3,6 +3,7 @@ package ua.edu.ratos.dao.entity.grade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
@@ -11,10 +12,11 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"staff", "grading"})
 @Entity
 @Table(name = "free_point")
 @Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FreePointGrading {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -49,8 +51,8 @@ public class FreePointGrading {
     private boolean deleted;
 
     /**
-     * This grading system supports only integer values;
-     * For fractional values, please, implement another Grading class
+     * This gradingDomain system supports only integer values;
+     * For fractional values, please, implement another GradingDomain class
      * (with specified precision of rounding)
      * @param percent
      * @return

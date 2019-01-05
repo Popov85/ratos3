@@ -9,8 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
-import ua.edu.ratos.service.scheme.SchemeThemeSettingsService;
-import ua.edu.ratos.service.dto.entity.SchemeThemeSettingsInDto;
+import ua.edu.ratos.service.grading.SchemeThemeSettingsService;
+import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
 import java.net.URI;
 import java.util.Set;
 

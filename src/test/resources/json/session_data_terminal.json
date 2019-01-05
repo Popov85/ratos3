@@ -1,16 +1,16 @@
 {
   "key": "D7C5E8BED7EDA2381E69126A40B3B22C",
   "userId": 1,
-  "scheme": {
+  "schemeDomain": {
     "schemeId": 1,
-    "name": "Scheme#1",
-    "strategy": {
+    "name": "SchemeDomain#1",
+    "strategyDomain": {
       "strId": 1,
-      "name": "Strategy#1"
+      "name": "StrategyDomain#1"
     },
-    "settings": {
+    "settingsDomain": {
       "setId": 1,
-      "name": "Settings#1",
+      "name": "SettingsDomain#1",
       "secondsPerQuestion": 60,
       "strictControlTimePerQuestion": false,
       "questionsPerSheet": 1,
@@ -21,9 +21,9 @@
       "displayMark": false,
       "displayThemeResults": false
     },
-    "mode": {
+    "modeDomain": {
       "modeId": 1,
-      "name": "Mode#1",
+      "name": "ModeDomain#1",
       "helpable": false,
       "pyramid": false,
       "skipable": false,
@@ -34,507 +34,460 @@
       "reportable": false,
       "starrable": false
     },
-    "grading": {
+    "gradingDomain": {
       "gradingId": 1,
-      "name": "Grading #1"
+      "name": "GradingDomain #1"
     }
   },
-  "questions": [
-    {
-      "className": "ua.edu.ratos.service.session.domain.question.QuestionMCQ",
-      "questionId": 1,
-      "question": "Question Multiple Choice #1",
-      "level": 1,
-      "type": 1,
-      "lang": "EN",
-      "theme": {
-        "themeId": 1,
-        "name": "Theme#1"
+  "questionDomains": [{
+    "className": "ua.edu.ratos.service.domain.question.QuestionMCQDomain",
+    "questionId": 1,
+    "question": "QuestionDomain Multiple Choice #1",
+    "level": 1,
+    "type": 1,
+    "lang": "EN",
+    "themeDomain": {
+      "themeId": 1,
+      "name": "ThemeDomain#1"
+    },
+    "partialResponseAllowed": false,
+    "answers": [{
+      "answerId": 1,
+      "answer": "Answer#1",
+      "percent": 100,
+      "required": true,
+      "resourceDomain": {
+        "resourceId": 3,
+        "link": "https://resourceDomains.com/#3",
+        "description": "ResourceDomain answer #1"
+      }
+    }, {
+      "answerId": 2,
+      "answer": "Answer#2",
+      "percent": 0,
+      "required": false,
+      "resourceDomain": {
+        "resourceId": 4,
+        "link": "https://resourceDomains.com/#4",
+        "description": "ResourceDomain answer #2"
+      }
+    }, {
+      "answerId": 3,
+      "answer": "Answer#3",
+      "percent": 0,
+      "required": false,
+      "resourceDomain": {
+        "resourceId": 5,
+        "link": "https://resourceDomains.com/#5",
+        "description": "ResourceDomain answer #3"
+      }
+    }, {
+      "answerId": 4,
+      "answer": "Answer#4",
+      "percent": 0,
+      "required": false,
+      "resourceDomain": {
+        "resourceId": 6,
+        "link": "https://resourceDomains.com/#6",
+        "description": "ResourceDomain answer #4"
+      }
+    }
+    ],
+    "single": true,
+    "helpDomain": {
+      "helpId": 1,
+      "name": "HelpDomain MCQ#1",
+      "help": "See HelpDomain MCQ#1",
+      "resourceDomain": {
+        "resourceId": 1,
+        "link": "https://resourceDomains.com/#1",
+        "description": "ResourceDomain helpDomain MCQ"
+      }
+    },
+    "resourceDomains": [{
+      "resourceId": 2,
+      "link": "https://resourceDomains.com/#2",
+      "description": "ResourceDomain question #2"
+    }
+    ]
+  }, {
+    "className": "ua.edu.ratos.service.domain.question.QuestionFBSQDomain",
+    "questionId": 2,
+    "question": "QuestionDomain Fill Blank Single #2",
+    "level": 1,
+    "type": 2,
+    "lang": "EN",
+    "themeDomain": {
+      "themeId": 1,
+      "name": "ThemeDomain#1"
+    },
+    "partialResponseAllowed": false,
+    "answer": {
+      "answerId": 1,
+      "settings": {
+        "settingsId": 1,
+        "name": "SettingsDomain #1",
+        "lang": "EN",
+        "wordsLimit": 1,
+        "symbolsLimit": 10,
+        "numeric": false,
+        "typoAllowed": false,
+        "caseSensitive": true
       },
-      "partialResponseAllowed": false,
-      "answers": [
-        {
-          "answerId": 1,
-          "answer": "Answer#1",
-          "percent": 100,
-          "required": true,
-          "resource": {
-            "resourceId": 3,
-            "link": "https://resources.com/#3",
-            "description": "Resource answer #1"
-          }
-        },
-        {
-          "answerId": 2,
-          "answer": "Answer#2",
-          "percent": 0,
-          "required": false,
-          "resource": {
-            "resourceId": 4,
-            "link": "https://resources.com/#4",
-            "description": "Resource answer #2"
-          }
-        },
-        {
-          "answerId": 3,
-          "answer": "Answer#3",
-          "percent": 0,
-          "required": false,
-          "resource": {
-            "resourceId": 5,
-            "link": "https://resources.com/#5",
-            "description": "Resource answer #3"
-          }
-        },
-        {
-          "answerId": 4,
-          "answer": "Answer#4",
-          "percent": 0,
-          "required": false,
-          "resource": {
-            "resourceId": 6,
-            "link": "https://resources.com/#6",
-            "description": "Resource answer #4"
-          }
-        }
-      ],
-      "single": true,
-      "help": {
-        "helpId": 1,
-        "name": "Help MCQ#1",
-        "help": "See Help MCQ#1",
-        "resource": {
-          "resourceId": 1,
-          "link": "https://resources.com/#1",
-          "description": "Resource help MCQ"
-        }
-      },
-      "resources": [
-        {
-          "resourceId": 2,
-          "link": "https://resources.com/#2",
-          "description": "Resource question #2"
-        }
+      "acceptedPhraseDomains": [{
+        "phraseId": 1,
+        "phrase": "PhraseDomain #1"
+      }, {
+        "phraseId": 3,
+        "phrase": "PhraseDomain #3"
+      }, {
+        "phraseId": 2,
+        "phrase": "PhraseDomain #2"
+      }, {
+        "phraseId": 4,
+        "phrase": "PhraseDomain #4"
+      }
       ]
     },
-    {
-      "className": "ua.edu.ratos.service.session.domain.question.QuestionFBSQ",
-      "questionId": 2,
-      "question": "Question Fill Blank Single #2",
-      "level": 1,
-      "type": 2,
-      "lang": "EN",
-      "theme": {
-        "themeId": 1,
-        "name": "Theme#1"
-      },
-      "partialResponseAllowed": false,
-      "answer": {
-        "answerId": 1,
-        "settings": {
-          "settingsId": 1,
-          "name": "Settings #1",
-          "lang": "EN",
-          "wordsLimit": 1,
-          "symbolsLimit": 10,
-          "numeric": false,
-          "typoAllowed": false,
-          "caseSensitive": true
-        },
-        "acceptedPhrases": [
-          {
-            "phraseId": 3,
-            "phrase": "Phrase #3"
-          },
-          {
-            "phraseId": 4,
-            "phrase": "Phrase #4"
-          },
-          {
-            "phraseId": 2,
-            "phrase": "Phrase #2"
-          },
-          {
-            "phraseId": 1,
-            "phrase": "Phrase #1"
-          }
-        ]
-      },
-      "help": {
-        "helpId": 2,
-        "name": "Help FBSQ #1",
-        "help": "See Help FBSQ #1",
-        "resource": {
-          "resourceId": 7,
-          "link": "https://resources.com/#7",
-          "description": "Resource help FBSQ"
-        }
-      },
-      "resources": [
-        {
-          "resourceId": 8,
-          "link": "https://resources.com/#8",
-          "description": "Resource question #2"
-        }
-      ]
+    "helpDomain": {
+      "helpId": 2,
+      "name": "HelpDomain FBSQ #1",
+      "help": "See HelpDomain FBSQ #1",
+      "resourceDomain": {
+        "resourceId": 7,
+        "link": "https://resourceDomains.com/#7",
+        "description": "ResourceDomain helpDomain FBSQ"
+      }
     },
-    {
-      "className": "ua.edu.ratos.service.session.domain.question.QuestionFBMQ",
-      "questionId": 3,
-      "question": "Question Fill Blank Multiple #3",
-      "level": 1,
-      "type": 3,
-      "lang": "EN",
-      "theme": {
-        "themeId": 1,
-        "name": "Theme#1"
-      },
-      "partialResponseAllowed": false,
-      "answers": [
-        {
-          "answerId": 1,
-          "phrase": "Target phrase for FBMQ answer #1",
-          "occurrence": 1,
-          "settings": {
-            "settingsId": 1,
-            "name": "Settings #1",
-            "lang": "EN",
-            "wordsLimit": 1,
-            "symbolsLimit": 10,
-            "numeric": false,
-            "typoAllowed": false,
-            "caseSensitive": true
-          },
-          "acceptedPhrases": [
-            {
-              "phraseId": 5,
-              "phrase": "Phrase #1 for FBMQ answer #1"
-            },
-            {
-              "phraseId": 7,
-              "phrase": "Phrase #3 for FBMQ answer #1"
-            },
-            {
-              "phraseId": 8,
-              "phrase": "Phrase #4 for FBMQ answer #1"
-            },
-            {
-              "phraseId": 6,
-              "phrase": "Phrase #2 for FBMQ answer #1"
-            }
-          ]
-        },
-        {
-          "answerId": 2,
-          "phrase": "Target phrase for FBMQ answer #2",
-          "occurrence": 1,
-          "settings": {
-            "settingsId": 1,
-            "name": "Settings #1",
-            "lang": "EN",
-            "wordsLimit": 1,
-            "symbolsLimit": 10,
-            "numeric": false,
-            "typoAllowed": false,
-            "caseSensitive": true
-          },
-          "acceptedPhrases": [
-            {
-              "phraseId": 9,
-              "phrase": "Phrase #1 for FBMQ answer #2"
-            },
-            {
-              "phraseId": 11,
-              "phrase": "Phrase #3 for FBMQ answer #2"
-            },
-            {
-              "phraseId": 10,
-              "phrase": "Phrase #2 for FBMQ answer #2"
-            },
-            {
-              "phraseId": 12,
-              "phrase": "Phrase #4 for FBMQ answer #2"
-            }
-          ]
-        },
-        {
-          "answerId": 3,
-          "phrase": "Target phrase for FBMQ answer #3",
-          "occurrence": 1,
-          "settings": {
-            "settingsId": 1,
-            "name": "Settings #1",
-            "lang": "EN",
-            "wordsLimit": 1,
-            "symbolsLimit": 10,
-            "numeric": false,
-            "typoAllowed": false,
-            "caseSensitive": true
-          },
-          "acceptedPhrases": [
-            {
-              "phraseId": 14,
-              "phrase": "Phrase #2 for FBMQ answer #3"
-            },
-            {
-              "phraseId": 15,
-              "phrase": "Phrase #3 for FBMQ answer #3"
-            },
-            {
-              "phraseId": 16,
-              "phrase": "Phrase #4 for FBMQ answer #3"
-            },
-            {
-              "phraseId": 13,
-              "phrase": "Phrase #1 for FBMQ answer #3"
-            }
-          ]
-        },
-        {
-          "answerId": 4,
-          "phrase": "Target phrase for FBMQ answer #4",
-          "occurrence": 1,
-          "settings": {
-            "settingsId": 1,
-            "name": "Settings #1",
-            "lang": "EN",
-            "wordsLimit": 1,
-            "symbolsLimit": 10,
-            "numeric": false,
-            "typoAllowed": false,
-            "caseSensitive": true
-          },
-          "acceptedPhrases": [
-            {
-              "phraseId": 17,
-              "phrase": "Phrase #1 for FBMQ answer #4"
-            },
-            {
-              "phraseId": 19,
-              "phrase": "Phrase #3 for FBMQ answer #4"
-            },
-            {
-              "phraseId": 18,
-              "phrase": "Phrase #2 for FBMQ answer #4"
-            },
-            {
-              "phraseId": 20,
-              "phrase": "Phrase #4 for FBMQ answer #4"
-            }
-          ]
-        }
-      ],
-      "help": {
-        "helpId": 3,
-        "name": "Help FBMQ #3",
-        "help": "See Help FBMQ #3",
-        "resource": {
-          "resourceId": 9,
-          "link": "https://resources.com/#9",
-          "description": "Resource help FBMQ"
-        }
-      },
-      "resources": [
-        {
-          "resourceId": 10,
-          "link": "https://resources.com/#10",
-          "description": "Resource question #3"
-        }
-      ]
+    "resourceDomains": [{
+      "resourceId": 8,
+      "link": "https://resourceDomains.com/#8",
+      "description": "ResourceDomain question #2"
+    }
+    ]
+  }, {
+    "className": "ua.edu.ratos.service.domain.question.QuestionFBMQDomain",
+    "questionId": 3,
+    "question": "QuestionDomain Fill Blank Multiple #3",
+    "level": 1,
+    "type": 3,
+    "lang": "EN",
+    "themeDomain": {
+      "themeId": 1,
+      "name": "ThemeDomain#1"
     },
-    {
-      "className": "ua.edu.ratos.service.session.domain.question.QuestionMQ",
-      "questionId": 4,
-      "question": "Matcher Question #4",
-      "level": 1,
-      "type": 4,
-      "lang": "EN",
-      "theme": {
-        "themeId": 1,
-        "name": "Theme#1"
+    "partialResponseAllowed": false,
+    "answers": [{
+      "answerId": 1,
+      "phrase": "Target phraseDomain for FBMQ answer #1",
+      "occurrence": 1,
+      "settings": {
+        "settingsId": 1,
+        "name": "SettingsDomain #1",
+        "lang": "EN",
+        "wordsLimit": 1,
+        "symbolsLimit": 10,
+        "numeric": false,
+        "typoAllowed": false,
+        "caseSensitive": true
       },
-      "partialResponseAllowed": false,
-      "answers": [
-        {
-          "answerId": 1,
-          "leftPhrase": {
-            "phraseId": 21,
-            "phrase": "Left Phrase for MQ answer #1",
-            "resource": {
-              "resourceId": 13,
-              "link": "https://resources.com/#13",
-              "description": "Left phrase resource for answer #1"
-            }
-          },
-          "rightPhrase": {
-            "phraseId": 22,
-            "phrase": "Right Phrase for MQ answer #1"
-          }
-        },
-        {
-          "answerId": 2,
-          "leftPhrase": {
-            "phraseId": 23,
-            "phrase": "Left Phrase for MQ answer #2",
-            "resource": {
-              "resourceId": 14,
-              "link": "https://resources.com/#14",
-              "description": "Left phrase resource for answer #2"
-            }
-          },
-          "rightPhrase": {
-            "phraseId": 24,
-            "phrase": "Right Phrase for MQ answer #2"
-          }
-        },
-        {
-          "answerId": 3,
-          "leftPhrase": {
-            "phraseId": 25,
-            "phrase": "Left Phrase for MQ answer #3",
-            "resource": {
-              "resourceId": 15,
-              "link": "https://resources.com/#15",
-              "description": "Left phrase resource for answer #3"
-            }
-          },
-          "rightPhrase": {
-            "phraseId": 26,
-            "phrase": "Right Phrase for MQ answer #3"
-          }
-        },
-        {
-          "answerId": 4,
-          "leftPhrase": {
-            "phraseId": 27,
-            "phrase": "Left Phrase for MQ answer #4",
-            "resource": {
-              "resourceId": 16,
-              "link": "https://resources.com/#16",
-              "description": "Left phrase resource for answer #4"
-            }
-          },
-          "rightPhrase": {
-            "phraseId": 28,
-            "phrase": "Right Phrase for MQ answer #4"
-          }
-        }
-      ],
-      "help": {
-        "helpId": 4,
-        "name": "Help MQ#4",
-        "help": "See Help MQ#4",
-        "resource": {
-          "resourceId": 11,
-          "link": "https://resources.com/#11",
-          "description": "Resource help MQ"
-        }
-      },
-      "resources": [
-        {
-          "resourceId": 12,
-          "link": "https://resources.com/#12",
-          "description": "Resource question #4"
-        }
+      "acceptedPhraseDomains": [{
+        "phraseId": 5,
+        "phrase": "PhraseDomain #1 for FBMQ answer #1"
+      }, {
+        "phraseId": 8,
+        "phrase": "PhraseDomain #4 for FBMQ answer #1"
+      }, {
+        "phraseId": 6,
+        "phrase": "PhraseDomain #2 for FBMQ answer #1"
+      }, {
+        "phraseId": 7,
+        "phrase": "PhraseDomain #3 for FBMQ answer #1"
+      }
       ]
-    },
-    {
-      "className": "ua.edu.ratos.service.session.domain.question.QuestionSQ",
-      "questionId": 5,
-      "question": "Sequence question #5",
-      "level": 1,
-      "type": 5,
-      "lang": "EN",
-      "theme": {
-        "themeId": 1,
-        "name": "Theme#1"
+    }, {
+      "answerId": 2,
+      "phrase": "Target phraseDomain for FBMQ answer #2",
+      "occurrence": 1,
+      "settings": {
+        "settingsId": 1,
+        "name": "SettingsDomain #1",
+        "lang": "EN",
+        "wordsLimit": 1,
+        "symbolsLimit": 10,
+        "numeric": false,
+        "typoAllowed": false,
+        "caseSensitive": true
       },
-      "partialResponseAllowed": false,
-      "answers": [
-        {
-          "answerId": 1,
-          "phrase": {
-            "phraseId": 29,
-            "phrase": "Phrase #1 for SQ answer #1",
-            "resource": {
-              "resourceId": 19,
-              "link": "https://resources.com/#19",
-              "description": "Resource for SQ answer #1"
-            }
-          },
-          "order": 0
-        },
-        {
-          "answerId": 2,
-          "phrase": {
-            "phraseId": 30,
-            "phrase": "Phrase #2 for SQ answer #2",
-            "resource": {
-              "resourceId": 20,
-              "link": "https://resources.com/#20",
-              "description": "Resource for SQ answer #2"
-            }
-          },
-          "order": 1
-        },
-        {
-          "answerId": 3,
-          "phrase": {
-            "phraseId": 31,
-            "phrase": "Phrase #3 for SQ answer #3",
-            "resource": {
-              "resourceId": 21,
-              "link": "https://resources.com/#21",
-              "description": "Resource for SQ answer #3"
-            }
-          },
-          "order": 2
-        },
-        {
-          "answerId": 4,
-          "phrase": {
-            "phraseId": 32,
-            "phrase": "Phrase #4 for SQ answer #4",
-            "resource": {
-              "resourceId": 22,
-              "link": "https://resources.com/#22",
-              "description": "Resource for SQ answer #4"
-            }
-          },
-          "order": 3
-        },
-        {
-          "answerId": 5,
-          "phrase": {
-            "phraseId": 33,
-            "phrase": "Phrase #5 for SQ answer #5",
-            "resource": {
-              "resourceId": 23,
-              "link": "https://resources.com/#23",
-              "description": "Resource for SQ answer #5"
-            }
-          },
-          "order": 4
-        }
-      ],
-      "help": {
-        "helpId": 5,
-        "name": "Help SQ#5",
-        "help": "See Help SQ#5",
-        "resource": {
-          "resourceId": 17,
-          "link": "https://resources.com/#17",
-          "description": "Resource help SQ"
-        }
+      "acceptedPhraseDomains": [{
+        "phraseId": 9,
+        "phrase": "PhraseDomain #1 for FBMQ answer #2"
+      }, {
+        "phraseId": 12,
+        "phrase": "PhraseDomain #4 for FBMQ answer #2"
+      }, {
+        "phraseId": 10,
+        "phrase": "PhraseDomain #2 for FBMQ answer #2"
+      }, {
+        "phraseId": 11,
+        "phrase": "PhraseDomain #3 for FBMQ answer #2"
+      }
+      ]
+    }, {
+      "answerId": 3,
+      "phrase": "Target phraseDomain for FBMQ answer #3",
+      "occurrence": 1,
+      "settings": {
+        "settingsId": 1,
+        "name": "SettingsDomain #1",
+        "lang": "EN",
+        "wordsLimit": 1,
+        "symbolsLimit": 10,
+        "numeric": false,
+        "typoAllowed": false,
+        "caseSensitive": true
       },
-      "resources": [
-        {
-          "resourceId": 18,
-          "link": "https://resources.com/#18",
-          "description": "Resource question #4"
-        }
+      "acceptedPhraseDomains": [{
+        "phraseId": 16,
+        "phrase": "PhraseDomain #4 for FBMQ answer #3"
+      }, {
+        "phraseId": 15,
+        "phrase": "PhraseDomain #3 for FBMQ answer #3"
+      }, {
+        "phraseId": 13,
+        "phrase": "PhraseDomain #1 for FBMQ answer #3"
+      }, {
+        "phraseId": 14,
+        "phrase": "PhraseDomain #2 for FBMQ answer #3"
+      }
+      ]
+    }, {
+      "answerId": 4,
+      "phrase": "Target phraseDomain for FBMQ answer #4",
+      "occurrence": 1,
+      "settings": {
+        "settingsId": 1,
+        "name": "SettingsDomain #1",
+        "lang": "EN",
+        "wordsLimit": 1,
+        "symbolsLimit": 10,
+        "numeric": false,
+        "typoAllowed": false,
+        "caseSensitive": true
+      },
+      "acceptedPhraseDomains": [{
+        "phraseId": 20,
+        "phrase": "PhraseDomain #4 for FBMQ answer #4"
+      }, {
+        "phraseId": 19,
+        "phrase": "PhraseDomain #3 for FBMQ answer #4"
+      }, {
+        "phraseId": 18,
+        "phrase": "PhraseDomain #2 for FBMQ answer #4"
+      }, {
+        "phraseId": 17,
+        "phrase": "PhraseDomain #1 for FBMQ answer #4"
+      }
       ]
     }
+    ],
+    "helpDomain": {
+      "helpId": 3,
+      "name": "HelpDomain FBMQ #3",
+      "help": "See HelpDomain FBMQ #3",
+      "resourceDomain": {
+        "resourceId": 9,
+        "link": "https://resourceDomains.com/#9",
+        "description": "ResourceDomain helpDomain FBMQ"
+      }
+    },
+    "resourceDomains": [{
+      "resourceId": 10,
+      "link": "https://resourceDomains.com/#10",
+      "description": "ResourceDomain question #3"
+    }
+    ]
+  }, {
+    "className": "ua.edu.ratos.service.domain.question.QuestionMQDomain",
+    "questionId": 4,
+    "question": "Matcher QuestionDomain #4",
+    "level": 1,
+    "type": 4,
+    "lang": "EN",
+    "themeDomain": {
+      "themeId": 1,
+      "name": "ThemeDomain#1"
+    },
+    "partialResponseAllowed": false,
+    "answers": [{
+      "answerId": 1,
+      "leftPhraseDomain": {
+        "phraseId": 21,
+        "phrase": "Left PhraseDomain for MQ answer #1",
+        "resourceDomain": {
+          "resourceId": 13,
+          "link": "https://resourceDomains.com/#13",
+          "description": "Left phraseDomain resourceDomain for answer #1"
+        }
+      },
+      "rightPhraseDomain": {
+        "phraseId": 22,
+        "phrase": "Right PhraseDomain for MQ answer #1"
+      }
+    }, {
+      "answerId": 2,
+      "leftPhraseDomain": {
+        "phraseId": 23,
+        "phrase": "Left PhraseDomain for MQ answer #2",
+        "resourceDomain": {
+          "resourceId": 14,
+          "link": "https://resourceDomains.com/#14",
+          "description": "Left phraseDomain resourceDomain for answer #2"
+        }
+      },
+      "rightPhraseDomain": {
+        "phraseId": 24,
+        "phrase": "Right PhraseDomain for MQ answer #2"
+      }
+    }, {
+      "answerId": 3,
+      "leftPhraseDomain": {
+        "phraseId": 25,
+        "phrase": "Left PhraseDomain for MQ answer #3",
+        "resourceDomain": {
+          "resourceId": 15,
+          "link": "https://resourceDomains.com/#15",
+          "description": "Left phraseDomain resourceDomain for answer #3"
+        }
+      },
+      "rightPhraseDomain": {
+        "phraseId": 26,
+        "phrase": "Right PhraseDomain for MQ answer #3"
+      }
+    }, {
+      "answerId": 4,
+      "leftPhraseDomain": {
+        "phraseId": 27,
+        "phrase": "Left PhraseDomain for MQ answer #4",
+        "resourceDomain": {
+          "resourceId": 16,
+          "link": "https://resourceDomains.com/#16",
+          "description": "Left phraseDomain resourceDomain for answer #4"
+        }
+      },
+      "rightPhraseDomain": {
+        "phraseId": 28,
+        "phrase": "Right PhraseDomain for MQ answer #4"
+      }
+    }
+    ],
+    "helpDomain": {
+      "helpId": 4,
+      "name": "HelpDomain MQ#4",
+      "help": "See HelpDomain MQ#4",
+      "resourceDomain": {
+        "resourceId": 11,
+        "link": "https://resourceDomains.com/#11",
+        "description": "ResourceDomain helpDomain MQ"
+      }
+    },
+    "resourceDomains": [{
+      "resourceId": 12,
+      "link": "https://resourceDomains.com/#12",
+      "description": "ResourceDomain question #4"
+    }
+    ]
+  }, {
+    "className": "ua.edu.ratos.service.domain.question.QuestionSQDomain",
+    "questionId": 5,
+    "question": "Sequence question #5",
+    "level": 1,
+    "type": 5,
+    "lang": "EN",
+    "themeDomain": {
+      "themeId": 1,
+      "name": "ThemeDomain#1"
+    },
+    "partialResponseAllowed": false,
+    "answers": [{
+      "answerId": 1,
+      "phraseDomain": {
+        "phraseId": 29,
+        "phrase": "PhraseDomain #1 for SQ answer #1",
+        "resourceDomain": {
+          "resourceId": 19,
+          "link": "https://resourceDomains.com/#19",
+          "description": "ResourceDomain for SQ answer #1"
+        }
+      },
+      "order": 0
+    }, {
+      "answerId": 2,
+      "phraseDomain": {
+        "phraseId": 30,
+        "phrase": "PhraseDomain #2 for SQ answer #2",
+        "resourceDomain": {
+          "resourceId": 20,
+          "link": "https://resourceDomains.com/#20",
+          "description": "ResourceDomain for SQ answer #2"
+        }
+      },
+      "order": 1
+    }, {
+      "answerId": 3,
+      "phraseDomain": {
+        "phraseId": 31,
+        "phrase": "PhraseDomain #3 for SQ answer #3",
+        "resourceDomain": {
+          "resourceId": 21,
+          "link": "https://resourceDomains.com/#21",
+          "description": "ResourceDomain for SQ answer #3"
+        }
+      },
+      "order": 2
+    }, {
+      "answerId": 4,
+      "phraseDomain": {
+        "phraseId": 32,
+        "phrase": "PhraseDomain #4 for SQ answer #4",
+        "resourceDomain": {
+          "resourceId": 22,
+          "link": "https://resourceDomains.com/#22",
+          "description": "ResourceDomain for SQ answer #4"
+        }
+      },
+      "order": 3
+    }, {
+      "answerId": 5,
+      "phraseDomain": {
+        "phraseId": 33,
+        "phrase": "PhraseDomain #5 for SQ answer #5",
+        "resourceDomain": {
+          "resourceId": 23,
+          "link": "https://resourceDomains.com/#23",
+          "description": "ResourceDomain for SQ answer #5"
+        }
+      },
+      "order": 4
+    }
+    ],
+    "helpDomain": {
+      "helpId": 5,
+      "name": "HelpDomain SQ#5",
+      "help": "See HelpDomain SQ#5",
+      "resourceDomain": {
+        "resourceId": 17,
+        "link": "https://resourceDomains.com/#17",
+        "description": "ResourceDomain helpDomain SQ"
+      }
+    },
+    "resourceDomains": [{
+      "resourceId": 18,
+      "link": "https://resourceDomains.com/#18",
+      "description": "ResourceDomain question #4"
+    }
+    ]
+  }
   ],
   "sessionTimeout": "+999999999-12-31T23:59:59.999999999",
   "perQuestionTimeLimit": -1,
@@ -543,130 +496,107 @@
   "progressData": {
     "score": 88.5,
     "timeSpent": 250,
-    "batchesEvaluated": [
-      {
-        "responsesEvaluated": {
-          "1": {
+    "batchesEvaluated": [{
+      "responsesEvaluated": {
+        "1": {
+          "questionId": 1,
+          "response": {
+            "className": "ua.edu.ratos.service.domain.response.ResponseMCQ",
             "questionId": 1,
-            "response": {
-              "className": "ua.edu.ratos.service.session.domain.response.ResponseMultipleChoice",
-              "questionId": 1,
-              "answerIds": [
-                1
-              ]
-            },
-            "score": 100.0
-          }
-        },
-        "timeSpent": 30,
-        "incorrectResponseIds": []
+            "answerIds": [1]
+          },
+          "score": 100.0
+        }
       },
-      {
-        "responsesEvaluated": {
-          "2": {
+      "timeSpent": 30,
+      "incorrectResponseIds": []
+    }, {
+      "responsesEvaluated": {
+        "2": {
+          "questionId": 2,
+          "response": {
+            "className": "ua.edu.ratos.service.domain.response.ResponseFBSQ",
             "questionId": 2,
-            "response": {
-              "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankSingle",
-              "questionId": 2,
-              "enteredPhrase": "wrong phrase"
-            },
-            "score": 0.0
-          }
-        },
-        "timeSpent": 50,
-        "incorrectResponseIds": [
-          2
-        ]
+            "enteredPhrase": "wrong phraseDomain"
+          },
+          "score": 0.0
+        }
       },
-      {
-        "responsesEvaluated": {
-          "3": {
+      "timeSpent": 50,
+      "incorrectResponseIds": [2]
+    }, {
+      "responsesEvaluated": {
+        "3": {
+          "questionId": 3,
+          "response": {
+            "className": "ua.edu.ratos.service.domain.response.ResponseFBMQ",
             "questionId": 3,
-            "response": {
-              "className": "ua.edu.ratos.service.session.domain.response.ResponseFillBlankMultiple",
-              "questionId": 3,
-              "enteredPhrases": [
-                {
-                  "answerId": 1,
-                  "enteredPhrase": "(correct) Target phrase for FBMQ answer #1"
-                },
-                {
-                  "answerId": 4,
-                  "enteredPhrase": "(correct) Target phrase for FBMQ answer #4"
-                },
-                {
-                  "answerId": 2,
-                  "enteredPhrase": "(correct) Target phrase for FBMQ answer #2"
-                },
-                {
-                  "answerId": 3,
-                  "enteredPhrase": "(correct) Target phrase for FBMQ answer #3"
-                }
-              ]
-            },
-            "score": 100.0
-          }
-        },
-        "timeSpent": 25,
-        "incorrectResponseIds": []
+            "enteredPhrases": [{
+              "answerId": 1,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #1"
+            }, {
+              "answerId": 2,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #2"
+            }, {
+              "answerId": 4,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #4"
+            }, {
+              "answerId": 3,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #3"
+            }
+            ]
+          },
+          "score": 100.0
+        }
       },
-      {
-        "responsesEvaluated": {
-          "4": {
+      "timeSpent": 25,
+      "incorrectResponseIds": []
+    }, {
+      "responsesEvaluated": {
+        "4": {
+          "questionId": 4,
+          "response": {
+            "className": "ua.edu.ratos.service.domain.response.ResponseMQ",
             "questionId": 4,
-            "response": {
-              "className": "ua.edu.ratos.service.session.domain.response.ResponseMatcher",
-              "questionId": 4,
-              "matchedPhrases": [
-                {
-                  "answerId": 3,
-                  "leftPhraseId": 25,
-                  "rightPhraseId": 26
-                },
-                {
-                  "answerId": 2,
-                  "leftPhraseId": 23,
-                  "rightPhraseId": 24
-                },
-                {
-                  "answerId": 1,
-                  "leftPhraseId": 21,
-                  "rightPhraseId": 22
-                },
-                {
-                  "answerId": 4,
-                  "leftPhraseId": 27,
-                  "rightPhraseId": 28
-                }
-              ]
-            },
-            "score": 100.0
-          }
-        },
-        "timeSpent": 30,
-        "incorrectResponseIds": []
+            "matchedPhrases": [{
+              "answerId": 3,
+              "leftPhraseId": 25,
+              "rightPhraseId": 26
+            }, {
+              "answerId": 2,
+              "leftPhraseId": 23,
+              "rightPhraseId": 24
+            }, {
+              "answerId": 4,
+              "leftPhraseId": 27,
+              "rightPhraseId": 28
+            }, {
+              "answerId": 1,
+              "leftPhraseId": 21,
+              "rightPhraseId": 22
+            }
+            ]
+          },
+          "score": 100.0
+        }
       },
-      {
-        "responsesEvaluated": {
-          "5": {
+      "timeSpent": 30,
+      "incorrectResponseIds": []
+    }, {
+      "responsesEvaluated": {
+        "5": {
+          "questionId": 5,
+          "response": {
+            "className": "ua.edu.ratos.service.domain.response.ResponseSQ",
             "questionId": 5,
-            "response": {
-              "className": "ua.edu.ratos.service.session.domain.response.ResponseSequence",
-              "questionId": 5,
-              "answerIds": [
-                29,
-                30,
-                31,
-                32,
-                33
-              ]
-            },
-            "score": 100.0
-          }
-        },
-        "timeSpent": 15,
-        "incorrectResponseIds": []
-      }
+            "answerIds": [29, 30, 31, 32, 33]
+          },
+          "score": 100.0
+        }
+      },
+      "timeSpent": 15,
+      "incorrectResponseIds": []
+    }
     ]
   },
   "metaData": {
@@ -702,5 +632,9 @@
       "incorrect": 0,
       "complained": false
     }
-  }
+  },
+  "lmsid": {
+    "present": false
+  },
+  "lmssession": false
 }

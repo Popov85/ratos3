@@ -31,7 +31,7 @@ public class QuestionsFileParserRTPTest {
         Assert.assertTrue(result.getQuestions().size()>0);
 
    /*     System.out.println("QUESTIONS#: "+result.questions()+" INVALID#: "+result.invalid());
-        result.getQuestions().forEach(question->System.out.println(question));
+        result.getQuestionDomains().forEach(question->System.out.println(question));
 
 
         System.out.println("ISSUES#: "+result.issues()+

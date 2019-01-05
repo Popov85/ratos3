@@ -3,14 +3,17 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"group"})
+@ToString(exclude = {"studentClass"})
 @Entity
 @Table(name = "student")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

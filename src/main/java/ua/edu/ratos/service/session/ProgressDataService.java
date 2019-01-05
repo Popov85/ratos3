@@ -2,10 +2,10 @@ package ua.edu.ratos.service.session;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.session.domain.BatchEvaluated;
-import ua.edu.ratos.service.session.domain.ProgressData;
-import ua.edu.ratos.service.session.domain.ResponseEvaluated;
-import ua.edu.ratos.service.session.domain.SessionData;
+import ua.edu.ratos.service.domain.BatchEvaluated;
+import ua.edu.ratos.service.domain.ProgressData;
+import ua.edu.ratos.service.domain.ResponseEvaluated;
+import ua.edu.ratos.service.domain.SessionData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ProgressDataService {
      * @param sessionData
      * @param batchEvaluated
      */
-    public void update(@NonNull SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
+    public void update(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
         ProgressData updatedProgressData = new ProgressData();
         final ProgressData currentProgressData = sessionData.getProgressData();
         final double updatedScore = getUpdatedScore(sessionData, batchEvaluated);
@@ -56,7 +56,7 @@ public class ProgressDataService {
      */
     public double getCurrentScore(@NonNull final SessionData sessionData) {
         final double score = sessionData.getProgressData().getScore();
-        final int quantity = sessionData.getQuestions().size();
+        final int quantity = sessionData.getQuestionDomains().size();
         return (score*100d)/quantity;
     }
 
