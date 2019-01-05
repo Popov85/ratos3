@@ -31,18 +31,18 @@ public class LTIRetryOutcomeService {
 		String imsxCodeMajor = imsxStatusInfo.getImsxCodeMajor();
 		String imsxDescription = imsxStatusInfo.getImsxDescription();
 		if (!"success".equals(imsxCodeMajor)) {
-			log.warn("Outcome was rejected by LMS server by user :: {}, having taken the gradingDomain :: {}, with code :: {}, and description :: {} ",
+			log.warn("Outcome was rejected by LMS server by user :: {}, having taken the scheme :: {}, with code :: {}, and description :: {} ",
 					email,  schemeId, imsxCodeMajor, imsxDescription);
 			return;
 		}
-		log.debug("Outcome was successfully accepted by LMS server, by user :: {}, having taken the gradingDomain :: {}, with code :: {}, and description :: {}",
+		log.debug("Outcome was successfully accepted by LMS server, by user :: {}, having taken the scheme :: {}, with code :: {}, and description :: {}",
 				email, schemeId, imsxCodeMajor, imsxDescription);
 	}
 
 	@Recover
 	@SuppressWarnings("unused")
 	public void recover(OAuthRestTemplate oAuthRestTemplate, URI uri, HttpEntity<String> entity, String email, Long schemeId) {
-		log.error("Failed to send the outcome to LMS by user :: {}, having taken the gradingDomain :: {}, with reason :: probably the LTI service is off",
+		log.error("Failed to send the outcome to LMS by user :: {}, having taken the scheme :: {}, with reason :: probably the LTI service is off",
 				email, schemeId);
 	}
 

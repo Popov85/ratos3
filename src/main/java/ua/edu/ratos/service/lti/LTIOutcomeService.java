@@ -49,7 +49,7 @@ public class LTIOutcomeService {
      * (outcome parameters were present in the initial launch request)
      * @param authentication security object containing launch request information
      * @param protocol actual network protocol to perform post request
-     * @param schemeId id of the gradingDomain that the user has just taken
+     * @param schemeId id of the scheme that the user has just taken
      * @param percent gained during learning session percent
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      */
@@ -58,7 +58,7 @@ public class LTIOutcomeService {
         String email= principal.getEmail().orElse("unknown e-mail");
         Optional<LTIOutcomeParams> outcome = principal.getOutcome();
         if (!outcome.isPresent()) {
-            log.warn("Outcome parameters are not included by LMS, result on gradingDomain ID :: {}, by user :: {} with percent :: {} is not sent to LMS",
+            log.warn("Outcome parameters are not included by LMS, result on scheme ID :: {}, by user :: {} with percent :: {} is not sent to LMS",
                     schemeId, email, percent);
             return;
         }

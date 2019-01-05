@@ -11,7 +11,7 @@ public class LTISecurityUtils {
 
 	@SuppressWarnings("RedundantIfStatement")
 	public boolean isLMSUserWithOnlyLTIRole(final Authentication auth) {
-		log.debug("Challenge whether it is an LMS user with single LTI role?");
+		log.debug("Challenge whether it is an LMS user with only LTI role?");
 		if (auth == null)
 			return false;
 		if (!auth.getPrincipal().getClass().equals(LTIToolConsumerCredentials.class))
@@ -25,7 +25,7 @@ public class LTISecurityUtils {
 
 	@SuppressWarnings("RedundantIfStatement")
 	public boolean isLMSUserWithFullUSERRole(Authentication auth) {
-		log.debug("Challenge whether it is an LMS user with both LMS-USER roles?");
+		log.debug("Challenge whether it is an LMS user with full-fledged LMS-USER role?");
 		if (auth == null)
 			return false;
 		if (!auth.getPrincipal().getClass().equals(LTIUserConsumerCredentials.class))

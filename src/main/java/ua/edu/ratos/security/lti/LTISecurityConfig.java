@@ -119,7 +119,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatcher(ltiLaunchPath)
             .addFilterBefore(ltiAwareProtectedResourceProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .anyRequest().hasRole("LTI")
+            .anyRequest().hasAnyRole("LTI","LMS-USER")
             .and()
             .headers()
                 .frameOptions().disable();
