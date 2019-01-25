@@ -6,29 +6,22 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 import java.util.Objects;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class AnswerMQInDto {
 
-    public interface NewAndUpdate{}
-    public interface Include{}
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long answerId;
 
-    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.invalid}")
+    @Positive( message = "{dto.fk.invalid}")
     private Long leftPhraseId;
 
-    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.invalid}")
+    @Positive( message = "{dto.fk.invalid}")
     private Long rightPhraseId;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = {Include.class}, message = "{dto.fk.nullable}")
-    @Positive(groups = {NewAndUpdate.class}, message = "{dto.fk.invalid}")
-    private Long questionId;
+
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,6 @@
-insert into theme (name, course_id) values('Java Operators', 1);
-insert into theme (name, course_id) values('Java Strings', 1);
-insert into theme (name, course_id) values('Java Generics', 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #1', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #2', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #3', 1, 1, 1);
 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema01.jpg', 'QuestionSchema#1', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/schema02.jpg', 'QuestionSchema#2', 1);
@@ -27,7 +27,7 @@ insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #1', 2, 3, 1, 1);
+insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #1 required', 2, 3, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #2', 2, 3, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #3', 2, 3, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #4', 2, 3, 2, 1);

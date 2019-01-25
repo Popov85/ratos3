@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Getter
@@ -14,6 +17,8 @@ import javax.persistence.*;
 @Table(name = "mode")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 @SuppressWarnings("SpellCheckingInspection")
 public class Mode {
 

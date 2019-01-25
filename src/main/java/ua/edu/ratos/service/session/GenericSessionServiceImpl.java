@@ -12,7 +12,7 @@ import ua.edu.ratos.service.ResultDetailsService;
 import ua.edu.ratos.service.ResultService;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
-import ua.edu.ratos.service.grading.SchemeService;
+import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import java.util.List;
@@ -75,7 +75,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     public SessionData start(@NonNull final StartData startData) {
         // Load the requested Scheme and build SessionData object
         final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
-        if (scheme==null || !scheme.isActive() || !scheme.isCompleted() || scheme.isDeleted())
+        if (scheme==null || !scheme.isActive())
             throw new IllegalStateException(NOT_AVAILABLE);
         if (scheme.isLmsOnly())
             throw new IllegalStateException(NOT_AVAILABLE_OUTSIDE_LMS);
@@ -95,12 +95,6 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     }
 
 
-    /**
-     * Does all processing of incoming request
-     * @param batchInDto currentBatch with user's provided answers
-     * @param sessionData
-     * @return BatchOutDto
-     */
     @Override
     @TrackTime
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
@@ -115,7 +109,8 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         // Build next BatchOutDto
         BatchOutDto batchOutDto;
         // If current BatchOutDto contains smth. (we check because in case of skipping we remove elements from it)
-        if (!sessionData.getCurrentBatch().isEmpty()) {
+        if (sessionData.getCurrentBatch().isPresent() &&
+                !sessionData.getCurrentBatch().get().isEmpty()) {
 
             final BatchEvaluated batchEvaluated = evaluatingService.getBatchEvaluated(batchInDto, sessionData);
 
@@ -177,7 +172,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         // 4. Save result details to DB
         resultDetailsService.save(sessionData, resultId);
         // 5. Build resultDto based on settings, mode and calculated Result object
-        log.debug("Result :: {}", resultDomain);
+        log.debug("Result = {}", resultDomain);
         return resultDtoBuilder.build(sessionData, resultDomain);
     }
 

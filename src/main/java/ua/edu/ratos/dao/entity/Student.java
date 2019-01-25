@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Getter
@@ -16,14 +15,12 @@ import javax.persistence.*;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "stud_id")
     private Long studId;
 
     @MapsId
     @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "stud_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

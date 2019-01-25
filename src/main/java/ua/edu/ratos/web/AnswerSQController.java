@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,33 +15,36 @@ import java.net.URI;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor/question/answer-sq")
+@RequestMapping("/instructor")
 public class AnswerSQController {
 
-    @Autowired
     private AnswerSQService answerService;
 
-    @PostMapping(value = "/",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated(AnswerSQInDto.NewAndUpdate.class) @RequestBody AnswerSQInDto dto) {
-        final Long answerId = answerService.save(dto);
-        log.debug("Saved answer sq :: {} ", answerId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(answerId).toUri();
+    @Autowired
+    public void setAnswerService(AnswerSQService answerService) {
+        this.answerService = answerService;
+    }
+
+    @PostMapping(value = "/questions-sq/{questionId}/answers-sq",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerSQInDto dto) {
+        final Long answerId = answerService.save(questionId, dto);
+        log.debug("Saved Answer SQ for questionId = {}, answerId = {}", questionId, answerId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(answerId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/{answerId}")
+    // Make sure to include answerId to DTO object to be able to update
+    @PutMapping("/questions-sq/{questionId}/answers-sq/{answerId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long answerId, @Validated(AnswerSQInDto.NewAndUpdate.class) @RequestBody AnswerSQInDto dto) {
-        answerService.update(answerId, dto);
-        log.debug("Updated answer sq ID :: {}", answerId);
+    public void update(@PathVariable Long questionId, @PathVariable Long answerId, @Validated @RequestBody AnswerSQInDto dto) {
+        answerService.update(questionId, dto);
+        log.debug("Updated Answer SQ for questionId = {}, answerId = {}", questionId, answerId);
     }
 
-    @DeleteMapping("/{answerId}")
+    @DeleteMapping("/questions-sq/{questionId}/answers-sq/{answerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long answerId) {
+    public void delete(@PathVariable Long questionId, @PathVariable Long answerId) {
         answerService.deleteById(answerId);
-        log.info("Deleted answer sq ID :: {}", answerId);
+        log.debug("Deleted Answer SQ from questionId = {}, answerId = {}", questionId, answerId);
     }
 }

@@ -14,22 +14,30 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluatingService {
 
-    private static final String EMPTY_BATCH_OUT = "Empty BatchOutDto, all questions in the current batch were probably skipped";
+    private static final String EMPTY_BATCH_OUT_EXCEPTION = "Wrong API usage: Failed to get BatchEvaluated, " +
+            "cause of empty current batch in SessionData, all questions in the current batch were probably skipped";
+
+    private final BatchEvaluatorService batchEvaluatorService;
+
+    private final BatchEvaluatedBuilder batchEvaluatedBuilderService;
 
     @Autowired
-    private BatchEvaluatorService batchEvaluatorService;
-
-    @Autowired
-    private BatchEvaluatedBuilder batchEvaluatedBuilderService;
+    public EvaluatingService(@NonNull final BatchEvaluatorService batchEvaluatorService,
+                             @NonNull final BatchEvaluatedBuilder batchEvaluatedBuilderService) {
+        this.batchEvaluatorService = batchEvaluatorService;
+        this.batchEvaluatedBuilderService = batchEvaluatedBuilderService;
+    }
 
     /**
-     * Evaluates BatchInDto, make sure BatchInDto to contain non-empty collection of responses
-     * @param batchInDto
-     * @param sessionData
+     * Evaluates BatchInDto, make sure current batch to contain some question(s),
+     * if not they all probably were skipped and deleted from the current batch (in which case there is nothing to evaluate)
+     * @param batchInDto batch in object with provided responses
+     * @param sessionData SessionData object associated with the current http(s)-session
      * @return BatchEvaluated object
      */
-    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull SessionData sessionData) {
-        if (sessionData.getCurrentBatch().getBatch().isEmpty()) throw new IllegalArgumentException(EMPTY_BATCH_OUT);
+    public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
+        if (!sessionData.getCurrentBatch().isPresent() || sessionData.getCurrentBatch().get().getBatch().isEmpty())
+            throw new IllegalArgumentException(EMPTY_BATCH_OUT_EXCEPTION);
         // job to evaluate
         final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
         // select ids with incorrect responses
@@ -38,8 +46,8 @@ public class EvaluatingService {
     }
 
     /**
-     * Gets list of incorrectly answered questions in the map of evaluated responses
-     * @param responseEvaluated
+     * Finds a list of incorrectly answered questions in the map of evaluated responses
+     * @param responseEvaluated map of ResponseEvaluated
      * @return list of incorrectly answered question IDs
      */
     private List<Long> getIncorrectResponseIds(@NonNull final Map<Long, ResponseEvaluated> responseEvaluated) {
@@ -47,7 +55,7 @@ public class EvaluatingService {
                 .values()
                 .stream()
                 .filter(q -> q.getScore() < 100)
-                .map(q -> q.getQuestionId())
+                .map(ResponseEvaluated::getQuestionId)
                 .collect(Collectors.toList());
     }
 

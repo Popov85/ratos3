@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.question.Question;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,9 +13,10 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"questions", "course"})
+@ToString(exclude = {"course", "staff", "questions", "access"})
 @Entity
 @Table(name="theme")
+@Where(clause = "is_deleted = 0")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Theme {
@@ -34,6 +36,14 @@ public class Theme {
     @JoinColumn(name="course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "access_id")
+    private Access access;
+
+    @OneToMany(mappedBy = "theme", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();
 }

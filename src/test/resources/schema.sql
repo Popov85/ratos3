@@ -3,7 +3,7 @@
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS ratos3;
 -- -----------------------------------------------------
--- Table  user
+-- Table user
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS user (
   user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -11,12 +11,13 @@ CREATE TABLE IF NOT EXISTS user (
   surname VARCHAR(100) NOT NULL,
   password VARCHAR(70) NOT NULL,
   email VARCHAR(200) NOT NULL,
-  is_active TINYINT(1) NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (user_id),
-  UNIQUE INDEX email_UNIQUE (email ASC));
+  UNIQUE INDEX email_UNIQUE (email ASC))
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table  organisation
+-- Table organisation
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS organisation  (
   org_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS organisation  (
 
 
 -- -----------------------------------------------------
--- Table  faculty
+-- Table faculty
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   faculty  (
   fac_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -43,7 +44,7 @@ CREATE TABLE IF NOT EXISTS   faculty  (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table  class
+-- Table class
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS  class (
   class_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -60,29 +61,28 @@ CREATE TABLE IF NOT EXISTS  class (
 
 
 -- -----------------------------------------------------
--- Table  student
+-- Table student
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  student (
-  stud_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id INT UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS student (
+  stud_id INT UNSIGNED NOT NULL,
   class_id INT UNSIGNED NOT NULL,
-  entrance_year YEAR NOT NULL COMMENT 'Year when this student/employee has entered the educational organisation',
+  entrance_year YEAR NOT NULL COMMENT 'Year when this student/employee has entered the educational organisation.',
   PRIMARY KEY (stud_id),
-  INDEX fk_student_user_user_id_idx (user_id ASC),
   INDEX fk_student_class_class_id_idx (class_id ASC),
-  CONSTRAINT fk_student_user_user_id
-  FOREIGN KEY (user_id)
-  REFERENCES  user (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX fk_student_user_user_id_idx (stud_id ASC),
   CONSTRAINT fk_student_class_class_id
   FOREIGN KEY (class_id)
-  REFERENCES  class (class_id)
+  REFERENCES class (class_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_student_user_user_id
+  FOREIGN KEY (stud_id)
+  REFERENCES user (user_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 -- -----------------------------------------------------
--- Table  department
+-- Table department
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   department  (
   dep_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS   department  (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table  position
+-- Table position
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   position  (
   pos_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS   position  (
 
 
 -- -----------------------------------------------------
--- Table  role
+-- Table role
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   role  (
   role_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -138,30 +138,38 @@ CREATE TABLE IF NOT EXISTS user_role (
 
 
 -- -----------------------------------------------------
--- Table  staff
+-- Table access_level
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  staff  (
-  staff_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id  INT UNSIGNED NOT NULL,
-  dep_id  INT UNSIGNED NOT NULL,
-  pos_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( staff_id ),
-  INDEX  fk_staff_user_user_id_idx  ( user_id  ASC),
-  INDEX  fk_staff_department_dep_id_idx  ( dep_id  ASC),
-  INDEX  fk_staff_position_id_idx  ( pos_id  ASC),
-  CONSTRAINT  fk_staff_user_user_id
-  FOREIGN KEY ( user_id )
-  REFERENCES   user  ( user_id )
+CREATE TABLE IF NOT EXISTS access_level (
+  access_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  PRIMARY KEY (access_id))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table staff
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS staff (
+  staff_id INT UNSIGNED NOT NULL,
+  dep_id INT UNSIGNED NOT NULL,
+  pos_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (staff_id),
+  INDEX fk_staff_department_dep_id_idx (dep_id ASC),
+  INDEX fk_staff_position_id_idx (pos_id ASC),
+  INDEX fk_staff_user_user_id_idx (staff_id ASC),
+  CONSTRAINT fk_staff_department_dep_id
+  FOREIGN KEY (dep_id)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_staff_department_dep_id
-  FOREIGN KEY ( dep_id )
-  REFERENCES   department  ( dep_id )
+  CONSTRAINT fk_staff_position_pos_id
+  FOREIGN KEY (pos_id)
+  REFERENCES position (pos_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_staff_position_pos_id
-  FOREIGN KEY ( pos_id )
-  REFERENCES   position  ( pos_id )
+  CONSTRAINT fk_staff_user_user_id
+  FOREIGN KEY (staff_id)
+  REFERENCES user (user_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -169,23 +177,31 @@ CREATE TABLE IF NOT EXISTS  staff  (
 -- -----------------------------------------------------
 -- Table  course
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   course  (
-  course_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(500) NOT NULL,
-  created  TIMESTAMP NOT NULL,
-  created_by  INT UNSIGNED NOT NULL,
-  dep_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( course_id ),
-  INDEX  fk_course_staff_created_by_idx  ( created_by  ASC),
-  INDEX  fk_course_department_dep_id_idx  ( dep_id  ASC),
-  CONSTRAINT  fk_course_staff_created_by
-  FOREIGN KEY ( created_by )
-  REFERENCES   staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS course (
+  course_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(500) NOT NULL,
+  created TIMESTAMP NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  dep_id INT UNSIGNED NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  access_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (course_id),
+  INDEX fk_course_staff_created_by_idx (created_by ASC),
+  INDEX fk_course_department_dep_id_idx (dep_id ASC),
+  INDEX fk_course_access_level_access_id_idx (access_id ASC),
+  CONSTRAINT fk_course_staff_created_by
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_course_department_dep_id
-  FOREIGN KEY ( dep_id )
-  REFERENCES   department  ( dep_id )
+  CONSTRAINT fk_course_department_dep_id
+  FOREIGN KEY (dep_id)
+  REFERENCES department (dep_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_course_access_level_access_id
+  FOREIGN KEY (access_id)
+  REFERENCES access_level (access_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -194,20 +210,35 @@ CREATE TABLE IF NOT EXISTS   course  (
 -- -----------------------------------------------------
 -- Table  theme
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   theme  (
-  theme_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(200) NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  course_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( theme_id ),
-  INDEX  fk_theme_course_course_id_idx  ( course_id  ASC),
-  CONSTRAINT  fk_theme_course_course_id
-  FOREIGN KEY ( course_id )
-  REFERENCES   course  ( course_id )
+CREATE TABLE IF NOT EXISTS theme (
+  theme_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  course_id INT UNSIGNED NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  access_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (theme_id),
+  INDEX fk_theme_course_course_id_idx (course_id ASC),
+  INDEX fk_theme_staff_staff_id_idx (created_by ASC),
+  INDEX fk_theme_access_level_access_id_idx (access_id ASC),
+  CONSTRAINT fk_theme_course_course_id
+  FOREIGN KEY (course_id)
+  REFERENCES course (course_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_theme_staff_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_theme_access_level_access_id
+  FOREIGN KEY (access_id)
+  REFERENCES access_level (access_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+/*CREATE INDEX name_idx ON theme(name);*/
 
 -- -----------------------------------------------------
 -- Table  question_type
@@ -243,6 +274,7 @@ CREATE TABLE IF NOT EXISTS   question  (
   type_id  INT UNSIGNED NOT NULL,
   theme_id  INT UNSIGNED NOT NULL,
   lang_id  INT UNSIGNED NOT NULL,
+  is_required  TINYINT(1) NOT NULL DEFAULT 0,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   is_partial  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( question_id ),
@@ -701,58 +733,64 @@ CREATE TABLE IF NOT EXISTS grading  (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table  grading
+-- Table scheme
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  scheme  (
-  scheme_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(400) NOT NULL,
-  is_active  TINYINT(1) NOT NULL,
-  lms_only  TINYINT(1) NOT NULL,
-  strategy_id  INT UNSIGNED NOT NULL,
-  settings_id  INT UNSIGNED NOT NULL,
-  mode_id  INT UNSIGNED NOT NULL,
-  course_id  INT UNSIGNED NOT NULL,
-  created  TIMESTAMP NOT NULL,
-  created_by  INT UNSIGNED NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  is_completed  TINYINT(1) NOT NULL DEFAULT 0,
-  grading_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( scheme_id ),
-  INDEX  fk_scheme_staff_created_by_idx  ( created_by  ASC),
-  INDEX  fk_scheme_strategy_strategy_id_idx  ( strategy_id  ASC),
-  INDEX  fk_scheme_settings_settings_id_idx  ( settings_id  ASC),
-  INDEX  fk_scheme_mode_mode_id_idx  ( mode_id  ASC),
-  INDEX  fk_scheme_course_course_id_idx  ( course_id  ASC),
-  UNIQUE INDEX  name_course_UNIQUE  ( name  ASC,  course_id  ASC),
-  INDEX  fk_scheme_grading_grading_id_idx  ( grading_id  ASC),
-  CONSTRAINT  fk_scheme_staff_created_by
-  FOREIGN KEY ( created_by )
-  REFERENCES  staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS scheme (
+  scheme_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(400) NOT NULL,
+  is_active TINYINT(1) NOT NULL,
+  strategy_id INT UNSIGNED NOT NULL,
+  settings_id INT UNSIGNED NOT NULL,
+  mode_id INT UNSIGNED NOT NULL,
+  course_id INT UNSIGNED NOT NULL,
+  created TIMESTAMP NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  grading_id INT UNSIGNED NOT NULL,
+  lms_only TINYINT(1) NOT NULL DEFAULT 0,
+  access_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (scheme_id),
+  INDEX fk_scheme_staff_created_by_idx (created_by ASC),
+  INDEX fk_scheme_strategy_strategy_id_idx (strategy_id ASC),
+  INDEX fk_scheme_settings_settings_id_idx (settings_id ASC),
+  INDEX fk_scheme_mode_mode_id_idx (mode_id ASC),
+  INDEX fk_scheme_course_course_id_idx (course_id ASC),
+  UNIQUE INDEX name_course_UNIQUE (name ASC, course_id ASC),
+  INDEX fk_scheme_grading_grading_id_idx (grading_id ASC),
+  INDEX fk_scheme_access_level_access_id_idx (access_id ASC),
+  CONSTRAINT fk_scheme_staff_created_by
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_scheme_strategy_strategy_id
-  FOREIGN KEY ( strategy_id )
-  REFERENCES  strategy  ( str_id )
+  CONSTRAINT fk_scheme_strategy_strategy_id
+  FOREIGN KEY (strategy_id)
+  REFERENCES strategy (str_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_scheme_settings_settings_id
-  FOREIGN KEY ( settings_id )
-  REFERENCES  settings  ( set_id )
+  CONSTRAINT fk_scheme_settings_settings_id
+  FOREIGN KEY (settings_id)
+  REFERENCES settings (set_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_scheme_mode_mode_id
-  FOREIGN KEY ( mode_id )
-  REFERENCES  mode  ( mode_id )
+  CONSTRAINT fk_scheme_mode_mode_id
+  FOREIGN KEY (mode_id)
+  REFERENCES mode (mode_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_scheme_course_course_id
-  FOREIGN KEY ( course_id )
-  REFERENCES  course  ( course_id )
+  CONSTRAINT fk_scheme_course_course_id
+  FOREIGN KEY (course_id)
+  REFERENCES course (course_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_scheme_grading_grading_id
-  FOREIGN KEY ( grading_id )
-  REFERENCES  grading  ( grading_id )
+  CONSTRAINT fk_scheme_grading_grading_id
+  FOREIGN KEY (grading_id)
+  REFERENCES grading (grading_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_scheme_access_level_access_id
+  FOREIGN KEY (access_id)
+  REFERENCES access_level (access_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -867,6 +905,8 @@ CREATE TABLE IF NOT EXISTS free_point  (
   max_value  INT NOT NULL,
   staff_id  INT UNSIGNED NOT NULL,
   grading_id  INT UNSIGNED NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
+  is_default  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY ( free_id ),
   INDEX  fk_free_point_staff_staff_id_idx  ( staff_id  ASC),
   INDEX  fk_free_point_grading_grading_id_idx  ( grading_id  ASC),
@@ -1172,12 +1212,13 @@ CREATE TABLE IF NOT EXISTS   user_question_starred  (
 
 
 -- -----------------------------------------------------
--- Table  group
+-- Table groups
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS  groups (
   group_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
   staff_id INT UNSIGNED NOT NULL,
+  is_enabled TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (group_id),
   INDEX fk_group_staff_staff_id_idx (staff_id ASC),
   CONSTRAINT fk_group_staff_staff_id
@@ -1189,25 +1230,25 @@ CREATE TABLE IF NOT EXISTS  groups (
 
 
 -- -----------------------------------------------------
--- Table  student_group
+-- Table student_group
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  student_group (
+CREATE TABLE IF NOT EXISTS student_group (
   stud_id INT UNSIGNED NOT NULL,
   group_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (stud_id, group_id),
   INDEX fk_student_group_group_group_id_idx (group_id ASC),
-  CONSTRAINT fk_student_group_student_student_id
-  FOREIGN KEY (stud_id)
-  REFERENCES  student (stud_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX fk_student_group_student_stud_id_idx (stud_id ASC),
   CONSTRAINT fk_student_group_group_student_id
   FOREIGN KEY (group_id)
-  REFERENCES  groups (group_id)
+  REFERENCES groups (group_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_student_group_student_stud_id
+  FOREIGN KEY (stud_id)
+  REFERENCES student (stud_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table  group_scheme
@@ -1215,7 +1256,6 @@ CREATE TABLE IF NOT EXISTS  student_group (
 CREATE TABLE IF NOT EXISTS  group_scheme (
   group_id INT UNSIGNED NOT NULL,
   scheme_id INT UNSIGNED NOT NULL,
-  is_enabled TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (group_id, scheme_id),
   INDEX fk_group_scheme_scheme_scheme_id_idx (scheme_id ASC),
   CONSTRAINT fk_group_scheme_group_group_id
@@ -1231,18 +1271,16 @@ CREATE TABLE IF NOT EXISTS  group_scheme (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- View  theme_type
+-- View theme_type
 -- -----------------------------------------------------
-
 CREATE OR REPLACE VIEW theme_type_view AS
-  select o.org_id as org_id, f.fac_id as fac_id, d.dep_id as dep_id, c.course_id as course_id, t.theme_id as theme_id, question.type_id as type_id,
-    o.name as organisation, f.name as faculty, d.name as department, c.name as course, t.name as theme, question_type.eng_abbreviation as type,
-         sum(question.level=1) as L1, sum(question.level=3) as L2, sum(question.level=3) as L3, count(question.type_id) as total
+  select t.theme_id as theme_id, question.type_id as type_id, c.course_id as course_id, d.dep_id as dep_id,
+         t.name as theme, question_type.eng_abbreviation as type,
+         sum(question.level=1) as L1, sum(question.level=2) as L2, sum(question.level=3) as L3,
+         count(question.question_id) as total
   from question
     inner join question_type on question.type_id=question_type.type_id
     inner join theme t on question.theme_id=t.theme_id
     inner join course c on t.course_id=c.course_id
     inner join department d on c.dep_id=d.dep_id
-    inner join faculty f on d.fac_id=f.fac_id
-    inner join organisation o on f.org_id=o.org_id
-  group by type_id, course_id;
+  group by theme_id, type_id;

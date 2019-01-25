@@ -27,16 +27,17 @@ public class TimingService {
     }
 
     public boolean isLimited(LocalDateTime sessionTimeout){
-        return sessionTimeout.isEqual(LocalDateTime.MAX);
+        return !sessionTimeout.isEqual(LocalDateTime.MAX);
     }
 
     public boolean isLimited(long perQuestionTimeLimit){
         return perQuestionTimeLimit>0;
     }
 
+
     public LocalDateTime getSessionTimeOut(int totalQuestions, int secondsPerQuestion) {
         if (secondsPerQuestion<=0) {
-            // Not limited in time - > strict per question time control is not possible
+            // Not limited in time -> strict per question time control is not possible
             return LocalDateTime.MAX;
         } else {
             long totalSeconds = secondsPerQuestion*totalQuestions;

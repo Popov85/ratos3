@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.ResourceDomain;
-import ua.edu.ratos.service.dto.session.answer.AnswerMCQOutDto;
+import ua.edu.ratos.service.dto.session.answer.AnswerMCQSessionOutDto;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,8 +38,8 @@ public class AnswerMCQDomain {
         return getResourceDomain().orElse(null);
     }
 
-    public AnswerMCQOutDto toDto() {
-        return new AnswerMCQOutDto()
+    public AnswerMCQSessionOutDto toDto() {
+        return new AnswerMCQSessionOutDto()
                 .setAnswerId(answerId)
                 .setAnswer(answer)
                 .setResourceDomain(resourceDomain);

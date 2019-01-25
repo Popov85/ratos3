@@ -14,15 +14,15 @@ insert into position (name) values('System admin');
 
 insert into user (name, surname, password, email, is_active) values('Andrey','Popov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','andrey.popov@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (1, 8);
-insert into staff (user_id, dep_id, pos_id) values(1, 1, 1);
+insert into staff (staff_id, dep_id, pos_id) values(1, 1, 1);
 
 insert into user (name, surname, password, email, is_active) values('Student','Student','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','student@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (2, 2);
-insert into student(user_id, class_id, entrance_year) values(2, 1, 2018);
+insert into student(stud_id, class_id, entrance_year) values(2, 1, 2018);
 
 insert into user (name, surname, password, email, is_active) values('Staff','Staff','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','staff@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (3, 2);
-insert into student(user_id, class_id, entrance_year) values(3, 1, 2018);
+insert into student(stud_id, class_id, entrance_year) values(3, 1, 2018);
 
 insert into language (name, eng_abbreviation) values('English', 'en');
 insert into language (name, eng_abbreviation) values('français', 'fr');
@@ -36,6 +36,9 @@ insert into question_type (type_id, eng_abbreviation, description) values (2, 'F
 insert into question_type (type_id, eng_abbreviation, description) values (3, 'FBMQ', 'Fill blank multiple question');
 insert into question_type (type_id, eng_abbreviation, description) values (4, 'MQ', 'Matcher question');
 insert into question_type (type_id, eng_abbreviation, description) values (5, 'SQ', 'Sequence question');
+
+insert into access_level(name) values('dep-private');
+insert into access_level(name) values('private');
 
 insert into strategy(name, description)
 values('default','Default sequence sorting strategy');
@@ -68,7 +71,7 @@ insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ua default', 5, 100, 0, 0, 0, 5, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ru default', 5, 100, 0, 0, 0, 6, 1);
 
-insert into course (name, created, created_by, dep_id) values('Test LTI course #1', CURRENT_TIMESTAMP, 1, 1);
+insert into course (name, created, created_by, dep_id, access_id) values('Test LTI course #1', CURRENT_TIMESTAMP, 1, 1, 1);
 
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key', 'ratos_client_secret');
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key_1', 'ratos_client_secret_1');

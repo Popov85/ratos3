@@ -2,6 +2,9 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,115 +12,149 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.QuestionsFileParserService;
-import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.in.*;
-import ua.edu.ratos.service.dto.out.view.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.dto.out.question.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/questions")
+@RequestMapping(path = "/instructor")
 public class QuestionController {
 
-    @Autowired
     private QuestionService questionService;
 
-    @Autowired
     private QuestionsFileParserService questionsFileParserService;
 
-    @PostMapping(value = "/mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated({AnswerMCQInDto.Include.class}) @RequestBody QuestionMCQInDto dto) {
+    @Autowired
+    public void setQuestionService(QuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @Autowired
+    public void setQuestionsFileParserService(QuestionsFileParserService questionsFileParserService) {
+        this.questionsFileParserService = questionsFileParserService;
+    }
+
+    @PostMapping(value = "/questions-mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@Validated @RequestBody QuestionMCQInDto dto) {
         final Long questionId = questionService.save(dto);
-        log.debug("Saved question mcq :: {} ", questionId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(questionId).toUri();
+        log.debug("Saved Question MCQ, questionId = {}", questionId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(questionId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/fbsq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/questions-fbsq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody QuestionFBSQInDto dto) {
         final Long questionId = questionService.save(dto);
-        log.debug("Saved question fbsq :: {} ", questionId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(questionId).toUri();
+        log.debug("Saved Question FBSQ, questionId = {}", questionId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(questionId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/fbmq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated({AnswerFBMQInDto.Include.class}) @RequestBody QuestionFBMQInDto dto) {
+    @PostMapping(value = "/questions-fbmq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@Validated @RequestBody QuestionFBMQInDto dto) {
         final Long questionId = questionService.save(dto);
-        log.debug("Saved question fbmq :: {} ", questionId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(questionId).toUri();
+        log.debug("Saved Question FBMQ, questionId = {}", questionId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(questionId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/mq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated({AnswerMQInDto.Include.class}) @RequestBody QuestionMQInDto dto) {
+    @PostMapping(value = "/questions-mq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@Validated @RequestBody QuestionMQInDto dto) {
         final Long questionId = questionService.save(dto);
-        log.debug("Saved question mq :: {} ", questionId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(questionId).toUri();
+        log.debug("Saved Question MQ, questionId = {}", questionId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(questionId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-
-    @PostMapping(value = "/sq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated({AnswerSQInDto.Include.class}) @RequestBody QuestionSQInDto dto) {
+    @PostMapping(value = "/questions-sq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@Validated @RequestBody QuestionSQInDto dto) {
         final Long questionId = questionService.save(dto);
-        log.debug("Saved question sq :: {} ", questionId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(questionId).toUri();
+        log.debug("Saved Question SQ, questionId = {}", questionId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(questionId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // For bulk save via file (as for now only applicable to MCQ)
+    @PostMapping(value = "/questions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionsParsingResultOutDto saveAll(@RequestParam("file") MultipartFile multipartFile,
                                                 @RequestParam Long themeId, @RequestParam Long langId,
                                                 @RequestParam boolean confirmed) throws IOException {
         return questionsFileParserService.parseAndSave(multipartFile, new FileInDto(themeId, langId, 1L, confirmed));
     }
 
-    @PutMapping(value = "/{questionId}")
+    @PutMapping(value = "/questions/{questionId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void update(@PathVariable Long questionId, @Valid @RequestBody QuestionInDto dto) {
         questionService.update(questionId, dto);
-        log.debug("Updated Question ID :: {} ", questionId);
+        log.debug("Updated Question, questionId = {}", questionId);
     }
 
-    @DeleteMapping("/{questionId}")
+    @DeleteMapping("/questions/{questionId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long questionId) {
         questionService.deleteById(questionId);
-        log.debug("Deleted question ID :: {}", questionId);
+        log.debug("Deleted Question, questionId = {}", questionId);
     }
 
-    /*--------------------GET-------------------------*/
 
-    @GetMapping(value = "/", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<QuestionDomain> findAllByThemeId(@RequestParam Long themeId) {
-        log.debug("Try to execute launch by theme");
-        return questionService.findAllByThemeId(themeId);
+    //----------------------------------------GET for instructor edit--------------------------------------
+
+    @GetMapping(value = "/questions-mcq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllMCQForEditByThemeId(themeId, pageable);
     }
 
-    @TrackTime
-    @GetMapping(value = "/", params = {"themeId", "typeId"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String findAllByThemeIdAndTypeId(@RequestParam Long themeId, @RequestParam Long typeId) {
-        log.debug("Try to execute launch by theme = {} and type = {}", themeId, typeId);
-        Set<? extends QuestionDomain> all = questionService.findAllByThemeIdAndTypeId(themeId, typeId);
-        log.debug("Converted, size = {}", all.size());
-        return "OK";
+    @GetMapping(value = "/questions-fbsq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionFBSQOutDto> findAllFBSQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllFBSQForEditByThemeId(themeId, pageable);
+    }
+
+    @GetMapping(value = "/questions-fbmq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionFBMQOutDto> findAllFBMQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllFBMQForEditByThemeId(themeId, pageable);
+    }
+
+    @GetMapping(value = "/questions-mq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionMQOutDto> findAllFMQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllMQForEditByThemeId(themeId, pageable);
+    }
+
+    @GetMapping(value = "/questions-sq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionSQOutDto> findAllSQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllSQForEditByThemeId(themeId, pageable);
+    }
+
+    //----------------------------------------GET for instructor search--------------------------------------
+
+    @GetMapping(value = "/questions-mcq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionMCQOutDto> findAllMCQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllMCQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable);
+    }
+
+    @GetMapping(value = "/questions-fbsq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionFBSQOutDto> findAllFBSQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllFBSQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable);
+    }
+
+    @GetMapping(value = "/questions-fbmq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionFBMQOutDto> findAllFBMQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllFBMQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable);
+    }
+
+    @GetMapping(value = "/questions-mq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionMQOutDto> findAllFMQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllMQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable);
+    }
+
+    @GetMapping(value = "/questions-sq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<QuestionSQOutDto> findAllSQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
+        return questionService.findAllSQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable);
     }
 
 }

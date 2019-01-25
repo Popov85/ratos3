@@ -26,8 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PhraseControllerTestIT {
 
-    public static final String JSON_NEW = "{\"phrase\": \"phrase #1\", \"staffId\": 1}";
-    public static final String JSON_UPD = "classpath:json/accepted_phrase_in_dto_upd.json";
+    public static final String JSON_NEW = "{\"phrase\": \"phrase #1\"}";
 
     @Autowired
     private MockMvc mvc;
@@ -41,12 +40,12 @@ public class PhraseControllerTestIT {
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         when(phraseService.save(any())).thenReturn(1L);
-        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/phrase")
+        this.mvc.perform(MockMvcRequestBuilders.post("/instructor/phrases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON_NEW)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "http://localhost/instructor/phrase/1"))
+                .andExpect(header().string("location", "http://localhost/instructor/phrases/1"))
                 .andExpect(content().string(""));
     }
 }

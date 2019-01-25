@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"scheme", "theme", "schemeThemeSettings"})
+@ToString(exclude = {"scheme", "theme", "settings"})
 @Entity
 @Table(name="scheme_theme")
 @Cacheable
@@ -38,10 +38,10 @@ public class SchemeTheme {
 
     @OneToMany(mappedBy = "schemeTheme", cascade = CascadeType.ALL, orphanRemoval = true)
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<SchemeThemeSettings> schemeThemeSettings = new HashSet<>();
+    private Set<SchemeThemeSettings> settings = new HashSet<>();
 
     public void addSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {
-        this.schemeThemeSettings.add(schemeThemeSettings);
+        this.settings.add(schemeThemeSettings);
         schemeThemeSettings.setSchemeTheme(this);
     }
 

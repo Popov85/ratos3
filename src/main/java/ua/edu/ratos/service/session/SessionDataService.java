@@ -19,7 +19,8 @@ public class SessionDataService {
      * @param batchOutDto
      */
     public void update(@NonNull final SessionData sessionData, @NonNull final BatchOutDto batchOutDto) {
-        int newIndex = sessionData.getCurrentIndex()+ batchOutDto.getBatch().size();
+        int shift = batchOutDto.getBatch().size();
+        int newIndex = sessionData.getCurrentIndex() + shift;
         sessionData.setCurrentIndex(newIndex);
         sessionData.setCurrentBatch(batchOutDto);
         sessionData.setCurrentBatchIssued(LocalDateTime.now());

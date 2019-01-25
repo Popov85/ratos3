@@ -19,6 +19,7 @@ import javax.persistence.*;
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class AnswerMQ {
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")

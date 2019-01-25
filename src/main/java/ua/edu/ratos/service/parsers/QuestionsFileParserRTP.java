@@ -157,7 +157,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
 
     // Parses %!100%-like answerIds String and creates Answer object
     private AnswerMCQ createAnswer(String line) {
-        // Try to find the second closing %-sign - the end of answerIds prefix
+        // Try to findDetails the second closing %-sign - the end of answerIds prefix
         int stop = line.indexOf('%', 1);
         if (stop == -1) throw new RuntimeException("Incorrect answerIds prefix!");
         String value = line.substring(1, stop).replaceAll("\\s+", "");

@@ -12,7 +12,7 @@ public class SchemeGradingManagerService {
     private SchemeGradingServiceFactory gradingServiceFactory;
 
     /**
-     *  1. Get a correct SchemeDomain*Service based on gradingDomain Id
+     *  1. Get a correct Scheme*Service based on gradingId
      *  2. Invoke service.save(schemeId, gradingDetailsId);
      * @param schemeId
      * @param gradingId

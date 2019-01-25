@@ -8,22 +8,35 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.dao.entity.Staff;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Component
 public class DtoSettingsTransformer {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private ModelMapper modelMapper;
 
+    private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
+
     @Transactional(propagation = Propagation.MANDATORY)
-    public Settings toEntity(@NonNull SettingsInDto dto) {
+    public Settings toEntity(@NonNull final SettingsInDto dto) {
         Settings settings = modelMapper.map(dto, Settings.class);
-        settings.setStaff(em.getReference(Staff.class, dto.getStaffId()));
+        settings.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
         return settings;
     }
 }

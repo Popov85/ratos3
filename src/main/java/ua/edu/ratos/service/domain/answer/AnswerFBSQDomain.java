@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.PhraseDomain;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
-import ua.edu.ratos.service.dto.session.answer.AnswerFBSQOutDto;
+import ua.edu.ratos.service.dto.session.answer.AnswerFBSQSessionOutDto;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,8 +22,8 @@ public class AnswerFBSQDomain {
 
     private Set<PhraseDomain> acceptedPhraseDomains = new HashSet<>();
 
-    public AnswerFBSQOutDto toDto() {
-        return new AnswerFBSQOutDto()
+    public AnswerFBSQSessionOutDto toDto() {
+        return new AnswerFBSQSessionOutDto()
                 .setAnswerId(answerId)
                 .setSettings(settings);
     }

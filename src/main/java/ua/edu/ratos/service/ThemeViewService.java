@@ -2,54 +2,64 @@ package ua.edu.ratos.service;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.ThemeView;
 import ua.edu.ratos.dao.repository.ThemeViewRepository;
-import ua.edu.ratos.service.transformer.domain_to_dto.ThemeViewDtoTransformer;
-import ua.edu.ratos.service.dto.out.view.ThemeOutDto;
+import ua.edu.ratos.security.SecurityUtils;
+import ua.edu.ratos.service.dto.out.view.ThemeViewOutDto;
+import ua.edu.ratos.service.transformer.entity_to_dto.ThemeViewDtoTransformer;
+
 import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
 public class ThemeViewService {
 
-    @Autowired
     private ThemeViewRepository themeViewRepository;
 
+    private ThemeViewDtoTransformer themeViewDtoTransformer;
+
+    private SecurityUtils securityUtils;
+
     @Autowired
-    private ThemeViewDtoTransformer transformer;
-
-    public Set<ThemeOutDto> findAllByCourseId(@NonNull Long courseId) {
-        final Set<ThemeView> themes = themeViewRepository.findAllByCourseId(courseId);
-        return transformer.toDto(themes);
+    public void setThemeViewRepository(ThemeViewRepository themeViewRepository) {
+        this.themeViewRepository = themeViewRepository;
     }
 
-    public Set<ThemeOutDto> findAllByCourseIdAndThemeLettersContains(@NonNull Long courseId, @NonNull String contains) {
-        final Set<ThemeView> themes = themeViewRepository.findAllByCourseIdAndThemeLettersContains(courseId, contains);
-        return transformer.toDto(themes);
+    @Autowired
+    public void setThemeViewDtoTransformer(ThemeViewDtoTransformer themeViewDtoTransformer) {
+        this.themeViewDtoTransformer = themeViewDtoTransformer;
     }
 
-    public Set<ThemeOutDto> findAllByDepartmentId(@NonNull Long depId, @NonNull Pageable pageable) {
-        final Page<ThemeView> page = themeViewRepository.findAllByDepartmentId(depId, pageable);
-        return transformer.toDto(page.getContent());
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
     }
 
-    public Set<ThemeOutDto> findAllByDepartmentIdAndThemeLettersContains(@NonNull Long depId, @NonNull String contains) {
-        final Set<ThemeView> themes = themeViewRepository.findAllByDepartmentIdAndThemeLettersContains(depId, contains);
-        return transformer.toDto(themes);
+    //-------------------------------Statistics on theme---------------------------
+
+    public ThemeViewOutDto findOneByThemeId(@NonNull final Long themeId) {
+        return themeViewDtoTransformer.toDto(themeViewRepository.findAllByThemeId(themeId)).iterator().next();
     }
 
-    public Set<ThemeOutDto> findAllByOrganisationId(@NonNull Long orgId, @NonNull Pageable pageable) {
-        final Page<ThemeView> page = themeViewRepository.findAllByOrganisationId(orgId, pageable);
-        return transformer.toDto(page.getContent());
+
+    //-----------------------------------Instructor---------------------------------
+    // Page is not applicable here, as it doesn't make sense,
+    // each set is reduced in size programmatically, hence no correct info about page size, etc.
+
+    public Set<ThemeViewOutDto> findAllByDepartmentId() {
+        return themeViewDtoTransformer.toDto(themeViewRepository.findAllByDepartmentId(securityUtils.getAuthDepId()));
     }
 
-    public Set<ThemeOutDto> findAllByOrganisationIdAndThemeLettersContains(@NonNull Long orgId, @NonNull String contains) {
-        final Set<ThemeView> themes = themeViewRepository.findAllByOrganisationIdAndThemeLettersContains(orgId, contains);
-        return transformer.toDto(themes);
+    public Set<ThemeViewOutDto> findAllByDepartmentIdAndThemeLettersContains(@NonNull final String letters) {
+        return themeViewDtoTransformer.toDto(themeViewRepository.findAllByDepartmentIdAndThemeLettersContains(securityUtils.getAuthDepId(), letters));
     }
 
+    public Set<ThemeViewOutDto> findAllByDepartmentIdAndCourseId(@NonNull final Long courseId) {
+        return themeViewDtoTransformer.toDto(themeViewRepository.findAllByDepartmentIdAndCourseId(securityUtils.getAuthDepId(), courseId));
+    }
+
+    public Set<ThemeViewOutDto> findAllByDepartmentIdAndCourseIdAndThemeLettersContains(@NonNull final Long courseId, @NonNull final String letters) {
+        return themeViewDtoTransformer.toDto(themeViewRepository.findAllByDepartmentIdAndCourseIdAndThemeLettersContains(securityUtils.getAuthDepId(), courseId, letters));
+    }
 }

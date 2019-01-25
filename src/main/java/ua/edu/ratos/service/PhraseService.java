@@ -3,91 +3,116 @@ package ua.edu.ratos.service;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Phrase;
+import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.repository.PhraseRepository;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.PhraseInDto;
 import ua.edu.ratos.service.dto.out.PhraseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoPhraseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.PhraseDtoTransformer;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 
 @Service
 public class PhraseService {
 
-    @Autowired
+    private static final String PHRASE_NOT_FOUND = "The requested phrase not found, phraseId = ";
+
+    @PersistenceContext
+    private EntityManager em;
+
     private PhraseRepository phraseRepository;
 
-    @Autowired
     private DtoPhraseTransformer dtoPhraseTransformer;
 
-    @Autowired
-    private PropertiesService propertiesService;
-
-    @Autowired
     private PhraseDtoTransformer phraseDtoTransformer;
 
+    private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setPhraseRepository(PhraseRepository phraseRepository) {
+        this.phraseRepository = phraseRepository;
+    }
+
+    @Autowired
+    public void setDtoPhraseTransformer(DtoPhraseTransformer dtoPhraseTransformer) {
+        this.dtoPhraseTransformer = dtoPhraseTransformer;
+    }
+
+    @Autowired
+    public void setPhraseDtoTransformer(PhraseDtoTransformer phraseDtoTransformer) {
+        this.phraseDtoTransformer = phraseDtoTransformer;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     @Transactional
-    public Long save(@NonNull PhraseInDto dto) {
+    public Long save(@NonNull final PhraseInDto dto) {
         Phrase phrase = dtoPhraseTransformer.toEntity(dto);
         return phraseRepository.save(phrase).getPhraseId();
     }
 
     @Transactional
-    public void update(@NonNull Long phraseId, @NonNull PhraseInDto dto) {
-        if (!phraseRepository.existsById(phraseId))
-            throw new RuntimeException("Failed to update the Phrase: ID does not exist");
-        Phrase phrase = dtoPhraseTransformer.toEntity(dto, phraseId);
-        phraseRepository.save(phrase);
+    public void updatePhrase(@NonNull final Long phraseId, @NonNull final String phrase) {
+        phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
+                .setPhrase(phrase);
     }
 
     @Transactional
-    public void deleteById(@NonNull Long phraseId) {
-        phraseRepository.deleteById(phraseId);
+    public void updateResource(@NonNull final Long phraseId, @NonNull final Long resId) {
+        Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId));
+        phrase.clearResources();
+        phrase.addResource(em.getReference(Resource.class, resId));
     }
 
-
-
-    /*-----------------------SELECT----------------------*/
-
-
-    @Transactional(readOnly = true)
-    public Page<PhraseOutDto> findAll(@NonNull Pageable pageable) {
-        Page<Phrase> page = phraseRepository.findAll(pageable);
-        return new PageImpl<>(toDto(page.getContent()), pageable, page.getTotalElements());
+    @Transactional
+    public void deleteById(@NonNull final Long phraseId) {
+        phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
+                .setDeleted(true);
     }
 
-    @Transactional(readOnly = true)
-    public List<PhraseOutDto> findAllLastUsedByStaffId(@NonNull Long staffId) {
-        List<Phrase> content = phraseRepository.findAllLastUsedByStaffId(staffId, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
-    }
+    //----------------------------------------FOR Update-------------------------------------
 
     @Transactional(readOnly = true)
-    public List<PhraseOutDto> findAllLastUsedByDepId(@NonNull Long depId) {
-        List<Phrase> content = phraseRepository.findAllLastUsedByDepId(depId, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
+    public PhraseOutDto findOneForUpdate(@NonNull final Long phraseId) {
+        return phraseDtoTransformer.toDto(phraseRepository.findOneForUpdate(phraseId));
     }
 
+    //-----------------------------------------SELECT-----------------------------------------
+
     @Transactional(readOnly = true)
-    public List<PhraseOutDto> findAllLastUsedByStaffIdAndFirstLetters(@NonNull Long staffId, @NonNull String starts) {
-        List<Phrase> content = phraseRepository.findAllLastUsedByStaffIdAndFirstLetters(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
+    public Page<PhraseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
+        return phraseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(phraseDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public List<PhraseOutDto> findAllLastUsedByDepIdAndFirstLetters(@NonNull Long depId, @NonNull String starts) {
-        List<Phrase> content = phraseRepository.findAllLastUsedByDepIdAndFirstLetters(depId, starts, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
+    public Page<PhraseOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
+        return phraseRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(phraseDtoTransformer::toDto);
     }
 
-    private List<PhraseOutDto> toDto(@NonNull final List<Phrase> content) {
-        return content.stream().map(phraseDtoTransformer::toDto).collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<PhraseOutDto> findAllByStaffIdAndPhraseLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
+        return phraseRepository.findAllByStaffIdAndPhraseLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(phraseDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PhraseOutDto> findAllByDepartmentIdAndPhraseLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
+        return phraseRepository.findAllByDepartmentIdAndPhraseLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(phraseDtoTransformer::toDto);
+    }
+
+
+    //-------------------------------------------ADMIN----------------------------------------
+    @Transactional(readOnly = true)
+    public Page<PhraseOutDto> findAll(@NonNull final Pageable pageable) {
+        return phraseRepository.findAll(pageable).map(phraseDtoTransformer::toDto);
     }
 
 }

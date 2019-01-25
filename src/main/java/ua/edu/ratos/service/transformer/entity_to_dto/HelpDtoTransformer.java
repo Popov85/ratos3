@@ -14,11 +14,15 @@ public class HelpDtoTransformer {
     @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
+    @Autowired
+    private StaffMinDtoTransformer staffMinDtoTransformer;
+
     public HelpOutDto toDto(@NonNull final Help entity) {
         return new HelpOutDto()
                 .setHelpId(entity.getHelpId())
                 .setName(entity.getName())
                 .setHelp(entity.getHelp())
+                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()))
                 .setResource((entity.getResource().isPresent()) ? resourceDtoTransformer.toDto(entity.getResource().get()) : null);
     }
 }

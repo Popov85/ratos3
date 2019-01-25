@@ -10,7 +10,7 @@ import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.grading.SchemeService;
+import ua.edu.ratos.service.SchemeService;
 
 import static ua.edu.ratos.service.session.GenericSessionServiceImpl.NOT_AVAILABLE;
 
@@ -38,7 +38,7 @@ public class GenericSessionLMSServiceImpl implements GenericSessionService {
     public SessionData start(@NonNull final StartData startData) {
         // Load the requested Scheme and build SessionData object
         final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
-        if (scheme==null || !scheme.isActive() || !scheme.isCompleted() || scheme.isDeleted())
+        if (scheme==null || !scheme.isActive())
             throw new IllegalStateException(NOT_AVAILABLE);
         log.debug("Found available scheme ID = {}", scheme.getSchemeId());
         final SessionData sessionData = sessionDataBuilder.build(startData.getKey(), startData.getUserId(), scheme, startData.getLmsId());

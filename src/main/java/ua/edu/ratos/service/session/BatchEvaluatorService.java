@@ -9,6 +9,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.domain.ResponseEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,28 +17,39 @@ import java.util.stream.Collectors;
 @Service
 public class BatchEvaluatorService {
 
-    @Autowired
-    private ResponseEvaluatorService responseEvaluatorService;
+    private static final String EMPTY_BATCH_OUT_EXCEPTION = "Wrong API usage: failed to evaluate BatchInDto, " +
+            "because of empty current BatchOutDto in SessionData";
+
+    private final ResponseEvaluatorService responseEvaluatorService;
+
+    private final LevelsEvaluatorService levelsEvaluatorService;
 
     @Autowired
-    private LevelsEvaluatorService levelsEvaluatorService;
+    public BatchEvaluatorService(@NonNull final ResponseEvaluatorService responseEvaluatorService,
+                                 @NonNull final LevelsEvaluatorService levelsEvaluatorService) {
+        this.responseEvaluatorService = responseEvaluatorService;
+        this.levelsEvaluatorService = levelsEvaluatorService;
+    }
 
     /**
      * Evaluates the whole non-empty BatchInDto coming from user, skipped questions are ignored (since deleted from BatchOutDto);
+     * Make sure that current batch is not empty before calling this method
      * Levels processing, response may be evaluated with a score higher than 100
      *   In case the result is 100% correct and the corresponding coefficient is more than 1
      *   Even if the result is not 100% correct but the corresponding coefficient is rather big, a score may appear to be higher than 100
-     * @param batchInDto
-     * @param sessionData
-     * @return result of evaluation
+     * @param batchInDto batch in
+     * @param sessionData SessionData object associated with the current http(s)-session
+     * @return result of evaluation as a map of IDs (from BatchOutDto in SessionData) and ResponseEvaluated
      */
     public Map<Long, ResponseEvaluated> doEvaluate(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
+        if (!sessionData.getCurrentBatch().isPresent() || sessionData.getCurrentBatch().get().getBatch().isEmpty())
+            throw new IllegalArgumentException(EMPTY_BATCH_OUT_EXCEPTION);
 
         Map<Long, ResponseEvaluated> responsesEvaluated = new HashMap<>();
 
         final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
 
-        List<Long> toEvaluate = sessionData.getCurrentBatch().getBatch().stream().map(dto->dto.getQuestionId()).collect(Collectors.toList());
+        List<Long> toEvaluate = sessionData.getCurrentBatch().get().getBatch().stream().map(QuestionSessionOutDto::getQuestionId).collect(Collectors.toList());
 
         // Try to look up responses for each question in BatchOutDto and evaluate them
         for (Long questionId : toEvaluate) {
@@ -52,9 +64,9 @@ public class BatchEvaluatorService {
                 if (level>1 && score>0) score =
                         levelsEvaluatorService.evaluateLevels(score, level, sessionData.getSchemeDomain().getSettingsDomain());
                 responsesEvaluated.put(questionId, new ResponseEvaluated(questionId, response, score));
-                log.debug("Evaluated response, ID :: {}, score :: {}", questionId, score);
+                log.debug("Evaluated response, ID = {}, score = {}", questionId, score);
             } else {// if not found, consider incorrect
-                log.debug("Empty response, incorrect ID :: {}", questionId);
+                log.warn("Empty or no response, incorrect ID = {}", questionId);
                 responsesEvaluated.put(questionId, ResponseEvaluated.buildEmpty(questionId));
             }
         }

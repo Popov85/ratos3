@@ -31,17 +31,9 @@ public class Group {
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
+    // read-only here
     @ManyToMany(cascade = {CascadeType.MERGE})
-    @JoinTable(name = "student_group", joinColumns = {@JoinColumn(name = "stud_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id")})
+    @JoinTable(name = "student_group", joinColumns = {@JoinColumn(name = "group_id") }, inverseJoinColumns = { @JoinColumn(name = "stud_id")})
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Student> students = new HashSet<>();
-
-    public void addStudent(Student student) {
-        this.students.add(student);
-    }
-
-    public void removeStudent(Student student) {
-        this.students.remove(student);
-    }
-
 }

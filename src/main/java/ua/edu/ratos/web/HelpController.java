@@ -3,80 +3,93 @@ package ua.edu.ratos.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.security.AuthenticatedStaff;
 import ua.edu.ratos.service.HelpService;
 import ua.edu.ratos.service.dto.in.HelpInDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
 public class HelpController {
 
-    @Autowired
     private HelpService helpService;
 
-    @PostMapping(value = "/question/help", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Autowired
+    public void setHelpService(HelpService helpService) {
+        this.helpService = helpService;
+    }
+
+    @PostMapping(value = "/helps", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody HelpInDto dto) {
         final Long helpId = helpService.save(dto);
-        log.debug("Saved Help = {} ", helpId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(helpId).toUri();
+        log.debug("Saved Help, helpId = {}", helpId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(helpId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/question/help/{helpId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long helpId, @Valid @RequestBody HelpInDto dto) {
-        helpService.update(helpId, dto);
-        log.debug("Updated Help ID = {} ", helpId);
+    @GetMapping(value = "/helps/{helpId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HelpOutDto> findOne(@PathVariable Long helpId) {
+        HelpOutDto dto = helpService.findOneForUpdates(helpId);
+        log.debug("Retrieved Help = {}", dto);
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/question/help/{helpId}")
+    @PutMapping(value = "/helps/{helpId}/name")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateName(@PathVariable Long helpId, @RequestParam String name) {
+        helpService.updateName(helpId, name);
+        log.debug("Updated Help's name, helpId = {}, new name = {}", helpId, name);
+    }
+
+    @PutMapping(value = "/helps/{helpId}/help")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateHelp(@PathVariable Long helpId, @RequestParam String help) {
+        helpService.updateHelp(helpId, help);
+        log.debug("Updated Help's help, helpId = {}, new help text = {}", helpId, help);
+    }
+
+    @PutMapping(value = "/helps/{helpId}/resource")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateResource(@PathVariable Long helpId, @RequestParam Long resId) {
+        helpService.updateResource(helpId, resId);
+        log.debug("Updated Help's resource, helpId = {}, new resId = {}", helpId, resId);
+    }
+
+    @DeleteMapping("/helps/{helpId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long helpId) {
         helpService.deleteById(helpId);
-        log.debug("Deleted Help ID = {}", helpId);
+        log.debug("Deleted Help, helpId = {}", helpId);
     }
 
-    //-------------------GET-----------------
-
-    @GetMapping(value = "/helps", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<HelpOutDto> findAll(@RequestParam("page") int page, @RequestParam("size") int size) {
-        return helpService.findAll(PageRequest.of(page, size));
-    }
+    //----------------------------------GET----------------------------------------
 
     @GetMapping(value = "/helps/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<HelpOutDto> findAllByStaffId(Authentication auth) {
-        Long userId = ((AuthenticatedStaff) auth.getPrincipal()).getUserId();
-        return helpService.findByStaffIdWithResources(userId);
+    public Page<HelpOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return helpService.findAllByStaffId(pageable);
     }
 
-    @GetMapping(value = "/helps/by-staff", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<HelpOutDto> findAllByStaffIdAndLettersStarts(@RequestParam String starts, Authentication auth) {
-        Long userId = ((AuthenticatedStaff) auth.getPrincipal()).getUserId();
-        return helpService.findByStaffIdAndFirstNameLettersWithResources(userId, starts);
+    @GetMapping(value = "/helps/by-staff", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<HelpOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return helpService.findAllByStaffIdAndNameLettersContains(letters, pageable);
     }
 
     @GetMapping(value = "/helps/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<HelpOutDto> findAllByDepartmentId(Authentication auth) {
-        Long depId = ((AuthenticatedStaff) auth.getPrincipal()).getDepId();
-        return helpService.findByDepartmentIdWithResources(depId);
+    public Page<HelpOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return helpService.findAllByDepartmentId(pageable);
     }
 
-    @GetMapping(value = "/helps/by-department", params = "starts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<HelpOutDto> findAllByDepartmentIdAndLettersStarts(@RequestParam String starts, Authentication auth) {
-        Long depId = ((AuthenticatedStaff) auth.getPrincipal()).getDepId();
-        return helpService.findByDepartmentIdAndFirstNameLettersWithResources(depId, starts);
+    @GetMapping(value = "/helps/by-department", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<HelpOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return helpService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
     }
 }

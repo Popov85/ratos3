@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Getter
@@ -14,6 +17,8 @@ import javax.persistence.*;
 @Table(name = "settings")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class Settings {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -23,10 +28,6 @@ public class Settings {
 
     @Column(name = "name")
     private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
 
     /**
      * Negative int is used for "not limited in time", default - do not limit
@@ -69,5 +70,9 @@ public class Settings {
 
     @Column(name = "is_deleted")
     private boolean deleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
 
 }

@@ -15,8 +15,8 @@ import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerMCQService;
 import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,8 +30,9 @@ public class AnswerMCQServiceTestIT {
 
     public static final String ANSWER_NEW = "Answer #1";
     public static final String ANSWER_UPD = "Updated answer #1";
-    public static final String RESOURCE_NAME = "Schema#1";
-    public static final String RESOURCE_LINK = "https://image.slidesharecdn.com/schema01.jpg";
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     private AnswerMCQService answerService;
@@ -39,21 +40,15 @@ public class AnswerMCQServiceTestIT {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private EntityManager em;
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_mcq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mcq_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerMCQInDto dto = objectMapper.readValue(json, AnswerMCQInDto.class);
-        answerService.save(dto);
-        final AnswerMCQ foundAnswer =
-            (AnswerMCQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        answerService.save(1L, dto);
+        final AnswerMCQ foundAnswer = (AnswerMCQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(ANSWER_NEW, foundAnswer.getAnswer());
         Assert.assertEquals(100, foundAnswer.getPercent());
@@ -62,29 +57,24 @@ public class AnswerMCQServiceTestIT {
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerMCQInDto dto = objectMapper.readValue(json, AnswerMCQInDto.class);
         answerService.update(1L, dto);
-        final AnswerMCQ foundAnswer =
-            (AnswerMCQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        final AnswerMCQ foundAnswer = (AnswerMCQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(ANSWER_UPD, foundAnswer.getAnswer());
         Assert.assertEquals(50, foundAnswer.getPercent());
-        Assert.assertEquals(false, foundAnswer.isRequired());
+        Assert.assertFalse(foundAnswer.isRequired());
         Assert.assertFalse(foundAnswer.getResource().isPresent());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mcq_test_data.sql", "/scripts/answer_mcq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void deleteByIdTest() throws Exception {
+    public void deleteByIdTest() {
         Assert.assertNotNull(em.find(AnswerMCQ.class, 1L));
         answerService.deleteById(1L);
         Assert.assertNull(em.find(AnswerMCQ.class, 1L));

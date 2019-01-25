@@ -1,5 +1,4 @@
 {
-  "questionId":null,
   "question":"Question #1",
   "level":1,
   "themeId":1,
@@ -7,9 +6,9 @@
   "langId":1,
   "helpId":1,
   "resourcesIds":[1],
+  "required":true,
   "answer":
   {
-    "answerId":null,
     "setId":1,
     "phrasesIds": [1,2,3]
   }

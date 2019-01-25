@@ -2,86 +2,118 @@ package ua.edu.ratos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.ThemeService;
-import ua.edu.ratos.service.ThemeViewService;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
-import ua.edu.ratos.service.dto.out.view.ThemeOutDto;
+import ua.edu.ratos.service.dto.out.ThemeExtendedOutDto;
+import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor/themes")
+@RequestMapping("/instructor")
 public class ThemeController {
 
-    @Autowired
     private ThemeService themeService;
 
     @Autowired
-    private ThemeViewService themeViewService;
+    public void setThemeService(ThemeService themeService) {
+        this.themeService = themeService;
+    }
 
-
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/themes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody ThemeInDto dto) {
         final Long themeId = themeService.save(dto);
-        log.debug("Saved ThemeDomain :: {} ", themeId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(themeId).toUri();
+        log.debug("Saved Theme, themeId = {}", themeId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(themeId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{themeId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long themeId, @Valid @RequestBody ThemeInDto dto) {
-        themeService.update(themeId, dto);
-        log.debug("Updated ThemeDomain ID :: {} ", themeId);
+    @GetMapping(value = "/themes/{themeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ThemeOutDto> findOne(@PathVariable Long themeId) {
+        ThemeOutDto dto = themeService.findByIdForUpdate(themeId);
+        log.debug("Retrieved Theme = {}", dto);
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/{themeId}")
+    @PutMapping(value = "/themes/{themeId}/name")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateName(@PathVariable Long themeId, @RequestParam String name) {
+        themeService.updateName(themeId, name);
+        log.debug("Updated Theme's name themeId = {}, new name = {}", themeId, name);
+    }
+
+    @PutMapping(value = "/themes/{themeId}/access")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateAccess(@PathVariable Long themeId, @RequestParam Long accessId) {
+        themeService.updateAccess(themeId, accessId);
+        log.debug("Updated Theme's access, themeId = {}, new accessId = {}", themeId, accessId);
+    }
+
+    @PutMapping(value = "/themes/{themeId}/course")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateCourse(@PathVariable Long themeId, @RequestParam Long courseId) {
+        themeService.updateCourse(themeId, courseId);
+        log.debug("Updated Theme's course, themeId = {}, new courseId = {}", themeId, courseId);
+    }
+
+    @DeleteMapping("/themes/{themeId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long themeId) {
         themeService.deleteById(themeId);
-        log.debug("Deleted ThemeDomain ID :: {}", themeId);
+        log.debug("Deleted Theme, themeId = {}", themeId);
     }
 
-    //------------------------GET----------------------
+    //-----------------------------------GET for THEME TABLES----------------------------
 
-    @GetMapping(value = "/by-course", params = "courseId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByCourseId(@RequestParam Long courseId) {
-        return themeViewService.findAllByCourseId(courseId);
+    @GetMapping(value = "/themes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllByStaffId(pageable);
     }
 
-    @GetMapping(value = "/by-course", params = {"courseId", "contains"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByCourseIdAndThemeLettersContains(@RequestParam Long courseId, @RequestParam String contains) {
-        return themeViewService.findAllByCourseIdAndThemeLettersContains(courseId, contains);
+    @GetMapping(value = "/themes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeOutDto> findAllByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllByStaffIdAndNameContains(letters, pageable);
     }
 
-    @GetMapping(value = "/by-department", params = {"depId", "page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByDepartmentId(@RequestParam Long depId, @RequestParam int page, @RequestParam int size) {
-        return themeViewService.findAllByDepartmentId(depId, PageRequest.of(page, size));
+    @GetMapping(value = "/themes/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllByDepartmentId(pageable);
     }
 
-    @GetMapping(value = "/by-department", params = {"depId", "contains"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByDepartmentIdAndThemeLettersContains(@RequestParam Long depId, @RequestParam String contains) {
-        return themeViewService.findAllByDepartmentIdAndThemeLettersContains(depId, contains);
+    @GetMapping(value = "/themes/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeOutDto> findAllByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllByDepartmentIdAndNameContains(letters, pageable);
     }
 
-    @GetMapping(value = "/by-organisation", params = {"orgId", "page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByOrganisationId(@RequestParam Long orgId, @RequestParam int page, @RequestParam int size) {
-        return themeViewService.findAllByOrganisationId(orgId, PageRequest.of(page, size));
+    //-----------------------------------GET for QUESTIONS TABLES----------------------------
+
+    @GetMapping(value = "/themes/questions-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByStaffId(pageable);
     }
 
-    @GetMapping(value = "/by-organisation", params = {"orgId", "contains"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<ThemeOutDto> findAllByOrganisationIdAndThemeLettersContains(@RequestParam Long orgId, @RequestParam String contains) {
-        return themeViewService.findAllByOrganisationIdAndThemeLettersContains(orgId, contains);
+    @GetMapping(value = "/themes/questions-by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByStaffIdAndNameContains(letters, pageable);
+    }
+
+    @GetMapping(value = "/themes/questions-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByDepartmentId(pageable);
+    }
+
+    @GetMapping(value = "/themes/questions-by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByDepartmentIdAndNameContains(letters, pageable);
     }
 
 }

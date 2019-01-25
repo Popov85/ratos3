@@ -3,11 +3,12 @@ package ua.edu.ratos.service.dto.session.batch;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.service.domain.ModeDomain;
 import ua.edu.ratos.service.domain.PreviousBatchResult;
-import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +19,13 @@ import java.util.stream.Collectors;
 @ToString(exclude = "batchMap")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchOutDto {
-
     private static final String BUILD_ERROR = "Failed to build BatchOutDto: wrong object state";
-
     private static final String TIMEOUT_ERROR = "Failed to build BatchOutDto: no time left for the next batch";
 
-    private final List<QuestionOutDto> batch;
+    private final List<QuestionSessionOutDto> batch;
 
-    @JsonIgnore//For look-up purposes (exceptionally), if there are multiple questions in batch
-    private final Map<Long, QuestionOutDto> batchMap;
+    @JsonIgnore//For look-up purposes (exceptionally), if there are multiple questions in batch, remains in SessionData
+    private final Map<Long, QuestionSessionOutDto> batchMap;
 
     private final ModeDomain modeDomain;
 
@@ -44,7 +43,8 @@ public class BatchOutDto {
     @Setter
     private PreviousBatchResult previousBatchResult;
 
-    private BatchOutDto(List<QuestionOutDto> batch, Map<Long, QuestionOutDto> batchMap, ModeDomain modeDomain, long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft) {
+    private BatchOutDto(@NonNull final List<QuestionSessionOutDto> batch, @NonNull final Map<Long, QuestionSessionOutDto> batchMap, @NonNull final ModeDomain modeDomain,
+                        long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft) {
         this.batch = batch;
         this.modeDomain = modeDomain;
         this.timeLeft = timeLeft;
@@ -66,8 +66,8 @@ public class BatchOutDto {
     }
 
     public static class Builder {
-        private List<QuestionOutDto> batch;
-        private Map<Long, QuestionOutDto> batchMap;
+        private List<QuestionSessionOutDto> batch;
+        private Map<Long, QuestionSessionOutDto> batchMap;
         private ModeDomain modeDomain;
         private long timeLeft;
         private int questionsLeft;
@@ -77,7 +77,7 @@ public class BatchOutDto {
         /**
          * Current batch of questions
          */
-        public Builder withQuestions(List<QuestionOutDto> questions) {
+        public Builder withQuestions(List<QuestionSessionOutDto> questions) {
             this.batch = questions;
             this.batchMap = questions.stream().collect(Collectors.toMap(q -> q.getQuestionId(), q -> q));
             return this;

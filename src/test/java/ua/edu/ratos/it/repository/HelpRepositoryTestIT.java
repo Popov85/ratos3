@@ -25,9 +25,8 @@ public class HelpRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByStaffIdWithResourcesTest() {
-        Assert.assertEquals(7, helpRepository.findAll().size());
-        Page<Help> helps = helpRepository.findByStaffIdWithResources(1L, PageRequest.of(0, 20));
+    public void findAllByStaffIdTest() {
+        Page<Help> helps = helpRepository.findAllByStaffId(1L, PageRequest.of(0, 50));
         Assert.assertEquals(3, helps.getContent().size());
         Assert.assertTrue(helps.getContent().get(0).getResource().isPresent());
         Assert.assertTrue(helps.getContent().get(1).getResource().isPresent());
@@ -37,9 +36,8 @@ public class HelpRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByStaffIdAndFirstNameLettersWithResourcesTest() {
-        Assert.assertEquals(7, helpRepository.findAll().size());
-        Page<Help> helps = helpRepository.findByStaffIdAndFirstNameLettersWithResources(1L, "assist", PageRequest.of(0, 20));
+    public void findAllByStaffIdAndNameLettersContainsTest() {
+        Page<Help> helps = helpRepository.findAllByStaffIdAndNameLettersContains(1L, "assist", PageRequest.of(0, 50));
         Assert.assertEquals(2, helps.getContent().size());
         Assert.assertTrue(helps.getContent().get(0).getResource().isPresent());
         Assert.assertTrue(helps.getContent().get(1).getResource().isPresent());
@@ -48,9 +46,8 @@ public class HelpRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByDepartmentIdWithResourcesTest() {
-        Assert.assertEquals(7, helpRepository.findAll().size());
-        Page<Help> helps = helpRepository.findByDepartmentIdWithResources(1L, PageRequest.of(0, 20));
+    public void findAllByDepartmentIdTest() {
+        Page<Help> helps = helpRepository.findAllByDepartmentId(1L, PageRequest.of(0, 50));
         Assert.assertEquals(3, helps.getContent().size());
         Assert.assertTrue(helps.getContent().get(0).getResource().isPresent());
         Assert.assertTrue(helps.getContent().get(1).getResource().isPresent());
@@ -60,12 +57,19 @@ public class HelpRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findByDepartmentIdAndFirstNameLettersWithResourcesTest() {
-        Assert.assertEquals(7, helpRepository.findAll().size());
-        Page<Help> helps = helpRepository.findByDepartmentIdAndFirstNameLettersWithResources(1L, "assist", PageRequest.of(0, 20));
+    public void findAllByDepartmentIdAndNameLettersContainsTest() {
+        Page<Help> helps = helpRepository.findAllByDepartmentIdAndNameLettersContains(1L, "assist", PageRequest.of(0, 50));
         Assert.assertEquals(2, helps.getContent().size());
         Assert.assertTrue(helps.getContent().get(0).getResource().isPresent());
         Assert.assertTrue(helps.getContent().get(1).getResource().isPresent());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/help_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllTest() {
+        Page<Help> helps = helpRepository.findAll(PageRequest.of(0, 50));
+        Assert.assertEquals(7, helps.getContent().size());
     }
 
 }

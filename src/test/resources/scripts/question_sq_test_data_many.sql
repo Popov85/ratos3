@@ -1,6 +1,6 @@
-insert into theme (name, course_id) values('Java Operators', 1);
-insert into theme (name, course_id) values('Java Strings', 1);
-insert into theme (name, course_id) values('Java Generics', 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #1', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #2', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #3', 1, 1, 1);
 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/Resource01.jpg', 'QuestionResource#1', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/Resource02.jpg', 'QuestionResource#2', 1);
@@ -29,7 +29,7 @@ insert into help_resource(help_id, resource_id) values(5, 10);
 
 insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #1', 1, 5, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #2', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #3', 2, 5, 1, 1);
+insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #3 advanced', 2, 5, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #4', 3, 5, 2, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #5', 3, 5, 3, 1);
 

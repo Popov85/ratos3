@@ -10,11 +10,14 @@ import lombok.experimental.Accessors;
 @ToString
 @Accessors(chain = true)
 public class HelpOutDto {
+
     private Long helpId;
 
     private String name;
 
     private String help;
+
+    private StaffMinOutDto staff;
 
     private ResourceOutDto resource;
 }

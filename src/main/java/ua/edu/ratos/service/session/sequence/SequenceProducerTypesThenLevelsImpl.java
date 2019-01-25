@@ -28,7 +28,7 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
     @Override
     public List<QuestionDomain> getSequence(List<SchemeTheme> schemeThemes) {
         List<QuestionDomain> result = new ArrayList<>();
-        schemeThemes.forEach(s-> result.addAll(sequenceMapper.getList(s.getTheme().getThemeId(), s.getSchemeThemeSettings())));
+        schemeThemes.forEach(s-> result.addAll(sequenceMapper.getList(s.getTheme().getThemeId(), s.getSettings())));
         // Shuffle and sort according to patterns
         List<QuestionDomain> resultType = new ArrayList<>();
         TYPE_PATTERN.forEach(typeId->{

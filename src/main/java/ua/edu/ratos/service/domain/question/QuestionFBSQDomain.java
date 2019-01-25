@@ -8,14 +8,14 @@ import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 import ua.edu.ratos.service.domain.answer.AnswerFBSQDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionFBSQOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionFBSQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseFBSQ;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Accessors(chain = true)
 public class QuestionFBSQDomain extends QuestionDomain {
 
@@ -48,9 +48,9 @@ public class QuestionFBSQDomain extends QuestionDomain {
     }
 
     @Override
-    public QuestionFBSQOutDto toDto() {
+    public QuestionFBSQSessionOutDto toDto() {
         ModelMapper modelMapper = new ModelMapper();
-        QuestionFBSQOutDto dto = modelMapper.map(this, QuestionFBSQOutDto.class);
+        QuestionFBSQSessionOutDto dto = modelMapper.map(this, QuestionFBSQSessionOutDto.class);
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
         dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
         dto.setAnswer(answer.toDto());

@@ -44,7 +44,7 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
                 log.debug("Found staff :: {}", authenticatedStaff);
                 return authenticatedStaff;
             } else {
-                log.warn("Failed to find any user by email :: {}", email);
+                log.warn("Failed to findDetails any user by email :: {}", email);
                 throw new UsernameNotFoundException("Failed to authorize by email");
             }
         }

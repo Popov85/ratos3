@@ -2,6 +2,7 @@ package ua.edu.ratos.dao.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Table(name = "help")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@DynamicUpdate
 public class Help {
 
     @Id
@@ -35,7 +37,6 @@ public class Help {
 
     // Technically many Resources can be associated with a Help, but we go for only one for now
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "help_resource", joinColumns = @JoinColumn(name = "help_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

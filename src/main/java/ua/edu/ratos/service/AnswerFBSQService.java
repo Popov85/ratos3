@@ -15,12 +15,11 @@ public class AnswerFBSQService {
     private AnswerFBSQRepository answerRepository;
 
     @Autowired
-    private DtoAnswerTransformer transformer;
+    private DtoAnswerTransformer dtoAnswerTransformer;
 
     @Transactional
-    public void update(@NonNull Long answerId, @NonNull AnswerFBSQInDto dto) {
-        if (!answerRepository.existsById(answerId))
-            throw new RuntimeException("Failed to update answer fbsq: ID does not exist");
-        answerRepository.save(transformer.toEntity(answerId, dto));
+    public void update(@NonNull final AnswerFBSQInDto dto) {
+        if (dto.getAnswerId()==null) throw new RuntimeException("Answer FBSQ must have answerId to be updated!");
+        answerRepository.save(dtoAnswerTransformer.toEntity(dto));
     }
 }

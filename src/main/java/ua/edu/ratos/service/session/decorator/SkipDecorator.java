@@ -23,7 +23,7 @@ public class SkipDecorator extends NextProcessorDecorator {
 
     @Override
     public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
-        if (!sessionData.getCurrentBatch().isEmpty()) {
+        if (sessionData.getCurrentBatch().isPresent() && !sessionData.getCurrentBatch().get().isEmpty()) {
             return nextProcessor.getBatchEvaluated(batchInDto, sessionData);
         } else {
             return null;

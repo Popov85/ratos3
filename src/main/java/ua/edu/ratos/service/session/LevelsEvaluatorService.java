@@ -24,7 +24,7 @@ public class LevelsEvaluatorService {
         } else if (level==3) {
             return score* settingsDomain.getLevel3Coefficient();
         } else {
-            log.warn("Unrecognized level {}", level, ", level 1 is accepted");
+            log.warn("Unrecognized level {}", level, ", fallback, level 1 is accepted");
             return score;
         }
     }

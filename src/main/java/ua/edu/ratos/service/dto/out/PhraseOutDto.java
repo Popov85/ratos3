@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -14,6 +16,10 @@ public class PhraseOutDto {
     private Long phraseId;
 
     private String phrase;
+
+    private LocalDateTime lastUsed;
+
+    private StaffMinOutDto staff;
 
     private ResourceOutDto resource;
 }

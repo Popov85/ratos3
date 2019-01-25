@@ -33,4 +33,6 @@ public class ModeOutDto {
     private boolean reportable;
 
     private boolean starrable;
+
+    private StaffMinOutDto staff;
 }

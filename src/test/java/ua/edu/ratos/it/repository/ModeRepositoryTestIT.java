@@ -20,59 +20,70 @@ public class ModeRepositoryTestIT {
     @Autowired
     private ModeRepository modeRepository;
 
+
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllTest() {
+        Assert.assertEquals(9, modeRepository.findAll(PageRequest.of(0, 50)).getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllDefaultTest() {
         Assert.assertEquals(1, modeRepository.findAllDefault().size());
     }
 
+
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllTest() {
-        Assert.assertEquals(9, modeRepository.findAll(PageRequest.of(0, 20)).getContent().size());
+    public void findAllForTableByStaffIdTest() {
+        Assert.assertEquals(4, modeRepository.findAllForTableByStaffId(4L, PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdTest() {
-        Assert.assertEquals(4, modeRepository.findAllByStaffId(2L).size());
+    public void findAllForTableByStaffIdAndModeNameLettersContainsTest() {
+        Assert.assertEquals(2, modeRepository.findAllForTableByStaffIdAndModeNameLettersContains(1L, "pre", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndModeNameLettersContainsTest() {
-        Assert.assertEquals(2, modeRepository.findAllByStaffIdAndModeNameLettersContains(1L, "pre").size());
+    public void findAllForTableByDepartmentIdTest() {
+        Assert.assertEquals(4, modeRepository.findAllForTableByDepartmentId(2L, PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdTest() {
-        Assert.assertEquals(4, modeRepository.findByDepartmentId(2L, PageRequest.of(0, 20)).getContent().size());
+    public void findAllForTableByDepartmentIdAndModeNameLettersContainsTest() {
+        Assert.assertEquals(1, modeRepository.findAllForTableByDepartmentIdAndModeNameLettersContains(2L, "ing", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndModeNameLettersContainsTest() {
-        Assert.assertEquals(1, modeRepository.findAllByDepartmentIdAndModeNameLettersContains(2L, "ing").size());
+    public void findAllForTableByDepartmentIdAndModeNameLettersContainsNegativeOutcomeTest() {
+        Assert.assertEquals(0, modeRepository.findAllForTableByDepartmentIdAndModeNameLettersContains(2L, "step", PageRequest.of(0, 50)).getContent().size());
+    }
+
+    //-------------------------------DROPDOWN search------------------------
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForDropDownByStaffIdAndModeNameLettersContainsTest() {
+        Assert.assertEquals(2, modeRepository.findAllForDropDownByStaffIdAndModeNameLettersContains(1L, "pre", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndModeNameLettersContainsNegativeOutcomeTest() {
-        Assert.assertEquals(0, modeRepository.findAllByDepartmentIdAndModeNameLettersContains(2L, "step").size());
+    public void findAllForDropDownByDepartmentIdAndModeNameLettersContainsTest() {
+        Assert.assertEquals(1, modeRepository.findAllForDropDownByDepartmentIdAndModeNameLettersContains(2L, "ing", PageRequest.of(0, 50)).getContent().size());
     }
 }

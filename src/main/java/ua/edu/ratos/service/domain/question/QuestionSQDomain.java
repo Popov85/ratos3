@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerSQDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionSQOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseSQ;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Accessors(chain = true)
 public class QuestionSQDomain extends QuestionDomain {
     private Set<AnswerSQDomain> answers = new HashSet<>();
@@ -47,9 +47,9 @@ public class QuestionSQDomain extends QuestionDomain {
     }
 
     @Override
-    public QuestionSQOutDto toDto() {
+    public QuestionSQSessionOutDto toDto() {
         ModelMapper modelMapper = new ModelMapper();
-        QuestionSQOutDto dto = modelMapper.map(this, QuestionSQOutDto.class);
+        QuestionSQSessionOutDto dto = modelMapper.map(this, QuestionSQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
         dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);

@@ -17,8 +17,6 @@ public class SettingsOutDto {
 
     private int secondsPerQuestion;
 
-    private boolean strictControlTimePerQuestion;
-
     private short questionsPerSheet;
 
     private short daysKeepResultDetails;
@@ -32,4 +30,8 @@ public class SettingsOutDto {
     private boolean displayMark;
 
     private boolean displayThemeResults;
+
+    private boolean strictControlTimePerQuestion;
+
+    private StaffMinOutDto staff;
 }

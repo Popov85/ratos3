@@ -28,7 +28,7 @@ public class SchemeGradingServiceFactory {
     public SchemeGraderService getGraderService(long type) {
         SchemeGraderService schemeGraderService = graderServicesMap.get(type);
         if(schemeGraderService == null)
-            throw new RuntimeException("Unknown schemeGraderService type: " + type);
+            throw new RuntimeException("Unknown schemeGraderService type = " + type);
         return schemeGraderService;
     }
 }

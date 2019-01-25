@@ -24,21 +24,53 @@ public class PhraseRepositoryTestIT {
 
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllLastUsedByStaffIdTest() {
-        Assert.assertEquals(7, phraseRepository.findAll().size());
-        final Page<Phrase> foundPage = phraseRepository.findAllLastUsedByStaffId(1L, PageRequest.of(0, 20));
+    public void findOneForUpdateTest() {
+        Phrase phrase = phraseRepository.findOneForUpdate(1L);
+        Assert.assertNotNull(phrase);
+        Assert.assertNotNull(phrase.getStaff());
+        Assert.assertTrue(phrase.getResource().isPresent());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByStaffIdTest() {
+        final Page<Phrase> foundPage = phraseRepository.findAllByStaffId(1L, PageRequest.of(0, 50));
         Assert.assertEquals(4, foundPage.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByStaffIdAndFirstLettersTest() {
+        final Page<Phrase> foundPage = phraseRepository.findAllByStaffIdAndPhraseLettersContains(2L, "trans", PageRequest.of(0, 50));
+        Assert.assertEquals(2, foundPage.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdTest() {
+        final Page<Phrase> foundPage = phraseRepository.findAllByDepartmentId(1L, PageRequest.of(0, 50));
+        Assert.assertEquals(7, foundPage.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndFirstLettersTest() {
+        final Page<Phrase> foundPage = phraseRepository.findAllByDepartmentIdAndPhraseLettersContains(1L, "trans", PageRequest.of(0, 50));
+        Assert.assertEquals(2, foundPage.getContent().size());
     }
 
 
     @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllLastUsedByStaffIdAndFirstLettersTest() {
-        Assert.assertEquals(7, phraseRepository.findAll().size());
-        final Page<Phrase> foundPage = phraseRepository.findAllLastUsedByStaffIdAndFirstLetters(2L, "trans", PageRequest.of(0, 20));
-        Assert.assertEquals(2, foundPage.getContent().size());
+    public void findAllTest() {
+        final Page<Phrase> foundPage = phraseRepository.findAll(PageRequest.of(0, 50));
+        Assert.assertEquals(7, foundPage.getContent().size());
     }
 }

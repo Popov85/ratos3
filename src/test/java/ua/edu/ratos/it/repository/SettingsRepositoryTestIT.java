@@ -21,58 +21,51 @@ public class SettingsRepositoryTestIT {
     private SettingsRepository settingsRepository;
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/settings_test_data_many.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllTest() {
+        Assert.assertEquals(7, settingsRepository.findAll(PageRequest.of(0, 50)).getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllDefaultTest() {
         Assert.assertEquals(1, settingsRepository.findAllDefault().size());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllTest() {
-        Assert.assertEquals(7, settingsRepository.findAll(PageRequest.of(0, 20)).getContent().size());
-    }
-
-    @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByStaffIdTest() {
-        Assert.assertEquals(4, settingsRepository.findAllByStaffId(1L).size());
+        Assert.assertEquals(4, settingsRepository.findAllByStaffId(1L, PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndSettingsNameLettersContainsTest() {
-        Assert.assertEquals(2, settingsRepository.findAllByStaffIdAndSettingsNameLettersContains(2L, "year").size());
+    public void findAllByStaffIdAndNameLettersContainsTest() {
+        Assert.assertEquals(2, settingsRepository.findAllByStaffIdAndNameLettersContains(2L, "year", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
-        Assert.assertEquals(3, settingsRepository.findByDepartmentId(2L, PageRequest.of(0, 20)).getContent().size());
+        Assert.assertEquals(3, settingsRepository.findAllByDepartmentId(2L, PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSettingsNameLettersContainsTest() {
-        Assert.assertEquals(3, settingsRepository.findAllByDepartmentIdAndSettingsNameLettersContains(1L, "c").size());
+    public void findAllByDepartmentIdAndNameLettersContainsTest() {
+        Assert.assertEquals(3, settingsRepository.findAllByDepartmentIdAndNameLettersContains(1L, "c", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSettingsNameLettersContainsNegativeOutcomeTest() {
-        Assert.assertEquals(0, settingsRepository.findAllByDepartmentIdAndSettingsNameLettersContains(2L, "year6").size());
+    public void findAllByDepartmentIdAndNameLettersContainsNegativeOutcomeTest() {
+        Assert.assertEquals(0, settingsRepository.findAllByDepartmentIdAndNameLettersContains(2L, "year6", PageRequest.of(0, 50)).getContent().size());
     }
 }

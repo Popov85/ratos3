@@ -14,9 +14,14 @@ public class PhraseDtoTransformer {
     @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
+    @Autowired
+    private StaffMinDtoTransformer staffMinDtoTransformer;
+
     public PhraseOutDto toDto(@NonNull final Phrase entity) {
         return new PhraseOutDto().setPhraseId(entity.getPhraseId())
                 .setPhrase(entity.getPhrase())
+                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()))
+                .setLastUsed(entity.getLastUsed())
                 .setResource((entity.getResource().isPresent()) ? resourceDtoTransformer.toDto(entity.getResource().get()) : null);
     }
 }

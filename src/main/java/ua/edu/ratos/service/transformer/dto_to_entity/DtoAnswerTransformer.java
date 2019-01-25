@@ -16,23 +16,35 @@ import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.entity.question.QuestionSQ;
 import ua.edu.ratos.service.dto.in.*;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Component
+@SuppressWarnings("SpellCheckingInspection")
 public class DtoAnswerTransformer {
 
-    @Autowired
+    @PersistenceContext
+    private EntityManager em;
+
     private ModelMapper modelMapper;
 
     @Autowired
-    private EntityManager em;
-
-    @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerMCQ toEntity(@NonNull AnswerMCQInDto dto) {
-        return toEntity(null, dto);
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
     }
 
+    //------------------------------------MCQ----------------------------------
+
+    // Used to add answer to an existing question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerMCQ toEntity(Long answerId, @NonNull AnswerMCQInDto dto) {
+    public AnswerMCQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMCQInDto dto) {
+        AnswerMCQ answer = toEntity(dto);
+        answer.setQuestion(em.getReference(QuestionMCQ.class, questionId));
+        return answer;
+    }
+
+    // Used to cascaded save all answers with a new question
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AnswerMCQ toEntity(@NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = modelMapper.map(dto, AnswerMCQ.class);
         if (dto.getResourceId()!=0) {
             // No need to clear() first
@@ -40,65 +52,74 @@ public class DtoAnswerTransformer {
         } else {
             answer.clearResources();
         }
-        answer.setAnswerId(answerId);
-        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionMCQ.class, dto.getQuestionId()));
         return answer;
     }
 
+    //---------------------------------FBSQ-------------------------------------
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerFBSQ toEntity(Long answerId, @NonNull AnswerFBSQInDto dto) {
+    public AnswerFBSQ toEntity(@NonNull final AnswerFBSQInDto dto) {
         if ( dto.getPhrasesIds().isEmpty() || dto.getPhrasesIds().size()<1)
-            throw new RuntimeException("Answer fbsq does not make sense without any accepted phrases!");
+            throw new RuntimeException("Answer FBSQ does not make sense without any accepted phrases!");
         AnswerFBSQ answer = modelMapper.map(dto, AnswerFBSQ.class);
-        answer.setAnswerId(answerId);
         answer.setSettings(em.getReference(SettingsFB.class, dto.getSetId()));
         dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(Phrase.class, id)));
         return answer;
     }
 
+    //---------------------------------FBMQ-------------------------------------
+
+    // Used to add answer to an existing question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerFBMQ toEntity(@NonNull AnswerFBMQInDto dto) {
-        return toEntity(null, dto);
+    public AnswerFBMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerFBMQInDto dto) {
+        AnswerFBMQ answer = toEntity(dto);
+        answer.setQuestion(em.getReference(QuestionFBMQ.class, questionId));
+        return answer;
     }
 
+    // Used to cascaded save all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerFBMQ toEntity(Long answerId, @NonNull AnswerFBMQInDto dto) {
+    public AnswerFBMQ toEntity(@NonNull final AnswerFBMQInDto dto) {
         if (dto.getPhrasesIds().isEmpty())
-            throw new RuntimeException("Answer fbmq does not make sense without any accepted phrases!");
+            throw new RuntimeException("Answer FBMQ does not make sense without any accepted phrases!");
         AnswerFBMQ answer = modelMapper.map(dto, AnswerFBMQ.class);
-        answer.setAnswerId(answerId);
-        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionFBMQ.class, dto.getQuestionId()));
         answer.setSettings(em.getReference(SettingsFB.class, dto.getSetId()));
         dto.getPhrasesIds().forEach(id->answer.addPhrase(em.find(Phrase.class, id)));
         return answer;
     }
 
+    //----------------------------------MQ-------------------------------------
 
+    // Used to add answer to an existing question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerMQ toEntity(@NonNull AnswerMQInDto dto) {
-        return toEntity(null, dto);
+    public AnswerMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMQInDto dto) {
+        AnswerMQ answer = toEntity(dto);
+        answer.setQuestion(em.getReference(QuestionMQ.class, questionId));
+        return answer;
     }
 
+    // Used to cascaded save all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerMQ toEntity(Long answerId, @NonNull AnswerMQInDto dto) {
+    public AnswerMQ toEntity(@NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = modelMapper.map(dto, AnswerMQ.class);
-        answer.setAnswerId(answerId);
-        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionMQ.class, dto.getQuestionId()));
         answer.setLeftPhrase(em.getReference(Phrase.class, dto.getLeftPhraseId()));
         answer.setRightPhrase(em.getReference(Phrase.class, dto.getRightPhraseId()));
         return answer;
     }
 
+   //-----------------------------------SQ-------------------------------------
+
+    // Used to add answer to an existing question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerSQ toEntity(@NonNull AnswerSQInDto dto) {
-        return toEntity(null, dto);
+    public AnswerSQ toEntity(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {
+        AnswerSQ answer = toEntity(dto);
+        answer.setQuestion(em.getReference(QuestionSQ.class, questionId));
+        return answer;
     }
 
+    // Used to cascaded save all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
-    public AnswerSQ toEntity(Long answerId, @NonNull AnswerSQInDto dto) {
+    public AnswerSQ toEntity(@NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = modelMapper.map(dto, AnswerSQ.class);
-        answer.setAnswerId(answerId);
-        if (dto.getQuestionId()!=null) answer.setQuestion(em.getReference(QuestionSQ.class, dto.getQuestionId()));
         answer.setPhrase(em.getReference(Phrase.class, dto.getPhraseId()));
         return answer;
     }

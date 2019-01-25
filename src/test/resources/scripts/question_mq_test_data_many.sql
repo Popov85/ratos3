@@ -1,6 +1,6 @@
-insert into theme (name, course_id) values('Theme #1', 1);
-insert into theme (name, course_id) values('Theme #2', 1);
-insert into theme (name, course_id) values('Theme #3', 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #1', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #2', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #3', 1, 1, 1);
 
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/Resource01.jpg', 'QuestionResource#1', 1);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/Resource02.jpg', 'QuestionResource#2', 1);
@@ -28,8 +28,8 @@ insert into help_resource(help_id, resource_id) values(5, 10);
 
 
 insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #1', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #2', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #3', 2, 4, 1, 1);
+insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #20', 1, 4, 1, 1);
+insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #21', 2, 4, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #4', 3, 4, 2, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #5', 3, 4, 3, 1);
 

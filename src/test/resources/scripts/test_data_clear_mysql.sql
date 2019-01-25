@@ -42,6 +42,7 @@ delete from grading;
 
 delete from lms_course;
 delete from course;
+delete from access_level;
 delete from student;
 delete from staff;
 delete from user_role;
@@ -64,7 +65,6 @@ ALTER TABLE department AUTO_INCREMENT = 1;
 ALTER TABLE role AUTO_INCREMENT = 1;
 ALTER TABLE position AUTO_INCREMENT = 1;
 ALTER TABLE user AUTO_INCREMENT = 1;
-ALTER TABLE staff AUTO_INCREMENT = 1;
 ALTER TABLE course AUTO_INCREMENT = 1;
 ALTER TABLE scheme AUTO_INCREMENT = 1;
 ALTER TABLE mode AUTO_INCREMENT = 1;
@@ -95,3 +95,5 @@ ALTER TABLE lms AUTO_INCREMENT = 1;
 ALTER TABLE lms_origin AUTO_INCREMENT = 1;
 ALTER TABLE lti_version AUTO_INCREMENT = 1;
 ALTER TABLE lti_credentials AUTO_INCREMENT = 1;
+
+ALTER TABLE access_level AUTO_INCREMENT = 1;

@@ -18,33 +18,36 @@ import java.net.URI;
  */
 @Slf4j
 @RestController
-@RequestMapping("/instructor/question/answer-fbmq")
+@RequestMapping("/instructor")
 public class AnswerFBMQController {
 
-    @Autowired
     private AnswerFBMQService answerService;
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated(AnswerFBMQInDto.NewAndUpdate.class) @RequestBody AnswerFBMQInDto dto) {
-        final Long answerId = answerService.save(dto);
-        log.debug("Saved answer fbmq :: {} ", answerId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(answerId).toUri();
+    @Autowired
+    public void setAnswerService(AnswerFBMQService answerService) {
+        this.answerService = answerService;
+    }
+
+    @PostMapping(value = "/questions/{questionId}/answers-fbmq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerFBMQInDto dto) {
+        final Long answerId = answerService.save(questionId, dto);
+        log.debug("Saved Answer FBMQ for questionId = {}, answerId = {}", questionId, answerId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(answerId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    // Make sure to include answerId to DTO object to be able to update
+    @PutMapping(value = "/questions/{questionId}/answers-fbmq/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long answerId, @Validated(AnswerFBMQInDto.NewAndUpdate.class) @RequestBody AnswerFBMQInDto dto) {
-        answerService.update(answerId, dto);
-        log.debug("Updated answer fbmq ID :: {} ", answerId);
+    public void update(@PathVariable Long questionId, @PathVariable Long answerId, @Validated @RequestBody AnswerFBMQInDto dto) {
+        answerService.update(questionId, dto);
+        log.debug("Updated Answer FBMQ for questionId = {}, answerId = {}", questionId, answerId);
     }
 
-    @DeleteMapping("/{answerId}")
+    @DeleteMapping("/questions/{questionId}/answers-fbmq/{answerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long answerId) {
+    public void delete(@PathVariable Long questionId, @PathVariable Long answerId) {
         answerService.deleteById(answerId);
-        log.debug("Deleted answer fbmq ID :: {}", answerId);
+        log.debug("Deleted Answer FBMQ from questionId = {}, answerId = {}", questionId, answerId);
     }
 }

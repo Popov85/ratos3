@@ -1,18 +1,18 @@
 package ua.edu.ratos.service.dto.in;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 import java.util.Set;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class AnswerFBSQInDto {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long answerId;
 
     @Positive(message = "{dto.fk.required}")

@@ -7,12 +7,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@ToString(callSuper = true)
 @Getter
 @Setter
+@ToString(callSuper = true)
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class QuestionFBMQInDto extends QuestionInDto {
 
     @NotEmpty(message = "{dto.collection.required}")

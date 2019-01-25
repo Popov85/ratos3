@@ -4,87 +4,109 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.repository.ResourceRepository;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ResourceInDto;
 import ua.edu.ratos.service.dto.out.ResourceOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoResourceTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ResourceDtoTransformer;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @Service
 public class ResourceService {
 
-    @Autowired
+    private static final String RESOURCE_NOT_FOUND = "The requested resource not found, resId = ";
+
     private ResourceRepository resourceRepository;
 
-    @Autowired
     private DtoResourceTransformer dtoResourceTransformer;
 
-    @Autowired
-    private PropertiesService propertiesService;
-
-    @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
+    private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setResourceRepository(ResourceRepository resourceRepository) {
+        this.resourceRepository = resourceRepository;
+    }
+
+    @Autowired
+    public void setDtoResourceTransformer(DtoResourceTransformer dtoResourceTransformer) {
+        this.dtoResourceTransformer = dtoResourceTransformer;
+    }
+
+    @Autowired
+    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
+        this.resourceDtoTransformer = resourceDtoTransformer;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
+
     @Transactional
-    public Long save(@NonNull ResourceInDto dto) {
+    public Long save(@NonNull final ResourceInDto dto) {
         return resourceRepository.save(this.dtoResourceTransformer.toEntity(dto)).getResourceId();
     }
 
     @Transactional
-    public void update(@NonNull Long resId, @NonNull ResourceInDto dto) {
-        if (!resourceRepository.existsById(resId))
-            throw new RuntimeException("Failed to update the Resource: ID does not exist");
-        resourceRepository.save(this.dtoResourceTransformer.toEntity(resId, dto));
+    public void updateLink(@NonNull final Long resId, @NonNull final String link) {
+        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+                .setLink(link);
     }
 
     @Transactional
-    public void deleteById(@NonNull Long resourceId) {
-        resourceRepository.deleteById(resourceId);
+    public void updateDescription(@NonNull final Long resId, @NonNull final String description) {
+        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+                .setDescription(description);
+    }
+
+    @Transactional
+    public void deleteById(@NonNull final Long resId) {
+        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+                .setDeleted(true);
     }
 
 
-    /*-----------------SELECT--------------------*/
-
+    //----------------------------SELECT for update--------------------------
 
     @Transactional(readOnly = true)
-    public Page<ResourceOutDto> findAll(@NonNull Pageable pageable) {
-        Page<Resource> page = resourceRepository.findAll(pageable);
-        return new PageImpl<>(toDto(page.getContent()), pageable, page.getTotalElements());
+    public ResourceOutDto findOneById(@NonNull Long staffId) {
+        return resourceDtoTransformer.toDto(resourceRepository.findOneForUpdate(staffId));
     }
 
-    @Transactional(readOnly = true)
-    public List<ResourceOutDto> findByStaffId(@NonNull Long staffId) {
-        List<Resource> content = resourceRepository.findByStaffId(staffId, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
-    }
+    //----------------------------------SELECT--------------------------------
 
     @Transactional(readOnly = true)
-    public List<ResourceOutDto> findByStaffIdAndFirstLetters(@NonNull Long staffId, @NonNull String starts) {
-        List<Resource> content = resourceRepository.findByStaffIdAndFirstLetters(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ResourceOutDto> findByDepartmentId(@NonNull Long depId) {
-        List<Resource> content = resourceRepository.findByDepartmentId(depId, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
+    public Page<ResourceOutDto> findByStaffId(@NonNull final Pageable pageable) {
+        return resourceRepository.findByStaffId(securityUtils.getAuthStaffId(), pageable).map(resourceDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public List<ResourceOutDto> findByDepartmentIdAndFirstLetters(@NonNull Long staffId, @NonNull String starts) {
-        List<Resource> content = resourceRepository.findByDepartmentIdAndFirstLetters(staffId, starts, propertiesService.getInitCollectionSize()).getContent();
-        return toDto(content);
+    public Page<ResourceOutDto> findByStaffIdAndDescriptionLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
+        return resourceRepository.findByStaffIdAndDescriptionLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(resourceDtoTransformer::toDto);
     }
 
-    private List<ResourceOutDto> toDto(@NonNull final List<Resource> content) {
-        return content.stream().map(resourceDtoTransformer::toDto).collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<ResourceOutDto> findByDepartmentId(@NonNull final Pageable pageable) {
+        return resourceRepository.findByDepartmentId(securityUtils.getAuthDepId(), pageable).map(resourceDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ResourceOutDto> findByDepartmentIdAndDescriptionLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
+        return resourceRepository.findByDepartmentIdAndDescriptionLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(resourceDtoTransformer::toDto);
+    }
+
+
+    //--------------------------------ADMIN---------------------------------
+
+    @Transactional(readOnly = true)
+    public Page<ResourceOutDto> findAll(@NonNull final Pageable pageable) {
+        return resourceRepository.findAll(pageable).map(resourceDtoTransformer::toDto);
     }
 }

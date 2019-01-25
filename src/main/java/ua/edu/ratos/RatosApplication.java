@@ -10,8 +10,23 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+
 import java.util.Date;
 
+/**
+ * This is a web-based educational system for knowledge control embeddable to LMS (Learning Management Systems) named
+ * e-RATOS (Embeddable Remote Automatised Teaching and Learning System); <br/>
+ * <b>Features:</b>
+ * <ul>
+ * <li>Embeddable tool provider via LTI 1.x;</li>
+ * <li>Unlimited test banks and huge test sets per learning session;</li>
+ * <li>5 tried-and-true types of exercises;</li>
+ * <li>Control and educational learning sessions;</li>
+ * <li>Extensive reports on tests outcomes;</li>
+ * <li>Configurable learning schemes: exercise sequence strategies, grading strategies, etc.</li>
+ * </ul>
+ * @author Andrey P.
+ */
 @Slf4j
 @SpringBootApplication()
 public class RatosApplication {
@@ -26,13 +41,16 @@ public class RatosApplication {
 	@Value("${spring.profiles.active}")
 	private String profile;
 
+/*	@Autowired
+	private SchemesGenerator schemesGenerator;*/
+
 	public static void main(String[] args) {
 		SpringApplication.run(RatosApplication.class, args);
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void bootstrap() throws Exception {
-		log.debug("Profile :: {}", profile);
+		log.debug("Profile = {}", profile);
 
 		if ("demo".equals(profile))  {
 			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
@@ -40,7 +58,11 @@ public class RatosApplication {
 			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
 					new ClassPathResource("script/demo/init.sql"));
 			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
-					new ClassPathResource("script/demo/populate.sql"));
+					new ClassPathResource("script/demo/samples/modes.sql"));
+		/*	ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
+					new ClassPathResource("script/demo/samples/themes.sql"));
+			ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
+					new ClassPathResource("script/demo/samples/groups.sql"));*/
 			log.debug("Data initialized for h2 demo profile, see /h2-console endpoint for info");
 		}
 
@@ -53,6 +75,9 @@ public class RatosApplication {
 					new ClassPathResource("script/prod/populate.sql"));
 			log.debug("Data initialized for mysql dev profile");
 		}
+
+		//  Generate sample
+		//schemesGenerator.generate(100);
 		log.info("Launched ratos app {}", new Date());
 	}
 }

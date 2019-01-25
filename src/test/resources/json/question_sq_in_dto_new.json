@@ -6,6 +6,7 @@
   "langId":1,
   "helpId":1,
   "resourcesIds":[1],
+  "required":false,
   "answers":[
     {
       "phraseId":1,

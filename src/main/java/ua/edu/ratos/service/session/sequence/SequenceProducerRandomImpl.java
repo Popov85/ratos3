@@ -29,7 +29,7 @@ public class SequenceProducerRandomImpl implements SequenceProducer{
         List<QuestionDomain> result = new ArrayList<>();
         for (SchemeTheme schemeTheme : schemeThemes) {
             final Long themeId = schemeTheme.getTheme().getThemeId();
-            final Set<SchemeThemeSettings> settings = schemeTheme.getSchemeThemeSettings();
+            final Set<SchemeThemeSettings> settings = schemeTheme.getSettings();
             final List<QuestionDomain> themeResult = sequenceMapper.getList(themeId, settings);
             result.addAll(themeResult);
         }

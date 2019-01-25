@@ -8,30 +8,43 @@ import ua.edu.ratos.dao.repository.AnswerFBMQRepository;
 import ua.edu.ratos.service.dto.in.AnswerFBMQInDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class AnswerFBMQService {
 
-    @Autowired
+    private static final String ANSWER_NOT_FOUND = "The requested Answer FBMQ not found, answerId = ";
+
     private AnswerFBMQRepository answerRepository;
 
+    private DtoAnswerTransformer dtoAnswerTransformer;
+
     @Autowired
-    private DtoAnswerTransformer transformer;
+    public void setAnswerRepository(AnswerFBMQRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
+
+    @Autowired
+    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
+        this.dtoAnswerTransformer = dtoAnswerTransformer;
+    }
+
 
     @Transactional
-    public Long save(@NonNull AnswerFBMQInDto dto) {
-        return answerRepository.save(transformer.toEntity(dto)).getAnswerId();
+    public Long save(@NonNull final Long questionId, @NonNull final AnswerFBMQInDto dto) {
+        return answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto)).getAnswerId();
     }
 
     @Transactional
-    public void update(@NonNull Long answerId, @NonNull AnswerFBMQInDto dto) {
-        if (!answerRepository.existsById(answerId))
-            throw new RuntimeException("Failed to update answer fbmq: ID does not exist");
-        answerRepository.save(transformer.toEntity(answerId, dto));
+    public void update(@NonNull final Long questionId, @NonNull AnswerFBMQInDto dto) {
+        if (dto.getAnswerId()==null) throw new RuntimeException("Answer FBMQ must have answerId to be updated");
+        answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto));
     }
 
     @Transactional
-    public void deleteById(@NonNull Long answerId) {
-        answerRepository.findById(answerId).get().setDeleted(true);
+    public void deleteById(@NonNull final Long answerId) {
+        answerRepository.findById(answerId).orElseThrow(() -> new EntityNotFoundException(ANSWER_NOT_FOUND + answerId))
+                .setDeleted(true);
     }
 
 }

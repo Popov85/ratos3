@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import javax.persistence.*;
 @Table(name = "four_point")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class FourPointGrading {
 
     @Id
@@ -63,5 +67,4 @@ public class FourPointGrading {
         }
         return new GradedResult(grade>2, grade);
     }
-
 }

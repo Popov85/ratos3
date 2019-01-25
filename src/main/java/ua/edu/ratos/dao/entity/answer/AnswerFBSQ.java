@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Free-word answers, only one blank to fill in is acceptable, within this blank several words are acceptable
+ * Free-word answers, only one blank to fill in is acceptable, within this blank several words are acceptable.
  * @author Andrey P.
  */
 @Setter

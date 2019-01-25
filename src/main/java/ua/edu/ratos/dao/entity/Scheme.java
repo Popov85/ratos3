@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.grade.Grading;
@@ -17,12 +18,13 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "themes", "groups"})
+@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "themes", "groups", "access"})
 @Entity
 @Table(name="scheme")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class Scheme {
 
     @Id
@@ -70,12 +72,9 @@ public class Scheme {
     @Column(name="is_deleted")
     private boolean deleted;
 
-    /**
-     * SchemeDomain becomes completed as soon as at least one ThemeDomain is associated with it and all other settingsDomain are set;
-     * if the last ThemeDomain associated with a SchemeDomain gets deleted, the SchemeDomain becomes incomplete
-     */
-    @Column(name="is_completed")
-    private boolean completed;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "access_id")
+    private Access access;
 
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -87,24 +86,16 @@ public class Scheme {
         schemeTheme.setScheme(this);
     }
 
-    public void removeSchemeTheme(@NonNull SchemeTheme schemeTheme) {
-        this.themes.remove(schemeTheme);
-        schemeTheme.setScheme(null);
-    }
-
     public void clearSchemeTheme() {
         this.themes.clear();
     }
 
-    @OneToMany(mappedBy = "scheme", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "group_scheme", joinColumns = @JoinColumn(name = "scheme_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<GroupScheme> groups = new HashSet<>();
+    private Set<Group> groups = new HashSet<>();
 
     public void addGroup(Group group) {
-        GroupScheme groupScheme = new GroupScheme();
-        groupScheme.setGroup(group);
-        groupScheme.setScheme(this);
-        groupScheme.setEnabled(true);
-        this.groups.add(groupScheme);
+        this.groups.add(group);
     }
 }

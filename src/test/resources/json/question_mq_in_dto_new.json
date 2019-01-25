@@ -1,12 +1,9 @@
 {
-  "questionId":null,
   "question":"Question #1",
   "level":1,
   "themeId":1,
   "questionTypeId":4,
   "langId":1,
-  "helpId":0,
-  "resourcesIds":null,
   "answers":[
     {
       "leftPhraseId":1,

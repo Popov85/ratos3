@@ -13,14 +13,12 @@ import javax.persistence.*;
 @Table(name = "staff")
 public class Staff {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "staff_id")
     private Long staffId;
 
     @MapsId
     @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "staff_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

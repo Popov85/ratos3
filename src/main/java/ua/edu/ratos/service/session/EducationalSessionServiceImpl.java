@@ -12,7 +12,7 @@ import ua.edu.ratos.service.domain.ModeDomain;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
-import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -95,7 +95,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
      */
     @Override
     public HelpDomain help(@NonNull final Long questionId, @NonNull final SessionData sessionData) {
-        QuestionOutDto question = sessionData.getCurrentBatch().getBatchMap().get(questionId);
+        QuestionSessionOutDto question = sessionData.getCurrentBatch().get().getBatchMap().get(questionId);
         if (question==null) throw new IllegalStateException(NO_SUCH_QUESTION);
         ModeDomain modeDomain = sessionData.getSchemeDomain().getModeDomain();
         if (!modeDomain.isHelpable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
@@ -121,12 +121,12 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
      */
     @Override
     public void skip(@NonNull final Long questionId, @NonNull final SessionData sessionData) {
-        QuestionOutDto question = sessionData.getCurrentBatch().getBatchMap().get(questionId);
+        QuestionSessionOutDto question = sessionData.getCurrentBatch().get().getBatchMap().get(questionId);
         if (question==null) throw new IllegalStateException(NO_SUCH_QUESTION);
         ModeDomain modeDomain = sessionData.getSchemeDomain().getModeDomain();
         if (!modeDomain.isSkipable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
-        QuestionOutDto questionToRemove = sessionData.getCurrentBatch().getBatchMap().get(questionId);
-        sessionData.getCurrentBatch().getBatch().remove(questionToRemove);
+        QuestionSessionOutDto questionToRemove = sessionData.getCurrentBatch().get().getBatchMap().get(questionId);
+        sessionData.getCurrentBatch().get().getBatch().remove(questionToRemove);
         shiftService.doShift(questionId, sessionData);
         // MetaData processing
         metaDataService.createOrUpdateSkip(sessionData, questionId);
@@ -142,7 +142,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     @Override
     @Transactional
     public void star(final byte star, @NonNull final Long questionId, @NonNull final Long userId, @NonNull final SessionData sessionData) {
-        QuestionOutDto question = sessionData.getCurrentBatch().getBatchMap().get(questionId);
+        QuestionSessionOutDto question = sessionData.getCurrentBatch().get().getBatchMap().get(questionId);
         if (question==null) throw new IllegalStateException(NO_SUCH_QUESTION);
         ModeDomain modeDomain = sessionData.getSchemeDomain().getModeDomain();
         if (!modeDomain.isStarrable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);

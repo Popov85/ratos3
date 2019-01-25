@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerMQDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionMQOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionMQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseMQ;
 import java.util.HashSet;
 import java.util.Optional;
@@ -60,9 +60,9 @@ public class QuestionMQDomain extends QuestionDomain {
     }
 
     @Override
-    public QuestionMQOutDto toDto() {
+    public QuestionMQSessionOutDto toDto() {
         ModelMapper modelMapper = new ModelMapper();
-        QuestionMQOutDto dto = modelMapper.map(this, QuestionMQOutDto.class);
+        QuestionMQSessionOutDto dto = modelMapper.map(this, QuestionMQSessionOutDto.class);
         dto.setLeftPhrases(new HashSet<>()).setLeftPhrases(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
         dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);

@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.domain.ThemeDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @Setter
 @Getter
-@ToString(exclude = {"themeDomain", "helpDomain", "resourceDomains"})
+@ToString(callSuper = true, exclude = {"themeDomain", "helpDomain", "resourceDomains"})
 @Accessors(chain = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public abstract class QuestionDomain {
@@ -45,6 +45,8 @@ public abstract class QuestionDomain {
 
     protected Set<ResourceDomain> resourceDomains = new HashSet<>();
 
+    protected boolean required;
+
     @JsonIgnore
     public Optional<HelpDomain> getHelpDomain() {
         return Optional.ofNullable(helpDomain);
@@ -66,11 +68,11 @@ public abstract class QuestionDomain {
     }
 
     /**
-     * Transforms domain object to DTO object.
+     * Transforms domain object to DTO object for learning session.
      * DTO object is different from domain object in that is hides correct answers as well as help
      * @return DTO question object for learning session
      */
-    public abstract QuestionOutDto toDto();
+    public abstract QuestionSessionOutDto toDto();
 
     @Override
     public boolean equals(Object o) {

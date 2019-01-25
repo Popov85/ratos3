@@ -8,7 +8,7 @@ import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.domain.PreviousBatchResult;
-import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.utils.CollectionShuffler;
@@ -35,32 +35,53 @@ public class BatchBuilder {
     private CollectionShuffler collectionShuffler;
 
 
+    /**
+     * Build a BatchOutDto at the session start (first batch)
+     * Before calling this method make sure that there are some questions left, that is
+     * sessionData.hasMoreQuestions() returns true, otherwise it will throw IllegalStateException
+     * with message "Wrong API usage: no more questions!"
+     * @param sessionData SessionData object associated with the current http(s)-session
+     * @return next BatchOutDto
+     */
     public BatchOutDto build(@NonNull final SessionData sessionData) {
+        if (!sessionData.hasMoreTime()) throw new IllegalStateException("Wrong API usage: no more questions");
         final BatchOutDto batchOutDto = buildRegular(sessionData);
-        log.debug("BatchOutDto is built :: {}", batchOutDto);
+        log.debug("BatchOutDto is built = {}", batchOutDto);
         return batchOutDto;
     }
 
+    /**
+     * Build a BatchOutDto in the middle of the Session (second+ batch with some responses from user)
+     * The same method like previous overloaded method, but included the possibility to include results of previous batch
+     * Before calling this method make sure that there are some questions left, that is
+     * sessionData.hasMoreQuestions() returns true, otherwise it will throw RuntimeException
+     * with message "Wrong API usage: no more questions!"
+     * @param sessionData SessionData object associated with the current http(s)-session
+     * @param batchEvaluated only needed when we provide right answers in between batches
+     * @return next BatchOutDto
+     */
     public BatchOutDto build(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
-        final BatchOutDto batchOutDto = buildRegular(sessionData);
+        BatchOutDto batchOutDto = build(sessionData);
         if (sessionData.getSchemeDomain().getModeDomain().isRightAnswer()) {
             final double currentScore = progressDataService.getCurrentScore(sessionData);
             final double effectiveScore = progressDataService.getEffectiveScore(sessionData);
             PreviousBatchResult previousBatchResult =
                     new PreviousBatchResult(currentScore, effectiveScore, batchEvaluated);
             batchOutDto.setPreviousBatchResult(previousBatchResult);
-            log.debug("Extended BatchOutDto is built :: {}", batchOutDto);
+            log.debug("PreviousBatchResult is added to BatchOutDto = {}", previousBatchResult);
             return batchOutDto;
         }
-        log.debug("Regular BatchOutDto is built :: {}", batchOutDto);
         return batchOutDto;
     }
 
 
-    private BatchOutDto buildRegular(@NonNull final SessionData sessionData) {
-        final List<QuestionOutDto> batchQuestions = getBatchQuestions(sessionData);
 
-        if (appProperties.getSession().isShuffle_enabled())
+    private BatchOutDto buildRegular(@NonNull final SessionData sessionData) {
+
+        final List<QuestionSessionOutDto> batchQuestions = getBatchQuestions(sessionData);
+
+        // shuffle answers if enabled and where appropriate
+        if (appProperties.getSession()!=null && appProperties.getSession().isShuffle_enabled())
             batchQuestions.forEach(q->{ if (q.isShufflingSupported()) q.shuffle(collectionShuffler);});
 
         final int currentBatchSize = batchQuestions.size();
@@ -81,19 +102,17 @@ public class BatchBuilder {
                 .build();
     }
 
-
-
-    private List<QuestionOutDto> getBatchQuestions(@NonNull final SessionData sessionData) {
+    private List<QuestionSessionOutDto> getBatchQuestions(@NonNull final SessionData sessionData) {
         final List<QuestionDomain> questionDomains = sessionData.getQuestionDomains();
         final int size = questionDomains.size();
         final int currentIndex = sessionData.getCurrentIndex();
-        if (currentIndex >= size) throw new RuntimeException("Ooops, no more questions!");
+        if (currentIndex >= size) throw new RuntimeException("Ops, no more questions!");
         final int questionsPerBatch = sessionData.getQuestionsPerBatch();
         List<QuestionDomain> result;
         if (currentIndex + questionsPerBatch<= size) {// normal
             result = new ArrayList<>(questionDomains.subList(currentIndex, currentIndex+questionsPerBatch));
         } else {// to the end
-            result =  new ArrayList<>(questionDomains.subList(currentIndex, size));
+            result = new ArrayList<>(questionDomains.subList(currentIndex, size));
         }
         return result.stream().map(q->q.toDto()).collect(Collectors.toList());
     }
@@ -107,13 +126,8 @@ public class BatchBuilder {
         return timeLeft;
     }
 
-    /**
-     * -1 if is not limited
-     * @param sessionData
-     * @param questionsPerBatch
-     * @return time limit in sec
-     */
     private long getBatchTimeLimit(@NonNull final SessionData sessionData, int questionsPerBatch) {
+        // Return -1 if time is not limited
         long batchTimeLimit = -1; // in sec
         final long perQuestionTimeLimit = sessionData.getPerQuestionTimeLimit();
         if (timingService.isLimited(perQuestionTimeLimit)) {
@@ -130,7 +144,7 @@ public class BatchBuilder {
     }
 
     private int getBatchesLeft(@NonNull final SessionData sessionData, int questionsPerBatch) {
-        final int currentIndex = sessionData.getCurrentIndex();
+        final int currentIndex = sessionData.getCurrentIndex()+questionsPerBatch;
         final int totalQuestionsNumber = sessionData.getQuestionDomains().size();
         if (currentIndex>=totalQuestionsNumber-1) return 0;
         int quantity = (totalQuestionsNumber - currentIndex)/questionsPerBatch;

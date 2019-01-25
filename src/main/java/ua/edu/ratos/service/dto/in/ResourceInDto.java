@@ -24,7 +24,4 @@ public class ResourceInDto {
     @NotBlank(message = "{dto.string.required}")
     @Size(min = 1, max = 200, message = "{dto.string.invalid}")
     private String description;
-
-    @Positive(message = "{dto.fk.required}")
-    private long staffId;
 }

@@ -2,6 +2,7 @@ package ua.edu.ratos.service.transformer.entity_to_dto;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
@@ -9,6 +10,9 @@ import ua.edu.ratos.service.dto.out.SettingsOutDto;
 @Slf4j
 @Component
 public class SettingsDtoTransformer {
+
+    @Autowired
+    private StaffMinDtoTransformer staffMinDtoTransformer;
 
     public SettingsOutDto toDto(@NonNull final Settings entity) {
         return new SettingsOutDto()
@@ -22,6 +26,7 @@ public class SettingsDtoTransformer {
                 .setLevel3Coefficient(entity.getLevel3Coefficient())
                 .setQuestionsPerSheet(entity.getQuestionsPerSheet())
                 .setSecondsPerQuestion(entity.getSecondsPerQuestion())
-                .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion());
+                .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion())
+                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
     }
 }

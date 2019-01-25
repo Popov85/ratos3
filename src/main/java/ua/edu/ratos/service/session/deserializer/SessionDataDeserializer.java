@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.dto.session.question.QuestionOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
     }
 
     private BatchOutDto getCurrentBatch(JsonNode node) throws IOException {
-        List<QuestionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionOutDto>>() {})
+        List<QuestionSessionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionSessionOutDto>>() {})
                 .readValue(node.path("batch"));
         ModeDomain modeDomain = objectMapper.treeToValue(node.path("modeDomain"), ModeDomain.class);
         long timeLeft = node.path("timeLeft").asLong();

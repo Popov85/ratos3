@@ -42,6 +42,7 @@ delete from grading;
 
 delete from lms_course;
 delete from course;
+delete from access_level;
 delete from student;
 delete from staff;
 delete from user_role;
@@ -64,7 +65,6 @@ ALTER TABLE department ALTER COLUMN dep_id RESTART WITH 1;
 ALTER TABLE role ALTER COLUMN role_id RESTART WITH 1;
 ALTER TABLE position ALTER COLUMN pos_id RESTART WITH 1;
 ALTER TABLE user ALTER COLUMN user_id RESTART WITH 1;
-ALTER TABLE staff ALTER COLUMN staff_id RESTART WITH 1;
 ALTER TABLE course ALTER COLUMN course_id RESTART WITH 1;
 ALTER TABLE scheme ALTER COLUMN scheme_id RESTART WITH 1;
 ALTER TABLE mode ALTER COLUMN mode_id RESTART WITH 1;
@@ -99,6 +99,8 @@ ALTER TABLE lms ALTER COLUMN lms_id RESTART WITH 1;
 ALTER TABLE lms_origin ALTER COLUMN origin_id RESTART WITH 1;
 ALTER TABLE lti_version ALTER COLUMN version_id RESTART WITH 1;
 ALTER TABLE lti_credentials ALTER COLUMN credentials_id RESTART WITH 1;
+
+ALTER TABLE access_level ALTER COLUMN access_id RESTART WITH 1;
 
 
 

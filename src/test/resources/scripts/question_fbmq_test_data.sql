@@ -1,4 +1,5 @@
-insert into theme (name, course_id) values('Theme #1', 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #1', 1, 1, 1);
+
 insert into phrase(phrase, staff_id, last_used) values ('accepted phrase #1', 1, CURRENT_TIMESTAMP);
 insert into phrase(phrase, staff_id, last_used) values ('accepted phrase #2', 1, CURRENT_TIMESTAMP);
 insert into phrase(phrase, staff_id, last_used) values ('accepted phrase #3', 1, CURRENT_TIMESTAMP);

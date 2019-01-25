@@ -36,6 +36,14 @@ public abstract class Question {
 
     @Column(name = "level")
     protected byte level;
+    /**
+     * Required questions are guaranteed to be included
+     * into the learning session within their theme!
+     * Do not overuse this feature!
+     * 1-5 required questions per theme of total 10 for session is OK
+     */
+    @Column(name = "is_required")
+    protected boolean required;
 
     @Column(name = "is_deleted")
     protected boolean deleted;
@@ -120,7 +128,7 @@ public abstract class Question {
 
     @Override
     public String toString() {
-        return "QuestionDomain{" +
+        return "Question{" +
                 "questionId=" + questionId +
                 ", question='" + question + '\'' +
                 ", level=" + level +

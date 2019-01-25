@@ -1,14 +1,14 @@
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, is_deleted, is_completed, grading_id)
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, is_deleted, grading_id, access_id)
 values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 0, 1, 1);
 
-insert into theme (name, course_id) values('IT theme #1', 1);
-insert into theme (name, course_id) values('IT theme #2', 1);
-insert into theme (name, course_id) values('IT theme #3', 1);
-insert into theme (name, course_id) values('IT theme #4', 1);
-insert into theme (name, course_id) values('IT theme #5', 1);
-insert into theme (name, course_id) values('IT theme #6', 1);
-insert into theme (name, course_id) values('IT theme #7', 1);
-insert into theme (name, course_id) values('IT theme #8', 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #1', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #2', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #3', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #4', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #5', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #6', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #7', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id) values('Theme #8', 1, 1, 1);
 
 insert into scheme_theme(scheme_id, theme_id, theme_order) values(1, 1, 0);
 insert into scheme_theme(scheme_id, theme_id, theme_order) values(1, 2, 1);

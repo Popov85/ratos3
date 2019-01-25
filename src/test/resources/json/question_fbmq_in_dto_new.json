@@ -1,5 +1,4 @@
 {
-  "questionId":null,
   "question":"Question #1",
   "level":1,
   "themeId":1,
@@ -7,23 +6,21 @@
   "langId":1,
   "helpId":1,
   "resourcesIds":[1,2],
+  "required":true,
   "answers":[
     {
-      "answerId":null,
       "phrase":"phrase to hide #1",
       "occurrence":2,
       "setId":1,
       "phrasesIds":[1]
     },
     {
-      "answerId":null,
       "phrase":"phrase to hide #2",
       "occurrence":1,
       "setId":1,
       "phrasesIds":[2,3]
     },
     {
-      "answerId":null,
       "phrase":"phrase to hide #3",
       "occurrence":1,
       "setId":1,

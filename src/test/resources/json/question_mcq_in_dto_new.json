@@ -1,5 +1,4 @@
 {
-  "questionId":null,
   "question":"Question #1",
   "level":1,
   "themeId":1,
@@ -7,38 +6,31 @@
   "langId":1,
   "helpId":1,
   "resourcesIds":null,
+  "required":false,
   "answers":[
     {
-      "answerId":null,
       "answer":"answer #1",
       "percent":100,
       "isRequired":true,
-      "resourceId":0,
-      "questionId":null
+      "resourceId":0
     },
     {
-      "answerId":null,
       "answer":"answer #2",
       "percent":0,
       "isRequired":false,
-      "resourceId":0,
-      "questionId":null
+      "resourceId":0
     },
     {
-      "answerId":null,
       "answer":"answer #3",
       "percent":0,
       "isRequired":false,
-      "resourceId":0,
-      "questionId":null
+      "resourceId":0
     },
     {
-      "answerId":null,
       "answer":"answer #4",
       "percent":0,
       "isRequired":false,
-      "resourceId":0,
-      "questionId":null
+      "resourceId":0
     }
   ]
 }

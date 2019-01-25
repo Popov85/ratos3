@@ -5,23 +5,19 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 
-@ToString
+
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class PhraseInDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long phraseId;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    @Size(min = 1, max = 200, message = "{dto.string.invalid}")
     private String phrase;
-
-    @Positive(message = "{dto.fk.required}")
-    private long staffId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @PositiveOrZero(message = "{dto.fk.optional}")

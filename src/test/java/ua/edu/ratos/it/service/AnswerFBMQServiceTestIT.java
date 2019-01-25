@@ -36,7 +36,6 @@ public class AnswerFBMQServiceTestIT {
     public static final String ACCEPTED_PHRASE2 = "Phrase #2";
     public static final String ACCEPTED_PHRASE3 = "Phrase #3";
 
-
     @PersistenceContext
     private EntityManager em;
 
@@ -47,17 +46,13 @@ public class AnswerFBMQServiceTestIT {
     private ObjectMapper objectMapper;
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_fbmq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_fbmq_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
-        answerService.save(dto);
-        final AnswerFBMQ foundAnswer =
-            (AnswerFBMQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        answerService.save(1L, dto);
+        final AnswerFBMQ foundAnswer = (AnswerFBMQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(PHRASE, foundAnswer.getPhrase());
         Assert.assertEquals(1, foundAnswer.getOccurrence());
@@ -68,17 +63,13 @@ public class AnswerFBMQServiceTestIT {
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBMQInDto dto = objectMapper.readValue(json, AnswerFBMQInDto.class);
-        answerService.update(1l, dto);
-        final AnswerFBMQ foundAnswer =
-            (AnswerFBMQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        answerService.update(1L, dto);
+        final AnswerFBMQ foundAnswer = (AnswerFBMQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(PHRASE_UPD, foundAnswer.getPhrase());
         Assert.assertEquals(2, foundAnswer.getOccurrence());
@@ -89,8 +80,7 @@ public class AnswerFBMQServiceTestIT {
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_fbmq_test_data.sql", "/scripts/answer_fbmq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteTest() {
         Assert.assertNotNull(em.find(AnswerFBMQ.class, 1L));

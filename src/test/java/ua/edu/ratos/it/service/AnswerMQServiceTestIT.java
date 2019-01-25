@@ -32,7 +32,6 @@ public class AnswerMQServiceTestIT {
     public static final String RIGHT_PHRASE = "right phrase";
     public static final String RIGHT_PHRASE_UPDATE = "right phrase updated";
 
-
     @PersistenceContext
     private EntityManager em;
 
@@ -44,34 +43,26 @@ public class AnswerMQServiceTestIT {
 
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_mq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mq_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
-        answerService.save(dto);
-        final AnswerMQ foundAnswer =
-            (AnswerMQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        answerService.save(1L, dto);
+        final AnswerMQ foundAnswer = (AnswerMQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(LEFT_PHRASE, foundAnswer.getLeftPhrase().getPhrase());
         Assert.assertEquals(RIGHT_PHRASE, foundAnswer.getRightPhrase().getPhrase());
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerMQInDto dto = objectMapper.readValue(json, AnswerMQInDto.class);
         answerService.update(1L, dto);
-        final AnswerMQ foundAnswer =
-            (AnswerMQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        final AnswerMQ foundAnswer = (AnswerMQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(LEFT_PHRASE, foundAnswer.getLeftPhrase().getPhrase());
         Assert.assertEquals(RIGHT_PHRASE_UPDATE, foundAnswer.getRightPhrase().getPhrase());
@@ -79,8 +70,7 @@ public class AnswerMQServiceTestIT {
     }
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_mq_test_data.sql", "/scripts/answer_mq_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteByIdTest() throws Exception {
         Assert.assertNotNull(em.find(AnswerMQ.class, 1L));

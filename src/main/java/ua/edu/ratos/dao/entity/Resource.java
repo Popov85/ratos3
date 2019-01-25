@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,13 +13,15 @@ import java.util.Objects;
 
 @Setter
 @Getter
-@ToString(exclude = "staff")
 @NoArgsConstructor
+@ToString(exclude = "staff")
 @Entity
 @Table(name = "resource")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@DynamicUpdate
 public class Resource {
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")

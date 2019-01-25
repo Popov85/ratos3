@@ -13,23 +13,34 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public  class QuestionDomainTransformer {
+public class QuestionDomainTransformer {
 
-    @Autowired
     private AnswerDomainTransformer answerDomainTransformer;
 
-    @Autowired
     private HelpDomainTransformer helpDomainTransformer;
 
-    @Autowired
     private ResourceDomainTransformer resourceDomainTransformer;
+
+    @Autowired
+    public void setAnswerDomainTransformer(AnswerDomainTransformer answerDomainTransformer) {
+        this.answerDomainTransformer = answerDomainTransformer;
+    }
+
+    @Autowired
+    public void setHelpDomainTransformer(HelpDomainTransformer helpDomainTransformer) {
+        this.helpDomainTransformer = helpDomainTransformer;
+    }
+
+    @Autowired
+    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
+        this.resourceDomainTransformer = resourceDomainTransformer;
+    }
 
     public QuestionFBMQDomain toDomain(@NonNull final QuestionFBMQ entity) {
         QuestionFBMQDomain domain = new QuestionFBMQDomain();
         mapDomain(entity, domain);
         domain.setAnswers(new HashSet<>());
         entity.getAnswers().forEach(a-> domain.addAnswer(answerDomainTransformer.toDomain(a)));
-        log.debug("Converted FBMQ toDomain = {}", domain);
         return domain;
     }
 
@@ -37,7 +48,6 @@ public  class QuestionDomainTransformer {
         QuestionFBSQDomain domain = new QuestionFBSQDomain();
         mapDomain(entity, domain);
         domain.setAnswer(answerDomainTransformer.toDomain(entity.getAnswer()));
-        log.debug("Converted FBSQ toDomain = {}", domain);
         return domain;
     }
 
@@ -47,7 +57,6 @@ public  class QuestionDomainTransformer {
         domain.setSingle(entity.isSingle());
         domain.setAnswers(new HashSet<>());
         entity.getAnswers().forEach(a-> domain.addAnswer(answerDomainTransformer.toDomain(a)));
-        log.debug("Converted MCQ toDomain = {}", domain);
         return domain;
     }
 
@@ -56,7 +65,6 @@ public  class QuestionDomainTransformer {
         mapDomain(entity, domain);
         domain.setAnswers(new HashSet<>());
         entity.getAnswers().forEach(a -> domain.addAnswer(answerDomainTransformer.toDomain(a)));
-        log.debug("Converted MQ toDomain = {}", domain);
         return domain;
     }
 
@@ -64,7 +72,6 @@ public  class QuestionDomainTransformer {
         QuestionSQDomain domain = new QuestionSQDomain();
         mapDomain(entity, domain);
         entity.getAnswers().forEach(a -> domain.add(answerDomainTransformer.toDomain(a)));
-        log.debug("Converted SQ toDomain = {}", domain);
         return domain;
     }
 
@@ -73,6 +80,7 @@ public  class QuestionDomainTransformer {
         domain.setQuestionId(entity.getQuestionId());
         domain.setQuestion(entity.getQuestion());
         domain.setLevel(entity.getLevel());
+        domain.setRequired(entity.isRequired());
 
         ThemeDomain themeDomain = new ThemeDomain();
         themeDomain.setThemeId(entity.getTheme().getThemeId());
@@ -82,8 +90,6 @@ public  class QuestionDomainTransformer {
         domain.setLang(entity.getLang().getAbbreviation());
         domain.setType(entity.getType().getTypeId());
 
-        domain.setLang(entity.getLang().getAbbreviation());
-        domain.setType(entity.getType().getTypeId());
         domain.setHelpDomain((entity.getHelp().isPresent())
                 ? helpDomainTransformer.toDomain(entity.getHelp().get()) : null);
         if (entity.getResources()!=null) {
@@ -94,6 +100,7 @@ public  class QuestionDomainTransformer {
         } else {
             domain.setResourceDomains(Collections.emptySet());
         }
+        domain.setPartialResponseAllowed(entity.isPartialResponseAllowed());
     }
     
 }

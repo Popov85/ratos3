@@ -5,12 +5,11 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
+@SuppressWarnings("SpellCheckingInspection")
 public class ModeInDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,9 +18,6 @@ public class ModeInDto {
     @NotBlank(message = "{dto.string.required}")
     @Size(min = 2, max = 50, message = "{dto.string.invalid}")
     private String name;
-
-    @Positive(message = "{dto.fk.required}")
-    private long staffId;
 
     private boolean helpable;
 
@@ -39,5 +35,5 @@ public class ModeInDto {
 
     private boolean reportable;
 
-    private boolean deleted;
+    private boolean starrable;
 }

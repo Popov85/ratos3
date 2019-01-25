@@ -19,11 +19,12 @@ import java.net.URI;
  */
 @Slf4j
 @RestController
-@RequestMapping("/instructor/question/answer-mcq")
+@RequestMapping("/instructor")
 public class AnswerMCQController {
 
-    @Autowired
     private AnswerMCQInDtoValidator validator;
+
+    private AnswerMCQService answerService;
 
     @InitBinder
     public void dataBinding(WebDataBinder binder) {
@@ -31,29 +32,34 @@ public class AnswerMCQController {
     }
 
     @Autowired
-    private AnswerMCQService answerService;
+    public void setValidator(AnswerMCQInDtoValidator validator) {
+        this.validator = validator;
+    }
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated(AnswerMCQInDto.NewAndUpdate.class) @RequestBody AnswerMCQInDto dto) {
-        final Long answerId = answerService.save(dto);
-        log.debug("Saved answer mcq :: {} ", answerId);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(answerId).toUri();
+    @Autowired
+    public void setAnswerService(AnswerMCQService answerService) {
+        this.answerService = answerService;
+    }
+
+    @PostMapping(value = "/questions/{questionId}/answer-mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerMCQInDto dto) {
+        final Long answerId = answerService.save(questionId, dto);
+        log.debug("Saved Answer MCQ, answerId = {}", answerId);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(answerId).toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/questions/{questionId}/answers-mcq/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long answerId, @Validated(AnswerMCQInDto.NewAndUpdate.class) @RequestBody AnswerMCQInDto dto) {
-        answerService.update(answerId, dto);
-        log.debug("Updated answer mcq ID :: {}", answerId);
+    public void update(@PathVariable Long questionId, @PathVariable Long answerId, @Validated @RequestBody AnswerMCQInDto dto) {
+        answerService.update(questionId, dto);
+        log.debug("Updated Answer MCQ, answerId = {}", answerId);
     }
 
-    @DeleteMapping("/{answerId}")
+    @DeleteMapping("/questions/{questionId}/answers-mcq/{answerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long answerId) {
+    public void delete(@PathVariable Long questionId, @PathVariable Long answerId) {
         answerService.deleteById(answerId);
-        log.info("Deleted answer mcq ID :: {}", answerId);
+        log.debug("Deleted Answer MCQ from questionId = {}, answerId = {}", questionId, answerId);
     }
 }

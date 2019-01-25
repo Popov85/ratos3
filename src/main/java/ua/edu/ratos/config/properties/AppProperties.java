@@ -11,18 +11,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("ratos")
 public class AppProperties {
 
-    private Data data;
-
     private LTI lti;
 
     private Session session;
-
-    @Getter
-    @Setter
-    public static class Data {
-        private int collection_size;
-        private int table_size;
-    }
 
     @Getter
     @Setter

@@ -16,6 +16,7 @@ import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.AnswerFBSQService;
 import ua.edu.ratos.service.dto.in.AnswerFBSQInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
 
 @RunWith(SpringRunner.class)
@@ -32,29 +33,24 @@ public class AnswerFBSQServiceTestIT {
     public static final String PHRASE3_UPD = "Phrase #3";
     public static final long SETTINGS_ID_UPD = 2L;
 
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     private AnswerFBSQService answerService;
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private ObjectMapper objectMapper;
 
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/answer_fbsq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/answer_fbsq_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_UPD);
         AnswerFBSQInDto dto = objectMapper.readValue(json, AnswerFBSQInDto.class);
-        answerService.update(1L, dto);
-        final AnswerFBSQ foundAnswer =
-            (AnswerFBSQ) em.createQuery(FIND)
-                .setParameter("answerId",1L)
-                .getSingleResult();
+        answerService.update(dto);
+        final AnswerFBSQ foundAnswer = (AnswerFBSQ) em.createQuery(FIND).setParameter("answerId",1L).getSingleResult();
         Assert.assertNotNull(foundAnswer);
         Assert.assertEquals(SETTINGS_ID_UPD, foundAnswer.getSettings().getSettingsId().longValue());
         Assert.assertEquals(3, foundAnswer.getAcceptedPhrases().size());

@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.PhraseDomain;
-import ua.edu.ratos.service.dto.session.answer.AnswerMQOutDto;
+import ua.edu.ratos.service.dto.session.answer.AnswerMQSessionOutDto;
 
 import java.util.Objects;
 
@@ -21,8 +21,8 @@ public class AnswerMQDomain {
 
     private PhraseDomain rightPhraseDomain;
 
-    public AnswerMQOutDto toDto() {
-        return new AnswerMQOutDto()
+    public AnswerMQSessionOutDto toDto() {
+        return new AnswerMQSessionOutDto()
                 .setAnswerId(answerId)
                 .setLeftPhraseDomain(leftPhraseDomain);
     }

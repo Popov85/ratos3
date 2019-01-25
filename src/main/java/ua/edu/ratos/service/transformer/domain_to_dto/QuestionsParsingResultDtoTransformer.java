@@ -2,7 +2,7 @@ package ua.edu.ratos.service.transformer.domain_to_dto;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.service.dto.out.view.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
 import ua.edu.ratos.service.parsers.QuestionsParsingResult;
 

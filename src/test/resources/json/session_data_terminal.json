@@ -131,21 +131,21 @@
         "wordsLimit": 1,
         "symbolsLimit": 10,
         "numeric": false,
-        "typoAllowed": false,
-        "caseSensitive": true
+        "caseSensitive": true,
+        "typoAllowed": false
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 1,
-        "phrase": "PhraseDomain #1"
+        "phraseId": 4,
+        "phrase": "PhraseDomain #4"
       }, {
         "phraseId": 3,
         "phrase": "PhraseDomain #3"
       }, {
+        "phraseId": 1,
+        "phrase": "PhraseDomain #1"
+      }, {
         "phraseId": 2,
         "phrase": "PhraseDomain #2"
-      }, {
-        "phraseId": 4,
-        "phrase": "PhraseDomain #4"
       }
       ]
     },
@@ -188,21 +188,21 @@
         "wordsLimit": 1,
         "symbolsLimit": 10,
         "numeric": false,
-        "typoAllowed": false,
-        "caseSensitive": true
+        "caseSensitive": true,
+        "typoAllowed": false
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 5,
-        "phrase": "PhraseDomain #1 for FBMQ answer #1"
-      }, {
-        "phraseId": 8,
-        "phrase": "PhraseDomain #4 for FBMQ answer #1"
+        "phraseId": 7,
+        "phrase": "PhraseDomain #3 for FBMQ answer #1"
       }, {
         "phraseId": 6,
         "phrase": "PhraseDomain #2 for FBMQ answer #1"
       }, {
-        "phraseId": 7,
-        "phrase": "PhraseDomain #3 for FBMQ answer #1"
+        "phraseId": 8,
+        "phrase": "PhraseDomain #4 for FBMQ answer #1"
+      }, {
+        "phraseId": 5,
+        "phrase": "PhraseDomain #1 for FBMQ answer #1"
       }
       ]
     }, {
@@ -216,21 +216,21 @@
         "wordsLimit": 1,
         "symbolsLimit": 10,
         "numeric": false,
-        "typoAllowed": false,
-        "caseSensitive": true
+        "caseSensitive": true,
+        "typoAllowed": false
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 9,
-        "phrase": "PhraseDomain #1 for FBMQ answer #2"
-      }, {
-        "phraseId": 12,
-        "phrase": "PhraseDomain #4 for FBMQ answer #2"
-      }, {
         "phraseId": 10,
         "phrase": "PhraseDomain #2 for FBMQ answer #2"
       }, {
+        "phraseId": 9,
+        "phrase": "PhraseDomain #1 for FBMQ answer #2"
+      }, {
         "phraseId": 11,
         "phrase": "PhraseDomain #3 for FBMQ answer #2"
+      }, {
+        "phraseId": 12,
+        "phrase": "PhraseDomain #4 for FBMQ answer #2"
       }
       ]
     }, {
@@ -244,21 +244,21 @@
         "wordsLimit": 1,
         "symbolsLimit": 10,
         "numeric": false,
-        "typoAllowed": false,
-        "caseSensitive": true
+        "caseSensitive": true,
+        "typoAllowed": false
       },
       "acceptedPhraseDomains": [{
+        "phraseId": 14,
+        "phrase": "PhraseDomain #2 for FBMQ answer #3"
+      }, {
+        "phraseId": 13,
+        "phrase": "PhraseDomain #1 for FBMQ answer #3"
+      }, {
         "phraseId": 16,
         "phrase": "PhraseDomain #4 for FBMQ answer #3"
       }, {
         "phraseId": 15,
         "phrase": "PhraseDomain #3 for FBMQ answer #3"
-      }, {
-        "phraseId": 13,
-        "phrase": "PhraseDomain #1 for FBMQ answer #3"
-      }, {
-        "phraseId": 14,
-        "phrase": "PhraseDomain #2 for FBMQ answer #3"
       }
       ]
     }, {
@@ -272,21 +272,21 @@
         "wordsLimit": 1,
         "symbolsLimit": 10,
         "numeric": false,
-        "typoAllowed": false,
-        "caseSensitive": true
+        "caseSensitive": true,
+        "typoAllowed": false
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 20,
-        "phrase": "PhraseDomain #4 for FBMQ answer #4"
-      }, {
-        "phraseId": 19,
-        "phrase": "PhraseDomain #3 for FBMQ answer #4"
-      }, {
         "phraseId": 18,
         "phrase": "PhraseDomain #2 for FBMQ answer #4"
       }, {
         "phraseId": 17,
         "phrase": "PhraseDomain #1 for FBMQ answer #4"
+      }, {
+        "phraseId": 19,
+        "phrase": "PhraseDomain #3 for FBMQ answer #4"
+      }, {
+        "phraseId": 20,
+        "phrase": "PhraseDomain #4 for FBMQ answer #4"
       }
       ]
     }
@@ -532,17 +532,17 @@
             "className": "ua.edu.ratos.service.domain.response.ResponseFBMQ",
             "questionId": 3,
             "enteredPhrases": [{
-              "answerId": 1,
-              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #1"
+              "answerId": 4,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #4"
             }, {
               "answerId": 2,
               "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #2"
             }, {
-              "answerId": 4,
-              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #4"
-            }, {
               "answerId": 3,
               "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #3"
+            }, {
+              "answerId": 1,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #1"
             }
             ]
           },
@@ -559,21 +559,21 @@
             "className": "ua.edu.ratos.service.domain.response.ResponseMQ",
             "questionId": 4,
             "matchedPhrases": [{
+              "answerId": 1,
+              "leftPhraseId": 21,
+              "rightPhraseId": 22
+            }, {
               "answerId": 3,
               "leftPhraseId": 25,
               "rightPhraseId": 26
-            }, {
-              "answerId": 2,
-              "leftPhraseId": 23,
-              "rightPhraseId": 24
             }, {
               "answerId": 4,
               "leftPhraseId": 27,
               "rightPhraseId": 28
             }, {
-              "answerId": 1,
-              "leftPhraseId": 21,
-              "rightPhraseId": 22
+              "answerId": 2,
+              "leftPhraseId": 23,
+              "rightPhraseId": 24
             }
             ]
           },
@@ -632,9 +632,5 @@
       "incorrect": 0,
       "complained": false
     }
-  },
-  "lmsid": {
-    "present": false
-  },
-  "lmssession": false
+  }
 }

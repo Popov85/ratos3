@@ -2,8 +2,7 @@
   "schemeId": 1,
   "themeId": 1,
   "order": 0,
-  "first":true,
-  "schemeThemeSettings": [
+  "settings": [
     {
       "questionTypeId": 1,
       "level1": 20,

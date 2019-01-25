@@ -3,7 +3,10 @@ package ua.edu.ratos.service.dto.in;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.util.List;
 
 @ToString
 @Getter
@@ -29,9 +32,7 @@ public class SchemeInDto {
     @Positive(message = "{dto.fk.required}")
     private long modeId;
 
-    /**
-     * Grading type {four-point, two-point, free-point}
-     */
+    // Grading type {four-point, two-point, free-point}
     @Positive(message = "{dto.fk.required}")
     private long gradingId;
 
@@ -47,8 +48,16 @@ public class SchemeInDto {
     private long courseId;
 
     @Positive(message = "{dto.fk.required}")
-    private long staffId;
+    private long accessId;
+
+    @NotEmpty(message = "{dto.collection.required}")
+    private List<@Valid SchemeThemeInDto> themes;
+
+    // "groups":[] is OK
+    @NotNull(message = "{dto.collection.required}")
+    private List<@Positive Long> groups;
 
     private boolean active;
 
+    private boolean lmsOnly;
 }

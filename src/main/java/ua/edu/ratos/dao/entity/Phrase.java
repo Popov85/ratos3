@@ -35,7 +35,7 @@ public class Phrase {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", nullable = false, updatable = false)
-    protected Staff staff;
+    private Staff staff;
 
     @JsonIgnore
     @Column(name="last_used", nullable = false)
@@ -46,7 +46,6 @@ public class Phrase {
 
      // One-to-one actually, but for the sake of simplicity (so that not to create a separate class like PhraseResource), we use Many-to-many
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "phrase_resource", joinColumns = @JoinColumn(name = "phrase_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

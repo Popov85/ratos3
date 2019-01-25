@@ -1,6 +1,7 @@
 package ua.edu.ratos.security.lti;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -27,9 +28,12 @@ import java.util.stream.Collectors;
 /**
  * LTI v1.1.1 security config
  */
+@Slf4j
 @Order(1)
 @EnableWebSecurity
 public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String FALLBACK_LTI_PATH = "/lti/1p0/launch";
 
     private final String profile;
 
@@ -51,7 +55,12 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
                              @NonNull final @Value("${spring.profiles.active}") String profile,
                              @NonNull final @Value("${ratos.lti.launch_path}") String ltiLaunchPath) {
         this.profile = profile;
-        this.ltiLaunchPath = ltiLaunchPath;
+        if (ltiLaunchPath==null || ltiLaunchPath.isEmpty()) {
+            log.warn("LTI launch path is not set, fallback to default one");
+            this.ltiLaunchPath = FALLBACK_LTI_PATH;
+        } else {
+            this.ltiLaunchPath = ltiLaunchPath;
+        }
         this.ltiConsumerDetailsService = ltiConsumerDetailsService;
         this.ltiAuthenticationHandler = ltiAuthenticationHandler;
         this.lmsOriginRepository = lmsOriginRepository;

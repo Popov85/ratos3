@@ -7,31 +7,22 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
 import java.util.Objects;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class AnswerSQInDto {
-
-    public interface NewAndUpdate{}
-    public interface Include{}
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long answerId;
 
-    @Positive(groups = {NewAndUpdate.class, Include.class}, message = "{dto.fk.required}")
+    @Positive( message = "{dto.fk.required}")
     private Long phraseId;
 
-    @Range(groups = {NewAndUpdate.class, Include.class}, min = 0, max=20, message = "{dto.range.invalid}")
+    @Range( min = 0, max=20, message = "{dto.range.invalid}")
     private short order;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Null(groups = Include.class, message = "{dto.fk.nullable}")
-    @NotNull(groups = NewAndUpdate.class, message = "{dto.fk.nullable}")
-    @Positive(groups = NewAndUpdate.class, message = "{dto.fk.required}")
-    private Long questionId;
+
 
     @Override
     public boolean equals(Object o) {

@@ -10,6 +10,7 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.dto.in.*;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.Set;
 
@@ -17,15 +18,18 @@ import java.util.Set;
 @Component
 public class DtoQuestionTransformer {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private DtoAnswerTransformer transformer;
 
+    @Autowired
+    public void setTransformer(DtoAnswerTransformer transformer) {
+        this.transformer = transformer;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public QuestionMCQ toEntity(@NonNull QuestionMCQInDto dto) {
+    public QuestionMCQ toEntity(@NonNull final  QuestionMCQInDto dto) {
         check(dto.getAnswers(), 2, "This question must contain at least 2 answers");
         QuestionMCQ question = new QuestionMCQ();
         mapDto(dto, question);
@@ -34,17 +38,17 @@ public class DtoQuestionTransformer {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public QuestionFBSQ toEntity(@NonNull QuestionFBSQInDto dto) {
+    public QuestionFBSQ toEntity(@NonNull final  QuestionFBSQInDto dto) {
         check(dto.getAnswer().getPhrasesIds(), 1, "This question must contain at least one accepted phrase");
         QuestionFBSQ question = new QuestionFBSQ();
         mapDto(dto, question);
         AnswerFBSQInDto answerDto = dto.getAnswer();
-        question.addAnswer(transformer.toEntity(question.getQuestionId(), answerDto));
+        question.addAnswer(transformer.toEntity(answerDto));
         return question;
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public QuestionFBMQ toEntity(@NonNull QuestionFBMQInDto dto) {
+    public QuestionFBMQ toEntity(@NonNull final  QuestionFBMQInDto dto) {
         check(dto.getAnswers(), 1, "This question must contain at least 1 answer");
         QuestionFBMQ question = new QuestionFBMQ();
         mapDto(dto, question);
@@ -53,7 +57,7 @@ public class DtoQuestionTransformer {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public QuestionMQ toEntity(QuestionMQInDto dto) {
+    public QuestionMQ toEntity(@NonNull final QuestionMQInDto dto) {
         check(dto.getAnswers(), 2, "This question must contain at least 2 answers");
         QuestionMQ question = new QuestionMQ();
         mapDto(dto, question);
@@ -62,7 +66,7 @@ public class DtoQuestionTransformer {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public QuestionSQ toEntity(QuestionSQInDto dto) {
+    public QuestionSQ toEntity(@NonNull final QuestionSQInDto dto) {
         check(dto.getAnswers(), 3, "This question must contain at least 3 answers");
         QuestionSQ question = new QuestionSQ();
         mapDto(dto, question);
@@ -71,7 +75,7 @@ public class DtoQuestionTransformer {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void mapDto(@NonNull QuestionInDto dto, @NonNull Question question) {
+    public void mapDto(@NonNull final QuestionInDto dto, @NonNull final Question question) {
         question.setQuestionId(dto.getQuestionId());
         question.setQuestion(dto.getQuestion());
         question.setLevel(dto.getLevel());

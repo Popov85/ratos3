@@ -15,6 +15,7 @@ import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.dto.in.QuestionMQInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
 
 @RunWith(SpringRunner.class)
@@ -28,27 +29,23 @@ public class QuestionMQServiceTestIT {
 
     public static final String FIND = "select q from QuestionMQ q join fetch q.answers left join fetch q.helps left join fetch q.resources where q.questionId=:questionId";
 
-    @Autowired
-    private QuestionService questionService;
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
-    private EntityManager em;
+    private QuestionService questionService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    @Sql(scripts = "/scripts/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/question_mq_test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mq_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void saveTest() throws Exception {
         File json = ResourceUtils.getFile(JSON_NEW);
         QuestionMQInDto dto = objectMapper.readValue(json, QuestionMQInDto.class);
         questionService.save(dto);
-        final QuestionMQ foundQuestion =
-            (QuestionMQ) em.createQuery(FIND)
-                .setParameter("questionId", 1L)
-                .getSingleResult();
+        final QuestionMQ foundQuestion =(QuestionMQ) em.createQuery(FIND).setParameter("questionId", 1L).getSingleResult();
         Assert.assertNotNull(foundQuestion);
         Assert.assertEquals(QUESTION_NEW, foundQuestion.getQuestion());
         Assert.assertEquals(3, foundQuestion.getAnswers().size());

@@ -1,0 +1,89 @@
+{
+  "name": "Scheme #1",
+  "strategyId": 1,
+  "settingsId": 1,
+  "modeId": 1,
+  "gradingId": 1,
+  "gradingDetailsId": 1,
+  "courseId": 1,
+  "staffId": 1,
+  "accessId": 1,
+  "active": true,
+  "lmsOnly":false,
+  "themes":[
+    {
+      "themeId":1,
+      "order":0,
+      "settings":[
+        {
+          "questionTypeId": 1,
+          "level1": 10,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 2,
+          "level1": 5,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 5,
+          "level1": 5,
+          "level2": 0,
+          "level3": 0
+        }
+      ]
+    },
+    {
+      "themeId":2,
+      "order":1,
+      "settings":[
+        {
+          "questionTypeId": 1,
+          "level1": 5,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 2,
+          "level1": 15,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 3,
+          "level1": 10,
+          "level2": 0,
+          "level3": 0
+        }
+      ]
+    },
+    {
+      "themeId":3,
+      "order":2,
+      "settings":[
+        {
+          "questionTypeId": 1,
+          "level1": 15,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 2,
+          "level1": 5,
+          "level2": 0,
+          "level3": 0
+        },
+        {
+          "questionTypeId": 4,
+          "level1": 5,
+          "level2": 0,
+          "level3": 0
+        }
+      ]
+    }
+
+  ],
+  "groups":[1, 2, 3]
+}

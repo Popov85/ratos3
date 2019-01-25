@@ -14,7 +14,7 @@ import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.QuestionsFileParserService;
 import ua.edu.ratos.service.dto.in.FileInDto;
-import ua.edu.ratos.service.dto.out.view.QuestionsParsingResultOutDto;
+import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 
 import javax.persistence.EntityManager;
 import java.io.File;

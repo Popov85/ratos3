@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 import ua.edu.ratos.service.domain.answer.AnswerFBMQDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionFBMQOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionFBMQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseFBMQ;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Accessors(chain = true)
 public class QuestionFBMQDomain extends QuestionDomain {
 
@@ -36,7 +36,7 @@ public class QuestionFBMQDomain extends QuestionDomain {
         final Set<ResponseFBMQ.Pair> pairs = response.getEnteredPhrases();
         for (AnswerFBMQDomain answer : answers) {
             Long answerId = answer.getAnswerId();
-            // find this answerId in pairs, if not found - consider incorrect
+            // findDetails this answerId in pairs, if not found - consider incorrect
             Optional<ResponseFBMQ.Pair> responseOnAnswerId = pairs
                     .stream()
                     .filter(p -> answerId.equals(p.getAnswerId()))
@@ -77,9 +77,9 @@ public class QuestionFBMQDomain extends QuestionDomain {
     }
 
     @Override
-    public QuestionFBMQOutDto toDto() {
+    public QuestionFBMQSessionOutDto toDto() {
         ModelMapper modelMapper = new ModelMapper();
-        QuestionFBMQOutDto dto = modelMapper.map(this, QuestionFBMQOutDto.class);
+        QuestionFBMQSessionOutDto dto = modelMapper.map(this, QuestionFBMQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
         dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);

@@ -24,12 +24,12 @@ public class DtoSchemeThemeTransformer {
     private EntityManager em;
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public SchemeTheme toEntity(@NonNull SchemeThemeInDto dto) {
+    public SchemeTheme toEntity(@NonNull final Long schemeId, @NonNull SchemeThemeInDto dto) {
         SchemeTheme schemeTheme = new SchemeTheme();
-        schemeTheme.setScheme(em.getReference(Scheme.class, dto.getSchemeId()));
+        schemeTheme.setScheme(em.getReference(Scheme.class, schemeId));
         schemeTheme.setTheme(em.getReference(Theme.class, dto.getThemeId()));
         schemeTheme.setOrder(dto.getOrder());
-        dto.getSchemeThemeSettings().forEach(s-> {
+        dto.getSettings().forEach(s-> {
             final SchemeThemeSettings set = modelMapper.map(s, SchemeThemeSettings.class);
             set.setType(em.getReference(QuestionType.class, s.getQuestionTypeId()));
             schemeTheme.addSchemeThemeSettings(set);

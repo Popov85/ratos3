@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerMCQDomain;
-import ua.edu.ratos.service.dto.session.question.QuestionMCQOutDto;
+import ua.edu.ratos.service.dto.session.question.QuestionMCQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseMCQ;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -83,9 +83,9 @@ public class QuestionMCQDomain extends QuestionDomain {
     }
 
     @Override
-    public QuestionMCQOutDto toDto() {
+    public QuestionMCQSessionOutDto toDto() {
         ModelMapper modelMapper = new ModelMapper();
-        QuestionMCQOutDto dto = modelMapper.map(this, QuestionMCQOutDto.class);
+        QuestionMCQSessionOutDto dto = modelMapper.map(this, QuestionMCQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
         dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);

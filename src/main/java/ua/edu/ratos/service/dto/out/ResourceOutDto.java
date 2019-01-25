@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -16,4 +18,8 @@ public class ResourceOutDto {
     private String link;
 
     private String description;
+
+    private LocalDateTime lastUsed;
+
+    private StaffMinOutDto staff;
 }

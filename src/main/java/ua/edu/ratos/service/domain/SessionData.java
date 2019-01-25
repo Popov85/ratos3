@@ -17,21 +17,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Scenario 0: Normal finish
+ *  Here are 3 scenarios:
+ * <ul>
+ *  <li>Scenario 0: Normal finish<br>
  * 1) Result is stored in database
  * 2) User gets result
  * 3) Key is removed from memory (auth. session) programmatically
- *
- * Scenario 1: User is inactive for longer than is set by session settings (business time limit)
+ *  </li>
+ *  <li>Scenario 1: User is inactive for longer than is set by session settings (business time limit)<br>
  * 1) Data still alive in memory for 12 hours.
  * 2) Next time user requests to continue within TTL time (12 hours), the result is returned.
  * 3) Result is stored in database, with flag expired
  * 4) Key is removed from memory (auth) programmatically
- *
- * Scenario 2: User is inactive for more than 12 hours.
+ *  </li>
+ *  <li>Scenario 2: User is inactive for more than 12 hours.<br>
  * 1) SessionData data for this key is forever lost in memory due to timeout.
  * 2) User gets his current result if present in incoming BatchOutDto object.
  * 3) Result is not stored in database.
+ *  </li>
+ *  </ul>
  */
 @Getter
 @Setter
@@ -176,7 +180,7 @@ public class SessionData implements Serializable {
     }
 
     /**
-     * Current question index in array, index starting from which we provide questionDomains for the next batch;
+     * Current question index in array, index starting from which we provide questions for the next batch;
      * [currentIndex; currentIndex+batchSize)
      * E.g., currentIndex + batchSize, if currentIndex = 0 and batchSize = 5, currentIndex = 0+5 = 5
      */
@@ -184,12 +188,12 @@ public class SessionData implements Serializable {
 
     /**
      * Current BatchOutDto, convenience state for BatchInDto completeness comparison:
-     * Whether all the provided questionDomains from BatchOutDto were found in BatchInDto?
+     * Whether all the provided questions from BatchOutDto were found in BatchInDto?
      */
     private BatchOutDto currentBatch = null;
 
     /**
-     * Current BatchOutDto timeout, if expired - all the questionDomains in the batch (without answer!!!) are considered wrong answered;
+     * Current BatchOutDto timeout, if expired - all the questions in the batch (without answer!!!) are considered wrong answered;
      * Client script initiates a new BatchOutDto request when this time is expired;
      * Default value is MAX (unlimited in time)
      */
@@ -208,26 +212,47 @@ public class SessionData implements Serializable {
     private ProgressData progressData = new ProgressData();
 
     /**
-     * Metadata about QuestionDomain born in the interaction between a user;
+     * Metadata about a Question, born in the interaction between a user;
      * only for educational sessions, not exams
      * Key is the question's ID
      */
     private Map<Long, MetaData> metaData = new HashMap<>();
 
-    public boolean hasMoreQuestions() {
-        return (currentIndex < questionDomains.size());
-    }
 
-    public boolean hasMoreTime() {
-        return LocalDateTime.now().isBefore(sessionTimeout);
-    }
-
+    @JsonIgnore
     public Optional<Long> getLMSId() {
         return Optional.ofNullable(this.lmsId);
     }
 
+    @JsonIgnore
+    public Optional<BatchOutDto> getCurrentBatch() {
+        return Optional.ofNullable(this.currentBatch);
+    }
+
+
+    @JsonProperty("currentBatch")
+    public BatchOutDto getCurrentBatchOrNull() {
+        return getCurrentBatch().orElse(null);
+    }
+
+    @JsonProperty("lmsId")
+    public Long getLMSIdOrNull() {
+        return getLMSId().orElse(null);
+    }
+
+
+    @JsonIgnore
+    public boolean hasMoreQuestions() {
+        return (currentIndex < questionDomains.size());
+    }
+
+    @JsonIgnore
+    public boolean hasMoreTime() {
+        return LocalDateTime.now().isBefore(sessionTimeout);
+    }
+
+    @JsonIgnore
     public boolean isLMSSession() {
         return this.lmsId!=null;
     }
-
 }

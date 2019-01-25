@@ -7,12 +7,10 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
 import java.util.Set;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class QuestionInDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,7 +33,7 @@ public class QuestionInDto {
     @Positive(message = "{dto.fk.required}")
     private long langId;
 
-    // Currently only one HelpDomain can be associated with a question
+    // Currently only one Help can be associated with a question
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @PositiveOrZero(message = "{dto.fk.optional}")
     private long helpId;
@@ -43,4 +41,8 @@ public class QuestionInDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Size(min = 1, max = 3, message = "{dto.collection.invalid}")
     private Set<Long> resourcesIds;
+
+    // Mark the flag as true to guarantee that the question will
+    // appear in each learning session!
+    private boolean required;
 }
