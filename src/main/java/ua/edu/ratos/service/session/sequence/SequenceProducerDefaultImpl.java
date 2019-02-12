@@ -16,11 +16,19 @@ import java.util.*;
 @Service
 public class SequenceProducerDefaultImpl implements SequenceProducer {
 
-    @Autowired
     private SequenceMapper sequenceMapper;
 
-    @Autowired
     private CollectionShuffler collectionShuffler;
+
+    @Autowired
+    public void setSequenceMapper(SequenceMapper sequenceMapper) {
+        this.sequenceMapper = sequenceMapper;
+    }
+
+    @Autowired
+    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
+        this.collectionShuffler = collectionShuffler;
+    }
 
     @Override
     public List<QuestionDomain> getSequence(List<SchemeTheme> schemeThemes) {
@@ -29,7 +37,6 @@ public class SequenceProducerDefaultImpl implements SequenceProducer {
             final Long themeId = schemeTheme.getTheme().getThemeId();
             final Set<SchemeThemeSettings> settings = schemeTheme.getSettings();
             final List<QuestionDomain> themeResult = sequenceMapper.getList(themeId, settings);
-            // TODO: make sure all required questions are included into the result list
             // Shuffle all theme's questions before adding to the result
             result.addAll(collectionShuffler.shuffle(themeResult));
         }

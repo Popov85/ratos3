@@ -72,7 +72,7 @@ public class ThemeController {
         log.debug("Deleted Theme, themeId = {}", themeId);
     }
 
-    //-----------------------------------GET for THEME TABLES----------------------------
+    //--------------------------------------------------Staff table-----------------------------------------------------
 
     @GetMapping(value = "/themes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ThemeOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
@@ -94,7 +94,7 @@ public class ThemeController {
         return themeService.findAllByDepartmentIdAndNameContains(letters, pageable);
     }
 
-    //-----------------------------------GET for QUESTIONS TABLES----------------------------
+    //----------------------------------------------Staff questions table-----------------------------------------------
 
     @GetMapping(value = "/themes/questions-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {

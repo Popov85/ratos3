@@ -65,7 +65,7 @@ public class ResourceController {
         log.debug("Deleted Resource, resId = {}", resId);
     }
 
-    //------------------------------------SELECT for table & dropdown---------------------------------------
+    //------------------------------------------------Staff table & dropdown---------------------------------------------
 
     @GetMapping(value = "/resources/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ResourceOutDto> findAllByStaffId(@PageableDefault(sort = {"lastUsed"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {

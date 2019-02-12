@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.domain.SessionData;
 import java.io.IOException;
 
@@ -25,7 +24,6 @@ public class SessionDataSerializerService {
      * @param sessionData
      * @return JSON representation of SessionData obj
      */
-    @TrackTime
     public String serialize(@NonNull final SessionData sessionData) {
         try {
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -40,7 +38,6 @@ public class SessionDataSerializerService {
      * @param sessionData
      * @return deserialized SessionData obj
      */
-    @TrackTime
     public SessionData deserialize(@NonNull final String sessionData) {
         try {
             return new ObjectMapper().readValue(sessionData, SessionData.class);

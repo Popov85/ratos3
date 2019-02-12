@@ -71,7 +71,7 @@ public class HelpController {
         log.debug("Deleted Help, helpId = {}", helpId);
     }
 
-    //----------------------------------GET----------------------------------------
+    //-----------------------------------------------------Staff--------------------------------------------------------
 
     @GetMapping(value = "/helps/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<HelpOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

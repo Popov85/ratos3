@@ -109,7 +109,7 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
                 principal.setEmail(email).setUser(lmsUser).setOutcome(ltiOutcomeParams);
                 Collection<GrantedAuthority> newAuthorities = AuthorityUtils.createAuthorityList("ROLE_LMS-USER");
                 Authentication auth = new UsernamePasswordAuthenticationToken(principal, signatureSecret, newAuthorities);
-                log.debug("Full LMS-USER authentication successful after launch request :: {}", auth);
+                log.debug("Full LMS-USER authentication successful after launch request = {}", auth);
                 return auth;
             }
         }
@@ -121,7 +121,7 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
         // Stick to ROLE_LTI
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, signatureSecret, authentication.getAuthorities());
         log.debug("Limited LTI-LMS authentication successful after launch request, " +
-                "still needs re-authentication to access protected resource :: {}", auth);
+                  "still needs re-authentication to access protected resource = {}", auth);
         return auth;
     }
 }

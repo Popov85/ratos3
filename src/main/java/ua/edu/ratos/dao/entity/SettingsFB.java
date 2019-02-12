@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Setter
@@ -14,6 +17,8 @@ import javax.persistence.*;
 @Table(name = "settings_fbq")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class SettingsFB {
 
     @Id
@@ -39,6 +44,9 @@ public class SettingsFB {
 
     @Column(name="is_case_sensitive")
     private boolean isCaseSensitive;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lang_id")

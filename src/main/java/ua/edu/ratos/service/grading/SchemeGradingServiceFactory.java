@@ -13,8 +13,12 @@ import java.util.Map;
 @Component
 public class SchemeGradingServiceFactory {
 
-    @Autowired
     private List<SchemeGraderService> schemeGraderServices;
+
+    @Autowired
+    public void setSchemeGraderServices(List<SchemeGraderService> schemeGraderServices) {
+        this.schemeGraderServices = schemeGraderServices;
+    }
 
     private final Map<Long, SchemeGraderService> graderServicesMap = new HashMap<>();
 

@@ -21,11 +21,19 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/lms/session")
 public class GenericSessionLMSController {
 
-    @Autowired
     private GenericSessionLMSServiceImpl sessionService;
 
-    @Autowired
     private LTIOutcomeService ltiOutcomeService;
+
+    @Autowired
+    public void setSessionService(GenericSessionLMSServiceImpl sessionService) {
+        this.sessionService = sessionService;
+    }
+    @Autowired
+
+    public void setLtiOutcomeService(LTIOutcomeService ltiOutcomeService) {
+        this.ltiOutcomeService = ltiOutcomeService;
+    }
 
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public BatchOutDto start(@RequestParam Long schemeId, HttpSession session, Authentication auth) {
@@ -46,7 +54,6 @@ public class GenericSessionLMSController {
         BatchOutDto batchOut = sessionService.next(batchInDto, sessionData);
         log.debug("Next batch in LMS session = {}", batchOut);
         return batchOut;
-
     }
 
     @GetMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE)

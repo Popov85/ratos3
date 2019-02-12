@@ -15,9 +15,9 @@ public class SettingsFBOutDto {
 
     private String name;
 
-    private short wordsLimit = 1;
+    private short wordsLimit;
 
-    private short symbolsLimit = 1;
+    private short symbolsLimit;
 
     private boolean isNumeric;
 

@@ -13,14 +13,26 @@ import java.util.stream.Collectors;
 @Component
 public class AnswerDtoTransformer {
 
-    @Autowired
     private SettingsFBDtoTransformer settingsFBDtoTransformer;
 
-    @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
-    @Autowired
     private PhraseDtoTransformer phraseDtoTransformer;
+
+    @Autowired
+    public void setSettingsFBDtoTransformer(SettingsFBDtoTransformer settingsFBDtoTransformer) {
+        this.settingsFBDtoTransformer = settingsFBDtoTransformer;
+    }
+
+    @Autowired
+    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
+        this.resourceDtoTransformer = resourceDtoTransformer;
+    }
+
+    @Autowired
+    public void setPhraseDtoTransformer(PhraseDtoTransformer phraseDtoTransformer) {
+        this.phraseDtoTransformer = phraseDtoTransformer;
+    }
 
     public AnswerFBMQOutDto toDto(@NonNull final AnswerFBMQ entity) {
         return new AnswerFBMQOutDto()

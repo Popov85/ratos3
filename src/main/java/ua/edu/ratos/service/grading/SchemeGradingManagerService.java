@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchemeGradingManagerService {
 
-    @Autowired
     private SchemeGradingServiceFactory gradingServiceFactory;
+
+    @Autowired
+    public void setGradingServiceFactory(SchemeGradingServiceFactory gradingServiceFactory) {
+        this.gradingServiceFactory = gradingServiceFactory;
+    }
 
     /**
      *  1. Get a correct Scheme*Service based on gradingId

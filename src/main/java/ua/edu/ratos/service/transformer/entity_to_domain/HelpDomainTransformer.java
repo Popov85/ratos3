@@ -11,8 +11,12 @@ import ua.edu.ratos.service.domain.HelpDomain;
 @Component
 public class HelpDomainTransformer {
 
-    @Autowired
     private ResourceDomainTransformer resourceDomainTransformer;
+
+    @Autowired
+    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
+        this.resourceDomainTransformer = resourceDomainTransformer;
+    }
 
     public HelpDomain toDomain(@NonNull final Help entity) {
        return new HelpDomain()

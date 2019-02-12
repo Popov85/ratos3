@@ -14,8 +14,12 @@ import java.util.stream.Collectors;
 @Component
 public class ThemeViewDtoTransformer {
 
-    @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public Set<ThemeViewOutDto> toDto(@NonNull final Set<ThemeView> themeViews) {
 

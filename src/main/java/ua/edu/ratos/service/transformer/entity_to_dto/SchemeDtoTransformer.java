@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
-import ua.edu.ratos.service.dto.out.GroupOutDto;
+import ua.edu.ratos.service.dto.out.GroupMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
 import java.util.List;
@@ -16,33 +16,69 @@ import java.util.stream.Collectors;
 @Component
 public class SchemeDtoTransformer {
 
-    @Autowired
     private StrategyDtoTransformer strategyDtoTransformer;
 
-    @Autowired
     private SettingsDtoTransformer settingsDtoTransformer;
 
-    @Autowired
     private ModeDtoTransformer modeDtoTransformer;
 
-    @Autowired
     private GradingDtoTransformer gradingDtoTransformer;
 
-    @Autowired
     private CourseDtoTransformer courseDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffDtoTransformer;
 
-    @Autowired
     private AccessDtoTransformer accessDtoTransformer;
 
-    @Autowired
-    private GroupDtoTransformer groupDtoTransformer;
+    private GroupMinDtoTransformer groupMinDtoTransformer;
 
-    @Autowired
     private SchemeThemeDtoTransformer schemeThemeDtoTransformer;
 
+
+    @Autowired
+    public void setStrategyDtoTransformer(StrategyDtoTransformer strategyDtoTransformer) {
+        this.strategyDtoTransformer = strategyDtoTransformer;
+    }
+
+    @Autowired
+    public void setSettingsDtoTransformer(SettingsDtoTransformer settingsDtoTransformer) {
+        this.settingsDtoTransformer = settingsDtoTransformer;
+    }
+
+    @Autowired
+    public void setModeDtoTransformer(ModeDtoTransformer modeDtoTransformer) {
+        this.modeDtoTransformer = modeDtoTransformer;
+    }
+
+    @Autowired
+    public void setGradingDtoTransformer(GradingDtoTransformer gradingDtoTransformer) {
+        this.gradingDtoTransformer = gradingDtoTransformer;
+    }
+
+    @Autowired
+    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
+        this.courseDtoTransformer = courseDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffDtoTransformer(StaffMinDtoTransformer staffDtoTransformer) {
+        this.staffDtoTransformer = staffDtoTransformer;
+    }
+
+    @Autowired
+    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
+        this.accessDtoTransformer = accessDtoTransformer;
+    }
+
+    @Autowired
+    public void setGroupMinDtoTransformer(GroupMinDtoTransformer groupMinDtoTransformer) {
+        this.groupMinDtoTransformer = groupMinDtoTransformer;
+    }
+
+    @Autowired
+    public void setSchemeThemeDtoTransformer(SchemeThemeDtoTransformer schemeThemeDtoTransformer) {
+        this.schemeThemeDtoTransformer = schemeThemeDtoTransformer;
+    }
 
     public SchemeOutDto toDto(@NonNull final Scheme entity) {
         SchemeOutDto schemeOutDto = new SchemeOutDto()
@@ -61,7 +97,7 @@ public class SchemeDtoTransformer {
 
         List<SchemeThemeOutDto> themes = entity.getThemes().stream().map(t -> schemeThemeDtoTransformer.toDto(t)).collect(Collectors.toList());
         schemeOutDto.setThemes(themes);
-        Set<GroupOutDto> groups = entity.getGroups().stream().map(g -> groupDtoTransformer.toDto(g)).collect(Collectors.toSet());
+        Set<GroupMinOutDto> groups = entity.getGroups().stream().map(g -> groupMinDtoTransformer.toDto(g)).collect(Collectors.toSet());
         schemeOutDto.setGroups(groups);
         return schemeOutDto;
     }

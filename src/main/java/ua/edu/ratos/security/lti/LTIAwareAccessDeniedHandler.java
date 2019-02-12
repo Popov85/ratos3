@@ -24,7 +24,7 @@ public class LTIAwareAccessDeniedHandler implements AccessDeniedHandler {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(auth)) {
-			log.debug("Detected an LTI user lacking authority trying to access protected resourceDomain, redirection to /login endpoint");
+			log.debug("Detected an LTI user lacking authority trying to access protected resource, redirection to /login endpoint");
 			// Remember the request pathway
 			RequestCache requestCache = new HttpSessionRequestCache();
 			requestCache.saveRequest(request, response);

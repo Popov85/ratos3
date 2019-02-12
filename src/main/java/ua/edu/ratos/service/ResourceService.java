@@ -49,6 +49,9 @@ public class ResourceService {
         this.securityUtils = securityUtils;
     }
 
+
+    //--------------------------------------------------CRUD------------------------------------------------------------
+
     @Transactional
     public Long save(@NonNull final ResourceInDto dto) {
         return resourceRepository.save(this.dtoResourceTransformer.toEntity(dto)).getResourceId();
@@ -73,14 +76,14 @@ public class ResourceService {
     }
 
 
-    //----------------------------SELECT for update--------------------------
+    //----------------------------------------------One (for update)----------------------------------------------------
 
     @Transactional(readOnly = true)
     public ResourceOutDto findOneById(@NonNull Long staffId) {
         return resourceDtoTransformer.toDto(resourceRepository.findOneForUpdate(staffId));
     }
 
-    //----------------------------------SELECT--------------------------------
+    //------------------------------------------------Staff table-------------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<ResourceOutDto> findByStaffId(@NonNull final Pageable pageable) {
@@ -103,7 +106,7 @@ public class ResourceService {
     }
 
 
-    //--------------------------------ADMIN---------------------------------
+    //----------------------------------------------------ADMIN---------------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<ResourceOutDto> findAll(@NonNull final Pageable pageable) {

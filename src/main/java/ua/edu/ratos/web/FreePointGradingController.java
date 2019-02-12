@@ -59,7 +59,7 @@ public class FreePointGradingController {
         log.info("Deleted FreePointGrading, freeId = {}", freeId);
     }
 
-    //-------------------------------------INSTRUCTOR search-----------------------------------
+    //------------------------------------------------Staff table-------------------------------------------------------
 
     @GetMapping(value = "/free-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<FreePointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

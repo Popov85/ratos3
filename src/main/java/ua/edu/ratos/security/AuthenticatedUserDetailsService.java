@@ -34,17 +34,17 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
         final Student student = studentRepository.findByIdForAuthentication(email);
         if (student!=null) {
             final AuthenticatedUser authenticatedStudent = AuthenticatedUser.create(student);
-            log.debug("Found student :: {}", authenticatedStudent);
+            log.debug("Found student = {}", authenticatedStudent);
             return authenticatedStudent;
         } else {
             // try to authenticate staff
             final Staff staff = staffRepository.findByIdForAuthentication(email);
             if (staff!=null) {
                 AuthenticatedStaff authenticatedStaff = AuthenticatedStaff.create(staff);
-                log.debug("Found staff :: {}", authenticatedStaff);
+                log.debug("Found staff = {}", authenticatedStaff);
                 return authenticatedStaff;
             } else {
-                log.warn("Failed to findDetails any user by email :: {}", email);
+                log.warn("Failed to find any user by email = {}", email);
                 throw new UsernameNotFoundException("Failed to authorize by email");
             }
         }

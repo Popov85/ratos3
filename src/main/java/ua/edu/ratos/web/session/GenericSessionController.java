@@ -24,8 +24,12 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/student/session")
 public class GenericSessionController {
 
-    @Autowired
     private GenericSessionServiceImpl sessionService;
+
+    @Autowired
+    public void setSessionService(GenericSessionServiceImpl sessionService) {
+        this.sessionService = sessionService;
+    }
 
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public BatchOutDto start(@RequestParam Long schemeId, HttpSession session, Authentication auth) {

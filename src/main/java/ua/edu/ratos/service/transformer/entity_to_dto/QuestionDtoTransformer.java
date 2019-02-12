@@ -84,7 +84,6 @@ public class QuestionDtoTransformer {
         return dto;
     }
 
-
     private void mapDto(@NonNull final Question entity, @NonNull final QuestionOutDto dto) {
         dto.setQuestionId(entity.getQuestionId());
         dto.setQuestion(entity.getQuestion());

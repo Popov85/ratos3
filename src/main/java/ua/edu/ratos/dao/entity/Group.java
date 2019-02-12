@@ -4,8 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +18,8 @@ import java.util.Set;
 @ToString(exclude = {"staff", "students"})
 @Entity
 @Table(name = "groups")
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Group {
@@ -26,6 +32,15 @@ public class Group {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name="is_enabled")
+    private boolean enabled;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
+
+    @Column(name="created")
+    private LocalDateTime created;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")

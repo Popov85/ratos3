@@ -19,11 +19,19 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
 
     private static final List<Byte> LEVEL_PATTERN = Arrays.asList((byte) 1, (byte) 2, (byte) 3);
 
-    @Autowired
     private SequenceMapper sequenceMapper;
 
-    @Autowired
     private CollectionShuffler collectionShuffler;
+
+    @Autowired
+    public void setSequenceMapper(SequenceMapper sequenceMapper) {
+        this.sequenceMapper = sequenceMapper;
+    }
+
+    @Autowired
+    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
+        this.collectionShuffler = collectionShuffler;
+    }
 
     @Override
     public List<QuestionDomain> getSequence(List<SchemeTheme> schemeThemes) {

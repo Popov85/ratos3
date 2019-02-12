@@ -11,17 +11,33 @@ import ua.edu.ratos.service.domain.SchemeDomain;
 @Component
 public class SchemeDomainTransformer {
 
-    @Autowired
     private ModeDomainTransformer modeDomainTransformer;
 
-    @Autowired
     private StrategyDomainTransformer strategyDomainTransformer;
 
-    @Autowired
     private GradingDomainTransformer gradingDomainTransformer;
 
-    @Autowired
     private SettingsDomainTransformer settingsDomainTransformer;
+
+    @Autowired
+    public void setModeDomainTransformer(ModeDomainTransformer modeDomainTransformer) {
+        this.modeDomainTransformer = modeDomainTransformer;
+    }
+
+    @Autowired
+    public void setStrategyDomainTransformer(StrategyDomainTransformer strategyDomainTransformer) {
+        this.strategyDomainTransformer = strategyDomainTransformer;
+    }
+
+    @Autowired
+    public void setGradingDomainTransformer(GradingDomainTransformer gradingDomainTransformer) {
+        this.gradingDomainTransformer = gradingDomainTransformer;
+    }
+
+    @Autowired
+    public void setSettingsDomainTransformer(SettingsDomainTransformer settingsDomainTransformer) {
+        this.settingsDomainTransformer = settingsDomainTransformer;
+    }
 
     public SchemeDomain toDomain(@NonNull final Scheme entity) {
         return new SchemeDomain()

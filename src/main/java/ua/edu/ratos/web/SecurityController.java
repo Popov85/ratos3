@@ -10,13 +10,10 @@ import java.security.Principal;
 @Slf4j
 @Controller
 public class SecurityController {
-
    // 1. Custom sign-in form
-    // 2. Custom sign-up form
-
-    // 3. Custom sign-up processing
-
-    // 4. Custom access denied form
+   // 2. Custom sign-up form
+   // 3. Custom sign-up processing
+   // 4. Custom access denied form
     @GetMapping("/access-denied")
     @ResponseBody
     public String denied(Principal principal) {

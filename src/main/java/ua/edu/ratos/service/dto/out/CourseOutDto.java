@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,4 +15,10 @@ public class CourseOutDto {
     private Long courseId;
 
     private String name;
+
+    private LocalDateTime created;
+
+    private AccessOutDto access;
+
+    private StaffMinOutDto staff;
 }

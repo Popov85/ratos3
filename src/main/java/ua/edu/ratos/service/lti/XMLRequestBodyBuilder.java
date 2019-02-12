@@ -44,7 +44,7 @@ public class XMLRequestBodyBuilder {
                                                 .setTextString(textScore))))));
 		try {
 			String body = xmlMapper.writeValueAsString(envelopeRequest);
-			log.debug("XML body :: {}", body);
+			log.debug("XML body = {}", body);
 			return body;
 		} catch (Exception e) {
 			log.error("Failed to convert request object to XML");

@@ -45,7 +45,7 @@ public class SettingsRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByStaffIdAndNameLettersContainsTest() {
-        Assert.assertEquals(2, settingsRepository.findAllByStaffIdAndNameLettersContains(2L, "year", PageRequest.of(0, 50)).getContent().size());
+        Assert.assertEquals(2, settingsRepository.findAllByStaffIdAndNameLettersContains(4L, "year", PageRequest.of(0, 50)).getContent().size());
     }
 
     @Test

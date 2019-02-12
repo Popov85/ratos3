@@ -50,7 +50,7 @@ public class FreePointGradingService {
         this.securityUtils = securityUtils;
     }
 
-    //--------------------------------CRUD-------------------------------
+    //------------------------------------------------------CRUD--------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final FreePointGradingInDto dto) {
@@ -75,14 +75,14 @@ public class FreePointGradingService {
         entity.setDeleted(true);
     }
 
-    //----------------------------------ONE-----------------------------------
+    //--------------------------------------------------One (for update)------------------------------------------------
 
     @Transactional(readOnly = true)
     public FreePointGradingOutDto findOneForEdit(@NonNull final Long freeId) {
         return freePointGradingDtoTransformer.toDto(freePointGradingRepository.findOneForEdit(freeId));
     }
 
-    //-----------------------------INSTRUCTOR search---------------------------
+    //-----------------------------------------------------Staff table--------------------------------------------------
 
     @Transactional(readOnly = true)
     public Slice<FreePointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {

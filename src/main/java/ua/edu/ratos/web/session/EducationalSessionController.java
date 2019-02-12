@@ -17,8 +17,12 @@ import java.security.Principal;
 @RequestMapping("/student/session")
 public class EducationalSessionController {
 
-    @Autowired
     private EducationalSessionService educationalSessionService;
+
+    @Autowired
+    public void setEducationalSessionService(EducationalSessionService educationalSessionService) {
+        this.educationalSessionService = educationalSessionService;
+    }
 
     @PostMapping(value = "/preserve")
     public String preserve(@SessionAttribute("sessionData") SessionData sessionData) {

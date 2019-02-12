@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.dao.entity.Scheme;
@@ -25,6 +26,7 @@ public class SchemeRepositoryTestIT {
     private SchemeRepository schemeRepository;
 
 
+    //----------------------------------------------------ONE for update-----------------------------------------------
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one_groups_themes.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -34,6 +36,8 @@ public class SchemeRepositoryTestIT {
         Assert.assertEquals(5L, scheme.getThemes().size());
         scheme.getThemes().forEach(t->Assert.assertEquals(1, t.getSettings().size()));
     }
+
+    //-------------------------------------------------------SESSION---------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one_session.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -45,6 +49,8 @@ public class SchemeRepositoryTestIT {
         scheme.getGroups().forEach(g->Assert.assertEquals(2, g.getStudents().size()));
     }
 
+    //------------------------------------------------------SECURITY--------------------------------------------------
+
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -54,6 +60,8 @@ public class SchemeRepositoryTestIT {
         Assert.assertEquals(1L, scheme.getStaff().getStaffId().longValue());
         Assert.assertEquals(1L, scheme.getStaff().getDepartment().getDepId().longValue());
     }
+
+    //--------------------------------------------------INSTRUCTOR table----------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -71,7 +79,6 @@ public class SchemeRepositoryTestIT {
         Assert.assertEquals(4, schemes.size());
     }
 
-
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -87,6 +94,38 @@ public class SchemeRepositoryTestIT {
         Page<Scheme> schemes = schemeRepository.findAllByDepartmentIdAndNameContains(2L, "exam", PageRequest.of(0, 100));
         Assert.assertEquals(3, schemes.getContent().size());
     }
+
+    //-------------------------------------------------DROPDOWN slice-------------------------------------------------
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForDropDownByDepartmentIdTest() {
+        Slice<Scheme> schemes = schemeRepository.findAllForDropDownByDepartmentId(3L, PageRequest.of(0, 100));
+        Assert.assertFalse(schemes.hasNext());
+        Assert.assertEquals(5, schemes.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForDropDownByCourseIdTest() {
+        Slice<Scheme> schemes = schemeRepository.findAllForDropDownByCourseId(1L, PageRequest.of(0, 100));
+        Assert.assertFalse(schemes.hasNext());
+        Assert.assertEquals(20, schemes.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForDropDownByCourseIdMultipleSlicesTest() {
+        Slice<Scheme> schemes = schemeRepository.findAllForDropDownByCourseId(1L, PageRequest.of(0, 10));
+        Assert.assertTrue(schemes.hasNext());
+        Assert.assertEquals(10, schemes.getContent().size());
+    }
+
+
+    //---------------------------------------------------ADMIN--------------------------------------------------------
 
 
     @Test

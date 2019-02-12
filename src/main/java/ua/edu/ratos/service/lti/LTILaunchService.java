@@ -15,7 +15,7 @@ public class LTILaunchService {
     }
 
     /**
-     * This URL is prepared to be inserted by an instructor directly to LMS settingsDomain
+     * This URL is prepared to be inserted by an instructor directly to LMS settings
      * @param schemeId
      * @return URL of LMS-launch request
      */

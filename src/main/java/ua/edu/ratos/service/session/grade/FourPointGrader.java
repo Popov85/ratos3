@@ -9,8 +9,12 @@ import java.util.Optional;
 @Component
 public class FourPointGrader implements Grader {
 
-    @Autowired
     private SchemeFourPointRepository schemeFourPointRepository;
+
+    @Autowired
+    public void setSchemeFourPointRepository(SchemeFourPointRepository schemeFourPointRepository) {
+        this.schemeFourPointRepository = schemeFourPointRepository;
+    }
 
     @Override
     public GradedResult grade(double percent, long schemeId) {

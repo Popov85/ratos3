@@ -11,11 +11,19 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 @Service
 public class AnswerFBSQService {
 
-    @Autowired
     private AnswerFBSQRepository answerRepository;
 
-    @Autowired
     private DtoAnswerTransformer dtoAnswerTransformer;
+
+    @Autowired
+    public void setAnswerRepository(AnswerFBSQRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
+
+    @Autowired
+    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
+        this.dtoAnswerTransformer = dtoAnswerTransformer;
+    }
 
     @Transactional
     public void update(@NonNull final AnswerFBSQInDto dto) {

@@ -11,15 +11,20 @@ import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Component
 public class DtoSchemeThemeSettingsTransformer {
 
-    @Autowired
+    @PersistenceContext
+    private EntityManager em;
+
     private ModelMapper modelMapper;
 
     @Autowired
-    private EntityManager em;
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public SchemeThemeSettings toEntity(@NonNull SchemeThemeSettingsInDto dto) {

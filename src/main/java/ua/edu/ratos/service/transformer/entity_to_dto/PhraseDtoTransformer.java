@@ -11,11 +11,19 @@ import ua.edu.ratos.service.dto.out.PhraseOutDto;
 @Component
 public class PhraseDtoTransformer {
 
-    @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
+        this.resourceDtoTransformer = resourceDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public PhraseOutDto toDto(@NonNull final Phrase entity) {
         return new PhraseOutDto().setPhraseId(entity.getPhraseId())

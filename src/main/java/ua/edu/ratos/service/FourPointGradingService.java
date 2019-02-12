@@ -50,7 +50,7 @@ public class FourPointGradingService {
         this.securityUtils = securityUtils;
     }
 
-    //--------------------------------CRUD-------------------------------
+    //-------------------------------------------------------CRUD-------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final FourPointGradingInDto dto) {
@@ -75,14 +75,14 @@ public class FourPointGradingService {
         entity.setDeleted(true);
     }
 
-    //----------------------------------ONE-----------------------------------
+    //--------------------------------------------------One (for update)------------------------------------------------
 
     @Transactional(readOnly = true)
     public FourPointGradingOutDto findOneForEdit(@NonNull final Long fourId) {
         return fourPointGradingDtoTransformer.toDto(fourPointGradingRepository.findOneForEdit(fourId));
     }
 
-    //-----------------------------INSTRUCTOR search---------------------------
+    //----------------------------------------------------Staff table---------------------------------------------------
 
     @Transactional(readOnly = true)
     public Slice<FourPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {

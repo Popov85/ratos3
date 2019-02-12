@@ -20,8 +20,12 @@ public class DtoPhraseTransformer {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Phrase toEntity(@NonNull final PhraseInDto dto) {

@@ -1,18 +1,23 @@
 package ua.edu.ratos.service.dto.in;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Accessors;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @ToString
-@Accessors(chain = true)
 public class GroupInDto {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long groupId;
 
-    private boolean active = true;
+    @NotBlank( message = "{dto.string.required}")
+    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    private String name;
+
+    private boolean enabled;
 }

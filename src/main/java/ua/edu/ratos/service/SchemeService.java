@@ -13,13 +13,13 @@ import ua.edu.ratos.dao.repository.GroupSchemeRepository;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
-import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
+import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import ua.edu.ratos.service.grading.SchemeGradingServiceFactory;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeMinDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.SchemeShortDtoTransformer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
@@ -47,7 +47,7 @@ public class SchemeService {
 
     private SchemeGradingServiceFactory schemeGradingServiceFactory;
 
-    private SchemeMinDtoTransformer schemeMinDtoTransformer;
+    private SchemeShortDtoTransformer schemeShortDtoTransformer;
 
     private SchemeDtoTransformer schemeDtoTransformer;
 
@@ -86,8 +86,8 @@ public class SchemeService {
     }
 
     @Autowired
-    public void setSchemeMinDtoTransformer(SchemeMinDtoTransformer schemeMinDtoTransformer) {
-        this.schemeMinDtoTransformer = schemeMinDtoTransformer;
+    public void setSchemeShortDtoTransformer(SchemeShortDtoTransformer schemeShortDtoTransformer) {
+        this.schemeShortDtoTransformer = schemeShortDtoTransformer;
     }
 
     @Autowired
@@ -104,6 +104,8 @@ public class SchemeService {
     public void setAccessChecker(AccessChecker accessChecker) {
         this.accessChecker = accessChecker;
     }
+
+    //---------------------------------------------------CRUD---------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final SchemeInDto dto) {
@@ -204,7 +206,7 @@ public class SchemeService {
     }
 
 
-    // -----------------------THEMES ------------------------
+    //----------------------------------------------------THEMES--------------------------------------------------------
     // we manage it here cause it affects scheme completeness
 
     @Transactional
@@ -215,8 +217,7 @@ public class SchemeService {
 
     private boolean hasMultipleThemes(@NonNull final Long schemeId) {
         Set<SchemeTheme> themes = schemeThemeService.findAllBySchemeId(schemeId);
-        if (themes==null || themes.size()<=1) return false;
-        return true;
+        return themes != null && themes.size() > 1;
     }
 
     @Transactional
@@ -229,7 +230,7 @@ public class SchemeService {
     }
 
 
-    // ------------------------GROUPS---------------------------
+    //---------------------------------------------------GROUPS---------------------------------------------------------
 
     @Transactional
     public void addGroup(@NonNull final Long schemeId, @NonNull final Long groupId) {
@@ -245,14 +246,14 @@ public class SchemeService {
     }
 
 
-    //---------------------SELECT (for session)-------------------
+    //-------------------------------------------------One (for session)------------------------------------------------
 
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
         return schemeRepository.findForSessionById(schemeId);
     }
 
-    //---------------------SELECT (for update)---------------------
+    //------------------------------------------------One (for update)--------------------------------------------------
 
     @Transactional(readOnly = true)
     public SchemeOutDto findByIdForUpdate(@NonNull final Long schemeId) {
@@ -264,33 +265,34 @@ public class SchemeService {
         return schemeOutDto;
     }
 
-    //---------------------SELECT (for tables)----------------------
+    //-------------------------------------------------Staff tables-----------------------------------------------------
 
     @Transactional(readOnly = true)
-    public Page<SchemeMinOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return schemeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(schemeMinDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
+        return schemeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<SchemeMinOutDto> findAllByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return schemeRepository.findAllByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable).map(schemeMinDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAllByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
+        return schemeRepository.findAllByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<SchemeMinOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return schemeRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(schemeMinDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
+        return schemeRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<SchemeMinOutDto> findAllByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable).map(schemeMinDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAllByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
+        return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable).map(schemeShortDtoTransformer::toDto);
     }
     
 
-    // -------Admin (for table)-------
+    //-------------------------------------------------Admin (for table)------------------------------------------------
+
     @Transactional(readOnly = true)
-    public Page<SchemeMinOutDto> findAll(@NonNull final Pageable pageable) {
-        return schemeRepository.findAll(pageable).map(schemeMinDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAll(@NonNull final Pageable pageable) {
+        return schemeRepository.findAll(pageable).map(schemeShortDtoTransformer::toDto);
     }
 
 }

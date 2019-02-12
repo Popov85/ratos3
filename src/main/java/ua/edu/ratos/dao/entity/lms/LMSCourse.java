@@ -3,7 +3,6 @@ package ua.edu.ratos.dao.entity.lms;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.Course;
 import javax.persistence.*;
 
@@ -13,13 +12,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "lms_course")
 public class LMSCourse {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "lms_course_id")
-    private Long lmsCourseId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Id
+    @Column(name = "course_id")
+    private Long courseId;
+
+    @MapsId
+    @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "course_id")
     private Course course;
 

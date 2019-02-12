@@ -9,8 +9,12 @@ import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 @Component
 public class FreePointGradingDtoTransformer {
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public FreePointGradingOutDto toDto(@NonNull final FreePointGrading entity) {
         return new FreePointGradingOutDto()

@@ -27,7 +27,7 @@ public class PhraseRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/phrase_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findOneForUpdateTest() {
-        Phrase phrase = phraseRepository.findOneForUpdate(1L);
+        Phrase phrase = phraseRepository.findOneForEdit(1L);
         Assert.assertNotNull(phrase);
         Assert.assertNotNull(phrase.getStaff());
         Assert.assertTrue(phrase.getResource().isPresent());

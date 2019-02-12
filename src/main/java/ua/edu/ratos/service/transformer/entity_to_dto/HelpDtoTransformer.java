@@ -11,11 +11,19 @@ import ua.edu.ratos.service.dto.out.HelpOutDto;
 @Component
 public class HelpDtoTransformer {
 
-    @Autowired
     private ResourceDtoTransformer resourceDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
+        this.resourceDtoTransformer = resourceDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public HelpOutDto toDto(@NonNull final Help entity) {
         return new HelpOutDto()

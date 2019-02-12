@@ -28,6 +28,8 @@ public class AnswerMQService {
         this.dtoAnswerTransformer = dtoAnswerTransformer;
     }
 
+
+
     @Transactional
     public Long save(@NonNull final Long questionId, @NonNull final AnswerMQInDto dto) {
         return answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto)).getAnswerId();

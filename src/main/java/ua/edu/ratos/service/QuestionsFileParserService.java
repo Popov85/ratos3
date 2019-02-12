@@ -18,6 +18,7 @@ import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
 import ua.edu.ratos.service.utils.CharsetDetector;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +31,29 @@ public class QuestionsFileParserService {
      */
     private static final long DEFAULT_QUESTION_TYPE_ID = 1L;
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private QuestionService questionService;
 
-    @Autowired
     private QuestionsParsingResultDtoTransformer transformer;
 
-    @Autowired
     private CharsetDetector charsetDetector;
+
+    @Autowired
+    public void setQuestionService(QuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @Autowired
+    public void setTransformer(QuestionsParsingResultDtoTransformer transformer) {
+        this.transformer = transformer;
+    }
+
+    @Autowired
+    public void setCharsetDetector(CharsetDetector charsetDetector) {
+        this.charsetDetector = charsetDetector;
+    }
 
     /**
      * Parses multipart file and saves all the questions to DB
@@ -48,7 +61,7 @@ public class QuestionsFileParserService {
      * @param dto metadata of the file
      * @return result on parsing and saving
      */
-    public synchronized QuestionsParsingResultOutDto parseAndSave(@NonNull MultipartFile multipartFile, @NonNull FileInDto dto) throws IOException {
+    public synchronized QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile, @NonNull final FileInDto dto) throws IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         QuestionsFileParser parser = getParser(extension);
         final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
@@ -67,7 +80,7 @@ public class QuestionsFileParserService {
         }
     }
 
-    private void save(@NonNull List<QuestionMCQ> parsedQuestions, @NonNull FileInDto dto) {
+    private void save(@NonNull final List<QuestionMCQ> parsedQuestions, final @NonNull FileInDto dto) {
         // First, Enrich questions with ThemeDomain, Language and Type, second for each non-null helpAvailable, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
@@ -84,7 +97,7 @@ public class QuestionsFileParserService {
         questionService.saveAll(questions);
     }
 
-    private QuestionsFileParser getParser(@NonNull String extension) {
+    private QuestionsFileParser getParser(@NonNull final String extension) {
         if ("txt".equals(extension)) return new QuestionsFileParserTXT();
         if ("rtp".equals(extension) || "xtt".equals(extension)) return new QuestionsFileParserRTP();
         throw new UnsupportedOperationException("Unsupported file extension: only .txt/.rtp/.xtt files are supported");

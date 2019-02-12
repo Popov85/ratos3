@@ -2,7 +2,6 @@ package ua.edu.ratos.service.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import lombok.experimental.Accessors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -10,7 +9,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-@Accessors(chain = true)
 public class CourseInDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,9 +20,4 @@ public class CourseInDto {
 
     @Positive(message = "{dto.fk.required}")
     private long accessId;
-
-    private long staffId;
-
-    private long depId;
-
 }

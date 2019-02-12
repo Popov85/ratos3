@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "position")
 public class Position {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

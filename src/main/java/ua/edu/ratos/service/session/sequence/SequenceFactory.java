@@ -11,8 +11,12 @@ import java.util.Map;
 @Component
 public class SequenceFactory {
 
-    @Autowired
     private List<SequenceProducer> sequenceProducers;
+
+    @Autowired
+    public void setSequenceProducers(List<SequenceProducer> sequenceProducers) {
+        this.sequenceProducers = sequenceProducers;
+    }
 
     private Map<String, SequenceProducer> sequenceProducerMap = new HashMap<>();
 

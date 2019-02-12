@@ -11,8 +11,12 @@ import ua.edu.ratos.service.domain.PhraseDomain;
 @Component
 public class PhraseDomainTransformer {
 
-    @Autowired
     private ResourceDomainTransformer resourceDomainTransformer;
+
+    @Autowired
+    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
+        this.resourceDomainTransformer = resourceDomainTransformer;
+    }
 
     public PhraseDomain toDomain(@NonNull final Phrase p) {
         return new PhraseDomain()

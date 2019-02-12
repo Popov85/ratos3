@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.Set;
 @Table(name = "help")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class Help {
 
@@ -30,6 +33,9 @@ public class Help {
 
     @Column(name = "text")
     private String help;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", updatable = false, nullable = false)

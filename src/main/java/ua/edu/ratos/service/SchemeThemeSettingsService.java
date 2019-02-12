@@ -13,11 +13,21 @@ import java.util.Set;
 @Service
 public class SchemeThemeSettingsService {
 
-    @Autowired
     private SchemeThemeSettingsRepository schemeThemeSettingsRepository;
 
-    @Autowired
     private DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer;
+
+    @Autowired
+    public void setSchemeThemeSettingsRepository(SchemeThemeSettingsRepository schemeThemeSettingsRepository) {
+        this.schemeThemeSettingsRepository = schemeThemeSettingsRepository;
+    }
+
+    @Autowired
+    public void setDtoSchemeThemeSettingsTransformer(DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer) {
+        this.dtoSchemeThemeSettingsTransformer = dtoSchemeThemeSettingsTransformer;
+    }
+
+
 
     @Transactional
     public Long save(@NonNull final SchemeThemeSettingsInDto dto) {

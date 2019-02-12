@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
 @Service
 public class CourseService {
 
-    private static final String COURSE_NOT_FOUND = "Requested course not found, courseId = ";
+    private static final String COURSE_NOT_FOUND = "Requested Course not found, courseId = ";
 
     @PersistenceContext
     private EntityManager em;
@@ -61,10 +61,11 @@ public class CourseService {
         this.securityUtils = securityUtils;
     }
 
+    //-----------------------------------------------------CRUD---------------------------------------------------------
+
     @Transactional
     public Long save(@NonNull final CourseInDto dto) {
-        Course course = dtoCourseTransformer.toEntity(dto);
-        return courseRepository.save(course).getCourseId();
+        return dtoCourseTransformer.toEntity(dto).getCourseId();
     }
 
     @Transactional
@@ -94,14 +95,14 @@ public class CourseService {
     }
 
 
-    //----------------------------SELECT (for update)-----------------------
+    //-----------------------------------------------------One (for update)---------------------------------------------
 
     @Transactional(readOnly = true)
     public CourseOutDto findByIdForUpdate(@NonNull final Long courseId) {
         return courseDtoTransformer.toDto(courseRepository.findForEditById(courseId));
     }
 
-    //----------------------------SELECT (for tables)-----------------------
+    //---------------------------------------------------SELECT (for tables)--------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
@@ -109,8 +110,8 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return courseRepository.findAllByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable).map(courseDtoTransformer::toDto);
+    public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
+        return courseRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(courseDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -119,12 +120,12 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return courseRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable).map(courseDtoTransformer::toDto);
+    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
+        return courseRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(courseDtoTransformer::toDto);
     }
     
     
-    //------------------------------Admin (for simple table)------------------
+    //-------------------------------------------------Admin (for simple table)-----------------------------------------
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAll(@NonNull final Pageable pageable) {
         return courseRepository.findAll(pageable).map(courseDtoTransformer::toDto);

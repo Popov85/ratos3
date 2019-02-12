@@ -1,0 +1,10 @@
+{
+  "user":{
+    "name":"John",
+    "surname":"Stone",
+    "email":"john.stone@gmail.com",
+    "password":"vP24Ewqr"
+  },
+  "entranceYear":2019,
+  "classId":1
+}

@@ -42,7 +42,7 @@ public class SchemeOutDto {
 
     private AccessOutDto access;
 
-    private Set<GroupOutDto> groups = new HashSet<>();
+    private Set<GroupMinOutDto> groups = new HashSet<>();
 
     private List<SchemeThemeOutDto> themes = new ArrayList<>();
 }

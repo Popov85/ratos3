@@ -58,7 +58,7 @@ public class FourPointGradingController {
         log.info("Deleted FourPointGrading, fourId = {}", fourId);
     }
 
-    //-------------------------------------INSTRUCTOR search-----------------------------------
+    //-------------------------------------------------Staff table------------------------------------------------------
 
     @GetMapping(value = "/four-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<FourPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

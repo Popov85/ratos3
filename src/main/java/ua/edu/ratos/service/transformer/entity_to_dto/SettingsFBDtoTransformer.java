@@ -9,11 +9,19 @@ import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
 @Component
 public class SettingsFBDtoTransformer {
 
-    @Autowired
     private LanguageDtoTransformer languageDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setLanguageDtoTransformer(LanguageDtoTransformer languageDtoTransformer) {
+        this.languageDtoTransformer = languageDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public SettingsFBOutDto toDto(@NonNull final SettingsFB entity) {
         return new SettingsFBOutDto()

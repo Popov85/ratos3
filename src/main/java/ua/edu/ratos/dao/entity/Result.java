@@ -31,6 +31,10 @@ public class Result {
     @JoinColumn(name = "user_id", updatable = false)
     protected User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dep_id")
+    private Department department;
+
     @Column(name = "percent")
     private double percent;
 

@@ -54,6 +54,8 @@ public class HelpService {
         this.securityUtils = securityUtils;
     }
 
+    //-------------------------------------------------------CRUD-------------------------------------------------------
+
     @Transactional
     public Long save(@NonNull final HelpInDto dto) {
         Help help = dtoHelpTransformer.toEntity(dto);
@@ -82,17 +84,17 @@ public class HelpService {
 
     @Transactional
     public void deleteById(@NonNull final Long helpId) {
-        helpRepository.deleteById(helpId);
+        helpRepository.findById(helpId).get().setDeleted(true);
     }
 
-    //-------------------------------------------ONE for update--------------------------------------
+    //--------------------------------------------------One (for update)------------------------------------------------
 
     @Transactional(readOnly = true)
     public HelpOutDto findOneForUpdates(@NonNull final Long helpId) {
         return helpDtoTransformer.toDto(helpRepository.findOneForUpdate(helpId));
     }
 
-    //------------------------------------------INSTRUCTOR table-------------------------------------
+    //----------------------------------------------------Staff table---------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
@@ -114,7 +116,7 @@ public class HelpService {
         return helpRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(helpDtoTransformer::toDto);
     }
 
-    //---------------------------------------------ADMIN---------------------------------------------
+    //----------------------------------------------------ADMIN table---------------------------------------------------
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAll(@NonNull final Pageable pageable) {
         return helpRepository.findAll(pageable).map(helpDtoTransformer::toDto);

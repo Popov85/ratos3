@@ -53,7 +53,7 @@ public class ModeService {
         this.securityUtils = securityUtils;
     }
 
-    //-------------------------------------------CRUD-----------------------------------------------------
+    //----------------------------------------------------CRUD----------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final ModeInDto dto) {
@@ -84,14 +84,14 @@ public class ModeService {
         mode.setDeleted(true);
     }
 
-    //-----------------------------------------ONE for edit----------------------------------------------
+    //-------------------------------------------------One (for edit)---------------------------------------------------
 
     @Transactional(readOnly = true)
     public ModeOutDto findOneForEdit(@NonNull final Long modeId) {
         return modeDtoTransformer.toDto(modeRepository.findOneForEdit(modeId));
     }
 
-    //----------------------------------------INSTRUCTOR table-------------------------------------------
+    //---------------------------------------------------Staff table----------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<ModeOutDto> findAllForTableByStaffId(@NonNull final Pageable pageable) {
@@ -114,7 +114,8 @@ public class ModeService {
     }
 
 
-    //----------------------------------------INSTRUCTOR dropdown-------------------------------------------
+    //--------------------------------------------------Staff drop-down-------------------------------------------------
+
     @Transactional(readOnly = true)
     public Slice<ModeOutDto> findAllForDropDownByStaffIdAndModeNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
         return modeRepository.findAllForDropDownByStaffIdAndModeNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(modeDtoTransformer::toDto);
@@ -125,7 +126,7 @@ public class ModeService {
         return modeRepository.findAllForDropDownByDepartmentIdAndModeNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(modeDtoTransformer::toDto);
     }
 
-    //----------------------------------------------ADMIN----------------------------------------------------
+    //-------------------------------------------------------ADMIN------------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<ModeOutDto> findAll(@NonNull final Pageable pageable) {

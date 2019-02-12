@@ -1,0 +1,7 @@
+{
+  "name":"help name",
+  "key":"ratos_consumer_key",
+  "secret":"ratos_client_secret",
+  "versionId":1,
+  "origins":["http://localhost:11", "http://localhost:12"]
+}

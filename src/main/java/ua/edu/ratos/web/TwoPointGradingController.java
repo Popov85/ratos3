@@ -59,7 +59,7 @@ public class TwoPointGradingController {
         log.info("Deleted TwoPointGrading, twoId = {}", twoId);
     }
 
-    //-------------------------------------INSTRUCTOR search-----------------------------------
+    //-----------------------------------------------------Staff table--------------------------------------------------
 
     @GetMapping(value = "/two-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<TwoPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

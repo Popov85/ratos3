@@ -12,8 +12,8 @@ import java.security.Principal;
 public class LTILaunchController {
 
     @PostMapping("/lti/1p0/launch")
-    public String launch(@RequestParam(required = false) Long schemeId, Principal principal) {
-        log.debug("Principal :: {}", principal);
+    public String launch(@RequestParam Long schemeId, Principal principal) {
+        log.debug("Principal = {}", principal);
         return "redirect:/lms/session/start?schemeId="+schemeId;
     }
 }

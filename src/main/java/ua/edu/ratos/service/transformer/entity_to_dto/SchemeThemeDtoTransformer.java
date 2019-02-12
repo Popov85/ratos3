@@ -12,8 +12,12 @@ import java.util.stream.Collectors;
 @Component
 public class SchemeThemeDtoTransformer {
 
-    @Autowired
     private SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer;
+
+    @Autowired
+    public void setSchemeThemeSettingsDtoTransformer(SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer) {
+        this.schemeThemeSettingsDtoTransformer = schemeThemeSettingsDtoTransformer;
+    }
 
     public SchemeThemeOutDto toDto(@NonNull final SchemeTheme entity) {
         SchemeThemeOutDto dto = new SchemeThemeOutDto().setSchemeThemeId(entity.getSchemeThemeId())

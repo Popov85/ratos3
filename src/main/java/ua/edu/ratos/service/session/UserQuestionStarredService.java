@@ -9,15 +9,20 @@ import ua.edu.ratos.dao.entity.UserQuestionStarredId;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.repository.UserQuestionStarredRepository;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Service
 public class UserQuestionStarredService {
 
-    @Autowired
+    @PersistenceContext
+    private EntityManager em;
+
     private UserQuestionStarredRepository userQuestionStarredRepository;
 
     @Autowired
-    private EntityManager em;
+    public void setUserQuestionStarredRepository(UserQuestionStarredRepository userQuestionStarredRepository) {
+        this.userQuestionStarredRepository = userQuestionStarredRepository;
+    }
 
     public void save(@NonNull final Long userId, @NonNull final Long questionId, final byte star) {
         UserQuestionStarredId id = new UserQuestionStarredId();

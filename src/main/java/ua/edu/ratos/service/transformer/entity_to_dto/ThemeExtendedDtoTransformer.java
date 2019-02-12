@@ -18,14 +18,26 @@ import java.util.stream.Collectors;
 @Component
 public class ThemeExtendedDtoTransformer {
 
-    @Autowired
     private CourseDtoTransformer courseDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffDtoTransformer;
 
-    @Autowired
     private AccessDtoTransformer accessDtoTransformer;
+
+    @Autowired
+    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
+        this.courseDtoTransformer = courseDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffDtoTransformer(StaffMinDtoTransformer staffDtoTransformer) {
+        this.staffDtoTransformer = staffDtoTransformer;
+    }
+
+    @Autowired
+    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
+        this.accessDtoTransformer = accessDtoTransformer;
+    }
 
     public ThemeExtendedOutDto toDto(@NonNull final Theme entity) {
         return ((ThemeExtendedOutDto) new ThemeExtendedOutDto()

@@ -9,18 +9,29 @@ import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.TwoPointGradingDtoTransformer;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Service
 public class SchemeTwoPointService implements SchemeGraderService {
 
-    @Autowired
-    private SchemeTwoPointRepository repository;
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
+    private SchemeTwoPointRepository repository;
+
     private TwoPointGradingDtoTransformer transformer;
+
+    @Autowired
+    public void setRepository(SchemeTwoPointRepository repository) {
+        this.repository = repository;
+    }
+
+    @Autowired
+    public void setTransformer(TwoPointGradingDtoTransformer transformer) {
+        this.transformer = transformer;
+    }
+
+
 
     @Override
     public void save(long schemeId, long gradingDetailsId) {

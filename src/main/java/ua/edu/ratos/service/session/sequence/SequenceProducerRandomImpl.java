@@ -18,11 +18,19 @@ import java.util.Set;
 @Service
 public class SequenceProducerRandomImpl implements SequenceProducer{
 
-    @Autowired
     private SequenceMapper sequenceMapper;
 
-    @Autowired
     private CollectionShuffler collectionShuffler;
+
+    @Autowired
+    public void setSequenceMapper(SequenceMapper sequenceMapper) {
+        this.sequenceMapper = sequenceMapper;
+    }
+
+    @Autowired
+    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
+        this.collectionShuffler = collectionShuffler;
+    }
 
     @Override
     public List<QuestionDomain> getSequence(List<SchemeTheme> schemeThemes) {

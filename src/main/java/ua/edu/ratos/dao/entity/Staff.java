@@ -3,7 +3,6 @@ package ua.edu.ratos.dao.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Getter
@@ -12,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "staff")
 public class Staff {
+
     @Id
     @Column(name = "staff_id")
     private Long staffId;

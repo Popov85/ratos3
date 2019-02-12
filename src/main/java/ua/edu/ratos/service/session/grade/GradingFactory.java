@@ -10,8 +10,12 @@ import java.util.Map;
 @Component
 public class GradingFactory {
 
-    @Autowired
     private List<Grader> graders;
+
+    @Autowired
+    public void setGraders(List<Grader> graders) {
+        this.graders = graders;
+    }
 
     private final Map<String, Grader> gradersMap = new HashMap<>();
 

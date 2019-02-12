@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "themes", "groups", "access"})
+@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "department", "themes", "groups", "access"})
 @Entity
 @Table(name="scheme")
 @Cacheable
@@ -59,6 +59,12 @@ public class Scheme {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private Staff staff;
+
+    // Scheme remains to belong to the department
+    // even if staff changes department
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to")
+    private Department department;
 
     @Column(name="created")
     private LocalDateTime created;

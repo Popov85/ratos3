@@ -19,17 +19,35 @@ import java.util.Set;
 @Service
 public class SchemeThemeService {
 
-    @Autowired
     private SchemeThemeRepository schemeThemeRepository;
 
-    @Autowired
     private DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
 
-    @Autowired
     private SchemeThemeDtoTransformer schemeThemeDtoTransformer;
 
-    @Autowired
     private SchemeThemeSettingsService schemeThemeSettingsService;
+
+    @Autowired
+    public void setSchemeThemeRepository(SchemeThemeRepository schemeThemeRepository) {
+        this.schemeThemeRepository = schemeThemeRepository;
+    }
+
+    @Autowired
+    public void setDtoSchemeThemeTransformer(DtoSchemeThemeTransformer dtoSchemeThemeTransformer) {
+        this.dtoSchemeThemeTransformer = dtoSchemeThemeTransformer;
+    }
+
+    @Autowired
+    public void setSchemeThemeDtoTransformer(SchemeThemeDtoTransformer schemeThemeDtoTransformer) {
+        this.schemeThemeDtoTransformer = schemeThemeDtoTransformer;
+    }
+
+    @Autowired
+    public void setSchemeThemeSettingsService(SchemeThemeSettingsService schemeThemeSettingsService) {
+        this.schemeThemeSettingsService = schemeThemeSettingsService;
+    }
+
+
 
     @Transactional
     public Long save(@NonNull final Long schemeId, @NonNull final SchemeThemeInDto dto) {

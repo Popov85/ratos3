@@ -9,18 +9,26 @@ import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.FourPointGradingDtoTransformer;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Service
 public class SchemeFourPointService implements SchemeGraderService {
 
-    @Autowired
-    private SchemeFourPointRepository repository;
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
+    private SchemeFourPointRepository repository;
+
     private FourPointGradingDtoTransformer transformer;
+    @Autowired
+    public void setRepository(SchemeFourPointRepository repository) {
+        this.repository = repository;
+    }
+
+    @Autowired
+    public void setTransformer(FourPointGradingDtoTransformer transformer) {
+        this.transformer = transformer;
+    }
 
     @Override
     public void save(long schemeId, long gradingDetailsId) {

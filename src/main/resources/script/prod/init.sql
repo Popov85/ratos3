@@ -2,6 +2,7 @@ insert into organisation (name) values('University');
 insert into faculty (name, org_id) values('Faculty', 1);
 insert into department (name, fac_id) values('Department', 1);
 insert into class (name, fac_id) values('Class', 1);
+
 insert into role (name) values('ROLE_OAUTH');
 insert into role (name) values('ROLE_STUDENT');
 insert into role (name) values('ROLE_INSTRUCTOR');
@@ -10,7 +11,15 @@ insert into role (name) values('ROLE_DEP-ADMIN');
 insert into role (name) values('ROLE_FAC-ADMIN');
 insert into role (name) values('ROLE_ORG-ADMIN');
 insert into role (name) values('ROLE_GLOBAL-ADMIN');
+
 insert into position (name) values('System admin');
+insert into position (name) values('Dean');
+insert into position (name) values('Head');
+insert into position (name) values('Professor');
+insert into position (name) values('Instructor');
+insert into position (name) values('Researcher');
+insert into position (name) values('Postgraduate');
+insert into position (name) values('Lab. assistant');
 
 insert into user (name, surname, password, email, is_active) values('Andrey','Popov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','andrey.popov@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (1, 8);

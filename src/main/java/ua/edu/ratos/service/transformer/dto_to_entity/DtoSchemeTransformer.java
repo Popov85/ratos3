@@ -10,15 +10,20 @@ import ua.edu.ratos.dao.entity.grade.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Component
 public class DtoSchemeTransformer {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Scheme toEntity(@NonNull final SchemeInDto dto) {
@@ -30,8 +35,9 @@ public class DtoSchemeTransformer {
         scheme.setMode(em.getReference(Mode.class, dto.getModeId()));
         scheme.setGrading(em.getReference(Grading.class, dto.getGradingId()));
         scheme.setCourse(em.getReference(Course.class, dto.getCourseId()));
-        // SecurityUtils in cation
+        // SecurityUtils in action
         scheme.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        scheme.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         scheme.setAccess(em.getReference(Access.class, dto.getAccessId()));
         // themes
         if (dto.getThemes()==null || dto.getThemes().isEmpty())

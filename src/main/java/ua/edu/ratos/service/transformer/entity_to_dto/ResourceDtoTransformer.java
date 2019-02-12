@@ -11,8 +11,12 @@ import ua.edu.ratos.service.dto.out.ResourceOutDto;
 @Component
 public class ResourceDtoTransformer {
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public ResourceOutDto toDto(@NonNull final Resource entity) {
         return new ResourceOutDto()

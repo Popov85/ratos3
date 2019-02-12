@@ -66,7 +66,7 @@ public class PhraseController {
     }
 
 
-    //------------------------------------------GET-------------------------------------------
+    //------------------------------------------------------Staff table-------------------------------------------------
 
     @GetMapping(value = "/phrases/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<PhraseOutDto> findAllByStaffId(@PageableDefault(sort = {"lastUsed"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {

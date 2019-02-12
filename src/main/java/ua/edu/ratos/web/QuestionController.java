@@ -103,7 +103,7 @@ public class QuestionController {
     }
 
 
-    //----------------------------------------GET for instructor edit--------------------------------------
+    //--------------------------------------------------Staff editor----------------------------------------------------
 
     @GetMapping(value = "/questions-mcq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {
@@ -130,7 +130,7 @@ public class QuestionController {
         return questionService.findAllSQForEditByThemeId(themeId, pageable);
     }
 
-    //----------------------------------------GET for instructor search--------------------------------------
+    //--------------------------------------------------Staff search----------------------------------------------------
 
     @GetMapping(value = "/questions-mcq", params = {"themeId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeIdAndQuestionLettersContains(@RequestParam Long themeId, @RequestParam String letters, @PageableDefault(sort = {"question"}, value = 50) Pageable pageable) {

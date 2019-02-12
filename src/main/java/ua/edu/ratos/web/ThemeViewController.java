@@ -26,8 +26,8 @@ public class ThemeViewController {
         this.themeViewService = themeViewService;
     }
 
-    // ------------------------------------------For Instructor-------------------------------------
-    // ----------------------------------------Statistics on theme----------------------------------
+    // ------------------------------------------------------Staff table------------------------------------------------
+    // ---------------------------------------------------Statistics on theme-------------------------------------------
     // Like: {1, Theme #1, [MCQ {10;0;0}, FBSQ {5;5;5}, FBMQ{10;10;5}, MQ {20;0;0}, SQ{15;0;0}], 85}
 
     @TrackTime
@@ -36,7 +36,7 @@ public class ThemeViewController {
         return ResponseEntity.ok(themeViewService.findOneByThemeId(themeId));
     }
 
-    // ----------------------------------------Scheme creating----------------------------------------
+    // -------------------------------------------------Scheme creating support----------------------------------------
     // 1. Do not know course (disabled);
     // 2. Drop-down for themes of the department, search
 
@@ -52,7 +52,7 @@ public class ThemeViewController {
         return themeViewService.findAllByDepartmentIdAndThemeLettersContains(contains);
     }
 
-    //--------------------------------------------RECOMMENDED-----------------------------------------
+    //-----------------------------------------------------||- recommended----------------------------------------------
     // 1. Drop-down for course, search
     // 2. Drop-down for themes, search
 

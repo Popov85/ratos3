@@ -58,6 +58,8 @@ public class QuestionService {
         this.questionDtoTransformer = questionDtoTransformer;
     }
 
+    //---------------------------------------------------CRUD-----------------------------------------------------------
+
     @Transactional
     public Long save(@NonNull final QuestionMCQInDto dto) {
         return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
@@ -104,12 +106,12 @@ public class QuestionService {
                 .setDeleted(true);
     }
 
-    //--------------------------------------STUDENT SESSION cache---------------------------------
+    //-----------------------------------------------STUDENT session cache----------------------------------------------
 
     @Transactional(readOnly = true)
     public Set<QuestionDomain> findAllByThemeId(@NonNull final Long themeId) {
         Set<QuestionDomain> questionDomains = new HashSet<>();
-        // First, findDetails all existing types (answerIds) in this theme
+        // First, find all existing types (answerIds) in this theme
         questionRepository.findTypes(themeId).forEach(typeId-> questionDomains.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
         return questionDomains;
     }
@@ -135,7 +137,7 @@ public class QuestionService {
         throw new RuntimeException("Unsupported type");
     }
 
-    //--------------------------------------INSTRUCTOR for edit------------------------------------
+    //----------------------------------------------------Staff table---------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
@@ -162,7 +164,7 @@ public class QuestionService {
         return questionRepository.findAllSQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
     }
 
-    //-----------------------------------INSTRUCTOR search by question--------------------------------
+    //------------------------------------------------------Staff search------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {

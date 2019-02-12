@@ -59,7 +59,7 @@ public class ModeController {
         log.info("Delete Mode, modeId = {}", modeId);
     }
 
-    //-----------------------------------------GET table---------------------------------------------
+    //---------------------------------------------------Staff table----------------------------------------------------
 
 
     @GetMapping(value = "/modes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +82,7 @@ public class ModeController {
         return modeService.findAllForTableByDepartmentIdAndModeNameLettersContains(letters, pageable);
     }
 
-    //-----------------------------------------GET dropdown--------------------------------------------
+    //--------------------------------------------------Staff dropdown list---------------------------------------------
 
     @GetMapping(value = "/modes/by-staff-dropdown", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<ModeOutDto> findAllForDropDownByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

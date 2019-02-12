@@ -11,18 +11,27 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Component
 public class DtoThemeTransformer {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Theme toEntity(@NonNull final ThemeInDto dto) {

@@ -9,8 +9,12 @@ import ua.edu.ratos.dao.repository.OrganisationRepository;
 @Service
 public class OrganisationService {
 
-    @Autowired
     private OrganisationRepository organisationRepository;
+
+    @Autowired
+    public void setOrganisationRepository(OrganisationRepository organisationRepository) {
+        this.organisationRepository = organisationRepository;
+    }
 
     public void deleteById(Long orgId) {
         log.warn("Organisation is to be removed, Id= {}", orgId);

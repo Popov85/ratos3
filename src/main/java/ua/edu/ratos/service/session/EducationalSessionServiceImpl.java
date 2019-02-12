@@ -14,6 +14,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,6 +26,10 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     private static final String OPERATION_NOT_ALLOWED = "This operation is not allowed by gradingDomain settingsDomain";
     private static final String NO_HELP_PRESENT = "No helpDomain is available for this question";
     private static final String STAR_OUT_OF_BOUND = "Unsupported star value, only 1 to 5 stars are allowed";
+
+    @PersistenceContext
+    private EntityManager em;
+
 
     @Autowired
     private ShiftService shiftService;
@@ -40,9 +45,6 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
 
     @Autowired
     private SessionPreservedRepository sessionPreservedRepository;
-
-    @Autowired
-    private EntityManager em;
 
     @Override
     public void pause(@NonNull final SessionData sessionData) {

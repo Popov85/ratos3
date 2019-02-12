@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,9 @@ public class AdminController {
     private CourseService courseService;
 
     @Autowired
+    private LMSCourseService lmsCourseService;
+
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
@@ -41,8 +45,20 @@ public class AdminController {
     @Autowired
     private SettingsService settingsService;
 
+    @Autowired
+    private SettingsFBService settingsFBService;
+
+    @Autowired
+    private LMSService lmsService;
+
+    @Autowired
+    private StaffService staffService;
+
+    @Autowired
+    private StudentService studentService;
+
     @GetMapping(value = "/schemes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeMinOutDto> findAllSchemes(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+    public Page<SchemeShortOutDto> findAllSchemes(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return schemeService.findAll(pageable);
     }
 
@@ -54,6 +70,11 @@ public class AdminController {
     @GetMapping(value = "/courses", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CourseOutDto> findAllCourses(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return courseService.findAll(pageable);
+    }
+
+    @GetMapping(value = "/lms-courses", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<LMSCourseOutDto> findAllLMSCourses(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return lmsCourseService.findAll(pageable);
     }
 
     @GetMapping(value = "/resources", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,10 +97,27 @@ public class AdminController {
         return modeService.findAll(pageable);
     }
 
-
     @GetMapping(value="/settings", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<SettingsOutDto> findAllSettings(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return settingsService.findAll(pageable);
     }
+    @GetMapping(value="/settings-fb", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<SettingsFBOutDto> findAllSettingsFB(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return settingsFBService.findAllAdmin(pageable);
+    }
 
+    @GetMapping(value = "/lms", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<LMSOutDto> findAllLMS(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return lmsService.findAllAdmin(pageable);
+    }
+
+    @GetMapping(value = "/staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<StaffOutDto> findAllStaff(@PageableDefault(sort = {"surname"}, value = 50) Pageable pageable) {
+        return staffService.findAllAdmin(pageable);
+    }
+
+    @GetMapping(value = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<StudOutDto> findAllStudents(@PageableDefault(sort = {"surname"}, value = 50) Pageable pageable) {
+        return studentService.findAllAdmin(pageable);
+    }
 }

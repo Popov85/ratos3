@@ -9,18 +9,28 @@ import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Service
 public class SchemeFreePointService implements SchemeGraderService {
 
-    @Autowired
-    private SchemeFreePointRepository repository;
-
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
-    @Autowired
+    private SchemeFreePointRepository repository;
+
     private FreePointGradingDtoTransformer transformer;
+
+    @Autowired
+    public void setRepository(SchemeFreePointRepository repository) {
+        this.repository = repository;
+    }
+
+    @Autowired
+    public void setTransformer(FreePointGradingDtoTransformer transformer) {
+        this.transformer = transformer;
+    }
+
 
     @Override
     public void save(long schemeId, long gradingDetailsId) {

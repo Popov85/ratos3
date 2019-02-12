@@ -9,8 +9,12 @@ import java.util.Optional;
 @Component
 public class FreePointGrader implements Grader {
 
-    @Autowired
     private SchemeFreePointRepository schemeFreePointRepository;
+
+    @Autowired
+    public void setSchemeFreePointRepository(SchemeFreePointRepository schemeFreePointRepository) {
+        this.schemeFreePointRepository = schemeFreePointRepository;
+    }
 
     @Override
     public GradedResult grade(double percent, long schemeId) {

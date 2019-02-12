@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import java.time.LocalDateTime;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -16,27 +17,16 @@ public class SchemeMinOutDto {
 
     private String name;
 
-    private StrategyOutDto strategy;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SchemeMinOutDto that = (SchemeMinOutDto) o;
+        return Objects.equals(schemeId, that.schemeId);
+    }
 
-    private SettingsOutDto settings;
-
-    private ModeOutDto mode;
-
-    private GradingOutDto grading;
-
-    private CourseOutDto course;
-
-    private StaffMinOutDto staff;
-
-    private LocalDateTime created;
-
-    private AccessOutDto access;
-
-    private boolean active;
-
-    private boolean lmsOnly;
-
-    private int themes;
-
-    private int groups;
+    @Override
+    public int hashCode() {
+        return Objects.hash(schemeId);
+    }
 }

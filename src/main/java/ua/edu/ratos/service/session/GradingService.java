@@ -10,7 +10,6 @@ import ua.edu.ratos.service.session.grade.GradedResult;
 import ua.edu.ratos.service.session.grade.Grader;
 import ua.edu.ratos.service.session.grade.GradingFactory;
 
-
 @Slf4j
 @Service
 public class GradingService {

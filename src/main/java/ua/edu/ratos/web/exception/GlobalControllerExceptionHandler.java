@@ -19,13 +19,12 @@ import java.util.Set;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse unknownException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
                 new ExceptionResponse(ex.getMessage(), request.toString());
-        log.error("Unknown error has occurred :: {}", ex.getMessage());
+        log.error("Unknown error has occurred = {}", ex.getMessage());
         return exceptionResponse;
     }
 
@@ -34,7 +33,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ExceptionResponse timeException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
                 new ExceptionResponse("RunOutOfTimeException", ex.getMessage());
-        log.error("Time limit is exceeded for user :: {}", request.getUserPrincipal().getName());
+        log.error("Time limit is exceeded for user = {}", request.getUserPrincipal().getName());
         return exceptionResponse;
     }
 
@@ -47,7 +46,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
                     .add(new FieldValidationResponse(e.getField(), e.getRejectedValue(), e.getDefaultMessage())));
         final ValidationExceptionResponse exceptionResponse =
                 new ValidationExceptionResponse("Validation error", fieldValidationResponses);
-        log.error("Validation error has occurred :: {}", fieldValidationResponses);
+        log.error("Validation error has occurred = {}", fieldValidationResponses);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

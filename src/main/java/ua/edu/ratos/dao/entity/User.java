@@ -1,18 +1,16 @@
 package ua.edu.ratos.dao.entity;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Getter
 @Setter
-@ToString(exclude = {"roles", "student", "staff"})
+@ToString(exclude = {"roles"})
 @Entity
 @Table(name = "user")
 public class User {
@@ -34,32 +32,10 @@ public class User {
     @Column(name = "password")
     private char[] password;
 
-    @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
-    @OneToOne(mappedBy = "user")
-    private Student student;
-
-    @OneToOne(mappedBy = "user")
-    private Staff staff;
-
     @Column(name="is_active")
     private boolean active;
 
-    public void addRole(@NonNull Role role) {
-        this.roles.add(role);
-    }
-
-    public void removeRole(@NonNull Role role) {
-        this.roles.remove(role);
-    }
-
-    public Optional<Student> getStudent() {
-        return Optional.of(student);
-    }
-
-    public Optional<Staff> getStaff() {
-        return Optional.of(staff);
-    }
+    @ManyToMany
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 }

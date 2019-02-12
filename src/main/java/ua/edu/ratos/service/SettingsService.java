@@ -50,7 +50,7 @@ public class SettingsService {
         this.securityUtils = securityUtils;
     }
 
-    //--------------------------------------------CRUD-----------------------------------------
+    //-----------------------------------------------------CRUD---------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final SettingsInDto dto) {
@@ -81,14 +81,14 @@ public class SettingsService {
         settings.setDeleted(true);
     }
 
-    //--------------------------------------- ONE for update----------------------------------------
+    //-------------------------------------------------One (for update)-------------------------------------------------
 
     @Transactional(readOnly = true)
     public SettingsOutDto findOneForEdit(@NonNull final Long setId) {
         return settingsDtoTransformer.toDto(settingsRepository.findOneForEdit(setId));
     }
 
-    //----------------------------------------INSTRUCTOR table----------------------------------------
+    //---------------------------------------------------Staff table----------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<SettingsOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
@@ -110,7 +110,7 @@ public class SettingsService {
         return settingsRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(settingsDtoTransformer::toDto);
     }
 
-    //--------------------------------------------ADMIN-----------------------------------------------
+    //--------------------------------------------------------ADMIN-----------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<SettingsOutDto> findAll(@NonNull Pageable pageable) {

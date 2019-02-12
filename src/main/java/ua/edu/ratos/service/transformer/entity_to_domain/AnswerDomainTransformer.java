@@ -12,14 +12,26 @@ import java.util.stream.Collectors;
 @Component
 public class AnswerDomainTransformer {
 
-    @Autowired
     private ResourceDomainTransformer resourceDomainTransformer;
 
-    @Autowired
     private SettingsFBDomainTransformer settingsFBDomainTransformer;
 
-    @Autowired
     private PhraseDomainTransformer phraseDomainTransformer;
+
+    @Autowired
+    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
+        this.resourceDomainTransformer = resourceDomainTransformer;
+    }
+
+    @Autowired
+    public void setSettingsFBDomainTransformer(SettingsFBDomainTransformer settingsFBDomainTransformer) {
+        this.settingsFBDomainTransformer = settingsFBDomainTransformer;
+    }
+
+    @Autowired
+    public void setPhraseDomainTransformer(PhraseDomainTransformer phraseDomainTransformer) {
+        this.phraseDomainTransformer = phraseDomainTransformer;
+    }
 
     public AnswerFBMQDomain toDomain(@NonNull final AnswerFBMQ entity) {
         return new AnswerFBMQDomain()

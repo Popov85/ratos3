@@ -1,5 +1,5 @@
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, is_deleted, grading_id, access_id)
-      values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 0, 1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted, grading_id, access_id)
+    values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0, 1, 1);
 insert into scheme_four_point(scheme_id, four_point_id) values(1, 1);
 insert into theme(name, is_deleted, course_id, created_by, access_id) values('Theme#1', 0, 1, 1, 1);
 insert into scheme_theme(scheme_id, theme_id, theme_order) values(1, 1, 0);
@@ -199,5 +199,5 @@ insert into answer_mcq_resource(answer_id, resource_id) values(39, 49);
 insert into resource (hyperlink, description, staff_id) values('https://image.slidesharecdn.com/phraseResource-#50-Answer#4-MCQ#10-T#1.jpg', 'Resource #50 Answer#4 MCQ#10 T#1', 1);
 insert into answer_mcq_resource(answer_id, resource_id) values(40, 50);
 
-insert into result(scheme_id, user_id, percent, grade, is_passed, session_ended, session_lasted, is_timeouted)
-       values(1, 1, 85.00, 5, 1, '2018-06-27 13:35:10.999999999', 12000, 0);
+insert into result(scheme_id, user_id, dep_id, percent, grade, is_passed, session_ended, session_lasted, is_timeouted)
+       values(1, 1, 1, 85.00, 5, 1, '2018-06-27 13:35:10.999999999', 12000, 0);

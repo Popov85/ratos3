@@ -19,8 +19,12 @@ import java.security.Principal;
 @Profile("demo")
 public class LTIDemoController {
 
-    @Autowired
     private LTIOutcomeService ltiOutcomeService;
+
+    @Autowired
+    public void setLtiOutcomeService(LTIOutcomeService ltiOutcomeService) {
+        this.ltiOutcomeService = ltiOutcomeService;
+    }
 
     @PostMapping("/lti/1p0/launch")
     public String launch(@RequestParam(required = false, defaultValue = "1") Long schemeId, Principal principal) {

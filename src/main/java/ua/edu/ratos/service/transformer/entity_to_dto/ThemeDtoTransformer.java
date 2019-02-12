@@ -11,14 +11,26 @@ import ua.edu.ratos.service.dto.out.ThemeOutDto;
 @Component
 public class ThemeDtoTransformer {
 
-    @Autowired
     private CourseDtoTransformer courseDtoTransformer;
 
-    @Autowired
     private StaffMinDtoTransformer staffDtoTransformer;
 
-    @Autowired
     private AccessDtoTransformer accessDtoTransformer;
+
+    @Autowired
+    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
+        this.courseDtoTransformer = courseDtoTransformer;
+    }
+
+    @Autowired
+    public void setStaffDtoTransformer(StaffMinDtoTransformer staffDtoTransformer) {
+        this.staffDtoTransformer = staffDtoTransformer;
+    }
+
+    @Autowired
+    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
+        this.accessDtoTransformer = accessDtoTransformer;
+    }
 
     public ThemeOutDto toDto(@NonNull final Theme entity) {
         return new ThemeOutDto()

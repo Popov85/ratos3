@@ -10,7 +10,7 @@ public interface PhraseRepository extends JpaRepository<Phrase, Long> {
 
     //--------------------------------------------One for update-------------------------------------
     @Query(value = "SELECT p FROM Phrase p join fetch p.staff s left join fetch p.resources where p.phraseId =?1")
-    Phrase findOneForUpdate(Long phraseId);
+    Phrase findOneForEdit(Long phraseId);
 
     //-----------------------------------Instructor for table & dropdown-----------------------------
 

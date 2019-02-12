@@ -65,7 +65,7 @@ public class CourseController {
     }
 
 
-    //---------------------------GET for TABLES---------------------------
+    //-----------------------------------------------Staff tables-------------------------------------------------------
 
     @GetMapping(value = "/courses/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CourseOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
@@ -73,8 +73,8 @@ public class CourseController {
     }
 
     @GetMapping(value = "/courses/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return courseService.findAllByStaffIdAndNameContains(letters, pageable);
+    public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return courseService.findAllByStaffIdAndNameLettersContains(letters, pageable);
     }
 
     @GetMapping(value = "/courses/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,8 +83,8 @@ public class CourseController {
     }
 
     @GetMapping(value = "/courses/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return courseService.findAllByDepartmentIdAndNameContains(letters, pageable);
+    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return courseService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
     }
 
 }

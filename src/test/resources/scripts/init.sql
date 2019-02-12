@@ -2,6 +2,7 @@ insert into organisation (name) values('University');
 insert into faculty (name, org_id) values('Faculty', 1);
 insert into department (name, fac_id) values('Department', 1);
 insert into class (name, fac_id) values('Class', 1);
+
 insert into role (name) values('ROLE_OAUTH');
 insert into role (name) values('ROLE_STUDENT');
 insert into role (name) values('ROLE_INSTRUCTOR');
@@ -10,17 +11,25 @@ insert into role (name) values('ROLE_DEP-ADMIN');
 insert into role (name) values('ROLE_FAC-ADMIN');
 insert into role (name) values('ROLE_ORG-ADMIN');
 insert into role (name) values('ROLE_GLOBAL-ADMIN');
-insert into position (name) values('System admin');
 
-insert into user (name, surname, password, email, is_active) values('Andrey','Popov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','andrey.popov@example.com', 1);
+insert into position (name) values('System admin');
+insert into position (name) values('Dean');
+insert into position (name) values('Head');
+insert into position (name) values('Professor');
+insert into position (name) values('Instructor');
+insert into position (name) values('Researcher');
+insert into position (name) values('Postgraduate');
+insert into position (name) values('Lab. assistant');
+
+insert into user (name, surname, password, email, is_active) values('Alexei','Portnov','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','alexei.portnov@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (1, 8);
 insert into staff (staff_id, dep_id, pos_id) values(1, 1, 1);
 
-insert into user (name, surname, password, email, is_active) values('Student','Student','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','student@example.com', 1);
+insert into user (name, surname, password, email, is_active) values('Maria','Medvedeva','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','maria.medvedeva@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (2, 2);
 insert into student(stud_id, class_id, entrance_year) values(2, 1, 2018);
 
-insert into user (name, surname, password, email, is_active) values('Staff','Staff','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','staff@example.com', 1);
+insert into user (name, surname, password, email, is_active) values('Student','Student','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','student.student@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (3, 2);
 insert into student(stud_id, class_id, entrance_year) values(3, 1, 2018);
 
@@ -67,17 +76,21 @@ values('exam', 1, 0, 0, 0, 0, 0, 0, 0, 1);
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
 values('training', 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('eng default', 5, 100, 0, 0, 0, 1, 1);
-insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ua default', 5, 100, 0, 0, 0, 5, 1);
-insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ru default', 5, 100, 0, 0, 0, 6, 1);
+insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id)
+    values('eng default', 5, 100, 0, 0, 0, 1, 1);
+insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id)
+    values('ua default', 5, 100, 0, 0, 0, 5, 1);
+insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id)
+    values('ru default', 5, 100, 0, 0, 0, 6, 1);
 
 insert into course (name, created, created_by, dep_id, access_id) values('Test LTI course #1', CURRENT_TIMESTAMP, 1, 1, 1);
+
+insert into lti_version(version) values('1p0');
 
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key', 'ratos_client_secret');
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key_1', 'ratos_client_secret_1');
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key_2', 'ratos_client_secret_2');
 
-insert into lti_version(version) values('1p0');
 insert into lms(name, lti_version_id, org_id, credentials_id) values('Open edX', 1, 1, 1);
 insert into lms_origin(link, lms_id) values('http://localhost', 1);
 insert into lms_origin(link, lms_id) values('http://localhost:18010', 1);

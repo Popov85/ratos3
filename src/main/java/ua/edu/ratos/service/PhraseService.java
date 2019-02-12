@@ -54,6 +54,8 @@ public class PhraseService {
         this.securityUtils = securityUtils;
     }
 
+    //-----------------------------------------------------CRUD---------------------------------------------------------
+
     @Transactional
     public Long save(@NonNull final PhraseInDto dto) {
         Phrase phrase = dtoPhraseTransformer.toEntity(dto);
@@ -79,14 +81,14 @@ public class PhraseService {
                 .setDeleted(true);
     }
 
-    //----------------------------------------FOR Update-------------------------------------
+    //-------------------------------------------------One (for update)-------------------------------------------------
 
     @Transactional(readOnly = true)
     public PhraseOutDto findOneForUpdate(@NonNull final Long phraseId) {
-        return phraseDtoTransformer.toDto(phraseRepository.findOneForUpdate(phraseId));
+        return phraseDtoTransformer.toDto(phraseRepository.findOneForEdit(phraseId));
     }
 
-    //-----------------------------------------SELECT-----------------------------------------
+    //----------------------------------------------------Staff table---------------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
@@ -109,7 +111,8 @@ public class PhraseService {
     }
 
 
-    //-------------------------------------------ADMIN----------------------------------------
+    //--------------------------------------------------------ADMIN-----------------------------------------------------
+
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAll(@NonNull final Pageable pageable) {
         return phraseRepository.findAll(pageable).map(phraseDtoTransformer::toDto);

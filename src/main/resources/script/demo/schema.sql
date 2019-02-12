@@ -11,9 +11,10 @@ CREATE TABLE IF NOT EXISTS user (
   surname VARCHAR(100) NOT NULL,
   password VARCHAR(70) NOT NULL,
   email VARCHAR(200) NOT NULL,
-  is_active TINYINT(1) NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (user_id),
-  UNIQUE INDEX email_UNIQUE (email ASC));
+  UNIQUE INDEX email_UNIQUE (email ASC))
+  ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table organisation
@@ -237,6 +238,8 @@ CREATE TABLE IF NOT EXISTS theme (
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
+/*CREATE INDEX name_idx ON theme(name);*/
+
 -- -----------------------------------------------------
 -- Table  question_type
 -- -----------------------------------------------------
@@ -326,6 +329,7 @@ CREATE TABLE IF NOT EXISTS   settings_fbq  (
   is_numeric  TINYINT(1) NOT NULL,
   is_typo_allowed  TINYINT(1) NOT NULL,
   is_case_sensitive  TINYINT(1) NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   lang_id  INT UNSIGNED NOT NULL,
   staff_id  INT UNSIGNED NOT NULL,
   PRIMARY KEY ( set_id ),
@@ -447,6 +451,7 @@ CREATE TABLE IF NOT EXISTS help (
   help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   text VARCHAR(5000) NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   staff_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (help_id),
   INDEX fk_help_staff_staff_id_idx (staff_id ASC),
@@ -739,15 +744,15 @@ CREATE TABLE IF NOT EXISTS scheme (
   strategy_id INT UNSIGNED NOT NULL,
   settings_id INT UNSIGNED NOT NULL,
   mode_id INT UNSIGNED NOT NULL,
-  course_id INT UNSIGNED NOT NULL,
-  created TIMESTAMP NOT NULL,
-  created_by INT UNSIGNED NOT NULL,
-  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   grading_id INT UNSIGNED NOT NULL,
-  lms_only TINYINT(1) NOT NULL DEFAULT 0,
   access_id INT UNSIGNED NOT NULL,
+  course_id INT UNSIGNED NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  created TIMESTAMP NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  lms_only TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (scheme_id),
-  INDEX fk_scheme_staff_created_by_idx (created_by ASC),
   INDEX fk_scheme_strategy_strategy_id_idx (strategy_id ASC),
   INDEX fk_scheme_settings_settings_id_idx (settings_id ASC),
   INDEX fk_scheme_mode_mode_id_idx (mode_id ASC),
@@ -755,11 +760,10 @@ CREATE TABLE IF NOT EXISTS scheme (
   UNIQUE INDEX name_course_UNIQUE (name ASC, course_id ASC),
   INDEX fk_scheme_grading_grading_id_idx (grading_id ASC),
   INDEX fk_scheme_access_level_access_id_idx (access_id ASC),
-  CONSTRAINT fk_scheme_staff_created_by
-  FOREIGN KEY (created_by)
-  REFERENCES staff (staff_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX fk_scheme_staff_staff_id_idx (created_by ASC),
+  INDEX fk_scheme_department_dep_id_idx (belongs_to ASC),
+  INDEX belongs_to_and_created_idx (belongs_to ASC, created DESC),
+  INDEX created_by_and_created_idx (created_by ASC, created DESC),
   CONSTRAINT fk_scheme_strategy_strategy_id
   FOREIGN KEY (strategy_id)
   REFERENCES strategy (str_id)
@@ -788,6 +792,16 @@ CREATE TABLE IF NOT EXISTS scheme (
   CONSTRAINT fk_scheme_access_level_access_id
   FOREIGN KEY (access_id)
   REFERENCES access_level (access_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_scheme_staff_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_scheme_department1
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -1018,6 +1032,7 @@ CREATE TABLE IF NOT EXISTS  lti_credentials (
 CREATE TABLE IF NOT EXISTS  lms (
   lms_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   lti_version_id INT UNSIGNED NOT NULL,
   org_id INT UNSIGNED NOT NULL,
   credentials_id INT UNSIGNED NULL,
@@ -1062,33 +1077,33 @@ CREATE TABLE IF NOT EXISTS  lms_origin (
 -- -----------------------------------------------------
 -- Table  lms_course
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  lms_course (
-  lms_course_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS lms_course (
   course_id INT UNSIGNED NOT NULL,
   lms_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY (lms_course_id),
-  INDEX fk_lms_course_course_course_id_idx (course_id ASC),
+  PRIMARY KEY (course_id),
   INDEX fk_lms_course_lms_lms_id_idx (lms_id ASC),
-  CONSTRAINT fk_lms_course_course_course_id
-  FOREIGN KEY (course_id)
-  REFERENCES  course (course_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX fk_lms_course_course_id_idx (course_id ASC),
   CONSTRAINT fk_lms_course_lms_lms_id
   FOREIGN KEY (lms_id)
-  REFERENCES  lms (lms_id)
+  REFERENCES lms (lms_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_lms_course_course1
+  FOREIGN KEY (course_id)
+  REFERENCES course (course_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table  result
+-- Table result
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  result (
+CREATE TABLE IF NOT EXISTS result (
   result_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   scheme_id INT UNSIGNED NOT NULL,
   user_id INT UNSIGNED NOT NULL,
+  dep_id INT UNSIGNED NOT NULL,
   percent DOUBLE UNSIGNED NOT NULL,
   grade DOUBLE UNSIGNED NOT NULL,
   is_passed TINYINT(1) NOT NULL DEFAULT 0,
@@ -1099,20 +1114,28 @@ CREATE TABLE IF NOT EXISTS  result (
   PRIMARY KEY (result_id),
   INDEX fk_result_scheme_scheme_id_idx (scheme_id ASC),
   INDEX fk_result_user_user_id_idx (user_id ASC),
-  INDEX fk_result_lms1_idx (lms_id ASC),
+  INDEX fk_result_lms_lms_id_idx (lms_id ASC),
+  INDEX fk_result_department_dep_id_idx (dep_id ASC),
+  INDEX dep_id_and_session_ended_idx (dep_id ASC, session_ended DESC),
+  INDEX user_id_and_session_ended_idx (user_id ASC, session_ended DESC),
   CONSTRAINT fk_result_scheme_scheme_id
   FOREIGN KEY (scheme_id)
-  REFERENCES  scheme (scheme_id)
+  REFERENCES scheme (scheme_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_result_user_user_id
   FOREIGN KEY (user_id)
-  REFERENCES  user (user_id)
+  REFERENCES user (user_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_result_lms1
+  CONSTRAINT fk_result_lms_lms_id
   FOREIGN KEY (lms_id)
-  REFERENCES  lms (lms_id)
+  REFERENCES lms (lms_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_result_department_dep_id
+  FOREIGN KEY (dep_id)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -1216,6 +1239,8 @@ CREATE TABLE IF NOT EXISTS  groups (
   name VARCHAR(200) NOT NULL,
   staff_id INT UNSIGNED NOT NULL,
   is_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
+  created TIMESTAMP NOT NULL,
   PRIMARY KEY (group_id),
   INDEX fk_group_staff_staff_id_idx (staff_id ASC),
   CONSTRAINT fk_group_staff_staff_id
@@ -1268,29 +1293,16 @@ CREATE TABLE IF NOT EXISTS  group_scheme (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- View  theme_type
+-- View theme_type
 -- -----------------------------------------------------
 CREATE OR REPLACE VIEW theme_type_view AS
   select t.theme_id as theme_id, question.type_id as type_id, c.course_id as course_id, d.dep_id as dep_id,
          t.name as theme, question_type.eng_abbreviation as type,
-         sum(question.level=1) as L1, sum(question.level=2) as L2, sum(question.level=3) as L3, count(question.question_id) as total
+         sum(question.level=1) as L1, sum(question.level=2) as L2, sum(question.level=3) as L3,
+         count(question.question_id) as total
   from question
     inner join question_type on question.type_id=question_type.type_id
     inner join theme t on question.theme_id=t.theme_id
     inner join course c on t.course_id=c.course_id
     inner join department d on c.dep_id=d.dep_id
-  group by theme_id, type_id;
-
-
-CREATE OR REPLACE VIEW theme_type_view_ext AS
-  select t.theme_id as theme_id, question.type_id as type_id, d.dep_id as dep_id, s.staff_id as staff_id,
-         concat(u.name, ' ', u.surname) as staff, c.name as course, t.name as theme, question_type.eng_abbreviation as type,
-         sum(question.level=1) as L1, sum(question.level=2) as L2, sum(question.level=3) as L3, count(question.question_id) as total
-  from question
-    inner join question_type on question.type_id=question_type.type_id
-    inner join theme t on question.theme_id=t.theme_id
-    inner join course c on t.course_id=c.course_id
-    inner join department d on c.dep_id=d.dep_id
-    inner join staff s on d.dep_id=s.dep_id
-    inner join user u on s.staff_id=u.user_id
   group by theme_id, type_id;

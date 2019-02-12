@@ -20,11 +20,19 @@ public class DtoResourceTransformer {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Resource toEntity(@NonNull final ResourceInDto dto) {

@@ -11,8 +11,12 @@ import ua.edu.ratos.service.dto.out.SettingsOutDto;
 @Component
 public class SettingsDtoTransformer {
 
-    @Autowired
     private StaffMinDtoTransformer staffMinDtoTransformer;
+
+    @Autowired
+    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
+        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    }
 
     public SettingsOutDto toDto(@NonNull final Settings entity) {
         return new SettingsOutDto()

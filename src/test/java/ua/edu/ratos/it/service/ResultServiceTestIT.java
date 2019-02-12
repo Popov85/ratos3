@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import ua.edu.ratos.dao.entity.Result;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.ResultService;
 import ua.edu.ratos.service.domain.*;
@@ -67,8 +68,8 @@ public class ResultServiceTestIT {
                 Arrays.asList(perTheme0, perTheme1, perTheme2, perTheme3));
         Long resultId = resultService.save(sessionData, resultDomain, false);
         Assert.assertEquals(1L, resultId.longValue());
-        final ua.edu.ratos.dao.entity.Result foundResult =
-                (ua.edu.ratos.dao.entity.Result) em.createQuery(FIND_RESULT)
+        final Result foundResult =
+                (Result) em.createQuery(FIND_RESULT)
                         .setParameter("resultId", 1L)
                         .getSingleResult();
 

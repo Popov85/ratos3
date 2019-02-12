@@ -9,8 +9,12 @@ import java.util.Optional;
 @Component
 public class TwoPointGrader implements Grader {
 
-    @Autowired
     private SchemeTwoPointRepository schemeTwoPointRepository;
+
+    @Autowired
+    public void setSchemeTwoPointRepository(SchemeTwoPointRepository schemeTwoPointRepository) {
+        this.schemeTwoPointRepository = schemeTwoPointRepository;
+    }
 
     @Override
     public GradedResult grade(double percent, long schemeId) {

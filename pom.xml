@@ -33,6 +33,7 @@
 		<jackson.jsr310>2.9.7</jackson.jsr310>
 		<jackson.xml>2.9.7</jackson.xml>
 		<jsonassert>1.5.0</jsonassert>
+		<metamodel>5.4.1.Final</metamodel>
 	</properties>
 
 	<dependencies>
@@ -159,6 +160,14 @@
 			<artifactId>jsonassert</artifactId>
 			<version>${jsonassert}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${metamodel}</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 	</dependencies>
 

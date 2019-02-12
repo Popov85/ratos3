@@ -3,17 +3,24 @@ package ua.edu.ratos.dao.entity.lms;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+import ua.edu.ratos.dao.entity.Organisation;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-@ToString(exclude = {"origins", "credentials", "ltiVersion"})
+@ToString(exclude = {"organisation", "credentials", "ltiVersion", "origins"})
 @Entity
 @Table(name = "lms")
+@Where(clause = "is_deleted = 0")
+@DynamicUpdate
 public class LMS {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -23,7 +30,14 @@ public class LMS {
     @Column(name = "name")
     private String name;
 
+    @Column(name="is_deleted")
+    private boolean deleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "org_id")
+    private Organisation organisation;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "credentials_id")
     private LTICredentials credentials;
 

@@ -23,8 +23,12 @@ public class AccessChecker {
     private static final String DEP_PRIVATE_ACCESS_MESSAGE = "Failed to modify: element has a dep-private access";
     private static final String PRIVATE_ACCESS_MESSAGE = "Failed to modify: element has a private access";
 
-    @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
 
     public void checkModifyAccess(@NonNull final Access accessLevel, @NonNull final Staff staff) {
         String access = accessLevel.getName();
