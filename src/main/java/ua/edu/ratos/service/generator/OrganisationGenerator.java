@@ -3,6 +3,7 @@ package ua.edu.ratos.service.generator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.Organisation;
 import ua.edu.ratos.dao.repository.OrganisationRepository;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class OrganisationGenerator {
     @Autowired
     private OrganisationRepository organisationRepository;
 
+    @TrackTime
     @Transactional
     public List<Organisation> generate(int quantity) {
         List<Organisation> results = new ArrayList<>();

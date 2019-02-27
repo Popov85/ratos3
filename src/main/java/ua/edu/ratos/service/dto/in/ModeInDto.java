@@ -27,10 +27,6 @@ public class ModeInDto {
 
     private boolean rightAnswer;
 
-    private boolean resultDetails;
-
-    private boolean pauseable;
-
     private boolean preservable;
 
     private boolean reportable;

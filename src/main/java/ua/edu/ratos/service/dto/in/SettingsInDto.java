@@ -48,6 +48,8 @@ public class SettingsInDto {
 
     private boolean displayThemeResults;
 
+    private boolean displayQuestionResults;
+
     private boolean strictControlTimePerQuestion;
 
 }

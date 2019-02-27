@@ -65,15 +65,15 @@
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.GroupScheme">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Group">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Student">
-        <heap>10000</heap>
+        <heap>100000</heap>
     </cache>
 
 
@@ -81,7 +81,7 @@
 
     <cache alias="ua.edu.ratos.dao.entity.question.Question">
         <resources>
-            <heap>5000</heap>
+            <heap>500000</heap>
             <offheap unit="MB">500</offheap>
         </resources>
     </cache>
@@ -91,7 +91,7 @@
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Theme">
-        <heap>2000</heap>
+        <heap>20000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Language">
@@ -99,15 +99,15 @@
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Help">
-        <heap>500</heap>
+        <heap>50000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Resource">
-        <heap>500</heap>
+        <heap>50000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.Phrase">
-        <heap>10000</heap>
+        <heap>100000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.SettingsFB">
@@ -116,25 +116,25 @@
 
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMCQ">
         <resources>
-            <heap>20000</heap>
+            <heap>2000000</heap>
             <offheap unit="MB">400</offheap>
         </resources>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFBSQ">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerFBMQ">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMQ">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerSQ">
-        <heap>1000</heap>
+        <heap>10000</heap>
     </cache>
 
 </config>

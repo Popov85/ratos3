@@ -1,6 +1,8 @@
 package ua.edu.ratos.dao.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,6 +12,8 @@ import java.util.Objects;
 @Setter
 @Getter
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserQuestionStarredId implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -9,38 +9,39 @@ import java.util.Set;
 
 public interface SettingsRepository extends JpaRepository<Settings, Long> {
 
-    //------------------------------------ONE for update-----------------------------------
+    //------------------------------------------------------ONE for update----------------------------------------------
 
     @Query(value="select s from Settings s join fetch s.staff where s.setId = ?1")
     Settings findOneForEdit(Long setId);
 
-    //----------------------------------------DEFAULT---------------------------------------
+    //---------------------------------------------------------DEFAULT--------------------------------------------------
 
     @Query(value="select s from Settings s join fetch s.staff where s.isDefault = true order by s.name asc")
     Set<Settings> findAllDefault();
 
-    //-------------------------------------INSTRUCTOR table---------------------------------
+    //-------------------------------------------------------INSTRUCTOR table-------------------------------------------
 
-    @Query(value="select s from Settings s join fetch s.staff st where st.staffId = ?1 order by s.name asc",
+    @Query(value="select s from Settings s join fetch s.staff st where st.staffId = ?1",
             countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1")
     Page<Settings> findAllByStaffId(Long staffId, Pageable pageable);
 
-    @Query(value="select s from Settings s join fetch s.staff st where st.staffId = ?1 and s.name like %?2% order by s.name asc",
-            countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1 and s.name like %?2%")
-    Page<Settings> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
-
-    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1 order by s.name asc",
+    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1",
             countQuery = "select count(s) from Settings s join s.staff st join st.department d where d.depId =?1")
     Page<Settings> findAllByDepartmentId(Long depId, Pageable pageable);
 
-    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1 and s.name like %?2% order by s.name asc",
+    //--------------------------------------------------------Table search----------------------------------------------
+
+    @Query(value="select s from Settings s join fetch s.staff st where st.staffId = ?1 and s.name like %?2%",
+            countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1 and s.name like %?2%")
+    Page<Settings> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
+
+    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1 and s.name like %?2%",
             countQuery = "select count(s) from Settings s join s.staff st join st.department d where d.depId =?1 and s.name like %?2%")
     Page<Settings> findAllByDepartmentIdAndNameLettersContains(Long depId, String contains, Pageable pageable);
 
-    //------------------------------------------ADMIN---------------------------------------
+    //------------------------------------------------------------ADMIN-------------------------------------------------
 
-    @Query(value="select s from Settings s join fetch s.staff order by s.name asc",
-            countQuery = "select count(s) from Settings s")
+    @Query(value="select s from Settings s join fetch s.staff", countQuery = "select count(s) from Settings s")
     Page<Settings> findAll(Pageable pageable);
 
 }

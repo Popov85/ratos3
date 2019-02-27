@@ -21,7 +21,7 @@ public class LevelPartProducer {
 
     public List<QuestionDomain> getLevelPart(Set<? extends QuestionDomain> typeList, byte level, short requestedQuantity) {
         List<QuestionDomain> levelList = getLevelList(typeList, level);
-        // Eliminate construction phase mistake: if requested level of this type not found (mistake during test construction), return empty list (as a fallback)
+        // Eliminate construction phase mistake: if requested level of this questionType not found (mistake during test construction), return empty list (as a fallback)
         if (levelList.isEmpty()) return Collections.emptyList();
         // Eliminate construction phase mistake: if the actual list from DB is less than is requested, return a reduced number of questions (as a fallback)
         if (requestedQuantity > levelList.size()) requestedQuantity = (short) levelList.size();

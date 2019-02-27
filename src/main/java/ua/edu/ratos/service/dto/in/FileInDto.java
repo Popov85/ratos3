@@ -21,7 +21,7 @@ public class FileInDto {
     @Positive(message = "Invalid staffId, {dto.fk.required}")
     private long staffId;
     /**
-     * Specifies if the user has accepted the parsing result info and agreed to save the questions into DB
+     * Specifies if the user has accepted the parsing result info and agreed to savePoints the totalByType into DB
      */
     private boolean confirmed;
 }

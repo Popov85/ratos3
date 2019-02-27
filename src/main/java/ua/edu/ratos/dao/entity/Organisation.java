@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Table(name = "organisation")
 @Where(clause = "is_deleted = 0")
 public class Organisation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

@@ -5,23 +5,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.Access;
 import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.dao.repository.ThemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
-import ua.edu.ratos.service.dto.out.ThemeExtendedOutDto;
+import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
+import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoThemeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ThemeDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ThemeExtendedDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.ThemeExtDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.ThemeMapDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -33,13 +39,18 @@ public class ThemeService {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     private ThemeRepository themeRepository;
 
     private DtoThemeTransformer dtoThemeTransformer;
 
     private ThemeDtoTransformer themeDtoTransformer;
 
-    private ThemeExtendedDtoTransformer themeExtendedDtoTransformer;
+    private ThemeExtDtoTransformer themeExtDtoTransformer;
+
+    private ThemeMapDtoTransformer themeMapDtoTransformer;
 
     private AccessChecker accessChecker;
 
@@ -61,8 +72,13 @@ public class ThemeService {
     }
 
     @Autowired
-    public void setThemeExtendedDtoTransformer(ThemeExtendedDtoTransformer themeExtendedDtoTransformer) {
-        this.themeExtendedDtoTransformer = themeExtendedDtoTransformer;
+    public void setThemeExtDtoTransformer(ThemeExtDtoTransformer themeExtDtoTransformer) {
+        this.themeExtDtoTransformer = themeExtDtoTransformer;
+    }
+
+    @Autowired
+    public void setThemeMapDtoTransformer(ThemeMapDtoTransformer themeMapDtoTransformer) {
+        this.themeMapDtoTransformer = themeMapDtoTransformer;
     }
 
     @Autowired
@@ -114,71 +130,90 @@ public class ThemeService {
         accessChecker.checkModifyAccess(theme.getAccess(), theme.getStaff());
     }
 
-    //--------------------------SELECT (for update)-------------------
+    //---------------------------------------------One (for update)-----------------------------------------------------
 
     @Transactional(readOnly = true)
     public ThemeOutDto findByIdForUpdate(@NonNull final Long themeId) {
         return themeDtoTransformer.toDto(themeRepository.findForEditById(themeId));
     }
 
-    //-------------------------SELECT (for themes tables)---------------------
+    //--------------------------------------------Staff theme table-----------------------------------------------------
 
     @Transactional(readOnly = true)
-    public Page<ThemeOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return themeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable)
-                .map(themeDtoTransformer::toDto);
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffId(@NonNull final Pageable pageable) {
+        return themeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(themeExtDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<ThemeOutDto> findAllByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return themeRepository.findAllByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable)
-                .map(themeDtoTransformer::toDto);
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentId(@NonNull final Pageable pageable) {
+        return themeRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(themeExtDtoTransformer::toDto);
+    }
+
+    //--------------------------------------------Staff table search----------------------------------------------------
+
+    @Transactional(readOnly = true)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffIdAndName(@NonNull final String starts, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return themeRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+        return themeRepository.findAllByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), starts, pageable).map(themeExtDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<ThemeOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return themeRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable)
-                .map(themeDtoTransformer::toDto);
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentIdAndName(@NonNull final String starts, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return themeRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+        return themeRepository.findAllByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+    }
+
+    //----------------------------------------------Slice drop-down-----------------------------------------------------
+
+    @Transactional(readOnly = true)
+    public Slice<ThemeExtOutDto> findAllForDropDownByStaffId(@NonNull final Pageable pageable) {
+        return themeRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId(), pageable).map(themeExtDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<ThemeOutDto> findAllByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return themeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable)
-                .map(themeDtoTransformer::toDto);
+    public Slice<ThemeExtOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
+        return themeRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(themeExtDtoTransformer::toDto);
     }
 
-    //-------------------------SELECT (for questions tables)---------------------
+    //----------------------------------------------Drop-down search----------------------------------------------------
 
-    @TrackTime
     @Transactional(readOnly = true)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffId(@NonNull final Pageable pageable) {
-        return themeRepository.findAllForQuestionsTableByStaffId(securityUtils.getAuthStaffId(), pageable)
-                .map(themeExtendedDtoTransformer::toDto);
+    public Slice<ThemeExtOutDto> findAllForDropDownByStaffIdAndName(@NonNull final String starts, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return themeRepository.findAllForDropDownByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+        return themeRepository.findAllForDropDownByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), starts, pageable).map(themeExtDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return themeRepository.findAllForQuestionsTableByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable)
-                .map(themeExtendedDtoTransformer::toDto);
+    public Slice<ThemeExtOutDto> findAllForDropDownByDepartmentIdAndName(@NonNull final String starts, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return themeRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+        return themeRepository.findAllForDropDownByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), starts, pageable).map(themeExtDtoTransformer::toDto);
+    }
+
+    //----------------------------------------------Scheme creating support---------------------------------------------
+
+    @Transactional(readOnly = true)
+    public ThemeMapOutDto getQuestionTypeLevelMapByThemeId(@NonNull final Long themeId) {
+        Set<Question> questions = questionRepository.findAllForTypeLevelMapByThemeId(themeId);
+        if (questions==null || questions.isEmpty()) throw new IllegalStateException("No questions in this theme!");
+        return themeMapDtoTransformer.toDto(themeId, questions);
+    }
+
+    //------------------------------------------------------DEBUG-------------------------------------------------------
+    @Transactional(readOnly = true)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentIdDebug(Long depId, @NonNull final Pageable pageable) {
+        return themeRepository.findAllByDepartmentId(depId, pageable).map(themeExtDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentId(@NonNull final Pageable pageable) {
-        return themeRepository.findAllForQuestionsTableByDepartmentId(securityUtils.getAuthDepId(), pageable)
-                .map(themeExtendedDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return themeRepository.findAllForQuestionsTableByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable)
-                .map(themeExtendedDtoTransformer::toDto);
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentIdAndNameStartsDebug(Long depId, @NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return themeRepository.findAllByDepartmentIdAndNameLettersContains(depId, letters, pageable).map(themeExtDtoTransformer::toDto);
+        return themeRepository.findAllByDepartmentIdAndNameStarts(depId, letters, pageable).map(themeExtDtoTransformer::toDto);
     }
 
 
-    // --------------------------SELECT (admin, for table)------------------------
+    // -----------------------------------------------Admin table-------------------------------------------------------
     @Transactional(readOnly = true)
     public Page<ThemeOutDto> findAll(@NonNull final Pageable pageable) {
-        return themeRepository.findAll(pageable)
-                .map(themeDtoTransformer::toDto);
+        return themeRepository.findAll(pageable).map(themeDtoTransformer::toDto);
     }
 }

@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Access;
@@ -102,7 +103,7 @@ public class CourseService {
         return courseDtoTransformer.toDto(courseRepository.findForEditById(courseId));
     }
 
-    //---------------------------------------------------SELECT (for tables)--------------------------------------------
+    //-----------------------------------------------------Staff (for table)--------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
@@ -110,22 +111,49 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return courseRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(courseDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
         return courseRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(courseDtoTransformer::toDto);
     }
 
+    //-----------------------------------------------------Search in table----------------------------------------------
+
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return courseRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(courseDtoTransformer::toDto);
+    public Page<CourseOutDto> findAllByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return courseRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
+        return courseRepository.findAllByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
     }
-    
-    
-    //-------------------------------------------------Admin (for simple table)-----------------------------------------
+
+    @Transactional(readOnly = true)
+    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return courseRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
+        return courseRepository.findAllByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
+    }
+
+    //---------------------------------------------------SLICE drop-down------------------------------------------------
+    @Transactional(readOnly = true)
+    public Slice<CourseOutDto> findAllForDropDownByStaffId(@NonNull final Pageable pageable) {
+        return courseRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId(), pageable).map(courseDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<CourseOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
+        return courseRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(courseDtoTransformer::toDto);
+    }
+
+    //-------------------------------------------------Search in drop-down----------------------------------------------
+    @Transactional(readOnly = true)
+    public Slice<CourseOutDto> findAllForDropDownByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return courseRepository.findAllForDropDownByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
+        return courseRepository.findAllForDropDownByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<CourseOutDto> findAllForDropDownByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return courseRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
+        return courseRepository.findAllForDropDownByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
+    }
+
+    //-----------------------------------------------Admin (for simple table)-------------------------------------------
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAll(@NonNull final Pageable pageable) {
         return courseRepository.findAll(pageable).map(courseDtoTransformer::toDto);

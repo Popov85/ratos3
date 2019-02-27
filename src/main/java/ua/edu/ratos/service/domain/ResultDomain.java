@@ -1,35 +1,71 @@
 package ua.edu.ratos.service.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.Accessors;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
 
-import java.util.List;
+import java.util.*;
 
 @Getter
+@Setter
 @ToString
+@Accessors(chain = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class ResultDomain {
-    /**
-     * Some key for edX integration score system purpose
-     */
-    private final String key;
-    /**
-     * Whether or not the given min threshold is passed, for edX purposes to notify if the test has been cracked
-     */
-    private final boolean passed;
-    /**
-     * Either [0-100], fractions are allowed
-     * E.g. 75.4
-     */
-    private final double percent;
-    /**
-     * Any number according to the selected gradingDomain scale, e.g. four-point [2, 3, 4, 5]
-     * E.g. 4
-     * Or e.g. two-point {0, 1}
-     * E.g 1
-     */
-    private final double grade;
 
-    private final List<ResultPerTheme> themeResults;
+    private UserDomain user;
+
+    private SchemeDomain scheme;
+
+    /**
+     * Either [0-100], fractions are allowed, e.g. 75.4
+     */
+    private double percent;
+    /**
+     * Whether or not the test is passed:
+     * scored the min according to scheme's grading system
+     */
+    private boolean passed;
+
+    /**
+     * Any number according to the selected grading scale,
+     * e.g. four-point [2, 3, 4, 5], e.g. 4, or e.g. two-point {0, 1}, e.g 1
+     */
+    private double grade;
+
+    private boolean timeOuted;
+
+    private long timeSpent;
+
+    private List<ResultPerTheme> themeResults = new ArrayList<>();
+
+    // for questionResult optional calculations (for DTO)
+    private Map<Long, QuestionDomain> questionsMap = new HashMap<>();
+
+    private List<ResponseEvaluated> responsesEvaluated = new ArrayList<>();
+
+    //----------------------------------------------------Optional------------------------------------------------------
+
+    /**
+     * For LMS sessions only
+     */
+    private Long lmsId;
+
+    public Optional<Long> getLmsId() {
+        return Optional.ofNullable(lmsId);
+    }
+
+    /**
+     * True, if gamification points are gained
+     */
+    private Integer points;
+
+    public Optional<Integer> getPoints() {
+        return Optional.ofNullable(points);
+    }
+
+    public boolean hasPoints() {
+        return (getPoints().isPresent() && getPoints().get() !=0);
+    }
 }

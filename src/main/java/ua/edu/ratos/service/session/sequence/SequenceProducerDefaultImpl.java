@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Default strategy:
  * Theme-> Type -> Level -> Question
- * Questions are randomised irrespective to type and level, but observe themes order
+ * Questions are randomised irrespective to questionType and level, but observe themes order
  */
 @Service
 public class SequenceProducerDefaultImpl implements SequenceProducer {

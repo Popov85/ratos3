@@ -32,7 +32,7 @@ public class SessionDataService {
     }
 
     /**
-     * Reset currentBach related fields in case of normal finish
+     * Reset currentBach related fields in case of normal save
      * @param sessionData
      */
     public void finalize(@NonNull final SessionData sessionData) {

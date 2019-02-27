@@ -25,7 +25,7 @@ public class ResultsGeneratorsSuite {
     private ClassGenerator classGenerator;
 
     @Autowired
-    private StudentsGenerator studentsGenerator;
+    private StudentGenerator studentGenerator;
 
     @Autowired
     private CourseGenerator courseGenerator;
@@ -34,7 +34,7 @@ public class ResultsGeneratorsSuite {
     private ThemeGenerator themeGenerator;
 
     @Autowired
-    private SchemesGenerator schemesGenerator;
+    private SchemeGenerator schemeGenerator;
 
     @Autowired
     private ResultsGenerator resultsGenerator;
@@ -105,13 +105,13 @@ public class ResultsGeneratorsSuite {
         suite.setDepartments(departments.size());
         List<Class> classes = classGenerator.generate(suite.getClasses(), faculties);
         suite.setClasses(classes.size());
-        List<Student> students = studentsGenerator.generate(suite.getStudents(), classes);
+        List<Student> students = studentGenerator.generate(suite.getStudents(), classes);
         suite.setStudents(students.size());
         List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);
         suite.setCourses(courses.size());
         List<Theme> themes = themeGenerator.generate(suite.getThemes(), courses);
         suite.setThemes(themes.size());
-        List<Scheme> schemes = schemesGenerator.generate(suite.getSchemes(), themes, departments, courses);
+        List<Scheme> schemes = schemeGenerator.generate(suite.getSchemes(), themes, departments, courses);
         suite.setSchemes(schemes.size());
         List<Result> results = resultsGenerator.generate(suite.getResults(), students, schemes);
         suite.setResults(results.size());

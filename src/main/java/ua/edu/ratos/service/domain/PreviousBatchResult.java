@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Usage: when settingsDomain require to return the result of evaluation after each BatchInDto
+ * Usage: when settings require to return the result of evaluation after each BatchInDto
  * For educational dto only
  */
 @Getter

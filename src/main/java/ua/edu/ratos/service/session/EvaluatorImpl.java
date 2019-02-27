@@ -6,7 +6,7 @@ import ua.edu.ratos.service.domain.question.*;
 import ua.edu.ratos.service.domain.response.*;
 
 /**
- * @link https://stackoverflow.com/questions/30527947/polymorphism-and-dto-object-creation
+ * @link https://stackoverflow.com/totalByType/30527947/polymorphism-and-dto-object-creation
  */
 @AllArgsConstructor
 public class EvaluatorImpl implements Evaluator {

@@ -23,6 +23,7 @@ public class QuestionDtoTransformer {
 
     private QuestionTypeDtoTransformer questionTypeDtoTransformer;
 
+    private ThemeMinDtoTransformer themeMinDtoTransformer;
 
     @Autowired
     public void setAnswerDtoTransformer(AnswerDtoTransformer answerDtoTransformer) {
@@ -47,6 +48,11 @@ public class QuestionDtoTransformer {
     @Autowired
     public void setQuestionTypeDtoTransformer(QuestionTypeDtoTransformer questionTypeDtoTransformer) {
         this.questionTypeDtoTransformer = questionTypeDtoTransformer;
+    }
+
+    @Autowired
+    public void setThemeMinDtoTransformer(ThemeMinDtoTransformer themeMinDtoTransformer) {
+        this.themeMinDtoTransformer = themeMinDtoTransformer;
     }
 
     public QuestionFBMQOutDto toDto(@NonNull final QuestionFBMQ entity) {
@@ -84,6 +90,13 @@ public class QuestionDtoTransformer {
         return dto;
     }
 
+    public QuestionMinOutDto toDto(@NonNull final Question entity) {
+        QuestionMinOutDto dto = new QuestionMinOutDto();
+        mapDto(entity, dto);
+        return dto;
+    }
+
+
     private void mapDto(@NonNull final Question entity, @NonNull final QuestionOutDto dto) {
         dto.setQuestionId(entity.getQuestionId());
         dto.setQuestion(entity.getQuestion());
@@ -91,6 +104,7 @@ public class QuestionDtoTransformer {
         dto.setRequired(entity.isRequired());
         dto.setLang(languageDtoTransformer.toDto(entity.getLang()));
         dto.setType(questionTypeDtoTransformer.toDto(entity.getType()));
+        dto.setTheme(themeMinDtoTransformer.toDto(entity.getTheme()));
         dto.setHelp((entity.getHelp().isPresent()) ? helpDtoTransformer.toDto(entity.getHelp().get()) : null);
         if (entity.getResources()!=null) {
             dto.setResources(entity.getResources().stream().map(resourceDtoTransformer::toDto).collect(Collectors.toSet()));

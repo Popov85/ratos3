@@ -1,5 +1,5 @@
 insert into department (name, fac_id) values('Department #2', 1);
-insert into course (name, created, created_by, dep_id, access_id) values('Test LTI course #2', CURRENT_TIMESTAMP, 1, 2, 1);
+insert into course (name, created, created_by, belongs_to, access_id) values('Test course #2', CURRENT_TIMESTAMP, 1, 2, 1);
 
 insert into user (name, surname, password, email, is_active) values('Max','Smirnoff','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','max.smirnoff@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (4, 3);
@@ -7,13 +7,13 @@ insert into staff (staff_id, dep_id, pos_id) values(4, 2, 5);
 
 insert into user (name, surname, password, email, is_active) values('Maria','Dubrovska','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','maria.dubrovska@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (5, 2);
-insert into student (stud_id, class_id, entrance_year) values(5, 1, 2018);
+insert into student (stud_id, class_id, fac_id, org_id, entrance_year) values(5, 1, 1, 1, 2018);
 
 insert into user (name, surname, password, email, is_active) values('Denis','Kosinski','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','denis.kosiniski@example.com', 1);
 insert into user_role(user_id, role_id) VALUES (6, 3);
 insert into staff (staff_id, dep_id, pos_id) values(6, 2, 5);
 
-insert into course (name, created, created_by, dep_id, access_id) values('Test LTI course #3', CURRENT_TIMESTAMP, 6, 2, 1);
+insert into course (name, created, created_by, belongs_to, access_id) values('Test course #3', CURRENT_TIMESTAMP, 6, 2, 1);
 
 
 insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)

@@ -36,7 +36,6 @@ public class QuestionType {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(abbreviation);
     }
 }

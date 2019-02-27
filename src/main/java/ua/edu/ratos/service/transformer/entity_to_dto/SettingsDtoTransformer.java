@@ -26,6 +26,7 @@ public class SettingsDtoTransformer {
                 .setDisplayMark(entity.isDisplayMark())
                 .setDisplayPercent(entity.isDisplayPercent())
                 .setDisplayThemeResults(entity.isDisplayThemeResults())
+                .setDisplayQuestionResults(entity.isDisplayQuestionResults())
                 .setLevel2Coefficient(entity.getLevel2Coefficient())
                 .setLevel3Coefficient(entity.getLevel3Coefficient())
                 .setQuestionsPerSheet(entity.getQuestionsPerSheet())

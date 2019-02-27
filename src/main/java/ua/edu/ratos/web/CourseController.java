@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,23 +70,49 @@ public class CourseController {
     //-----------------------------------------------Staff tables-------------------------------------------------------
 
     @GetMapping(value = "/courses/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    public Page<CourseOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return courseService.findAllByStaffId(pageable);
     }
 
-    @GetMapping(value = "/courses/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return courseService.findAllByStaffIdAndNameLettersContains(letters, pageable);
-    }
-
     @GetMapping(value = "/courses/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    public Page<CourseOutDto> findAllByDepartmentId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return courseService.findAllByDepartmentId(pageable);
     }
 
+    //------------------------------------------------Search in table---------------------------------------------------
+
+    @GetMapping(value = "/courses/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllByStaffIdAndName(letters, contains, pageable);
+    }
+
     @GetMapping(value = "/courses/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return courseService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
+    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllByDepartmentIdAndNameLettersContains(letters, contains, pageable);
+    }
+
+    //-----------------------------------------------Staff drop-down----------------------------------------------------
+
+    @GetMapping(value = "/courses-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<CourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllForDropDownByStaffId(pageable);
+    }
+
+    @GetMapping(value = "/courses-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<CourseOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllForDropDownByDepartmentId(pageable);
+    }
+
+    //---------------------------------------------Search in drop-down--------------------------------------------------
+
+    @GetMapping(value = "/courses-dropdown/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<CourseOutDto> findAllForDropDownByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllForDropDownByStaffIdAndName(letters, contains, pageable);
+    }
+
+    @GetMapping(value = "/courses-dropdown/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<CourseOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return courseService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
     }
 
 }

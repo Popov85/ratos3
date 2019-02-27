@@ -28,6 +28,9 @@ public class SessionPreserved {
     @Column(name="data")
     private String data;
 
+    @Column(name="progress")
+    private double progress;
+
     @Column(name = "when_preserved")
     private LocalDateTime whenPreserved;
 }

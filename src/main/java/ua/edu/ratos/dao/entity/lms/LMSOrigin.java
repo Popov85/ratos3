@@ -37,7 +37,6 @@ public class LMSOrigin {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(link);
     }
 }

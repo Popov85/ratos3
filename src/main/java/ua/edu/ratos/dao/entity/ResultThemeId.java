@@ -1,7 +1,7 @@
 package ua.edu.ratos.dao.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class ResultThemeId implements Serializable {
 

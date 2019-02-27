@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.ThemeService;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
-import ua.edu.ratos.service.dto.out.ThemeExtendedOutDto;
+import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
+import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -72,48 +75,69 @@ public class ThemeController {
         log.debug("Deleted Theme, themeId = {}", themeId);
     }
 
-    //--------------------------------------------------Staff table-----------------------------------------------------
+    //--------------------------------------------Staff theme-questions table-------------------------------------------
 
-    @GetMapping(value = "/themes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllByStaffId(pageable);
-    }
-
-    @GetMapping(value = "/themes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeOutDto> findAllByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllByStaffIdAndNameContains(letters, pageable);
-    }
-
-    @GetMapping(value = "/themes/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllByDepartmentId(pageable);
-    }
-
-    @GetMapping(value = "/themes/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeOutDto> findAllByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllByDepartmentIdAndNameContains(letters, pageable);
-    }
-
-    //----------------------------------------------Staff questions table-----------------------------------------------
-
-    @GetMapping(value = "/themes/questions-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    @GetMapping(value = "/themes-questions/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return themeService.findAllForQuestionsTableByStaffId(pageable);
     }
 
-    @GetMapping(value = "/themes/questions-by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllForQuestionsTableByStaffIdAndNameContains(letters, pageable);
-    }
-
-    @GetMapping(value = "/themes/questions-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    @GetMapping(value = "/themes-questions/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return themeService.findAllForQuestionsTableByDepartmentId(pageable);
     }
 
-    @GetMapping(value = "/themes/questions-by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ThemeExtendedOutDto> findAllForQuestionsTableByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return themeService.findAllForQuestionsTableByDepartmentIdAndNameContains(letters, pageable);
+    //---------------------------------------------------Table search---------------------------------------------------
+
+    @GetMapping(value = "/themes-questions/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByStaffIdAndName(letters, contains, pageable);
+    }
+
+    @GetMapping(value = "/themes-questions/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ThemeExtOutDto> findAllForQuestionsTableByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return themeService.findAllForQuestionsTableByDepartmentIdAndName(letters, contains, pageable);
+    }
+
+    //-------------------------------------------Dropdown scheme creating support---------------------------------------
+
+    @GetMapping(value = "/themes-questions-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<ThemeExtOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return themeService.findAllForDropDownByStaffId(pageable);
+    }
+
+    @GetMapping(value = "/themes-questions-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<ThemeExtOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return themeService.findAllForDropDownByDepartmentId(pageable);
+    }
+
+    //----------------------------------------------------Dropdown search-----------------------------------------------
+
+    @GetMapping(value = "/themes-questions-dropdown/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<ThemeExtOutDto> findAllForDropDownByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return themeService.findAllForDropDownByStaffIdAndName(letters, contains, pageable);
+    }
+
+    @GetMapping(value = "/themes-questions-dropdown/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<ThemeExtOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
+        return themeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
+    }
+
+
+    //---------------------------------------------Scheme creating support with levels----------------------------------
+
+    /**
+     * Use this endpoint for scheme creating support to obtain all existing types and levels in this theme.
+     * It works rather fast (100-500ms) with questions per theme = 200-500 pieces,
+     * but requires to fetch all questions from theme for calculations.
+     * So it will presumably work slower with questions per theme >1000. Be careful to use it in this case!
+     * @param themeId theme you want to add to scheme
+     * @return DTO with details on question types and levels present in this theme.
+     * Front-end has to prevent a user from setting values greater than these limits.
+     */
+    @GetMapping(value = "/themes-map/{themeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ThemeMapOutDto getQuestionTypeLevelMapByThemeId(@PathVariable Long themeId) {
+        return themeService.getQuestionTypeLevelMapByThemeId(themeId);
     }
 
 }

@@ -24,4 +24,11 @@ public class StudentInDto {
 
     @Positive(message = "{dto.fk.required}")
     private long classId;
+
+    @Positive(message = "{dto.fk.required}")
+    private long facId;
+
+    @Positive(message = "{dto.fk.required}")
+    private long orgId;
+
 }

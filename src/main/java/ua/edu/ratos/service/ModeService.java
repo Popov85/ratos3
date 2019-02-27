@@ -67,13 +67,11 @@ public class ModeService {
         if (mode.isDefaultMode()) throw new RuntimeException(DEFAULT_MODES_CANNOT_BE_MODIFIED);
         mode.setName(dto.getName());
         mode.setHelpable(dto.isHelpable());
-        mode.setPauseable(dto.isPauseable());
         mode.setPreservable(dto.isPreservable());
         mode.setPyramid(dto.isPyramid());
         mode.setReportable(dto.isReportable());
         mode.setRightAnswer(dto.isRightAnswer());
         mode.setSkipable(dto.isSkipable());
-        mode.setResultDetails(dto.isResultDetails());
         mode.setStarrable(dto.isStarrable());
     }
 

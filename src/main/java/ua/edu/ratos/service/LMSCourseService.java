@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Access;
@@ -14,7 +15,6 @@ import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.LMSCourseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoLMSCourseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.LMSCourseDtoTransformer;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
@@ -125,7 +125,18 @@ public class LMSCourseService {
         return lmsCourseRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(lmsCourseDtoTransformer::toDto);
     }
 
-    //-----------------------------------------------------------Admin--------------------------------------------------
+    //---------------------------------------------------SLICE drop-down------------------------------------------------
+    @Transactional(readOnly = true)
+    public Slice<LMSCourseOutDto> findAllForDropDownByStaffId(@NonNull final Pageable pageable) {
+        return lmsCourseRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId(), pageable).map(lmsCourseDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<LMSCourseOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
+        return lmsCourseRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(lmsCourseDtoTransformer::toDto);
+    }
+
+    //--------------------------------------------------------Admin-----------------------------------------------------
     @Transactional(readOnly = true)
     public Page<LMSCourseOutDto> findAll(@NonNull final Pageable pageable) {
         return lmsCourseRepository.findAll(pageable).map(lmsCourseDtoTransformer::toDto);

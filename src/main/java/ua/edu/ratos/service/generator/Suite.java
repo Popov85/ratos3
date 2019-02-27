@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Setter
 @ToString
 @Accessors(chain = true)
+@SuppressWarnings("SpellCheckingInspection")
 public class Suite {
     private int organisations;
     private int faculties;
@@ -19,4 +20,15 @@ public class Suite {
     private int schemes;
     private int students;
     private int results;
+
+    private int resources;
+    private int helps;
+
+    private int phrases;
+
+    private int mcq;
+    private int fbsq;
+    private int fbmq;
+    private int mq;
+    private int sq;
 }

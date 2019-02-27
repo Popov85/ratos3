@@ -71,11 +71,11 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
     public void serializeInitialStateWith5DifferentQuestionsTest() throws Exception {
         // init
         List<QuestionDomain> sequence = Arrays.asList(
-                createMCQ(1L, "QuestionDomain Multiple Choice #1"),
-                createFBSQ(2L, "QuestionDomain Fill Blank Single #2"),
-                createFBMQ(3L, "QuestionDomain Fill Blank Multiple #3", false),
-                createMQ(4L, "Matcher QuestionDomain #4", false),
-                createSQ(5L, "Sequence question #5"));
+                createMCQ(1L, "QuestionMultiple Choice #1"),
+                createFBSQ(2L, "Question Fill Blank Single #2"),
+                createFBMQ(3L, "Question Fill Blank Multiple #3", false),
+                createMQ(4L, "Matcher Question #4", false),
+                createSQ(5L, "Sequence Question #5"));
 
         SessionData sessionData = new SessionData.Builder()
                 .withKey("D7C5E8BED7EDA2381E69126A40B3B22C")
@@ -111,21 +111,24 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
         String expected = new String(encoded, Charset.defaultCharset());
 
         String actual = serializer.serialize(sessionData);
+        //log.debug("Serialised sessionData object (init) = {}", actual);
 
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
         //log.debug("Serialised sessionData object (init) = {}", actual);
     }
+
+
 
     @Test
     // Typical use case (1 question ber batch, limited in time, preserved in the middle of the test)
     public void serializeIntermediateStateWith1QuestionPerBatchTest() throws Exception {
         // init
         List<QuestionDomain> sequence = Arrays.asList(
-                createMCQ(1L, "QuestionDomain Multiple Choice #1"),
-                createFBSQ(2L, "QuestionDomain Fill Blank Single #2"),
-                createFBMQ(3L, "QuestionDomain Fill Blank Multiple #3", false),
-                createMQ(4L, "Matcher QuestionDomain #4", false),
-                createSQ(5L, "Sequence question #5"));
+                createMCQ(1L, "Question Multiple Choice #1"),
+                createFBSQ(2L, "Question Fill Blank Single #2"),
+                createFBMQ(3L, "Question Fill Blank Multiple #3", false),
+                createMQ(4L, "Matcher Question #4", false),
+                createSQ(5L, "Sequence Question #5"));
 
         schemeDomain.getSettingsDomain().setQuestionsPerSheet((short) 1);
 
@@ -182,15 +185,15 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
 
         Map<Long, MetaData> metaDataMap = new HashMap<>();
         MetaData metaL1 = new MetaData();
-        metaL1.setStarred((byte) 4).setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0).setComplained(false);
+        metaL1.setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0);
         metaDataMap.put(1L, metaL1);
 
         MetaData metaL2 = new MetaData();
-        metaL2.setStarred(null).setIncorrect((short) 1).setSkipped((short) 0).setHelp((short) 1).setComplained(false);
+        metaL2.setIncorrect((short) 1).setSkipped((short) 0).setHelp((short) 1);
         metaDataMap.put(2L, metaL2);
 
         MetaData metaL3 = new MetaData();
-        metaL3.setStarred((byte) 4).setIncorrect((short) 0).setSkipped((short) 1).setHelp((short) 1).setComplained(true);
+        metaL3.setIncorrect((short) 0).setSkipped((short) 1).setHelp((short) 1);
         metaDataMap.put(3L, metaL3);
 
         sessionData.setMetaData(metaDataMap);
@@ -202,7 +205,6 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
         String expected = new String(encoded, Charset.defaultCharset());
 
         String actual = serializer.serialize(sessionData);
-
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
         //log.debug("Serialised sessionData (middle) object = {}", actual);
     }
@@ -211,11 +213,11 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
     @Test
     public void serializeTerminalStateWith1QuestionPerBatchTest() throws Exception {
         List<QuestionDomain> sequence = Arrays.asList(
-                createMCQ(1L, "QuestionDomain Multiple Choice #1"),
-                createFBSQ(2L, "QuestionDomain Fill Blank Single #2"),
-                createFBMQ(3L, "QuestionDomain Fill Blank Multiple #3", false),
-                createMQ(4L, "Matcher QuestionDomain #4", false),
-                createSQ(5L, "Sequence question #5"));
+                createMCQ(1L, "Question Multiple Choice #1"),
+                createFBSQ(2L, "Question Fill Blank Single #2"),
+                createFBMQ(3L, "Question Fill Blank Multiple #3", false),
+                createMQ(4L, "Matcher Question #4", false),
+                createSQ(5L, "Sequence Question #5"));
 
         schemeDomain.getSettingsDomain().setQuestionsPerSheet((short) 1);
 
@@ -276,23 +278,23 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
 
         Map<Long, MetaData> metaDataMap = new HashMap<>();
         MetaData metaL1 = new MetaData();
-        metaL1.setStarred((byte) 5).setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0).setComplained(false);
+        metaL1.setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0);
         metaDataMap.put(1L, metaL1);
 
         MetaData metaL2 = new MetaData();
-        metaL2.setStarred(null).setIncorrect((short) 1).setSkipped((short) 0).setHelp((short) 1).setComplained(false);
+        metaL2.setIncorrect((short) 1).setSkipped((short) 0).setHelp((short) 1);
         metaDataMap.put(2L, metaL2);
 
         MetaData metaL3 = new MetaData();
-        metaL3.setStarred((byte) 4).setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0).setComplained(true);
+        metaL3.setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 0);
         metaDataMap.put(3L, metaL3);
 
         MetaData metaL4 = new MetaData();
-        metaL4.setStarred(null).setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 1).setComplained(false);
+        metaL4.setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 1);
         metaDataMap.put(4L, metaL4);
 
         MetaData metaL5 = new MetaData();
-        metaL5.setStarred(null).setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 1).setComplained(false);
+        metaL5.setIncorrect((short) 0).setSkipped((short) 0).setHelp((short) 1);
         metaDataMap.put(5L, metaL5);
 
         sessionData.setMetaData(metaDataMap);

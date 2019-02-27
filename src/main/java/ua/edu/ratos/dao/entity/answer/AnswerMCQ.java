@@ -48,7 +48,7 @@ public class AnswerMCQ {
     // One-to-one actually, but for the sake of simplicity (so that not to create a separate class like AnswerResource), we use Many-to-many
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "answer_mcq_resource", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Resource> resources = new HashSet<>();

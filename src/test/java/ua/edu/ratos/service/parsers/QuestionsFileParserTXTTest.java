@@ -29,16 +29,6 @@ public class QuestionsFileParserTXTTest {
         assertThat(result.getHeader(), not(isEmptyString()));
         Assert.assertTrue(result.getQuestions().size()>0);
         Assert.assertTrue(result.getIssues().size()==0);
-
-        /*System.out.println("QUESTIONS#: "+result.questions()
-                +" INVALID#: "+result.invalid()
-                +" SINGLE#: "+result.questionsOf(true));
-        result.getQuestionDomains().forEach(question->System.out.println(question));
-
-        System.out.println("ISSUES#: "+result.issues()+
-                " MAJOR#: "+result.issuesOf(MAJOR) +
-                " MINOR#: "+result.issuesOf(MINOR));
-        result.getIssues().forEach(issue->System.out.println(issue));*/
     }
 }
 

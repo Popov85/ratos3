@@ -2,15 +2,13 @@ package ua.edu.ratos.web.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.security.AuthenticatedUser;
+import ua.edu.ratos.service.dto.out.HelpMinOutDto;
+import ua.edu.ratos.service.dto.session.ComplaintInDto;
+import ua.edu.ratos.service.dto.session.StarredInDto;
 import ua.edu.ratos.service.session.EducationalSessionService;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-
-import javax.servlet.http.HttpSession;
-import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -24,24 +22,56 @@ public class EducationalSessionController {
         this.educationalSessionService = educationalSessionService;
     }
 
-    @PostMapping(value = "/preserve")
+    //--------------------------------------------------PRESERVE--------------------------------------------------------
+
+    @GetMapping(value = "/preserve")
     public String preserve(@SessionAttribute("sessionData") SessionData sessionData) {
         String key = educationalSessionService.preserve(sessionData);
-        log.debug("Preserved session :: {}", key);
+        log.debug("Preserved session = {}", key);
         return key;
     }
 
-    @PostMapping(value = "/retrieve/{key}")
-    public BatchOutDto retrieve(@PathVariable String key, HttpSession session, Principal principal) {
-        if (session.getAttribute("sessionData")!=null)
-            throw new RuntimeException("Learning session is already opened");
-        SessionData sessionData = educationalSessionService.retrieve(key);
-        Long requestingUserId = ((AuthenticatedUser) principal).getUserId();
-        Long actualUserId = sessionData.getUserId();
-        if (!requestingUserId.equals(actualUserId))
-            throw new AccessDeniedException("Requested session was created by a different user");
-        session.setAttribute("sessionData", sessionData);
-        log.debug("Retrieved and set SessionData");
-        return sessionData.getCurrentBatch().get();
+    //---------------------------------------------------AJAX-----------------------------------------------------------
+
+    @PostMapping(value = "/questions/{questionId}/starred")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void setStarred(@PathVariable Long questionId, @RequestBody StarredInDto dto, @SessionAttribute("sessionData") SessionData sessionData) {
+        educationalSessionService.star(dto, sessionData);
+        log.debug("Starred questionId = {}, stars = {}", questionId, dto.getStars());
+    }
+
+    @PutMapping(value = "/questions/{questionId}/starred")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void reStarred(@PathVariable Long questionId, @RequestBody StarredInDto dto, @SessionAttribute("sessionData") SessionData sessionData) {
+        educationalSessionService.reStar(dto, sessionData);
+        log.debug("ReStarred questionId = {}, stars = {}", questionId, dto.getStars());
+    }
+
+    @DeleteMapping(value = "/questions/{questionId}/starred")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void unStarred(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
+        educationalSessionService.unStar(questionId, sessionData);
+        log.debug("UnStarred questionId = {}", questionId);
+    }
+
+    @GetMapping(value = "/questions/{questionId}/helped")
+    public HelpMinOutDto getHelp(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
+        HelpMinOutDto help = educationalSessionService.help(questionId, sessionData);
+        log.debug("Retrieved Help for questionId = {}, help = {}", questionId, help);
+        return help;
+    }
+
+    @PutMapping(value = "/questions/{questionId}/skipped")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void setSkipped(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
+        educationalSessionService.skip(questionId, sessionData);
+        log.debug("Skipped questionId = {}", questionId);
+    }
+
+    @PostMapping(value = "/questions/{questionId}/complained")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void setComplaint(@PathVariable Long questionId, @RequestBody ComplaintInDto dto, @SessionAttribute("sessionData") SessionData sessionData) {
+        educationalSessionService.complain(dto, sessionData);
+        log.debug("Complained about questionId = {}, complaint = {}", questionId, dto);
     }
 }

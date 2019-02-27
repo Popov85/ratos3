@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @ToString(exclude = "batchMap")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchOutDto {
-    private static final String BUILD_ERROR = "Failed to build BatchOutDto: wrong object state";
-    private static final String TIMEOUT_ERROR = "Failed to build BatchOutDto: no time left for the next batch";
+    private static final String BUILD_ERROR = "Failed to toDto BatchOutDto: wrong object state";
+    private static final String TIMEOUT_ERROR = "Failed to toDto BatchOutDto: no time left for the next batch";
 
     private final List<QuestionSessionOutDto> batch;
 
@@ -75,7 +75,7 @@ public class BatchOutDto {
         private int batchesLeft;
 
         /**
-         * Current batch of questions
+         * Current batch of totalByType
          */
         public Builder withQuestions(List<QuestionSessionOutDto> questions) {
             this.batch = questions;
@@ -84,7 +84,7 @@ public class BatchOutDto {
         }
 
         /**
-         * Use it when no more questions left
+         * Use it when no more totalByType left
          * @return empty batch
          */
         public Builder withNoQuestions() {
@@ -120,7 +120,7 @@ public class BatchOutDto {
         /**
          * Seconds dedicated for this batch, -1 if not limited
          * After this period of time, client must initiate a request for the next batch, if not 0 batches left
-         * Or initiates the finish request if 0 batches left;
+         * Or initiates the save request if 0 batches left;
          */
         public Builder withBatchTimeLimit(long timeLimit) {
             this.batchTimeControl = timeLimit;

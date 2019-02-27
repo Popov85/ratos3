@@ -8,12 +8,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.question.Question;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"course", "staff", "questions", "access"})
+@ToString(exclude = {"course", "staff", "questions", "access", "department"})
 @Entity
 @Table(name="theme")
 @Where(clause = "is_deleted = 0")
@@ -33,6 +34,10 @@ public class Theme {
     private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to")
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="course_id")
     private Course course;
 
@@ -43,6 +48,9 @@ public class Theme {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_id")
     private Access access;
+
+    @Column(name = "created")
+    private LocalDateTime created;
 
     @OneToMany(mappedBy = "theme", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();

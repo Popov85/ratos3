@@ -12,10 +12,10 @@ import java.util.List;
 
 /**
  * Match.
- * Matching questions consist of two columns, typically one column is on the left and one column is on the right.
+ * Matching question consist of two columns, typically one column is on the left and one column is on the right.
  * We will refer to the left side as 'Clues' and the right side as 'Matches'.
  * The objective is to pair the clues on the left side with their matches on the right.
- * These can be created with using helpAvailable on both sides or a mix of helpAvailable with media,
+ * These can be created using help on both sides or a mix of help with media,
  * such as images, audio or video.
  *
  * @see <a href="https://www.classmarker.com/learn/question-types/matching-questions/">Match</a>

@@ -2,6 +2,7 @@ package ua.edu.ratos.web.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.lti.LTIOutcomeService;
-import ua.edu.ratos.service.session.GenericSessionLMSServiceImpl;
+import ua.edu.ratos.service.session.GenericSessionService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -21,16 +22,17 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/lms/session")
 public class GenericSessionLMSController {
 
-    private GenericSessionLMSServiceImpl sessionService;
+    private GenericSessionService sessionService;
 
     private LTIOutcomeService ltiOutcomeService;
 
     @Autowired
-    public void setSessionService(GenericSessionLMSServiceImpl sessionService) {
+    @Qualifier("lms")
+    public void setSessionService(GenericSessionService sessionService) {
         this.sessionService = sessionService;
     }
-    @Autowired
 
+    @Autowired
     public void setLtiOutcomeService(LTIOutcomeService ltiOutcomeService) {
         this.ltiOutcomeService = ltiOutcomeService;
     }
@@ -73,7 +75,6 @@ public class GenericSessionLMSController {
         String protocol = request.getScheme();
         Long schemeId = sessionData.getSchemeDomain().getSchemeId();
         ltiOutcomeService.sendOutcome(authentication, protocol, schemeId, resultOut.getPercent());
-        log.debug("Finished LMS session, outcome is sent to LMS server");
         return resultOut;
     }
 }

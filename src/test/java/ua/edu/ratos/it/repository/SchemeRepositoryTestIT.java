@@ -75,7 +75,7 @@ public class SchemeRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByStaffIdAndNameContainsTest() {
-        List<Scheme> schemes = schemeRepository.findAllByStaffIdAndNameContains(1L, "trainee", PageRequest.of(0, 100)).getContent();
+        List<Scheme> schemes = schemeRepository.findAllByStaffIdAndNameLettersContains(1L, "trainee", PageRequest.of(0, 100)).getContent();
         Assert.assertEquals(4, schemes.size());
     }
 

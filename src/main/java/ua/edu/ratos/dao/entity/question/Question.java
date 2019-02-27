@@ -23,7 +23,7 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_id", discriminatorType = DiscriminatorType.INTEGER)
 @Where(clause = "is_deleted = 0")
-public abstract class Question {
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -69,7 +69,7 @@ public abstract class Question {
     @Column(name = "is_partial")
     protected boolean partialResponseAllowed;
 
-    // Technically many Helps can be associated with a QuestionDomain, but we go for only one for now
+    // Technically many Helps can be associated with a Question, but we go for only one for now
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -77,7 +77,7 @@ public abstract class Question {
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     protected Set<Help> helps = new HashSet<>();
 
-    // Often many Resources can be associated with a QuestionDomain (e.g. an image plus an audio), we let this opportunity to remain
+    // Often many Resources can be associated with a Question (e.g. an image plus an audio), we let this opportunity to remain
     @Setter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "question_resource", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))

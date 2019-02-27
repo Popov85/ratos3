@@ -15,7 +15,11 @@ public class StudOutDto {
 
     private UserOutDto user;
 
-    private int entranceYear;
+    private ClassMinOutDto studentClass;
 
-    private ClassOutDto studentClass;
+    private FacultyMinOutDto faculty;
+
+    private OrganisationMinOutDto organisation;
+
+    private int entranceYear;
 }

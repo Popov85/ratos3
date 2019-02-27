@@ -32,7 +32,7 @@ public class AnswerFBSQ {
     @JoinColumn(name = "answer_id", nullable = false, updatable = false)
     private QuestionFBSQ question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "set_id", nullable=false)
     private SettingsFB settings;
 

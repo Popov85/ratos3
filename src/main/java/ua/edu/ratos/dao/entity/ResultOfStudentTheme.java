@@ -16,7 +16,7 @@ public class ResultOfStudentTheme {
     @EmbeddedId
     private ResultThemeId resultThemeId = new ResultThemeId();
 
-    @MapsId("resultId")
+    @MapsId("questionId")
     @ManyToOne()
     @JoinColumn(name = "result_id")
     private ResultOfStudent result;

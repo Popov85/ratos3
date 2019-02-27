@@ -35,14 +35,13 @@ public class ResultDetailsService {
 
 
     @Transactional
-    public Long save(@NonNull final SessionData sessionData, @NonNull final Long resultId) {
+    public void save(@NonNull final SessionData sessionData, @NonNull final Long resultId) {
         ResultDetails resultDetails = new ResultDetails();
         // no resultDetails.getDetailId() should be set, it causes exception
         resultDetails.setResult(em.getReference(Result.class, resultId));
         resultDetails.setWhenRemove(calculateWhenRemove(sessionData));
         resultDetails.setJsonData(serializer.serialize(sessionData));
         resultDetailsRepository.save(resultDetails);
-        return resultDetails.getDetailId();
     }
 
     private LocalDateTime calculateWhenRemove(@NonNull final SessionData sessionData) {

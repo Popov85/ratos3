@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 /**
- * Pre-defined types of gradingDomain systems:
+ * Pre-defined types of grading systems:
  * 1) Four-point: traditional scale for CIS countries {2, 3, 4, 5}, grade is calculated based on thresholds
  * 2) Two-point: traditional scale for CIS countries in universities {1, 0} or {passed, not passed}, grade is calculated based on threshold
  * 3) Free-point: universal discrete scale {min, ..., max}, grade is calculated based on min and max values

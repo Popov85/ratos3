@@ -56,8 +56,8 @@ public class QuestionsFileParserService {
     }
 
     /**
-     * Parses multipart file and saves all the questions to DB
-     * @param multipartFile file with questions
+     * Parses multipart file and saves all the totalByType to DB
+     * @param multipartFile file with totalByType
      * @param dto metadata of the file
      * @return result on parsing and saving
      */
@@ -68,12 +68,12 @@ public class QuestionsFileParserService {
         final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
         if (dto.isConfirmed()) {
             save(parsingResult.getQuestions(), dto);
-            log.debug("Saved questions into the DB after confirmation, {}", parsingResult.getQuestions().size());
+            log.debug("Saved totalByType into the DB after confirmation, {}", parsingResult.getQuestions().size());
             return transformer.toDto(parsingResult, true);
         }
         if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
             save(parsingResult.getQuestions(), dto);
-            log.debug("Saved questions into the DB with no major issues, {}", parsingResult.getQuestions().size());
+            log.debug("Saved totalByType into the DB with no major issues, {}", parsingResult.getQuestions().size());
             return transformer.toDto(parsingResult, true);
         } else {
             return transformer.toDto(parsingResult, false);
@@ -81,7 +81,7 @@ public class QuestionsFileParserService {
     }
 
     private void save(@NonNull final List<QuestionMCQ> parsedQuestions, final @NonNull FileInDto dto) {
-        // First, Enrich questions with ThemeDomain, Language and Type, second for each non-null helpAvailable, enrich it with Staff
+        // First, Enrich totalByType with ThemeDomain, Language and Type, second for each non-null helpAvailable, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Language language = em.getReference(Language.class, dto.getLangId());

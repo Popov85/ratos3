@@ -31,6 +31,8 @@ public class SettingsOutDto {
 
     private boolean displayThemeResults;
 
+    private boolean displayQuestionResults;
+
     private boolean strictControlTimePerQuestion;
 
     private StaffMinOutDto staff;

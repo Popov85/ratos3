@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 /**
- * To be extended by unit- or integration- tests, provides ready-to-use demo questions
+ * To be extended by unit- or integration- tests, provides ready-to-use demo totalByType
  */
 public class QuestionGenerator {
 

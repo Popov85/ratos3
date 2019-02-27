@@ -49,11 +49,11 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
      * Here are 3 situations after a successful launch request:
      * <ul>
       *  <li>Email is included into launch request and user is found.<br>
-     *       Try to findDetails user by email in DB, if successful <b>(existing user)</b> grant him ROLE_LMS-USER
+     *       Try to find user by email in DB, if successful <b>(existing user)</b> grant him ROLE_LMS-USER
      *       and let him access the RATOS starting page immediately.
      *  </li>
         <li>Email is included into launch request and user is NOT found.
-            Try to findDetails user by email in DB, if not successful <b>(first-time user)</b> grant him ROLE_LTI
+            Try to find user by email in DB, if not successful <b>(first-time user)</b> grant him ROLE_LTI
             and let him try to re-authenticate via form-based authentication
         </li>
         <li>Email is NOT included into launch request

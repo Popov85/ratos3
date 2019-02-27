@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"studentClass"})
+@ToString(exclude = {"studentClass", "faculty", "organisation"})
 @Entity
 @Table(name = "student")
 @Cacheable
@@ -26,6 +26,14 @@ public class Student {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
     private Class studentClass;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fac_id")
+    private Faculty faculty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "org_id")
+    private Organisation organisation;
 
     @Column(name = "entrance_year")
     private int entranceYear;

@@ -46,15 +46,6 @@ public class Mode {
     @Column(name="is_rightans")
     private boolean rightAnswer;
 
-    /**
-     * Whether or not to disclose right answers after the end of the learning session?
-     */
-    @Column(name="is_resultdetails")
-    private boolean resultDetails;
-
-    @Column(name="is_pauseable")
-    private boolean pauseable;
-
     @Column(name="is_preservable")
     private boolean preservable;
 

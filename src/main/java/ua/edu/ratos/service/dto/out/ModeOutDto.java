@@ -26,8 +26,6 @@ public class ModeOutDto {
 
     private boolean resultDetails;
 
-    private boolean pauseable;
-
     private boolean preservable;
 
     private boolean reportable;

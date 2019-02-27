@@ -15,7 +15,6 @@ import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.dao.repository.CourseRepository;
 import ua.edu.ratos.it.ActiveProfile;
 
-import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -72,7 +71,7 @@ public class CourseRepositoryTestIT {
         Assert.assertEquals(3, content.getContent().size());
     }
 
-    //----------------------------------------------DROPDOWN slice----------------------------------------------------
+    //------------------------------------------------DROPDOWN slice----------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -83,7 +82,7 @@ public class CourseRepositoryTestIT {
         Assert.assertEquals(8, content.getContent().size());
     }
 
-    //------------------------------------------------ADMIN-----------------------------------------------------------
+    //--------------------------------------------------ADMIN-----------------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

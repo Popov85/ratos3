@@ -19,7 +19,8 @@
       "level3Coefficient": 1.0,
       "displayPercent": false,
       "displayMark": false,
-      "displayThemeResults": false
+      "displayThemeResults": false,
+      "displayQuestionResults": false
     },
     "modeDomain": {
       "modeId": 1,
@@ -28,7 +29,6 @@
       "pyramid": false,
       "skipable": false,
       "rightAnswer": false,
-      "resultDetails": false,
       "pauseable": false,
       "preservable": false,
       "reportable": false,
@@ -42,7 +42,7 @@
   "questionDomains": [{
     "className": "ua.edu.ratos.service.domain.question.QuestionMCQDomain",
     "questionId": 1,
-    "question": "QuestionDomain Multiple Choice #1",
+    "question": "Question Multiple Choice #1",
     "level": 1,
     "type": 1,
     "lang": "EN",
@@ -51,6 +51,7 @@
       "name": "ThemeDomain#1"
     },
     "partialResponseAllowed": false,
+    "required": false,
     "answers": [{
       "answerId": 1,
       "answer": "Answer#1",
@@ -113,7 +114,7 @@
   }, {
     "className": "ua.edu.ratos.service.domain.question.QuestionFBSQDomain",
     "questionId": 2,
-    "question": "QuestionDomain Fill Blank Single #2",
+    "question": "Question Fill Blank Single #2",
     "level": 1,
     "type": 2,
     "lang": "EN",
@@ -122,6 +123,7 @@
       "name": "ThemeDomain#1"
     },
     "partialResponseAllowed": false,
+    "required": false,
     "answer": {
       "answerId": 1,
       "settings": {
@@ -135,17 +137,17 @@
         "caseSensitive": true
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 3,
-        "phrase": "PhraseDomain #3"
+        "phraseId": 1,
+        "phrase": "PhraseDomain #1"
       }, {
         "phraseId": 2,
         "phrase": "PhraseDomain #2"
       }, {
+        "phraseId": 3,
+        "phrase": "PhraseDomain #3"
+      }, {
         "phraseId": 4,
         "phrase": "PhraseDomain #4"
-      }, {
-        "phraseId": 1,
-        "phrase": "PhraseDomain #1"
       }
       ]
     },
@@ -168,7 +170,7 @@
   }, {
     "className": "ua.edu.ratos.service.domain.question.QuestionFBMQDomain",
     "questionId": 3,
-    "question": "QuestionDomain Fill Blank Multiple #3",
+    "question": "Question Fill Blank Multiple #3",
     "level": 1,
     "type": 3,
     "lang": "EN",
@@ -177,6 +179,7 @@
       "name": "ThemeDomain#1"
     },
     "partialResponseAllowed": false,
+    "required": false,
     "answers": [{
       "answerId": 1,
       "phrase": "Target phraseDomain for FBMQ answer #1",
@@ -192,17 +195,17 @@
         "caseSensitive": true
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 6,
-        "phrase": "PhraseDomain #2 for FBMQ answer #1"
-      }, {
         "phraseId": 5,
         "phrase": "PhraseDomain #1 for FBMQ answer #1"
       }, {
-        "phraseId": 7,
-        "phrase": "PhraseDomain #3 for FBMQ answer #1"
+        "phraseId": 6,
+        "phrase": "PhraseDomain #2 for FBMQ answer #1"
       }, {
         "phraseId": 8,
         "phrase": "PhraseDomain #4 for FBMQ answer #1"
+      }, {
+        "phraseId": 7,
+        "phrase": "PhraseDomain #3 for FBMQ answer #1"
       }
       ]
     }, {
@@ -220,14 +223,14 @@
         "caseSensitive": true
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 9,
-        "phrase": "PhraseDomain #1 for FBMQ answer #2"
+        "phraseId": 10,
+        "phrase": "PhraseDomain #2 for FBMQ answer #2"
       }, {
         "phraseId": 12,
         "phrase": "PhraseDomain #4 for FBMQ answer #2"
       }, {
-        "phraseId": 10,
-        "phrase": "PhraseDomain #2 for FBMQ answer #2"
+        "phraseId": 9,
+        "phrase": "PhraseDomain #1 for FBMQ answer #2"
       }, {
         "phraseId": 11,
         "phrase": "PhraseDomain #3 for FBMQ answer #2"
@@ -248,17 +251,17 @@
         "caseSensitive": true
       },
       "acceptedPhraseDomains": [{
-        "phraseId": 13,
-        "phrase": "PhraseDomain #1 for FBMQ answer #3"
-      }, {
-        "phraseId": 16,
-        "phrase": "PhraseDomain #4 for FBMQ answer #3"
+        "phraseId": 14,
+        "phrase": "PhraseDomain #2 for FBMQ answer #3"
       }, {
         "phraseId": 15,
         "phrase": "PhraseDomain #3 for FBMQ answer #3"
       }, {
-        "phraseId": 14,
-        "phrase": "PhraseDomain #2 for FBMQ answer #3"
+        "phraseId": 16,
+        "phrase": "PhraseDomain #4 for FBMQ answer #3"
+      }, {
+        "phraseId": 13,
+        "phrase": "PhraseDomain #1 for FBMQ answer #3"
       }
       ]
     }, {
@@ -276,17 +279,17 @@
         "caseSensitive": true
       },
       "acceptedPhraseDomains": [{
+        "phraseId": 20,
+        "phrase": "PhraseDomain #4 for FBMQ answer #4"
+      }, {
         "phraseId": 17,
         "phrase": "PhraseDomain #1 for FBMQ answer #4"
-      }, {
-        "phraseId": 18,
-        "phrase": "PhraseDomain #2 for FBMQ answer #4"
       }, {
         "phraseId": 19,
         "phrase": "PhraseDomain #3 for FBMQ answer #4"
       }, {
-        "phraseId": 20,
-        "phrase": "PhraseDomain #4 for FBMQ answer #4"
+        "phraseId": 18,
+        "phrase": "PhraseDomain #2 for FBMQ answer #4"
       }
       ]
     }
@@ -310,7 +313,7 @@
   }, {
     "className": "ua.edu.ratos.service.domain.question.QuestionMQDomain",
     "questionId": 4,
-    "question": "Matcher QuestionDomain #4",
+    "question": "Matcher Question #4",
     "level": 1,
     "type": 4,
     "lang": "EN",
@@ -319,6 +322,7 @@
       "name": "ThemeDomain#1"
     },
     "partialResponseAllowed": false,
+    "required": false,
     "answers": [{
       "answerId": 1,
       "leftPhraseDomain": {
@@ -400,7 +404,7 @@
   }, {
     "className": "ua.edu.ratos.service.domain.question.QuestionSQDomain",
     "questionId": 5,
-    "question": "Sequence question #5",
+    "question": "Sequence Question #5",
     "level": 1,
     "type": 5,
     "lang": "EN",
@@ -409,6 +413,7 @@
       "name": "ThemeDomain#1"
     },
     "partialResponseAllowed": false,
+    "required": false,
     "answers": [{
       "answerId": 1,
       "phraseDomain": {
@@ -497,6 +502,7 @@
   "currentBatchIssued": "2018-11-26T09:25:20",
   "progressData": {
     "score": 75.63,
+    "progress": 0.0,
     "timeSpent": 330,
     "batchesEvaluated": [{
       "responsesEvaluated": {
@@ -534,17 +540,17 @@
             "className": "ua.edu.ratos.service.domain.response.ResponseFBMQ",
             "questionId": 3,
             "enteredPhrases": [{
-              "answerId": 3,
-              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #3"
-            }, {
               "answerId": 2,
               "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #2"
+            }, {
+              "answerId": 1,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #1"
             }, {
               "answerId": 4,
               "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #4"
             }, {
-              "answerId": 1,
-              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #1"
+              "answerId": 3,
+              "enteredPhrase": "(correct) Target phraseDomain for FBMQ answer #3"
             }
             ]
           },
@@ -560,29 +566,24 @@
     "1": {
       "help": 0,
       "skipped": 0,
-      "incorrect": 0,
-      "starred": 4,
-      "complained": false
+      "incorrect": 0
     },
     "2": {
       "help": 1,
       "skipped": 0,
-      "incorrect": 1,
-      "complained": false
+      "incorrect": 1
     },
     "3": {
       "help": 1,
       "skipped": 1,
-      "incorrect": 0,
-      "starred": 4,
-      "complained": true
+      "incorrect": 0
     }
   },
   "currentBatch": {
     "batch": [{
       "className": "ua.edu.ratos.service.dto.session.question.QuestionMQSessionOutDto",
       "questionId": 4,
-      "question": "Matcher QuestionDomain #4",
+      "question": "Matcher Question #4",
       "level": 1,
       "type": 4,
       "lang": "EN",
@@ -590,6 +591,7 @@
         "themeId": 1,
         "name": "ThemeDomain#1"
       },
+      "required": false,
       "partialResponseAllowed": false,
       "helpAvailable": true,
       "resourceDomains": [{
@@ -599,6 +601,17 @@
       }
       ],
       "leftPhrases": [{
+        "answerId": 4,
+        "leftPhraseDomain": {
+          "phraseId": 27,
+          "phrase": "Left PhraseDomain for MQ answer #4",
+          "resourceDomain": {
+            "resourceId": 16,
+            "link": "https://resourceDomains.com/#16",
+            "description": "Left phraseDomain resourceDomain for answer #4"
+          }
+        }
+      }, {
         "answerId": 3,
         "leftPhraseDomain": {
           "phraseId": 25,
@@ -621,17 +634,6 @@
           }
         }
       }, {
-        "answerId": 4,
-        "leftPhraseDomain": {
-          "phraseId": 27,
-          "phrase": "Left PhraseDomain for MQ answer #4",
-          "resourceDomain": {
-            "resourceId": 16,
-            "link": "https://resourceDomains.com/#16",
-            "description": "Left phraseDomain resourceDomain for answer #4"
-          }
-        }
-      }, {
         "answerId": 2,
         "leftPhraseDomain": {
           "phraseId": 23,
@@ -645,17 +647,17 @@
       }
       ],
       "rightPhraseDomains": [{
-        "phraseId": 26,
-        "phrase": "Right PhraseDomain for MQ answer #3"
-      }, {
         "phraseId": 28,
         "phrase": "Right PhraseDomain for MQ answer #4"
       }, {
-        "phraseId": 22,
-        "phrase": "Right PhraseDomain for MQ answer #1"
+        "phraseId": 26,
+        "phrase": "Right PhraseDomain for MQ answer #3"
       }, {
         "phraseId": 24,
         "phrase": "Right PhraseDomain for MQ answer #2"
+      }, {
+        "phraseId": 22,
+        "phrase": "Right PhraseDomain for MQ answer #1"
       }
       ]
     }
@@ -667,7 +669,6 @@
       "pyramid": false,
       "skipable": false,
       "rightAnswer": false,
-      "resultDetails": false,
       "pauseable": false,
       "preservable": false,
       "reportable": false,

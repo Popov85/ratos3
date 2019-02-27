@@ -42,8 +42,8 @@ public class ResultOfStudentStaffSpecs {
 
             // flags
             if (criteria.isLms()) {
-                // Only LMS courses
-                Predicate coursePredicate = builder.isTrue(root.join(ResultOfStudent_.scheme).join(Scheme_.course).join(Course_.lmsCourse, JoinType.LEFT).isNotNull());
+                // Only LMS results
+                Predicate coursePredicate = builder.isTrue(root.join(ResultOfStudent_.lms, JoinType.LEFT).isNotNull());
                 predicates.add(coursePredicate);
             }
 

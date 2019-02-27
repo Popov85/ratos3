@@ -65,6 +65,9 @@ public class Settings {
     @Column(name = "display_theme_results")
     private boolean displayThemeResults;
 
+    @Column(name=" display_question_results")
+    private boolean displayQuestionResults;
+
     @Column(name="is_default")
     private boolean isDefault;
 

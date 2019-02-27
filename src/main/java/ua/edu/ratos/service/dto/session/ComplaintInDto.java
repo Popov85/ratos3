@@ -1,32 +1,21 @@
 package ua.edu.ratos.service.dto.session;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.util.Set;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-import java.util.Optional;
-
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class ComplaintInDto {
-    /**
-     * There are the following types of complaints supported:
-     * (1)Incorrect statement of question
-     * (2)Typo in question
-     * (3)Typo in an answerIds
-     * (4)Bad question formatting
-     * (5)Bad answer formatting
-     */
-    @Min(1)
-    @Max(5)
-    @Getter
-    private int type;
 
-    @Size(max = 1000, message = "{dto.string.invalid}")
-    private String complaint;
+    @Positive(message = "{dto.fk.required}")
+    private Long questionId;
 
-    public Optional<String> getComplaint() {
-        return Optional.of(complaint);
-    }
+    @NotNull(message = "{dto.collection.required}")
+    private Set<@Positive Long> complaintTypeIds;
+
 }

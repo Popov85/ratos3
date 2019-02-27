@@ -22,6 +22,7 @@ public class SettingsDomainTransformer {
                 .setDisplayMark(entity.isDisplayMark())
                 .setDisplayPercent(entity.isDisplayPercent())
                 .setDisplayThemeResults(entity.isDisplayThemeResults())
+                .setDisplayQuestionResults(entity.isDisplayQuestionResults())
                 .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion());
     }
 

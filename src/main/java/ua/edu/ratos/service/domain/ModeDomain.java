@@ -23,8 +23,6 @@ public class ModeDomain {
 
     private boolean rightAnswer;
 
-    private boolean resultDetails;
-
     private boolean pauseable;
 
     private boolean preservable;

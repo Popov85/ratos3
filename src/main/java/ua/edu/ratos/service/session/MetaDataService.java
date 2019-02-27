@@ -32,16 +32,6 @@ public class MetaDataService {
         }
     }
 
-    public void createOrUpdateStar(@NonNull SessionData sessionData, @NonNull final Long questionId, final byte star) {
-        final Map<Long, MetaData> metaDataMap = sessionData.getMetaData();
-        if (!metaDataMap.containsKey(questionId)) {
-            metaDataMap.put(questionId, new MetaData().setStarred(star));
-        } else {
-            MetaData metaData = metaDataMap.get(questionId);
-            metaData.setStarred(star);
-        }
-    }
-
     public void createOrUpdateIncorrect(@NonNull SessionData sessionData, @NonNull final List<Long> incorrectIds) {
         final Map<Long, MetaData> metaDataMap = sessionData.getMetaData();
         for (Long questionId : incorrectIds) {

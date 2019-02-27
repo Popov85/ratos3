@@ -54,7 +54,7 @@ public class QuestionMQDomain extends QuestionDomain {
                     matchCounter++;
             }// else consider this matcher as incorrect, go to the next answer (matcher)
         }
-        // Get evaluating settingsDomain
+        // Get evaluating settings
         if (!this.partialResponseAllowed && matchCounter<totalMatches) return 0;
         return matchCounter*100d/totalMatches;
     }

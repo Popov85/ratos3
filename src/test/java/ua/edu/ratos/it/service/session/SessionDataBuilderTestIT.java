@@ -35,7 +35,7 @@ public class SessionDataBuilderTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/session_data_builder.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void buildNoLMSTest()  {
-        // We build a SessionData object with 5 different type questions, not from within LMS
+        // We create a SessionData object with 5 different types of questions, not from within LMS
         Scheme scheme = schemeRepository.findForSessionById(1L);
         SessionData sessionData = sessionDataBuilder
                 .build("38CB1A2F36F6FC1B217D335D87D57376", 1L, scheme);

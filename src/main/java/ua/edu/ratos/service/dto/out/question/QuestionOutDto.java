@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import ua.edu.ratos.service.dto.out.HelpOutDto;
-import ua.edu.ratos.service.dto.out.LanguageOutDto;
-import ua.edu.ratos.service.dto.out.QuestionTypeOutDto;
-import ua.edu.ratos.service.dto.out.ResourceOutDto;
+import ua.edu.ratos.service.dto.out.*;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,6 +23,8 @@ public abstract class QuestionOutDto {
     protected byte level;
 
     protected boolean required;
+
+    protected ThemeMinOutDto theme;
 
     protected QuestionTypeOutDto type;
 

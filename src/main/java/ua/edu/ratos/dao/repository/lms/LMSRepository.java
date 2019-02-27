@@ -9,27 +9,27 @@ import ua.edu.ratos.dao.entity.lms.LMS;
 
 public interface LMSRepository extends JpaRepository<LMS, Long> {
 
-    //---------------------------------STUDENT LTI session--------------------------------
+    //---------------------------------------------------STUDENT LTI session--------------------------------------------
 
     @Query(value = "SELECT lms FROM LMS lms join lms.credentials c where c.key = ?1")
     LMS findByConsumerKey(String consumerKey);
 
-    //------------------------------------ONE for edit------------------------------------
+    //----------------------------------------------------ONE for edit--------------------------------------------------
 
     @Query(value = "SELECT l FROM LMS l join fetch l.ltiVersion join fetch l.origins join fetch l.credentials c where l.lmsId = ?1")
     LMS findOneForEditById(Long lmsId);
 
-    //------------------------------------ORG-ADMIN table---------------------------------
+    //---------------------------------------------------ORG-ADMIN table------------------------------------------------
 
-    @Query(value="select l from LMS l join l.organisation o where o.orgId = ?1 order by l.name asc")
+    @Query(value="select l from LMS l join l.organisation o where o.orgId = ?1")
     Slice<LMS> findAllByOrgId(Long orgId, Pageable pageable);
 
-    @Query(value="select l from LMS l join l.organisation o where o.orgId = ?1 and l.name like %?2% order by l.name asc")
+    @Query(value="select l from LMS l join l.organisation o where o.orgId = ?1 and l.name like %?2%")
     Slice<LMS> findAllByOrgIdAndNameLettersContains(Long orgId, String letters, Pageable pageable);
 
-    //---------------------------------------ADMIN-----------------------------------------
+    //--------------------------------------------------------ADMIN-----------------------------------------------------
 
-    @Query(value="select l from LMS l join fetch l.ltiVersion join fetch l.origins join fetch l.credentials c join fetch l.organisation o order by l.name asc",
+    @Query(value="select l from LMS l join fetch l.ltiVersion join fetch l.origins join fetch l.credentials c join fetch l.organisation",
             countQuery = "select count(l) from LMS l")
     Page<LMS> findAllAdmin(Pageable pageable);
 

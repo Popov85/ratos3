@@ -32,6 +32,8 @@ public class DtoStudentTransformer {
         stud.setUser(user);
         stud.setEntranceYear(dto.getEntranceYear());
         stud.setStudentClass(em.getReference(Class.class, dto.getClassId()));
+        stud.setFaculty(em.getReference(Faculty.class, dto.getFacId()));
+        stud.setOrganisation(em.getReference(Organisation.class, dto.getOrgId()));
         return stud;
     }
 }

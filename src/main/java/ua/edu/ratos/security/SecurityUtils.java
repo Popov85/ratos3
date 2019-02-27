@@ -75,11 +75,11 @@ public class SecurityUtils {
 
     /**
      * Obtain ID of currently authenticated student
-     * For Unit-testing: fallback to default values
+     * For Unit-testing: fallback to default values, 2L
      * @return studId
      */
     public Long getAuthStudId() {
-        if ("h2".equals(profile) || "mysql".equals(profile)) return 1L;
+        if ("h2".equals(profile) || "mysql".equals(profile)) return 2L;
         Authentication auth = getAuthentication();
         if (!(auth.getPrincipal() instanceof AuthenticatedUser))
             throw new SecurityException("Lack of authority");

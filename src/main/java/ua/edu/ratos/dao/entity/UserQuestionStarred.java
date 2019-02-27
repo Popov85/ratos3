@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.dao.entity.question.Question;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -28,4 +29,7 @@ public class UserQuestionStarred {
 
     @Column(name = "star")
     private byte star;
+
+    @Column(name="when_starred")
+    private LocalDateTime whenStarred;
 }

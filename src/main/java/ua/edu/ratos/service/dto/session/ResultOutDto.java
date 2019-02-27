@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.session;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,43 +13,60 @@ import java.util.List;
 @Setter
 @ToString
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultOutDto {
-    /**
-     * Some key for edX integration score system purpose
-     */
-    private final String key;
+
+    // Basically: name&surname
+    private final String user;
+
+    // Scheme title
+    private final String scheme;
 
     /**
-     * Whether pass or not verdict, for edX scoring system
+     * Whether passed or not verdict.
+     * (Front-end can highlight with green/red).
+     * This is the only must have parameter.
      */
     private final boolean passed;
-    /**
-     * Either [0-100], fractions are allowed
-     * E.g. 75.4
-     */
-    private double percent;
-    /**
-     * Any number according to the selected gradingDomain scale, e.g. four-point [2, 3, 4, 5]
-     * E.g. 4
-     * Or e.g. two-point {0, 1}
-     * E.g 1
-     */
-    private Number grade;
+
+    public ResultOutDto(String user, String scheme, boolean passed) {
+        this.passed = passed;
+        this.user = user;
+        this.scheme = scheme;
+    }
+
+    //-----------------------------------------------May be not included------------------------------------------------
 
     /**
-     * For compound schemes only, with themes > 1, irrespective to any settingsDomain
+     * Scored percent. Either [0-100], fractions are allowed, e.g. 75.4%.
+     * If prohibited by settings, leave it null.
+     */
+    private Double percent;
+
+    /**
+     * Grade. Any number according to the selected grading scale,
+     * e.g. four-point [2, 3, 4, 5], e.g. 4 or e.g. two-point {0, 1}, e.g 1.
+     * If prohibited by settings, leave it null.
+     */
+    private Double grade;
+
+    //------------------------------------------------------Optional----------------------------------------------------
+
+    /**
+     * Gamification points. Only if game mode is on and user gained enough percents of right answers from the first attempt.
+     * Stick to null otherwise.
+     */
+    private Integer points;
+
+    /**
+     * Results per theme. For compound schemes mostly, with results for each theme included in scheme.
+     * If prohibited by settings, leave it null.
      */
     private List<ResultPerTheme> themeResults;
 
     /**
-     * EXTENDED result on dto
-     * For educational sessions , for student to see the correct answers afterwards;
-     * For exam sessions leave it EMPTY;
+     * Extended result on session. For educational sessions, for student to see the correct answers afterwards.
+     * For exam kind of schemes leave it null.
      */
     private List<ResultPerQuestionOutDto> questionResults;
-
-    public ResultOutDto(String key, boolean passed) {
-        this.key = key;
-        this.passed = passed;
-    }
 }

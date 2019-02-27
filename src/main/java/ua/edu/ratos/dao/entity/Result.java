@@ -23,7 +23,7 @@ public class Result {
     @Column(name = "result_id")
     private Long resultId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scheme_id", updatable = false)
     protected Scheme scheme;
 
@@ -44,6 +44,9 @@ public class Result {
     @Column(name = "is_passed")
     private boolean passed;
 
+    @Column(name = "is_points_granted")
+    private boolean points;
+
     @Column(name = "session_ended")
     private LocalDateTime sessionEnded;
 
@@ -57,14 +60,15 @@ public class Result {
     @JoinColumn(name = "lms_id")
     private LMS lms;
 
-    @OneToMany(mappedBy = "result", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL)
     private List<ResultTheme> resultTheme = new ArrayList<>();
 
-    public void addResultTheme(Theme theme, double percent) {
+    public void addResultTheme(Theme theme, double percent, int quantity) {
         ResultTheme resultTheme = new ResultTheme();
         resultTheme.setTheme(theme);
         resultTheme.setResult(this);
         resultTheme.setPercent(percent);
+        resultTheme.setQuantity(quantity);
         this.resultTheme.add(resultTheme);
     }
 

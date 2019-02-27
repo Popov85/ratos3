@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
@@ -14,6 +15,7 @@ import ua.edu.ratos.dao.entity.question.QuestionFBSQ;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.repository.*;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.domain.question.*;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
@@ -38,6 +40,8 @@ public class QuestionService {
 
     private QuestionDtoTransformer questionDtoTransformer;
 
+    private SecurityUtils securityUtils;
+
     @Autowired
     public void setQuestionRepository(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
@@ -56,6 +60,11 @@ public class QuestionService {
     @Autowired
     public void setQuestionDtoTransformer(QuestionDtoTransformer questionDtoTransformer) {
         this.questionDtoTransformer = questionDtoTransformer;
+    }
+
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
     }
 
     //---------------------------------------------------CRUD-----------------------------------------------------------
@@ -87,7 +96,7 @@ public class QuestionService {
 
     /**
      * Questions obtained after parsing the .rtp- .txt-files
-     * @param questions batch of questions from a file
+     * @param questions batch of totalByType from a file
      */
     @Transactional
     public void saveAll(@NonNull final List<Question> questions) {
@@ -134,8 +143,36 @@ public class QuestionService {
             Set<QuestionSQ> set = questionRepository.findAllSQWithEverythingByThemeId(themeId);
             return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
         }
-        throw new RuntimeException("Unsupported type");
+        throw new RuntimeException("Unsupported questionType");
     }
+
+    //----------------------------------------------------One for edit--------------------------------------------------
+
+    @Transactional(readOnly = true)
+    public QuestionMCQOutDto findOneMCQForEditById(@NonNull final Long questionId) {
+        return questionDtoTransformer.toDto(questionRepository.findOneMCQForEditById(questionId));
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionFBSQOutDto findOneFBSQForEditById(@NonNull final Long questionId) {
+        return questionDtoTransformer.toDto(questionRepository.findOneFBSQForEditById(questionId));
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionFBMQOutDto findOneFBMQForEditById(@NonNull final Long questionId) {
+        return questionDtoTransformer.toDto(questionRepository.findOneFBMQForEditById(questionId));
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionMQOutDto findOneMQForEditById(@NonNull final Long questionId) {
+        return questionDtoTransformer.toDto(questionRepository.findOneMQForEditById(questionId));
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionSQOutDto findOneSQForEditById(@NonNull final Long questionId) {
+        return questionDtoTransformer.toDto(questionRepository.findOneSQForEditById(questionId));
+    }
+
 
     //----------------------------------------------------Staff table---------------------------------------------------
 
@@ -164,30 +201,35 @@ public class QuestionService {
         return questionRepository.findAllSQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
     }
 
-    //------------------------------------------------------Staff search------------------------------------------------
+    //---------------------------------------Staff (global search throughout department)--------------------------------
 
     @Transactional(readOnly = true)
-    public Page<QuestionMCQOutDto> findAllMCQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {
-        return questionRepository.findAllMCQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable).map(questionDtoTransformer::toDto);
+    public Slice<QuestionMCQOutDto> findAllMCQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
+        Long depId = securityUtils.getAuthDepId();
+        return questionRepository.findAllMCQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionFBSQOutDto> findAllFBSQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {
-        return questionRepository.findAllFBSQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable).map(questionDtoTransformer::toDto);
+    public Slice<QuestionFBSQOutDto> findAllFBSQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
+        Long depId = securityUtils.getAuthDepId();
+        return questionRepository.findAllFBSQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionFBMQOutDto> findAllFBMQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {
-        return questionRepository.findAllFBMQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable).map(questionDtoTransformer::toDto);
+    public Slice<QuestionFBMQOutDto> findAllFBMQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
+        Long depId = securityUtils.getAuthDepId();
+        return questionRepository.findAllFBMQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionMQOutDto> findAllMQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {
-        return questionRepository.findAllMQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable).map(questionDtoTransformer::toDto);
+    public Slice<QuestionMQOutDto> findAllMQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
+        Long depId = securityUtils.getAuthDepId();
+        return questionRepository.findAllMQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionSQOutDto> findAllSQForEditByThemeIdAndQuestionLettersContains(@NonNull final Long themeId, @NonNull final String letters, @NonNull final Pageable pageable) {
-        return questionRepository.findAllSQForEditByThemeIdAndQuestionLettersContains(themeId, letters, pageable).map(questionDtoTransformer::toDto);
+    public Slice<QuestionSQOutDto> findAllSQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
+        Long depId = securityUtils.getAuthDepId();
+        return questionRepository.findAllSQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
     }
 }

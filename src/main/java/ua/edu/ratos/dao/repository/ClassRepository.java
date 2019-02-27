@@ -8,9 +8,15 @@ import ua.edu.ratos.dao.entity.Class;
 
 public interface ClassRepository extends JpaRepository<Class, Long> {
 
-    //------------------------------------REGISTRATION dropdown-----------------------------
+    //--------------------------------------------REGISTRATION dropdown-------------------------------------------------
 
-    @Query(value="select c from Class c join c.faculty f where f.facId = ?1 order by c.name asc")
+    @Query(value="select c from Class c join c.faculty f where f.facId = ?1")
     Slice<Class> findAllByFacultyId(Long facId, Pageable pageable);
+
+    @Query(value="select c from Class c join c.faculty f where f.facId = ?1 and c.name like ?2%")
+    Slice<Class> findAllByFacultyIdAndNameStarts(Long facId, String starts, Pageable pageable);
+
+    @Query(value="select c from Class c join c.faculty f where f.facId = ?1 and c.name like %?2%")
+    Slice<Class> findAllByFacultyIdAndNameLettersContains(Long facId, String contains, Pageable pageable);
 
 }

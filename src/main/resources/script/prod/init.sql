@@ -46,6 +46,13 @@ insert into question_type (type_id, eng_abbreviation, description) values (3, 'F
 insert into question_type (type_id, eng_abbreviation, description) values (4, 'MQ', 'Matcher question');
 insert into question_type (type_id, eng_abbreviation, description) values (5, 'SQ', 'Sequence question');
 
+insert into complaint_type(type_id, name, description) values(1, 'Wrong statement', 'Incorrect statement of question');
+insert into complaint_type(type_id, name, description) values(2, 'Typo in question', 'Typo in question, grammatical error');
+insert into complaint_type(type_id, name, description) values(3, 'Typo in answer(s)', 'Typo in one or many answer(s)');
+insert into complaint_type(type_id, name, description) values(4, 'Wrong question formatting', 'Wrong question formatting: alignment, media, positioning, etc.');
+insert into complaint_type(type_id, name, description) values(5, 'Wrong answer(s) formatting', 'Wrong answer(s) formatting: alignment, media, positioning, etc.');
+insert into complaint_type(type_id, name, description) values(6, 'Other', 'Another unnamed type of errors');
+
 insert into access_level(name) values('dep-private');
 insert into access_level(name) values('private');
 
@@ -68,19 +75,19 @@ values('ects', 0, 60, 200, 1, 3);
 insert into free_point(name, min_value, pass_value, max_value, staff_id, grading_id)
 values('lms', 0, 0.5, 1, 1, 3);
 
-insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, is_deleted, is_default)
-values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1);
+insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, display_question_results, is_deleted, is_default)
+values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1);
 
-insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
-values('exam', 1, 0, 0, 0, 0, 0, 0, 0, 1);
-insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_resultdetails, is_pauseable, is_preservable, is_reportable)
-values('training', 1, 1, 1, 1, 1, 1, 1, 1, 1);
+insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
+values('exam', 1, 0, 0, 0, 0, 0, 1);
+insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
+values('training', 1, 1, 1, 1, 1, 1, 1);
 
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('eng default', 5, 100, 0, 0, 0, 1, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ua default', 5, 100, 0, 0, 0, 5, 1);
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id) values('ru default', 5, 100, 0, 0, 0, 6, 1);
 
-insert into course (name, created, created_by, dep_id, access_id) values('Test LTI course #1', CURRENT_TIMESTAMP, 1, 1, 1);
+insert into course (name, created, created_by, belongs_to, access_id) values('Test LTI course #1', CURRENT_TIMESTAMP, 1, 1, 1);
 
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key', 'ratos_client_secret');
 insert into lti_credentials(lti_consumer_key, lti_client_secret) values('ratos_consumer_key_1', 'ratos_client_secret_1');

@@ -16,7 +16,7 @@ public class AnswerFBSQController {
     @Autowired
     private AnswerFBSQService answerService;
 
-    // For this particular question type: questionId = answerId (single answer!)
+    // For this particular question questionType: questionId = answerId (single answer!)
     @PutMapping("/questions/{questionId}/answer-fbsq")
     public void update(@PathVariable Long questionId, @Valid @RequestBody AnswerFBSQInDto dto) {
         answerService.update(dto);

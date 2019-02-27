@@ -9,7 +9,6 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.repository.ResultRepository;
 import ua.edu.ratos.service.domain.ResultDomain;
-import ua.edu.ratos.service.domain.SessionData;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
@@ -29,23 +28,24 @@ public class ResultService {
     }
 
     @Transactional
-    public Long save(@NonNull final SessionData sessionData, @NonNull final ResultDomain resultDomain, boolean timeOuted) {
+    public Long save(@NonNull final ResultDomain resultDomain) {
         Result r = new Result();
-        Scheme scheme = em.find(Scheme.class, sessionData.getSchemeDomain().getSchemeId());
+        Scheme scheme = em.find(Scheme.class, resultDomain.getScheme().getSchemeId());
         r.setScheme(scheme);
-        r.setUser(em.getReference(User.class, sessionData.getUserId()));
+        r.setUser(em.getReference(User.class, resultDomain.getUser().getUserId()));
         r.setDepartment(scheme.getDepartment());
-        if (sessionData.isLMSSession())
-            r.setLms(em.getReference(LMS.class, sessionData.getLMSId().get()));
+        if (resultDomain.getLmsId().isPresent())
+            r.setLms(em.getReference(LMS.class, resultDomain.getLmsId().get()));
         r.setPassed(resultDomain.isPassed());
+        r.setPoints(resultDomain.getPoints().isPresent());
         r.setGrade(resultDomain.getGrade());
         r.setPercent(resultDomain.getPercent());
-        r.setSessionLasted(sessionData.getProgressData().getTimeSpent());
+        r.setSessionLasted(resultDomain.getTimeSpent());
         r.setSessionEnded(LocalDateTime.now());
-        r.setTimeOuted(timeOuted);
+        r.setTimeOuted(resultDomain.isTimeOuted());
         resultDomain.getThemeResults().forEach(t -> {
-            Theme theme = em.getReference(Theme.class, t.getThemeId());
-            r.addResultTheme(theme, r.getPercent());
+            Theme theme = em.getReference(Theme.class, t.getTheme().getThemeId());
+            r.addResultTheme(theme, t.getPercent(), t.getQuantity());
         });
         resultRepository.save(r);
 

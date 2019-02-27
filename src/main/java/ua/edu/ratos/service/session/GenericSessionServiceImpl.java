@@ -3,33 +3,39 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.service.ResultDetailsService;
-import ua.edu.ratos.service.ResultService;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.transformer.domain_to_dto.ResultDomainDtoTransformer;
+
 import java.util.List;
 
+/**
+ * Implementation of the interface for non-LMS learning sessions.
+ * For LMS learning sessions see also:
+ * @see GenericSessionLMSServiceImpl
+ */
 @Slf4j
 @Service
+@Qualifier("regular")
 public class GenericSessionServiceImpl implements GenericSessionService {
 
     static final String NOT_AVAILABLE = "Requested scheme is not available now";
     static final String NOT_AVAILABLE_OUTSIDE_LMS = "Requested scheme is not available outside LMS";
     static final String NOT_AVAILABLE_FOR_USER = "Requested scheme is not available for this user";
-
-    @Autowired
-    private AvailabilityService availabilityService;
+    static final String CORRUPT_FINISH_REQUEST = "Corrupt save request, there are still some questions and time to answer!";
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private AvailabilityService availabilityService;
 
     @Autowired
     private SchemeService schemeService;
@@ -56,13 +62,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     private ResultBuilder resultBuilder;
 
     @Autowired
-    private ResultDtoBuilder resultDtoBuilder;
-
-    @Autowired
-    private ResultService resultService;
-
-    @Autowired
-    private ResultDetailsService resultDetailsService;
+    private ResultDomainDtoTransformer resultDomainDtoTransformer;
 
     @Autowired
     private ProgressDataService progressDataService;
@@ -70,8 +70,10 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     @Autowired
     private MetaDataService metaDataService;
 
+    @Autowired
+    private AsyncFinishService asyncFinishService;
+
     @Override
-    @TrackTime
     public SessionData start(@NonNull final StartData startData) {
         // Load the requested Scheme and build SessionData object
         final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
@@ -96,13 +98,12 @@ public class GenericSessionServiceImpl implements GenericSessionService {
 
 
     @Override
-    @TrackTime
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         // Consider Decorator pattern
         // @Autowire NextProcessorTemplate nextProcessorTemplate
         /* BatchOutDto batchOut = nextProcessorTemplate.process(batchInDto, sessionData);*/
 
-        // Consider the client script to initiate finish request after either batch timeout or session timeout
+        // Consider the client script to initiate save request after either batch timeout or session timeout
         timingService.control(sessionData.getSessionTimeout(), sessionData.getCurrentBatchTimeOut());
 
 
@@ -146,34 +147,25 @@ public class GenericSessionServiceImpl implements GenericSessionService {
 
 
     /**
-     * Front-end calls this method as soon as
-     *   1) method next() returns a batch with empty questions list {},
+     * Front-end calls this method as soon as one of these 3 conditions are fulfilled:
+     *   1) method next() returns a batch with empty questions list {};
      *      which means that there are no more questions left in the current session
-     *      OR
-     *   2) method next() throws time-out exception
-     *      OR
-     *   3) Front-end timer decides that time is over and launches finish request
+     *   2) method next() throws time-out exception;
+     *   3) front-end's timer decides that time is over and launches save request.
      * @param sessionData
-     * @return result object on the whole session
+     * @return result DTO (the session's outcome)
      */
     @Override
-    @TrackTime
-    @Transactional
-    public ResultOutDto finish(@NonNull SessionData sessionData) {
+    public ResultOutDto finish(@NonNull final SessionData sessionData) {
         boolean timeOuted = !sessionData.hasMoreTime();
-        if (sessionData.hasMoreQuestions() && !timeOuted)
-            throw new IllegalStateException("Corrupt finish request, there are still some questions and time to answer!");
-        // 1. Build Result object
-        final ResultDomain resultDomain = resultBuilder.build(sessionData);
-        // 2. Reset currentBatch related fields to null
+        if (sessionData.hasMoreQuestions() && !timeOuted) throw new IllegalStateException(CORRUPT_FINISH_REQUEST);
+        // Reset currentBatch related fields to null
         if (!timeOuted) sessionDataService.finalize(sessionData);
-        // 3.  Save results to DB, optional LMS include
-        Long resultId = resultService.save(sessionData, resultDomain, timeOuted);
-        // 4. Save result details to DB
-        resultDetailsService.save(sessionData, resultId);
-        // 5. Build resultDto based on settings, mode and calculated Result object
-        log.debug("Result = {}", resultDomain);
-        return resultDtoBuilder.build(sessionData, resultDomain);
+        // Build result object + gamification check
+        ResultDomain resultDomain = resultBuilder.build(sessionData, timeOuted);
+        // Do regular async db finish operations
+        asyncFinishService.saveResult(resultDomain, sessionData);
+        return resultDomainDtoTransformer.toDto(resultDomain);
     }
 
     /**
@@ -182,10 +174,9 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      * @return just return the current result
      */
     @Override
-    @TrackTime
     public ResultOutDto cancel(@NonNull SessionData sessionData) {
-        final ResultDomain resultDomain = resultBuilder.build(sessionData);
-        return resultDtoBuilder.build(sessionData, resultDomain);
+        ResultDomain resultDomain = resultBuilder.build(sessionData, false);
+        return resultDomainDtoTransformer.toDto(resultDomain);
     }
 
 }

@@ -9,9 +9,9 @@ import javax.persistence.*;
 
 /**
  * Pre-defined strategies:
- * ThemeDomain -> Type -> Level -> QuestionDomain
- * 1) Default: randomised irrespective to type and level, but observe themes order
- * 2) Full randomized: randomized irrespective to themeDomain order, type or level
+ * Theme -> Type -> Level -> Question
+ * 1) Default: randomised irrespective to question type and level, but observe themes order
+ * 2) Full randomized: randomized irrespective to theme order, question type or level
  * 3) Types then levels.
  * 4) To be continued...
  */

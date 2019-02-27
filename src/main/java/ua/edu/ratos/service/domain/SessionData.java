@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  *  Here are 3 scenarios:
  * <ul>
- *  <li>Scenario 0: Normal finish<br>
+ *  <li>Scenario 0: Normal save<br>
  * 1) Result is stored in database
  * 2) User gets result
  * 3) Key is removed from memory (auth. session) programmatically
@@ -47,7 +47,7 @@ public class SessionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String BUILD_ERROR = "Failed to build SessionData: wrong object state";
+    private static final String BUILD_ERROR = "Failed to toDto SessionData: wrong object state";
 
     @Id
     private final String key; //if preserved then retrieved the key doesn't change
@@ -125,7 +125,7 @@ public class SessionData implements Serializable {
         }
 
         /**
-         * Individual list of questionDomains(previously selected based on a corresponding SequenceProducer)
+         * Individual list of questions (previously selected based on a corresponding SequenceProducer)
          */
         public Builder withIndividualSequence(List<QuestionDomain> sequence) {
             this.questionDomains = sequence;

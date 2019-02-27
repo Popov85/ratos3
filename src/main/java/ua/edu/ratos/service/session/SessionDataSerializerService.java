@@ -18,7 +18,7 @@ public class SessionDataSerializerService {
     /**
      * Serialize SessionData obj into JSON so that to store it in DB
      * Usage:
-     *   1) Standard store of each session data after finish during some time (1 day by default);
+     *   1) Standard store of each session data after save during some time (1 day by default);
      *   2) Preservation mechanism (for educational session only).
      *
      * @param sessionData

@@ -33,7 +33,7 @@ public class ThemeRepositoryTestIT {
         Assert.assertEquals(1L, theme.getStaff().getDepartment().getDepId().longValue());
     }
 
-    //----------------------------SCHEMES TABLE----------------------------------
+    //--------------------------------------------------Staff TABLE-----------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -46,9 +46,17 @@ public class ThemeRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameContainsTest() {
-        List<Theme> themes = themeRepository.findAllByStaffIdAndNameContains(4L, "Farm", PageRequest.of(0, 100)).getContent();
+    public void findAllByStaffIdAndNameStartsTest() {
+        List<Theme> themes = themeRepository.findAllByStaffIdAndNameStarts(4L, "Farm", PageRequest.of(0, 100)).getContent();
         Assert.assertEquals(3, themes.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByStaffIdAndNameLettersContainsTest() {
+        List<Theme> themes = themeRepository.findAllByStaffIdAndNameLettersContains(5L, "(advanced)", PageRequest.of(0, 100)).getContent();
+        Assert.assertEquals(2, themes.size());
     }
 
     @Test
@@ -62,43 +70,17 @@ public class ThemeRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameContainsTest() {
-        Page<Theme> themes = themeRepository.findAllByDepartmentIdAndNameContains(3L, "advanced", PageRequest.of(0, 100));
+    public void findAllByDepartmentIdAndNameStartsTest() {
+        Page<Theme> themes = themeRepository.findAllByDepartmentIdAndNameStarts(3L, "Advanced", PageRequest.of(0, 100));
         Assert.assertEquals(2, themes.getContent().size());
     }
 
-    //----------------------------QUESTIONS TABLE----------------------------------
-
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForQuestionsTableByStaffIdTest() {
-        List<Theme> themes = themeRepository.findAllForQuestionsTableByStaffId(1L, PageRequest.of(0, 100)).getContent();
-        Assert.assertEquals(11, themes.size());
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForQuestionsTableByStaffIdAndNameContainsTest() {
-        List<Theme> themes = themeRepository.findAllForQuestionsTableByStaffIdAndNameContains(4L, "Farm", PageRequest.of(0, 100)).getContent();
-        Assert.assertEquals(3, themes.size());
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForQuestionsTableByDepartmentIdTest() {
-        Page<Theme> themes = themeRepository.findAllForQuestionsTableByDepartmentId(3L, PageRequest.of(0, 100));
+    public void findAllByDepartmentIdAndNameLettersContainsTest() {
+        Page<Theme> themes = themeRepository.findAllByDepartmentIdAndNameLettersContains(3L, "Med", PageRequest.of(0, 100));
         Assert.assertEquals(5, themes.getContent().size());
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/theme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForQuestionsTableByDepartmentIdAndNameContainsTest() {
-        Page<Theme> themes = themeRepository.findAllForQuestionsTableByDepartmentIdAndNameContains(3L, "advanced", PageRequest.of(0, 100));
-        Assert.assertEquals(2, themes.getContent().size());
     }
 
 }

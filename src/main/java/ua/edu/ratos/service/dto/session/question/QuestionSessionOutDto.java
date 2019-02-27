@@ -34,11 +34,13 @@ public abstract class QuestionSessionOutDto {
 
     protected ThemeDomain themeDomain;
 
+    protected boolean required;
+
     protected boolean partialResponseAllowed;
 
     /**
-     * Specifies whether HelpDomain exists for this question;
-     * if true and if the settingsDomain permit it, student can request helpDomain
+     * Specifies whether Help exists for this question;
+     * if true and if the settings permit it, student can request Help
      */
     protected boolean helpAvailable;
 

@@ -25,7 +25,6 @@ public class SchemeThemeSettingsServiceTestIT {
     public static final String JSON_NEW = "classpath:json/scheme_theme_settings_in_dto_new.json";
     public static final String JSON_UPD = "classpath:json/scheme_theme_settings_in_dto_upd.json";
 
-
     public static final String FIND = "select s from SchemeThemeSettings s where s.schemeThemeSettingsId=:schemeThemeSettingsId";
 
     @Autowired
@@ -76,6 +75,4 @@ public class SchemeThemeSettingsServiceTestIT {
         Assert.assertEquals(5, foundSchemeThemeSettings.getLevel2());
         Assert.assertEquals(5, foundSchemeThemeSettings.getLevel3());
     }
-
-
 }

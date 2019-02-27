@@ -16,15 +16,18 @@ public class ResultTheme {
     private ResultThemeId resultThemeId = new ResultThemeId();
 
     @MapsId("resultId")
-    @ManyToOne()
+    @OneToOne
     @JoinColumn(name = "result_id")
     private Result result;
 
     @MapsId("themeId")
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
     @Column(name = "percent")
     private double percent;
+
+    @Column(name = "quantity")
+    private int quantity;
 }

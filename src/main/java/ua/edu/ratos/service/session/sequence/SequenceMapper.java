@@ -48,7 +48,7 @@ public class SequenceMapper {
                 final short quantityLevel1 = setting.getLevel1();
                 final short quantityLevel2 = setting.getLevel2();
                 final short quantityLevel3 = setting.getLevel3();
-                // Select all existing of this type L1, L2, L3 if not 0
+                // Select all existing of this questionType L1, L2, L3 if not 0
                 if (quantityLevel1!=0) {
                     themeResult.addAll(levelPartProducer.getLevelPart(typeList, (byte) 1, quantityLevel1));
                 }
@@ -71,7 +71,7 @@ public class SequenceMapper {
      * Map<Type, Map<Level, List<Question>>>
      * @param themeId theme from Scheme's Themes list
      * @param settings settings from SchemeTheme's list
-     * @return map of questions by type and by level within type
+     * @return map of questions by questionType and by level within questionType
      */
     public Map<Long, Map<Byte, List<QuestionDomain>>> getMap(Long themeId, Set<SchemeThemeSettings> settings) {
         Map<Long, Map<Byte, List<QuestionDomain>>> result = new HashMap<>(5);
@@ -82,7 +82,7 @@ public class SequenceMapper {
                 final short quantityLevel1 = setting.getLevel1();
                 final short quantityLevel2 = setting.getLevel2();
                 final short quantityLevel3 = setting.getLevel3();
-                // Select all existing of this type L1, L2, L3 if not 0
+                // Select all existing of this questionType L1, L2, L3 if not 0
                 Map<Byte, List<QuestionDomain>> levelMap = new HashMap<>(3);
                 if (quantityLevel1 != 0) {
                     levelMap.put((byte) 1, levelPartProducer.getLevelPart(typeList, (byte) 1, quantityLevel1));

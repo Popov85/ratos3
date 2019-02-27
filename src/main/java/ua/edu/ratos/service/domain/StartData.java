@@ -2,9 +2,11 @@ package ua.edu.ratos.service.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class StartData {
     private final String key;
     private final Long schemeId;

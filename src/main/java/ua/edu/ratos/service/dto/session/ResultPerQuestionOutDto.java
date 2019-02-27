@@ -1,20 +1,21 @@
 package ua.edu.ratos.service.dto.session;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 
 @Getter
+@Setter
 @ToString
-@AllArgsConstructor
+@Accessors(chain = true)
 public class ResultPerQuestionOutDto {
 
-    private final Long questionId;
+    private QuestionSessionOutDto question;
 
-    private final String question;
+    private Response response;
 
-    private final Response response;
-
-    private final double score;
+    private double score;
 }

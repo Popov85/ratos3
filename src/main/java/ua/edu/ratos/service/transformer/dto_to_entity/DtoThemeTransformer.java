@@ -12,6 +12,7 @@ import ua.edu.ratos.service.dto.in.ThemeInDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 
 @Component
 public class DtoThemeTransformer {
@@ -38,6 +39,8 @@ public class DtoThemeTransformer {
         Theme theme = modelMapper.map(dto, Theme.class);
         theme.setCourse(em.getReference(Course.class, dto.getCourseId()));
         theme.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        theme.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
+        theme.setCreated(LocalDateTime.now());
         return theme;
     }
 }

@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -224,30 +226,51 @@ public class SchemeController {
         log.debug("Deleted schemeThemeSettingsId = {}", schemeThemeSettingsId);
     }
 
+    //----------------------------------------------------Staff table---------------------------------------------------
 
-    //-------------------------------------------------------Staff table------------------------------------------------
-
-    @TrackTime
     @GetMapping(value = "/schemes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    public Page<SchemeShortOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 30) Pageable pageable) {
         return schemeService.findAllByStaffId(pageable);
     }
 
-    @TrackTime
-    @GetMapping(value = "/schemes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByStaffIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllByStaffIdAndNameContains(letters, pageable);
-    }
-
-    @TrackTime
     @GetMapping(value = "/schemes/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+    public Page<SchemeShortOutDto> findAllByDepartmentId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return schemeService.findAllByDepartmentId(pageable);
     }
 
-    @TrackTime
+    //--------------------------------------------------Search in table-------------------------------------------------
+
+    @GetMapping(value = "/schemes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<SchemeShortOutDto> findAllByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return schemeService.findAllByStaffIdAndName(letters, contains, pageable);
+    }
+
     @GetMapping(value = "/schemes/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllByDepartmentIdAndNameContains(letters, pageable);
+    public Page<SchemeShortOutDto> findAllByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return schemeService.findAllByDepartmentIdAndName(letters, contains, pageable);
+    }
+
+    //--------------------------------------------------Slice drop-down-------------------------------------------------
+
+    @GetMapping(value = "/schemes-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return schemeService.findAllForDropDownByDepartmentId(pageable);
+    }
+
+    @GetMapping(value = "/schemes-dropdown/by-course", params = {"courseId"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<SchemeShortOutDto> findAllForDropDownByCourseId(@RequestParam Long courseId, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return schemeService.findAllForDropDownByCourseId(courseId, pageable);
+    }
+
+    //------------------------------------------------Search in drop-down-----------------------------------------------
+
+    @GetMapping(value = "/schemes-dropdown/by-department",  params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
+        return schemeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
+    }
+
+    @GetMapping(value = "/schemes-dropdown/by-course", params = {"courseId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<SchemeShortOutDto> findAllForDropDownByCourseIdAndName(@RequestParam Long courseId, @RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
+        return schemeService.findAllForDropDownByCourseIdAndName(courseId, letters, contains, pageable);
     }
 }

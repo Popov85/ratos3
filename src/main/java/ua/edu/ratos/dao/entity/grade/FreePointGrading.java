@@ -51,8 +51,8 @@ public class FreePointGrading {
     private boolean deleted;
 
     /**
-     * This gradingDomain system supports only integer values;
-     * For fractional values, please, implement another GradingDomain class
+     * This grading system supports only integer values;
+     * For fractional values, please, implement another Grading class
      * (with specified precision of rounding)
      * @param percent
      * @return

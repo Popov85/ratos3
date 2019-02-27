@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.oauth.consumer.BaseProtectedResourceDetails;
@@ -53,6 +54,7 @@ public class LTIOutcomeService {
      * @param percent gained during learning session percent
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      */
+    @Async
     public void sendOutcome(final Authentication authentication, final String protocol, final Long schemeId, final Double percent) {
         LTIUserConsumerCredentials principal = (LTIUserConsumerCredentials)authentication.getPrincipal();
         String email= principal.getEmail().orElse("unknown e-mail");
@@ -82,6 +84,7 @@ public class LTIOutcomeService {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         // Try to send multiple times for sure
         ltiRetryOutcomeService.doSend(authRestTemplate, uri, request, email, schemeId);
+        log.debug("Outcome is sent to LMS server");
     }
 
     /**

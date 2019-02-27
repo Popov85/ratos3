@@ -35,8 +35,8 @@ public class QuestionMCQ extends Question {
     }
 
     /**
-     * Creates a new empty QuestionDomain object (for parsers)
-     * @return newly created empty QuestionDomain
+     * Creates a new empty Question object (for parsers)
+     * @return newly created empty Question
      */
     public static QuestionMCQ createEmpty() {
         QuestionMCQ q = new QuestionMCQ();

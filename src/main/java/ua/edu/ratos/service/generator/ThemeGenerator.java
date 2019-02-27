@@ -3,13 +3,12 @@ package ua.edu.ratos.service.generator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Access;
-import ua.edu.ratos.dao.entity.Course;
-import ua.edu.ratos.dao.entity.Staff;
-import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.config.TrackTime;
+import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.repository.ThemeRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,7 @@ public class ThemeGenerator {
     @Autowired
     private ThemeRepository themeRepository;
 
+    @TrackTime
     @Transactional
     public List<Theme> generate(int quantity, List<Course> list) {
         List<Theme> result = new ArrayList<>();
@@ -39,10 +39,12 @@ public class ThemeGenerator {
 
     private Theme createOne(int i, Course course) {
         Theme theme = new Theme();
-        theme.setName("Theme #"+i);
+        theme.setName("Theme_#"+i);
         theme.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
         theme.setStaff(em.getReference(Staff.class, 1L));
         theme.setCourse(course);
+        theme.setDepartment(em.getReference(Department.class, course.getDepartment().getDepId()));
+        theme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
         return theme;
     }
 }

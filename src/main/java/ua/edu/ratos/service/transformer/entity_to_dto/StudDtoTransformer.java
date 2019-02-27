@@ -13,11 +13,15 @@ public class StudDtoTransformer {
 
     private UserDtoTransformer userDtoTransformer;
 
-    private ClassDtoTransformer classDtoTransformer;
+    private ClassMinDtoTransformer classMinDtoTransformer;
+
+    private FacultyMinDtoTransformer facultyMinDtoTransformer;
+
+    private OrganisationMinDtoTransformer organisationMinDtoTransformer;
 
     @Autowired
-    public void setClassDtoTransformer(ClassDtoTransformer classDtoTransformer) {
-        this.classDtoTransformer = classDtoTransformer;
+    public void setClassMinDtoTransformer(ClassMinDtoTransformer classMinDtoTransformer) {
+        this.classMinDtoTransformer = classMinDtoTransformer;
     }
 
     @Autowired
@@ -25,12 +29,24 @@ public class StudDtoTransformer {
         this.userDtoTransformer = userDtoTransformer;
     }
 
+    @Autowired
+    public void setFacultyMinDtoTransformer(FacultyMinDtoTransformer facultyMinDtoTransformer) {
+        this.facultyMinDtoTransformer = facultyMinDtoTransformer;
+    }
+
+    @Autowired
+    public void setOrganisationMinDtoTransformer(OrganisationMinDtoTransformer organisationMinDtoTransformer) {
+        this.organisationMinDtoTransformer = organisationMinDtoTransformer;
+    }
+
     public StudOutDto toDto(@NonNull final Student entity) {
         return new StudOutDto()
                 .setStudId(entity.getStudId())
                 .setUser(userDtoTransformer.toDto(entity.getUser()))
-                .setEntranceYear(entity.getEntranceYear())
-                .setStudentClass(classDtoTransformer.toDto(entity.getStudentClass()));
+                .setStudentClass(classMinDtoTransformer.toDto(entity.getStudentClass()))
+                .setFaculty(facultyMinDtoTransformer.toDto(entity.getFaculty()))
+                .setOrganisation(organisationMinDtoTransformer.toDto(entity.getOrganisation()))
+                .setEntranceYear(entity.getEntranceYear());
     }
 
     public Set<StudOutDto> toDto(@NonNull final Set<Student> entities) {

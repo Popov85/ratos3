@@ -70,7 +70,7 @@ public class SchemeThemeServiceTestIT {
     @Test(expected = RuntimeException.class)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_theme_settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void removeSettingsLastTest() throws Exception {
+    public void removeSettingsLastTest() {
         // Given 4 settings objects associated with SchemeTheme, let's remove all one by one
         schemeThemeService.removeSettings(1L, 1L);
         schemeThemeService.removeSettings(1L, 2L);

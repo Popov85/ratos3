@@ -1,6 +1,5 @@
 package ua.edu.ratos.service.dto.session.question;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

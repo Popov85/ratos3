@@ -74,7 +74,6 @@ public abstract class AbstractQuestionsFileParser implements QuestionsFileParser
         }
         if (isEmpty) throw new RuntimeException("No questions found in the file!");
         this.header = stringBuilder.toString();
-        //log.debug("Sentinel : {}, Header : {}", sentinel, header.isEmpty() ? "No header" : header);
         return sentinel;
     }
 

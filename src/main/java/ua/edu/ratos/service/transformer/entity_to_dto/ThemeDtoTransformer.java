@@ -36,6 +36,7 @@ public class ThemeDtoTransformer {
         return new ThemeOutDto()
                 .setThemeId(entity.getThemeId())
                 .setName(entity.getName())
+                .setCreated(entity.getCreated())
                 .setCourse(courseDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()));

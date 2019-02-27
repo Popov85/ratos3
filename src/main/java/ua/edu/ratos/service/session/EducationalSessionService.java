@@ -1,9 +1,8 @@
 package ua.edu.ratos.service.session;
 
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.dto.out.HelpMinOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
 
 /**
@@ -12,69 +11,54 @@ import ua.edu.ratos.service.dto.session.ComplaintInDto;
  * @author Andrey P.
  */
 @Service
-public interface EducationalSessionService {
+public interface EducationalSessionService extends StarredSessionService {
 
     /**
-     * Stops time (for max 12 hours) while SessionData is still alive in memory
-     * @param sessionData
-     */
-    void pause(SessionData sessionData);
-
-    /**
-     * Resumes paused learning session within authentication session
-     * @param sessionData
-     * @return
-     */
-    BatchOutDto resume(SessionData sessionData);
-
-    /**
-     * Serialize SessionData state to database
-     * @param sessionData
+     * Serialize SessionData state to database.
+     * There is a limit of total preservation per user within a RATOS installation (5 by default).
+     * @param sessionData sessionData object associated with the current learning session
      * @return key for retrieval this session from DB
      */
     String preserve(SessionData sessionData);
 
+
+    //------------------------------------------------------Ajax--------------------------------------------------------
+
+
     /**
-     * Retrieves preserved session
-     * @param key id in database
-     * @return deserialized SessionData object from DB to put back in auth. session
+     * Provides help for the given question;
+     * Technically, many Helps can be associated with a question, but for the sake of simplicity
+     * we only allow a single Help for now (this can be modified if requirements change).
+     * Front-end has to ensure that Help is present and is allowed by settings before calling this method
+     * @param questionId ID of question whose Help is requested
+     * @param sessionData sessionData object associated with the current learning session
+     * @return help DTO
      */
-    SessionData retrieve(String key);
+    HelpMinOutDto help(Long questionId, SessionData sessionData);
 
-
-    //-------------------Ajax-------------
-    //---------All without timing control---------
 
     /**
-     * Provides helpAvailable for the given question
-     * @param questionId
-     * @param sessionData
-     * @return
-     */
-    HelpDomain help(Long questionId, SessionData sessionData);
-
-    /**
-     * Skips the question, puts it to the end of the list to appear in the following batches
-     * @param questionId
-     * @param sessionData
+     * Skips the question, puts it to the end of the list to appear in the following batches;
+     * Front-end has to ensure that the question being skipped disappeared from the screen;
+     * This is no-reversible operation within a learning session;
+     * Front-end has to ensure calling next() programmatically if this is the single question in the batchOut.<br>
+     *    Algorithm:
+     *    <ol>
+     *      <li>Check if Skip is allowed by settings;</li>
+     *      <li>If so, remove this question from current batchOut, we are not gonna evaluate it since it is skipped</li>
+     *      <li>Do shifting to the end;</li>
+     *     <li>MetaData processing</li>
+     *    </ol>
+     * @param questionId ID of question that is gonna be skipped
+     * @param sessionData sessionData object associated with the current learning session
      */
     void skip(Long questionId, SessionData sessionData);
 
 
     /**
-     * Star a question with 1 to 5 stars for future review by user himself
-     * @param star
-     * @param questionId
-     * @param userId
-     * @param sessionData
-     */
-    void star(byte star, Long questionId, Long userId, SessionData sessionData);
-
-    /**
-     * Complain about a question
+     * Complain about a question in case it has any issues
      * @param complaint
-     * @param questionId
-     * @param sessionData
+     * @param sessionData sessionData object associated with the current learning session
      */
-    void complain(ComplaintInDto complaint, Long questionId, SessionData sessionData);
+    void complain(ComplaintInDto complaint, SessionData sessionData);
 }

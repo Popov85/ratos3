@@ -3,6 +3,7 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.domain.SessionData;
@@ -16,16 +17,18 @@ import static ua.edu.ratos.service.session.GenericSessionServiceImpl.NOT_AVAILAB
 
 @Slf4j
 @Service
+@Qualifier("lms")
 public class GenericSessionLMSServiceImpl implements GenericSessionService {
+
+    @Autowired
+    @Qualifier("regular")
+    private GenericSessionService genericSessionService;
 
     @Autowired
     private SchemeService schemeService;
 
     @Autowired
     private SessionDataBuilder sessionDataBuilder;
-
-    @Autowired
-    private GenericSessionServiceImpl genericSessionService;
 
     @Autowired
     private BatchBuilder batchBuilder;
@@ -36,7 +39,7 @@ public class GenericSessionLMSServiceImpl implements GenericSessionService {
 
     @Override
     public SessionData start(@NonNull final StartData startData) {
-        // Load the requested Scheme and build SessionData object
+        // Load the requested Scheme and toDto SessionData object
         final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
         if (scheme==null || !scheme.isActive())
             throw new IllegalStateException(NOT_AVAILABLE);

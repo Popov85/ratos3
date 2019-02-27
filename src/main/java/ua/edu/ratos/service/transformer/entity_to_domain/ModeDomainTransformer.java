@@ -15,11 +15,9 @@ public class ModeDomainTransformer {
                 .setModeId(entity.getModeId())
                 .setName(entity.getName())
                 .setHelpable(entity.isHelpable())
-                .setPauseable(entity.isPauseable())
                 .setPreservable(entity.isPreservable())
                 .setPyramid(entity.isPyramid())
                 .setReportable(entity.isReportable())
-                .setResultDetails(entity.isResultDetails())
                 .setRightAnswer(entity.isRightAnswer())
                 .setSkipable(entity.isSkipable())
                 .setStarrable(entity.isStarrable());

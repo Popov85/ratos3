@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -86,6 +87,18 @@ public class LMSCourseController {
     @GetMapping(value = "/lms-courses/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<LMSCourseOutDto> findAllByDepartmentIdAndNameContains(@RequestParam String letters, @PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return lmsCourseService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
+    }
+
+    //-----------------------------------------------Staff drop-down----------------------------------------------------
+
+    @GetMapping(value = "/lms-courses/by-staff-dropdown", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<LMSCourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 100) Pageable pageable) {
+        return lmsCourseService.findAllForDropDownByStaffId(pageable);
+    }
+
+    @GetMapping(value = "/lms-courses/by-department-dropdown", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<LMSCourseOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 100) Pageable pageable) {
+        return lmsCourseService.findAllForDropDownByDepartmentId(pageable);
     }
 
 }

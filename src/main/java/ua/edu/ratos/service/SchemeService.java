@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
@@ -112,7 +113,7 @@ public class SchemeService {
         Scheme scheme = dtoSchemeTransformer.toEntity(dto);
         final Long schemeId = schemeRepository.save(scheme).getSchemeId();
         // By design, we cannot cascade saving of the grading details, we do it separately in the same transaction,
-        // depending on the scheme's grading type specified and ID of selected details
+        // depending on the scheme's grading questionType specified and ID of selected details
         final long gradingId = dto.getGradingId();
         final long gradingDetailsId = dto.getGradingDetailsId();
         gradingManagerService.save(schemeId, gradingId, gradingDetailsId);
@@ -171,8 +172,8 @@ public class SchemeService {
             gradingManagerService.save(schemeId, gradId, gradDetailsId);
             gradingManagerService.remove(schemeId, oldGradingId);
         } else {
-            // Scheme type didn't change, but specific settings could have been changed,
-            // {ID=4 -> ID=5}, save plays like UPDATE
+            // Scheme questionType didn't change, but specific settings could have been changed,
+            // {ID=4 -> ID=5}, savePoints plays like UPDATE
             gradingManagerService.save(schemeId, oldGradingId, gradDetailsId);
         }
         scheme.setGrading(em.getReference(Grading.class, gradId));
@@ -273,20 +274,49 @@ public class SchemeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SchemeShortOutDto> findAllByStaffIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return schemeRepository.findAllByStaffIdAndNameContains(securityUtils.getAuthStaffId(), contains, pageable).map(schemeShortDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
         return schemeRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(schemeShortDtoTransformer::toDto);
     }
 
+    //-------------------------------------------------Search in table--------------------------------------------------
+
     @Transactional(readOnly = true)
-    public Page<SchemeShortOutDto> findAllByDepartmentIdAndNameContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), contains, pageable).map(schemeShortDtoTransformer::toDto);
+    public Page<SchemeShortOutDto> findAllByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return schemeRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        return schemeRepository.findAllByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
     }
-    
+
+    @Transactional(readOnly = true)
+    public Page<SchemeShortOutDto> findAllByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        return schemeRepository.findAllByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+    }
+
+    //-------------------------------------------------Slice drop-down--------------------------------------------------
+
+    @Transactional(readOnly = true)
+    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
+        return schemeRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(schemeShortDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<SchemeShortOutDto> findAllForDropDownByCourseId(@NonNull final Long courseId, @NonNull final Pageable pageable) {
+        return schemeRepository.findAllForDropDownByCourseId(courseId, pageable).map(schemeShortDtoTransformer::toDto);
+    }
+
+    //------------------------------------------------Search in drop-down-----------------------------------------------
+
+    @Transactional(readOnly = true)
+    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return schemeRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        return schemeRepository.findAllForDropDownByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<SchemeShortOutDto> findAllForDropDownByCourseIdAndName(@NonNull final Long courseId, @NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
+        if (contains) return schemeRepository.findAllForDropDownByCourseIdAndNameLettersContains(courseId, letters, pageable).map(schemeShortDtoTransformer::toDto);
+        return schemeRepository.findAllForDropDownByCourseIdAndNameStarts(courseId, letters, pageable).map(schemeShortDtoTransformer::toDto);
+    }
 
     //-------------------------------------------------Admin (for table)------------------------------------------------
 

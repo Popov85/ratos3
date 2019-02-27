@@ -25,6 +25,7 @@ public class ProgressDataService {
         updatedProgressData.setScore(updatedScore);
         final long updatedTime = getUpdatedTime(sessionData, batchEvaluated);
         updatedProgressData.setTimeSpent(updatedTime);
+        updatedProgressData.setProgress(getProgress(sessionData));
         final List<BatchEvaluated> batchesEvaluated =
                 new ArrayList<>(currentProgressData.getBatchesEvaluated());
         batchesEvaluated.add(batchEvaluated);
@@ -62,7 +63,7 @@ public class ProgressDataService {
     /**
      * Calculate current effective score for intermediary result (in percent)
      * Effective score shows the effectiveness of answers irrespectively to the total amount of questions
-     * @param sessionData
+     * @param sessionData SessionData object associated with the current http(s)-session
      * @return the current effective score for intermediary result
      */
     public double getEffectiveScore(@NonNull final SessionData sessionData) {
@@ -71,7 +72,16 @@ public class ProgressDataService {
         return (score*100d)/index;
     }
 
-
+    /**
+     * Calculate the percentage of job done in the current session;
+     * @param sessionData SessionData object associated with the current http(s)-session
+     * @return progress in %
+     */
+    public double getProgress(@NonNull final SessionData sessionData) {
+        int currentIndex = sessionData.getCurrentIndex();
+        int total = sessionData.getQuestionDomains().size();
+        return (currentIndex+1)/total;
+    }
 
 
     private double getUpdatedScore(@NonNull SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {

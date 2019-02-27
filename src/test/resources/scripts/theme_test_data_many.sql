@@ -9,31 +9,31 @@ insert into user (name, surname, password, email) values('Semen','Fine','pOt67n2
 insert into user_role(user_id, role_id) VALUES (5, 6);
 insert into staff (staff_id, dep_id, pos_id) values(5, 3, 1);
 
-insert into theme (name, course_id, created_by, access_id) values('IT theme #1', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #2', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #3', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #1', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #2', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #3', 1, 1, 1, 1, CURRENT_TIMESTAMP);
 
-insert into theme (name, course_id, created_by, access_id) values('IT theme #4', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #5', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #6', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #7', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #8', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #9', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #10', 1, 1, 1);
-insert into theme (name, course_id, created_by, access_id) values('IT theme #11', 1, 1, 1);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #4', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #5', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #6', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #7', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #8', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #9', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #10', 1, 1, 1, 1, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('IT theme #11', 1, 1, 1, 1, CURRENT_TIMESTAMP);
 
-insert into theme (name, course_id, created_by, access_id) values('Farm theme #1', 1, 4, 1);
-insert into theme (name, course_id, created_by, access_id) values('Farm theme #2', 1, 4, 1);
-insert into theme (name, course_id, created_by, access_id) values('Farm theme #3', 1, 4, 1);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Farm theme #1', 1, 4, 1, 2, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Farm theme #2', 1, 4, 1, 2, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Farm theme #3', 1, 4, 1, 2, CURRENT_TIMESTAMP);
 
-insert into theme (name, course_id, created_by, access_id) values('Med theme #4', 1, 4, 1);
-insert into theme (name, course_id, created_by, access_id) values('Med theme #5', 1, 4, 1);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Med theme #4', 1, 4, 1, 2, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Med theme #5', 1, 4, 1, 2, CURRENT_TIMESTAMP);
 
-insert into theme (name, course_id, created_by, access_id) values('Med theme #6', 1, 5, 1);
-insert into theme (name, course_id, created_by, access_id) values('Med theme #7', 1, 5, 1);
-insert into theme (name, course_id, created_by, access_id) values('Med theme #8', 1, 5, 1);
-insert into theme (name, course_id, created_by, access_id) values('Med theme #9 (advanced)', 1, 5, 1);
-insert into theme (name, course_id, created_by, access_id) values('Med theme#10 (advanced)', 1, 5, 1);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Med theme #6', 1, 5, 1, 3, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Med theme #7', 1, 5, 1, 3, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Med theme #8', 1, 5, 1, 3, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Advanced Med theme #9 (advanced)', 1, 5, 1, 3, CURRENT_TIMESTAMP);
+insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Advanced Med theme#10 (advanced)', 1, 5, 1, 3, CURRENT_TIMESTAMP);
 
 
 

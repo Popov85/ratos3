@@ -33,7 +33,7 @@ public class DtoLMSCourseTransformer {
     @Transactional(propagation = Propagation.MANDATORY)
     public LMSCourse toEntity(@NonNull final LMSCourseInDto dto) {
         LMSCourse lmsCourse = new LMSCourse();
-        // cascade save
+        // cascade savePoints
         Course course = new Course();
         course.setCourseId(dto.getCourseId());
         course.setName(dto.getName());

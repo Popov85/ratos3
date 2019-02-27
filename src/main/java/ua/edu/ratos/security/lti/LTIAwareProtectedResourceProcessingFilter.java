@@ -57,7 +57,7 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
 
         SignatureSecret updatedSignatureSecret = (SignatureSecret) oauthAuthentication.getCredentials();
 
-        // We have an updated principal and updated signatureSecret
+        // We have an updated principal and updated signature
 
         Authentication resultingAuthentication =
                 new UsernamePasswordAuthenticationToken(resultingPrincipal, updatedSignatureSecret, previousAuthentication.getAuthorities());

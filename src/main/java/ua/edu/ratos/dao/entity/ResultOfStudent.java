@@ -44,6 +44,9 @@ public class ResultOfStudent {
     @Column(name = "is_passed")
     private boolean passed;
 
+    @Column(name = "is_points_granted")
+    private boolean points;
+
     @Column(name = "session_ended")
     private LocalDateTime sessionEnded;
 

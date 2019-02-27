@@ -67,6 +67,7 @@ public class SettingsService {
         settings.setDisplayMark(dto.isDisplayMark());
         settings.setDisplayPercent(dto.isDisplayPercent());
         settings.setDisplayThemeResults(dto.isDisplayThemeResults());
+        settings.setDisplayQuestionResults(dto.isDisplayQuestionResults());
         settings.setLevel2Coefficient(dto.getLevel2Coefficient());
         settings.setLevel3Coefficient(dto.getLevel3Coefficient());
         settings.setQuestionsPerSheet(dto.getQuestionsPerSheet());

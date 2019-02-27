@@ -10,11 +10,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.it.ActiveProfile;
+import ua.edu.ratos.dao.repository.projections.TypeAndCount;
 
 import java.util.*;
 
@@ -39,13 +41,22 @@ public class QuestionRepositoryTestIT {
     }
 
     @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_test_data_types.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countTypesTest() {
+        Set<TypeAndCount> result = questionRepository.countAllTypesByThemeId(1L);
+        Assert.assertEquals(3, result.size());
+        //result.forEach(r-> System.out.println(r.getQuestionType()+" , "+r.getAbbreviation()+" = "+r.getCount()));
+    }
+
+    @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllMCQWithEverythingByThemeIdTest() {
         final Set<QuestionMCQ> questions = questionRepository.findAllMCQWithEverythingByThemeId(1L);
         Assert.assertEquals(3, questions.size());
         for (QuestionMCQ question : questions) {
-            Assert.assertTrue(question.getQuestion().startsWith("Multiple choice question"));
+            Assert.assertTrue(question.getQuestion().startsWith("M"));
             Assert.assertEquals(4, question.getAnswers().size());
             question.getAnswers().forEach(a->Assert.assertTrue(Hibernate.isInitialized(a.getResource())));
             Assert.assertTrue(Hibernate.isInitialized(question.getLang()));
@@ -66,7 +77,7 @@ public class QuestionRepositoryTestIT {
         final Set<QuestionFBSQ> questions = questionRepository.findAllFBSQWithEverythingByThemeId(1L);
         Assert.assertEquals(3, questions.size());
         for (QuestionFBSQ question : questions) {
-            Assert.assertTrue(question.getQuestion().startsWith("Fill blank single question"));
+            Assert.assertTrue(question.getQuestion().startsWith("F"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswer()));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswer().getSettings()));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswer().getAcceptedPhrases()));
@@ -89,7 +100,7 @@ public class QuestionRepositoryTestIT {
         final Set<QuestionFBMQ> questions = questionRepository.findAllFBMQWithEverythingByThemeId(1L);
         Assert.assertEquals(3, questions.size());
         for (QuestionFBMQ question : questions) {
-            Assert.assertTrue(question.getQuestion().startsWith("Fill blank multiple question"));
+            Assert.assertTrue(question.getQuestion().startsWith("F"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswers()));
             question.getAnswers().forEach(a->{
                 Assert.assertTrue(Hibernate.isInitialized(a.getSettings()));
@@ -113,7 +124,7 @@ public class QuestionRepositoryTestIT {
         final Set<QuestionMQ> questions = questionRepository.findAllMQWithEverythingByThemeId(1L);
         Assert.assertEquals(3, questions.size());
         for (QuestionMQ question : questions) {
-            Assert.assertTrue(question.getQuestion().startsWith("Matcher question"));
+            Assert.assertTrue(question.getQuestion().startsWith("M"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswers()));
             question.getAnswers().forEach(a->{
                 Assert.assertTrue(Hibernate.isInitialized(a.getLeftPhrase()));
@@ -138,7 +149,7 @@ public class QuestionRepositoryTestIT {
         final Set<QuestionSQ> questions = questionRepository.findAllSQWithEverythingByThemeId(1L);
         Assert.assertEquals(3, questions.size());
         for (QuestionSQ question : questions) {
-            Assert.assertTrue(question.getQuestion().startsWith("Sequence question"));
+            Assert.assertTrue(question.getQuestion().startsWith("S"));
             Assert.assertTrue(Hibernate.isInitialized(question.getAnswers()));
             question.getAnswers().forEach(a->{
                 Assert.assertTrue(Hibernate.isInitialized(a.getPhrase()));
@@ -168,8 +179,8 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllMCQForEditByThemeIdAndQuestionLettersContainsTest() {
-        final Page<QuestionMCQ> questions = questionRepository.findAllMCQForEditByThemeIdAndQuestionLettersContains(1L, "eng", PageRequest.of(0, 50));
-        Assert.assertEquals(1, questions.getContent().size());
+        final Slice<QuestionMCQ> questions = questionRepository.findAllMCQForSearchByDepartmentIdAndTitleContains(1L, "MCQ", PageRequest.of(0, 30));
+        Assert.assertEquals(2, questions.getContent().size());
     }
 
 
@@ -185,8 +196,8 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbsq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllFBSQForEditByThemeIdAndQuestionLettersContainsTest() {
-        final Page<QuestionFBSQ> questions = questionRepository.findAllFBSQForEditByThemeIdAndQuestionLettersContains(1L, "Best", PageRequest.of(0, 50));
-        Assert.assertEquals(1, questions.getContent().size());
+        Slice<QuestionFBSQ> result = questionRepository.findAllFBSQForSearchByDepartmentIdAndTitleContains(1L, "FBSQ", PageRequest.of(0, 30));
+        Assert.assertEquals(3, result.getContent().size());
     }
 
 
@@ -202,7 +213,7 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbmq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllFBMQForEditByThemeIdAndQuestionLettersContainsTest() {
-        final Page<QuestionFBMQ> questions = questionRepository.findAllFBMQForEditByThemeIdAndQuestionLettersContains(1L, "required", PageRequest.of(0, 50));
+        final Slice<QuestionFBMQ> questions = questionRepository.findAllFBMQForSearchByDepartmentIdAndTitleContains(1L, "FBMQ", PageRequest.of(0, 30));
         Assert.assertEquals(1, questions.getContent().size());
     }
 
@@ -218,8 +229,8 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllMQForEditByThemeIdAndQuestionLettersContainsTest(){
-        final Page<QuestionMQ> questions = questionRepository.findAllMQForEditByThemeIdAndQuestionLettersContains(1L, "#2", PageRequest.of(0, 50));
-        Assert.assertEquals(2, questions.getContent().size());
+        final Slice<QuestionMQ> questions = questionRepository.findAllMQForSearchByDepartmentIdAndTitleContains(1L, "MQ", PageRequest.of(0, 30));
+        Assert.assertEquals(3, questions.getContent().size());
     }
 
     @Test
@@ -234,8 +245,8 @@ public class QuestionRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_sq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllSQForEditByThemeIdAndQuestionLettersContainsTest() {
-        final Page<QuestionSQ> questions = questionRepository.findAllSQForEditByThemeIdAndQuestionLettersContains(1L, "advanced", PageRequest.of(0, 50));
-        Assert.assertEquals(1, questions.getContent().size());
+        final Slice<QuestionSQ> questions = questionRepository.findAllSQForSearchByDepartmentIdAndTitleContains(1L, "SQ", PageRequest.of(0, 50));
+        Assert.assertEquals(2, questions.getContent().size());
     }
 
 }

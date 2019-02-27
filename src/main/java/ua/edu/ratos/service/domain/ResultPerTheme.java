@@ -9,16 +9,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ResultPerTheme {
 
-    private final Long themeId;
+    private ThemeDomain theme;
 
-    private final String theme;
-
+    // How many questions answered on this theme
     private final int quantity;
 
-    private final boolean passed;
-
     private final double percent;
-
-    private final double grade;
 
 }

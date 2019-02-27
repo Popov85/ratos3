@@ -52,7 +52,21 @@ public class ResultOfStudentRepositoryTest {
                 .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setCourseId(1L)));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
-        //page.getContent().forEach(System.out::println);
+        Assert.assertEquals(1, page.getTotalPages());
+        Assert.assertEquals(6, page.getTotalElements());
+        Assert.assertEquals(6, page.getContent().size());
+    }
+
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByOnlyLMSTest() {
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
+                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setLms(true)));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("percent"))));
+        page.getContent().forEach(System.out::println);
         Assert.assertEquals(1, page.getTotalPages());
         Assert.assertEquals(6, page.getTotalElements());
         Assert.assertEquals(6, page.getContent().size());
@@ -125,8 +139,6 @@ public class ResultOfStudentRepositoryTest {
         Assert.assertEquals(2, page.getContent().size());
     }
 
-
-
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -163,7 +175,6 @@ public class ResultOfStudentRepositoryTest {
                                 .setContains(true)));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
-        // page.getContent().forEach(System.out::println);
         Assert.assertEquals(1, page.getTotalPages());
         Assert.assertEquals(1, page.getTotalElements());
         Assert.assertEquals(1, page.getContent().size());

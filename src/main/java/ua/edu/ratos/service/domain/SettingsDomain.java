@@ -1,6 +1,5 @@
 package ua.edu.ratos.service.domain;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,5 +33,7 @@ public class SettingsDomain {
     private boolean displayMark;
 
     private boolean displayThemeResults;
+
+    private boolean displayQuestionResults;
 
 }

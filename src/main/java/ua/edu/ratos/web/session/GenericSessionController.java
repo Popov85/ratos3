@@ -2,6 +2,7 @@ package ua.edu.ratos.web.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,13 @@ import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.session.GenericSessionService;
 import ua.edu.ratos.service.session.GenericSessionServiceImpl;
 import javax.servlet.http.HttpSession;
 
 /**
  * 1) Long inactivity? Browser is opened. (Default authentication session timeout 12 hours), no data to keep
- * 2) Case: browser is suddenly closed (PC trouble or electricity), authentication session lost... save data by tracking session lost event
+ * 2) Case: browser is suddenly closed (PC trouble or electricity), authentication session lost... savePoints data by tracking session lost event
  * 3) etc.
  */
 @Slf4j
@@ -24,10 +26,11 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/student/session")
 public class GenericSessionController {
 
-    private GenericSessionServiceImpl sessionService;
+    private GenericSessionService sessionService;
 
     @Autowired
-    public void setSessionService(GenericSessionServiceImpl sessionService) {
+    @Qualifier("regular")
+    public void setSessionService(GenericSessionService sessionService) {
         this.sessionService = sessionService;
     }
 

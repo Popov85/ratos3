@@ -4,7 +4,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.repository.AnswerMCQRepository;
+import ua.edu.ratos.dao.repository.answer.AnswerMCQRepository;
 import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 
