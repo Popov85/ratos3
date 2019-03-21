@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 @Service
 public class SessionDataService {
 
-    @Autowired
     private TimingService timingService;
+
+    @Autowired
+    public void setTimingService(TimingService timingService) {
+        this.timingService = timingService;
+    }
 
     /**
      * Update the state of the current dto based on a new batchOutDto provided

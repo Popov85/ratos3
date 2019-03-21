@@ -3,8 +3,9 @@ package ua.edu.ratos.service.generator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import javax.persistence.EntityManager;
@@ -22,6 +23,8 @@ import java.util.*;
 @Component
 public class SchemeGenerator {
 
+    private static final int MAX_THEMES_PER_SCHEME = 5;
+
     @Autowired
     private Rnd rnd;
 
@@ -34,6 +37,7 @@ public class SchemeGenerator {
     @Autowired
     private SchemeGradingManagerService gradingManagerService;
 
+    @TrackTime
     @Transactional
     public List<Scheme> generate(int quantity, List<Theme> themes, List<Department> departments, List<Course> courses) {
         List<Scheme> result = new ArrayList<>();
@@ -61,8 +65,7 @@ public class SchemeGenerator {
         scheme.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
         scheme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
         scheme.setActive(true);
-        scheme.setThemes(getThemes(3, themes, scheme));
-        //scheme.setGroups(getGroups(4));
+        scheme.setThemes(getThemes(MAX_THEMES_PER_SCHEME, themes, scheme));
         return scheme;
     }
 
@@ -92,14 +95,4 @@ public class SchemeGenerator {
         }
         return result;
     }
-
- /*   private Set<Group> getGroups(int quantity) {
-        Set<Group> groups = new HashSet<>();
-        for (int i = 1; i <= rnd.rndOne(quantity); i++) {
-            Group g = em.getReference(Group.class, rnd.rndOne(10));
-            groups.add(g);
-        }
-        return groups;
-    }*/
-
 }

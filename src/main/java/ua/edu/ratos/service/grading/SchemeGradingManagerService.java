@@ -17,7 +17,7 @@ public class SchemeGradingManagerService {
 
     /**
      *  1. Get a correct Scheme*Service based on gradingId
-     *  2. Invoke service.savePoints(schemeId, gradingDetailsId);
+     *  2. Invoke service.doGameProcessing(schemeId, gradingDetailsId);
      * @param schemeId
      * @param gradingId
      * @param gradingDetailsId

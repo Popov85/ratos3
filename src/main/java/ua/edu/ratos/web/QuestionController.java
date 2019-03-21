@@ -19,18 +19,23 @@ import ua.edu.ratos.service.QuestionsFileParserService;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.dto.out.question.*;
+import ua.edu.ratos.service.session.sequence.L2CSessionSupport;
+
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/instructor")
+//@RequestMapping(path = "/instructor")
 public class QuestionController {
 
     private QuestionService questionService;
 
     private QuestionsFileParserService questionsFileParserService;
+
+    @Autowired
+    private L2CSessionSupport l2CSessionSupport;
 
     @Autowired
     public void setQuestionService(QuestionService questionService) {
@@ -82,7 +87,7 @@ public class QuestionController {
         return ResponseEntity.created(location).build();
     }
 
-    // For bulk savePoints via file (as for now only applicable to MCQ)
+    // For bulk doGameProcessing via file (as for now only applicable to MCQ)
     @PostMapping(value = "/questions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionsParsingResultOutDto saveAll(@RequestParam("file") MultipartFile multipartFile,
                                                 @RequestParam Long themeId, @RequestParam Long langId,
@@ -201,6 +206,14 @@ public class QuestionController {
     @GetMapping(value = "/questions-sq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionSQOutDto> findAllSQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllSQForSearchByDepartmentIdAndTitleContains(letters, pageable);
+    }
+
+    //---------------------------------------------------L2C Session support -------------------------------------------
+
+    @GetMapping(value = "/load")
+    public ResponseEntity<String> findAllMQForSearchByDepartmentIdAndTitleLetters(@RequestParam Long schemeId) {
+        l2CSessionSupport.loadAllSchemesQuestionsToL2C(schemeId);
+        return ResponseEntity.ok("All questions of scheme with Id = "+schemeId+" will soon be loaded to L2C");
     }
 
 }

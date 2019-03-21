@@ -13,8 +13,12 @@ import java.util.Map;
 @Service
 public class BatchEvaluatedBuilder {
 
-    @Autowired
     private TimingService timingService;
+
+    @Autowired
+    public void setTimingService(TimingService timingService) {
+        this.timingService = timingService;
+    }
 
     public BatchEvaluated build(@NonNull final Map<Long, ResponseEvaluated> responsesEvaluated,
                                 @NonNull final List<Long> incorrectResponseIds,

@@ -116,11 +116,11 @@ public class ResultBuilderTestIT {
         when(progressDataService.getCurrentScore(sessionData)).thenReturn(85.0);
         when(progressDataService.toResponseEvaluated(sessionData)).thenReturn(responsesEvaluated);
         when(gradingService.grade(eq(1L), any(GradingDomain.class), eq(85.0))).thenReturn(new GradedResult(true, 5));
-        when(gameService.checkAndGetPoints(1L, 1L, 85.0)).thenReturn(Optional.of(new Integer(10)));
+        when(gameService.getPoints(any(SessionData.class), eq(85.0))).thenReturn(Optional.of(new Integer(10)));
         when(userDomainTransformer.toDomain(any(User.class))).thenReturn(new UserDomain(1L, "TestUser", "TestUser"));
         when(userRepository.findById(1L)).thenReturn(Optional.of(new User()));
 
-        final ResultDomain resultDomain = resultBuilder.build(sessionData, false);
+        final ResultDomain resultDomain = resultBuilder.build(sessionData, false, false);
         final List<ResultPerTheme> themeResults = resultDomain.getThemeResults();
 
         final ResultPerTheme resultPerTheme1 = themeResults.get(0);

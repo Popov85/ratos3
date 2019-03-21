@@ -1144,6 +1144,7 @@ CREATE TABLE IF NOT EXISTS result (
   session_ended DATETIME NOT NULL,
   session_lasted INT NOT NULL,
   is_timeouted TINYINT(1) NOT NULL DEFAULT 0,
+  is_cancelled TINYINT(1) NOT NULL DEFAULT 0,
   lms_id INT UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (result_id),
   INDEX fk_result_scheme_scheme_id_idx (scheme_id ASC),
@@ -1202,15 +1203,15 @@ CREATE TABLE IF NOT EXISTS  result_theme  (
 -- -----------------------------------------------------
 -- Table  result_details
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   result_details  (
-  result_id  INT UNSIGNED NOT NULL,
-  json_data  TEXT NOT NULL,
-  when_remove  DATETIME NOT NULL,
-  PRIMARY KEY ( result_id ),
-  INDEX  fk_result_details_result_result_id_idx  ( result_id  ASC),
-  CONSTRAINT  fk_result_details_result_id
-  FOREIGN KEY ( result_id )
-  REFERENCES   result  ( result_id )
+CREATE TABLE IF NOT EXISTS result_details (
+  detail_id INT UNSIGNED NOT NULL,
+  data TEXT NOT NULL,
+  when_remove DATETIME NOT NULL,
+  PRIMARY KEY (detail_id),
+  INDEX fk_result_details_result_details_id_idx (detail_id ASC),
+  CONSTRAINT fk_result_details_result_details_id
+  FOREIGN KEY (detail_id)
+  REFERENCES result (result_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

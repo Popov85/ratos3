@@ -2,7 +2,7 @@ package ua.edu.ratos.dao.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ua.edu.ratos.dao.entity.grade.SchemeTwoPoint;
+import ua.edu.ratos.dao.entity.grading.SchemeTwoPoint;
 
 public interface SchemeTwoPointRepository extends JpaRepository<SchemeTwoPoint, Long> {
 

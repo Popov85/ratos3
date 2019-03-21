@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import javax.persistence.EntityManager;

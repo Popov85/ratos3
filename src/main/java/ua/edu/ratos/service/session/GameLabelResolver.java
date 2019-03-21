@@ -23,7 +23,7 @@ public class GameLabelResolver {
      */
     public String getLabel(int totalWins) {
         AppProperties.Game props = appProperties.getGame();
-        Map<Integer, String> label = props.getUser_label();
+        Map<Integer, String> label = props.getUserLabel();
         if (label.get(totalWins)!=null) return label.get(totalWins);
         int previousKey = 0;
         for (Integer key : label.keySet()) {

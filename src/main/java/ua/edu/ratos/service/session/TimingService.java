@@ -52,12 +52,15 @@ public class TimingService {
 
     public void control(LocalDateTime sessionTimeout, LocalDateTime batchTimeOut) {
         if (isLimited(sessionTimeout)) {
-            if (isExpired(sessionTimeout.plusSeconds(ADD_SECONDS))) {
-                // session expired
+
+            if (isLimited(sessionTimeout) && isExpired(sessionTimeout.plusSeconds(ADD_SECONDS))) {
+                // session expired, front-end initiates finish request with timeOuted param = true
                 throw new RunOutOfTimeException(true, false);
             }
-            if (isExpired(batchTimeOut.plusSeconds(ADD_SECONDS))) {
-                // batch expired
+            if (isLimited(batchTimeOut) && isExpired(batchTimeOut.plusSeconds(ADD_SECONDS))) {
+                // batch expired, front-end initiates finish request with timeOuted param = true
+                // TODO: instead of throwing exception and finishing the whole session
+                // consider an alternative behaviour: the whole current batch consider incorrect and issue next batch?
                 throw new RunOutOfTimeException(false, true);
             }
         }

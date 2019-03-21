@@ -68,7 +68,7 @@ public class LTIOutcomeService {
         String sourcedId = outcome.get().getSourcedId();
         String outcomeURL = outcome.get().getOutcomeURL();
         String actualOutcomeURL = outcomeURL;
-        if (appProperties.getLti().isLaunch_url_fix()) actualOutcomeURL = fixProtocol(outcomeURL, protocol);
+        if (appProperties.getLti().isLaunchUrlFix()) actualOutcomeURL = fixProtocol(outcomeURL, protocol);
         URI uri = UriComponentsBuilder.fromUriString(actualOutcomeURL).build().toUri();
         // Just to keep things simple, create a value of milliseconds since 1970
         String messageIdentifier = Long.toString(new Date().getTime());

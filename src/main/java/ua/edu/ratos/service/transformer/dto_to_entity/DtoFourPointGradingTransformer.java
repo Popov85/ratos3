@@ -5,8 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Staff;
-import ua.edu.ratos.dao.entity.grade.FourPointGrading;
-import ua.edu.ratos.dao.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.grading.FourPointGrading;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 

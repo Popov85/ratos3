@@ -15,8 +15,14 @@ import java.util.List;
 @Service
 public class PyramidService {
 
-    @Autowired
+    private static final String WRONG_API_USAGE = "Wrong API usage! You invoke pyramid processing for a scheme with disabled pyramid mode!";
+
     private ShiftService shiftService;
+
+    @Autowired
+    public void setShiftService(ShiftService shiftService) {
+        this.shiftService = shiftService;
+    }
 
     /**
      * Process Pyramid mode: move incorrect responses to the end of the list
@@ -25,6 +31,8 @@ public class PyramidService {
      * @param batchEvaluated
      */
     public void process(@NonNull final SessionData sessionData, @NonNull final BatchEvaluated batchEvaluated) {
+        if (!sessionData.getSchemeDomain().getModeDomain().isPyramid())
+            throw new RuntimeException(WRONG_API_USAGE);
         List<Long> incorrect = batchEvaluated.getIncorrectResponseIds();
         if (!incorrect.isEmpty()) shiftService.doShift(incorrect, sessionData);
     }

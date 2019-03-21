@@ -7,6 +7,9 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.PhraseDomain;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 import ua.edu.ratos.service.dto.session.answer.AnswerFBSQSessionOutDto;
+
+import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +17,9 @@ import java.util.Set;
 @Getter
 @ToString
 @Accessors(chain = true)
-public class AnswerFBSQDomain {
+public class AnswerFBSQDomain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long answerId;
 

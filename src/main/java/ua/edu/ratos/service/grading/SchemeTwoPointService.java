@@ -2,8 +2,8 @@ package ua.edu.ratos.service.grading;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.dao.entity.grade.SchemeTwoPoint;
-import ua.edu.ratos.dao.entity.grade.TwoPointGrading;
+import ua.edu.ratos.dao.entity.grading.SchemeTwoPoint;
+import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
 import ua.edu.ratos.dao.repository.SchemeTwoPointRepository;
 import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.TwoPointGradingDtoTransformer;

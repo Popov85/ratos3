@@ -8,8 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.repository.GroupSchemeRepository;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
@@ -173,7 +174,7 @@ public class SchemeService {
             gradingManagerService.remove(schemeId, oldGradingId);
         } else {
             // Scheme questionType didn't change, but specific settings could have been changed,
-            // {ID=4 -> ID=5}, savePoints plays like UPDATE
+            // {ID=4 -> ID=5}, doGameProcessing plays like UPDATE
             gradingManagerService.save(schemeId, oldGradingId, gradDetailsId);
         }
         scheme.setGrading(em.getReference(Grading.class, gradId));
@@ -249,6 +250,7 @@ public class SchemeService {
 
     //-------------------------------------------------One (for session)------------------------------------------------
 
+    @TrackTime
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
         return schemeRepository.findForSessionById(schemeId);

@@ -29,7 +29,13 @@ public class ThemeGenerator {
     public List<Theme> generate(int quantity, List<Course> list) {
         List<Theme> result = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
-            Course course = list.get(rnd.rnd(0, list.size() - 1));
+            int index;
+            if (list.size()==1) {
+                index = 0;
+            } else {
+                index = rnd.rnd(0, list.size() - 1);
+            }
+            Course course = list.get(index);
             Theme theme = createOne(i, course);
             result.add(theme);
         }

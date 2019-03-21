@@ -40,7 +40,7 @@ public class EvaluatingService {
             throw new IllegalArgumentException(EMPTY_BATCH_OUT_EXCEPTION);
         // job to evaluate
         final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
-        // select ids with incorrect responses
+        // Find (if any) add IDs of questions of this batch with incorrect responses
         List<Long> incorrectResponseIds = getIncorrectResponseIds(responseEvaluated);
         return batchEvaluatedBuilderService.build(responseEvaluated, incorrectResponseIds, sessionData);
     }

@@ -8,7 +8,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
-import ua.edu.ratos.dao.entity.grade.Grading;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

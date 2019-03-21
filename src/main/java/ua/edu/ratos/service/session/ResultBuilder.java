@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.service.domain.*;
@@ -16,13 +17,14 @@ import ua.edu.ratos.service.transformer.entity_to_domain.UserDomainTransformer;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Getter
 public class ResultBuilder {
+
+    private AppProperties appProperties;
 
     private GradingService gradingService;
 
@@ -33,6 +35,11 @@ public class ResultBuilder {
     private UserRepository userRepository;
 
     private UserDomainTransformer userDomainTransformer;
+
+    @Autowired
+    public void setAppProperties(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     @Autowired
     public void setGradingService(GradingService gradingService) {
@@ -66,7 +73,7 @@ public class ResultBuilder {
      * @return result domain object
      */
     @Transactional
-    public ResultDomain build(@NonNull final SessionData sessionData, boolean timeOuted) {
+    public ResultDomain build(@NonNull final SessionData sessionData, boolean timeOuted, boolean cancelled) {
         // 1. Calculate percent
         final double percent = progressDataService.getCurrentScore(sessionData);
 
@@ -75,33 +82,42 @@ public class ResultBuilder {
         final GradingDomain gradingDomain = schemeDomain.getGradingDomain();
         final GradedResult gradedResult = gradingService.grade(schemeDomain.getSchemeId(), gradingDomain, percent);
 
-        // 3. Gamification points
+        // 3. User info
         Long userId = sessionData.getUserId();
-        Long schemeId = sessionData.getSchemeDomain().getSchemeId();
-        Optional<Integer> points = gameService.checkAndGetPoints(userId, schemeId, percent);
-
-        // 4. User info
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new EntityNotFoundException("User not found!"));
         UserDomain userDomain = userDomainTransformer.toDomain(user);
 
-        // 5. Additional params
+        // 4. Additional params
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         List<ResponseEvaluated> responsesEvaluated = progressDataService.toResponseEvaluated(sessionData);
 
-        return new ResultDomain()
+        ResultDomain result = new ResultDomain()
                 .setUser(userDomain)
                 .setScheme(schemeDomain)
                 .setPercent(percent)
                 .setPassed(gradedResult.isPassed())
                 .setGrade(gradedResult.getGrade())
                 .setTimeOuted(timeOuted)
+                .setCancelled(cancelled)
                 .setTimeSpent(sessionData.getProgressData().getTimeSpent())
                 .setThemeResults(getResultPerTheme(questionsMap, responsesEvaluated))
                 .setQuestionsMap(questionsMap)
                 .setResponsesEvaluated(responsesEvaluated)
-                .setLmsId(sessionData.getLMSId().get())
-                .setPoints(points.get());
+                .setLmsId(sessionData.getLMSId().orElse(null));
+
+        // Gamification points (if any) according to the settings.
+        // It is needed for end-user after session results inside DTO object
+        // without actually waiting for completion of full long DB operations.
+        if (gameService.isGameOn()) {
+            AppProperties.Game gameProps = appProperties.getGame();
+            if ((!cancelled && !timeOuted)
+                    || (cancelled && gameProps.isProcessCancelledResults())
+                    || (timeOuted && gameProps.isProcessTimeoutedResults())) {
+                result.setPoints(gameService.getPoints(sessionData, percent).get());
+            }
+        }
+        return result;
     }
 
 

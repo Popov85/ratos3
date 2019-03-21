@@ -8,12 +8,15 @@ import lombok.Getter;
 import lombok.ToString;
 import ua.edu.ratos.service.session.Evaluator;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @ToString
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
-public class ResponseFBSQ implements Response {
+public class ResponseFBSQ implements Response, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long questionId;
     private final String enteredPhrase;

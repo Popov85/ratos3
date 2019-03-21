@@ -22,7 +22,49 @@
         </encoder>
     </appender>
 
-    <springProfile name="dev, h2, mysql, demo">
+    <springProfile name="h2, mysql">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.jdbc" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework.session" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.web" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.security" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+
+    <springProfile name="dev, demo">
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
@@ -37,12 +79,15 @@
         <logger name="org.springframework.jdbc" additivity="false" level="INFO">
             <appender-ref ref="CONSOLE"/>
         </logger>
-
-        <logger name="org.springframework.web" additivity="false" level="INFO">
+        <logger name="org.springframework.session" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.springframework.security" additivity="false" level="DEBUG">
+        <logger name="org.springframework.web" additivity="false" level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.security" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -54,11 +99,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.stat" additivity="false" level="DEBUG">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-
-        <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
+        <logger name="org.hibernate.SQL" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -66,7 +107,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
@@ -77,6 +118,7 @@
             <appender-ref ref="FILE"/>
         </root>
         <logger name="ua.edu.ratos" additivity="false" level="INFO">
+            <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
         </logger>
         <logger name="org.springframework" additivity="false" level="WARN">

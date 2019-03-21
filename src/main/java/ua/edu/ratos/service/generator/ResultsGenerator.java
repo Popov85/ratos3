@@ -43,6 +43,7 @@ public class ResultsGenerator {
         result.setPercent(rnd.rnd(80, 100));
         result.setSessionEnded(LocalDateTime.now().minusMinutes(rnd.rnd(1000, 10000)));
         result.setTimeOuted(false);
+        result.setCancelled(false);
         result.setSessionLasted(rnd.rnd(100, 1500));
         return result;
     }

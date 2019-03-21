@@ -3,6 +3,7 @@ package ua.edu.ratos.service.domain;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
@@ -11,7 +12,9 @@ import java.util.Objects;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ThemeDomain {
+public class ThemeDomain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long themeId;
 

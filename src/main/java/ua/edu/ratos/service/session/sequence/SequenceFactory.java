@@ -32,6 +32,5 @@ public class SequenceFactory {
         final SequenceProducer sequenceProducer = this.sequenceProducerMap.get(name);
         if(sequenceProducer == null) throw new RuntimeException("Unknown strategy type: " + name);
         return sequenceProducer;
-
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.SchemeTheme;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
-import ua.edu.ratos.service.domain.question.QuestionDomain;
+import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +18,7 @@ import java.util.Set;
 @Service
 public class SequenceProducerRandomImpl implements SequenceProducer{
 
-    private SequenceMapper sequenceMapper;
-
     private CollectionShuffler collectionShuffler;
-
-    @Autowired
-    public void setSequenceMapper(SequenceMapper sequenceMapper) {
-        this.sequenceMapper = sequenceMapper;
-    }
 
     @Autowired
     public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
@@ -33,12 +26,12 @@ public class SequenceProducerRandomImpl implements SequenceProducer{
     }
 
     @Override
-    public List<QuestionDomain> getSequence(List<SchemeTheme> schemeThemes) {
-        List<QuestionDomain> result = new ArrayList<>();
+    public List<Question> getSequence(List<SchemeTheme> schemeThemes, SequenceMapper sequenceMapper) {
+        List<Question> result = new ArrayList<>();
         for (SchemeTheme schemeTheme : schemeThemes) {
             final Long themeId = schemeTheme.getTheme().getThemeId();
             final Set<SchemeThemeSettings> settings = schemeTheme.getSettings();
-            final List<QuestionDomain> themeResult = sequenceMapper.getList(themeId, settings);
+            final List<Question> themeResult = sequenceMapper.getNOutOfM(themeId, settings);
             result.addAll(themeResult);
         }
         // Shuffle all scheme's questions

@@ -4,6 +4,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.domain.question.*;
@@ -34,6 +36,22 @@ public class QuestionDomainTransformer {
     @Autowired
     public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
         this.resourceDomainTransformer = resourceDomainTransformer;
+    }
+
+    // Here opened earlier transaction comes into play
+    @Transactional(propagation = Propagation.MANDATORY)
+    public QuestionDomain toDomain(@NonNull final Question entity) {
+        if (entity.getType().getTypeId().equals(1L)) {
+            return toDomain((QuestionMCQ) entity);
+        } else if (entity.getType().getTypeId().equals(2L)) {
+            return toDomain((QuestionFBSQ) entity);
+        } else if (entity.getType().getTypeId().equals(3L)) {
+            return toDomain((QuestionFBMQ) entity);
+        } else if (entity.getType().getTypeId().equals(4L)) {
+            return toDomain((QuestionMQ) entity);
+        } else if (entity.getType().getTypeId().equals(5L)) {
+            return toDomain((QuestionSQ) entity);
+        } else throw new RuntimeException("Failed to transform Question to QuestionDomain");
     }
 
     public QuestionFBMQDomain toDomain(@NonNull final QuestionFBMQ entity) {
@@ -75,7 +93,6 @@ public class QuestionDomainTransformer {
         return domain;
     }
 
-
     private void mapDomain(Question entity, QuestionDomain domain) {
         domain.setQuestionId(entity.getQuestionId());
         domain.setQuestion(entity.getQuestion());
@@ -102,5 +119,4 @@ public class QuestionDomainTransformer {
         }
         domain.setPartialResponseAllowed(entity.isPartialResponseAllowed());
     }
-    
 }

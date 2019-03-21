@@ -29,7 +29,13 @@ public class CourseGenerator {
     public List<Course> generate(int quantity, List<Department> list) {
         List<Course> result = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
-            Department dep = list.get(rnd.rnd(0, list.size() - 1));
+            int index;
+            if (list.size()==1) {
+                index = 0;
+            } else {
+                index = rnd.rnd(0, list.size() - 1);
+            }
+            Department dep = list.get(index);
             Course course = createOne(i, dep);
             result.add(course);
         }

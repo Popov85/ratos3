@@ -35,6 +35,8 @@ public class ResultOfStudentForStaffOutDto {
 
     private boolean timeOuted;
 
+    private boolean cancelled;
+
     private boolean isLMS;
 
 }

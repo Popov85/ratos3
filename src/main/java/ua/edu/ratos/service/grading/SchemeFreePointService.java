@@ -2,8 +2,8 @@ package ua.edu.ratos.service.grading;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.dao.entity.grade.FreePointGrading;
-import ua.edu.ratos.dao.entity.grade.SchemeFreePoint;
+import ua.edu.ratos.dao.entity.grading.FreePointGrading;
+import ua.edu.ratos.dao.entity.grading.SchemeFreePoint;
 import ua.edu.ratos.dao.repository.SchemeFreePointRepository;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer;

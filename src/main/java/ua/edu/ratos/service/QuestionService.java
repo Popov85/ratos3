@@ -8,15 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.entity.question.Question;
-import ua.edu.ratos.dao.entity.question.QuestionFBMQ;
-import ua.edu.ratos.dao.entity.question.QuestionFBSQ;
-import ua.edu.ratos.dao.entity.question.QuestionMCQ;
-import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.repository.*;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.domain.question.*;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
@@ -24,7 +18,6 @@ import ua.edu.ratos.service.transformer.entity_to_domain.QuestionDomainTransform
 import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -113,37 +106,6 @@ public class QuestionService {
     public void deleteById(@NonNull final Long questionId) {
         questionRepository.findById(questionId).orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId))
                 .setDeleted(true);
-    }
-
-    //-----------------------------------------------STUDENT session cache----------------------------------------------
-
-    @Transactional(readOnly = true)
-    public Set<QuestionDomain> findAllByThemeId(@NonNull final Long themeId) {
-        Set<QuestionDomain> questionDomains = new HashSet<>();
-        // First, find all existing types (answerIds) in this theme
-        questionRepository.findTypes(themeId).forEach(typeId-> questionDomains.addAll(findAllByThemeIdAndTypeId(themeId, typeId)));
-        return questionDomains;
-    }
-
-    @Transactional(readOnly = true)
-    public Set<? extends QuestionDomain> findAllByThemeIdAndTypeId(@NonNull final Long themeId, @NonNull final Long typeId) {
-        if (typeId==1) {
-            Set<QuestionMCQ> set = questionRepository.findAllMCQWithEverythingByThemeId(themeId);
-            return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
-        }else if (typeId==2) {
-            Set<QuestionFBSQ> set = questionRepository.findAllFBSQWithEverythingByThemeId(themeId);
-            return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
-        }  else if (typeId==3) {
-            Set<QuestionFBMQ> set = questionRepository.findAllFBMQWithEverythingByThemeId(themeId);
-            return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
-        } else if (typeId==4) {
-            Set<QuestionMQ> set = questionRepository.findAllMQWithEverythingByThemeId(themeId);
-            return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
-        } else if (typeId==5) {
-            Set<QuestionSQ> set = questionRepository.findAllSQWithEverythingByThemeId(themeId);
-            return set.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toSet());
-        }
-        throw new RuntimeException("Unsupported questionType");
     }
 
     //----------------------------------------------------One for edit--------------------------------------------------

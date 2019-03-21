@@ -2,13 +2,16 @@ package ua.edu.ratos.service.dto.session.batch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.service.domain.ModeDomain;
 import ua.edu.ratos.service.domain.PreviousBatchResult;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
+import ua.edu.ratos.service.session.deserializer.BatchOutDtoDeserializer;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +21,18 @@ import java.util.stream.Collectors;
 @Getter
 @ToString(exclude = "batchMap")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BatchOutDto {
-    private static final String BUILD_ERROR = "Failed to toDto BatchOutDto: wrong object state";
-    private static final String TIMEOUT_ERROR = "Failed to toDto BatchOutDto: no time left for the next batch";
+@JsonDeserialize(using = BatchOutDtoDeserializer.class)
+public class BatchOutDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final String BUILD_ERROR = "Failed to create BatchOutDto: wrong object state";
+    private static final String TIMEOUT_ERROR = "Failed to create BatchOutDto: no time left for the next batch";
 
     private final List<QuestionSessionOutDto> batch;
 
-    @JsonIgnore//For look-up purposes (exceptionally), if there are multiple questions in batch, remains in SessionData
+    @JsonIgnore//For look-up purposes (exceptionally),
+    // if there are multiple questions in batch, remains in SessionData
     private final Map<Long, QuestionSessionOutDto> batchMap;
 
     private final ModeDomain modeDomain;
@@ -43,8 +51,8 @@ public class BatchOutDto {
     @Setter
     private PreviousBatchResult previousBatchResult;
 
-    private BatchOutDto(@NonNull final List<QuestionSessionOutDto> batch, @NonNull final Map<Long, QuestionSessionOutDto> batchMap, @NonNull final ModeDomain modeDomain,
-                        long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft) {
+    private BatchOutDto(final List<QuestionSessionOutDto> batch, final Map<Long, QuestionSessionOutDto> batchMap, final ModeDomain modeDomain,
+                        long timeLeft, int questionsLeft, long batchTimeLimit, int batchesLeft, PreviousBatchResult previousBatchResult) {
         this.batch = batch;
         this.modeDomain = modeDomain;
         this.timeLeft = timeLeft;
@@ -52,21 +60,12 @@ public class BatchOutDto {
         this.batchTimeLimit = batchTimeLimit;
         this.batchesLeft = batchesLeft;
         this.batchMap = batchMap;
-    }
-
-    public static BatchOutDto buildEmpty() {
-        return new BatchOutDto.Builder()
-                .withNoQuestions()
-                .inMode(null)
-                .withTimeLeft(-1)
-                .withQuestionsLeft(0)
-                .withBatchTimeLimit(-1)
-                .withBatchesLeft(0)
-                .build();
+        this.previousBatchResult = previousBatchResult;
     }
 
     public static class Builder {
         private List<QuestionSessionOutDto> batch;
+        private PreviousBatchResult previousBatchResult;
         private Map<Long, QuestionSessionOutDto> batchMap;
         private ModeDomain modeDomain;
         private long timeLeft;
@@ -75,7 +74,7 @@ public class BatchOutDto {
         private int batchesLeft;
 
         /**
-         * Current batch of totalByType
+         * Current batch of questions
          */
         public Builder withQuestions(List<QuestionSessionOutDto> questions) {
             this.batch = questions;
@@ -84,7 +83,7 @@ public class BatchOutDto {
         }
 
         /**
-         * Use it when no more totalByType left
+         * Use it when no more questions left
          * @return empty batch
          */
         public Builder withNoQuestions() {
@@ -135,16 +134,41 @@ public class BatchOutDto {
             return this;
         }
 
+        public Builder withPreviousBatchResult(PreviousBatchResult previousBatchResult) {
+            this.previousBatchResult = previousBatchResult;
+            return this;
+        }
+
         public BatchOutDto build() {
-            if (batch== null || batch.isEmpty()) throw new IllegalStateException(BUILD_ERROR);
-            if (batchMap == null || batchMap.isEmpty()) throw new IllegalStateException(BUILD_ERROR);
-            if (modeDomain == null) throw new IllegalStateException(BUILD_ERROR);
+            if (batch== null || batch.isEmpty()) throw new IllegalStateException(BUILD_ERROR+1);
+            if (batchMap == null || batchMap.isEmpty()) throw new IllegalStateException(BUILD_ERROR+2);
+            if (modeDomain == null) throw new IllegalStateException(BUILD_ERROR+3);
             if (timeLeft>0 && batchTimeControl>0 && timeLeft<batchTimeControl)
                 throw new IllegalStateException(TIMEOUT_ERROR);
-            if (questionsLeft<0) throw new IllegalStateException(BUILD_ERROR);
-            if (batchesLeft<0) throw new IllegalStateException(BUILD_ERROR);
-            return new BatchOutDto(batch, batchMap, modeDomain, timeLeft, questionsLeft, batchTimeControl, batchesLeft);
+            if (questionsLeft<0) throw new IllegalStateException(BUILD_ERROR+4);
+            if (batchesLeft<0) throw new IllegalStateException(BUILD_ERROR+5);
+            return new BatchOutDto(batch, batchMap, modeDomain, timeLeft, questionsLeft, batchTimeControl, batchesLeft, previousBatchResult);
         }
+
+        public BatchOutDto buildEmpty() {
+            return new BatchOutDto(batch, batchMap, modeDomain, timeLeft, questionsLeft, batchTimeControl, batchesLeft, previousBatchResult);
+        }
+    }
+
+    /**
+     * For dynamic types of sessions, when no more questions are left,
+     * in order to notify the front-end script to launch finish request.
+     * @return batch with empty questions list
+     */
+    public static BatchOutDto buildEmpty() {
+        return new BatchOutDto.Builder()
+                .withNoQuestions()
+                .inMode(null)
+                .withTimeLeft(-1)
+                .withQuestionsLeft(0)
+                .withBatchTimeLimit(-1)
+                .withBatchesLeft(0)
+                .buildEmpty();
     }
 
     public boolean isEmpty() {

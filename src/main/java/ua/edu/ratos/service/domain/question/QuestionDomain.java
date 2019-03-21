@@ -11,6 +11,8 @@ import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,7 +27,9 @@ import java.util.Set;
 @ToString(callSuper = true, exclude = {"themeDomain", "helpDomain", "resourceDomains"})
 @Accessors(chain = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
-public abstract class QuestionDomain {
+public abstract class QuestionDomain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected Long questionId;
 

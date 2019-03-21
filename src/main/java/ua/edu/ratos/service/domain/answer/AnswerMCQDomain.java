@@ -8,6 +8,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.dto.session.answer.AnswerMCQSessionOutDto;
+
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,7 +17,9 @@ import java.util.Optional;
 @Getter
 @ToString
 @Accessors(chain = true)
-public class AnswerMCQDomain {
+public class AnswerMCQDomain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long answerId;
 

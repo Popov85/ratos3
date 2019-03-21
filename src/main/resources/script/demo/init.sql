@@ -29,6 +29,10 @@ insert into user (name, surname, password, email, is_active) values('Student','S
 insert into user_role(user_id, role_id) VALUES (2, 2);
 insert into student(stud_id, class_id, fac_id, org_id, entrance_year) values(2, 1, 1,1, 2018);
 
+insert into user (name, surname, password, email, is_active) values('Student2','Student2','{bcrypt}$2a$10$e.MY/qnalhvaoqI5QczLSuahfGbmthqd0QJh2NJ/38nB7LOZCW7d.','student2@example.com', 1);
+insert into user_role(user_id, role_id) VALUES (3, 2);
+insert into student(stud_id, class_id, fac_id, org_id, entrance_year) values(3, 1, 1,1, 2018);
+
 insert into language (name, eng_abbreviation) values('English', 'en');
 insert into language (name, eng_abbreviation) values('français', 'fr');
 insert into language (name, eng_abbreviation) values('Deutsch', 'de');

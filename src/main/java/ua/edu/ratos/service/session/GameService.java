@@ -19,7 +19,7 @@ import ua.edu.ratos.dao.entity.game.Wins;
 import ua.edu.ratos.dao.repository.ResultRepository;
 import ua.edu.ratos.dao.repository.game.*;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.domain.ResultDomain;
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.out.game.*;
 import ua.edu.ratos.service.transformer.entity_to_dto.*;
 import javax.persistence.EntityManager;
@@ -120,96 +120,119 @@ public class GameService {
         this.securityUtils = securityUtils;
     }
 
+    /**
+     * Allows to quickly decide if a user has gained any gamification points for this session.
+     * It involves minimum or no DB operations. This information needs to be included into result DTO,
+     * without waiting for long asynchronous DB operations completion.
+     * @param sessionData
+     * @param percent
+     * @return gamification points if any
+     */
     @Transactional
-    public Optional<Integer> checkAndGetPoints(@NonNull final Long userId, @NonNull final Long schemeId, double percent) {
-        if (!isGameOn()) return Optional.of(null);
-        if (!isEnoughPercents(percent)) return Optional.of(0);
-        if (!isFromFirstAttempt(userId, schemeId)) return Optional.of(0);
-        // ok, calculate points
-        AppProperties.Game props = appProperties.getGame();
-        if (percent >= props.getLow_boundary_from() && percent < props.getLow_boundary_to())
-            return Optional.of(props.getLow_boundary_points());
-        if (percent >= props.getMiddle_boundary_from() && percent < props.getMiddle_boundary_to())
-            return Optional.of(props.getMiddle_boundary_points());
-        if (percent >= props.getHigh_boundary_from() && percent <= props.getHigh_boundary_to())
-            return Optional.of(props.getHigh_boundary_points());
-        throw new RuntimeException("Bad percent, cannot decide gamification points");
+    public Optional<Integer> getPoints(@NonNull final SessionData sessionData, double percent) {
+        Long userId = sessionData.getUserId();
+        Long schemeId = sessionData.getSchemeDomain().getSchemeId();
+        if (!isGameOn()) return Optional.ofNullable(null);
+        if (sessionData.isGameableSession() && isEnoughPercents(percent) && isFromFirstAttempt(userId, schemeId)) {
+            return Optional.of(getPoints(percent));
+        }
+        return Optional.ofNullable(0);
     }
 
-    private boolean isGameOn() {
-        AppProperties.Game props = appProperties.getGame();
-        if (!props.isGame_on()) {
-            log.debug("Gamification mode is turned off");
-            return false;
+    /**
+     * If game mode is turned off - the method throws RuntimeException.
+     * If for gameable session you score less percents then low threshold - you lose strike.
+     * if for gameable session you score enough percents and did it from the first attempt
+     * you are granted a corresponding amount of scores depending on gaming settings.
+     * Only Week table is updated if you failed to score any points, timeSpent field.
+     * Both Week and Game tables are updated in case you are granted any points.
+     * A new entry is added to Bonus table if you are gained strike and granted a bonus.
+     * @param sessionData session data
+     * @param percent the scored percent
+     * @param timeSpent time spend for this learning session
+     */
+    @Transactional
+    public void doGameProcessing(@NonNull final SessionData sessionData, double percent, long timeSpent) {
+        if (!isGameOn()) throw new RuntimeException("Failed to process gamification points, gaming mode is off");
+        Long userId = sessionData.getUserId();
+        // Lose strike for any gameable session if failed to score enough percents
+        if (sessionData.isGameableSession() && !isEnoughPercents(percent)) {
+            resetWeeklyStrike(userId);
+            createOrUpdateWeeklyTimeSpent(userId, timeSpent);
+            return;
         }
-        return true;
+        Long schemeId = sessionData.getSchemeDomain().getSchemeId();
+        // from first attempt
+        if (sessionData.isGameableSession() && isEnoughPercents(percent) && isFromFirstAttempt(userId, schemeId)) {
+            Integer points = getPoints(percent);
+            Optional<Week> week = weekRepository.findById(userId);
+            if (!week.isPresent()) {
+                Week w = new Week();
+                w.setWeekPoints(points);
+                w.setWeekStrike(1);
+                w.setWeekTimeSpent(timeSpent);
+                w.setStud(em.getReference(Student.class, userId));
+                weekRepository.save(w);
+                createOrUpdateGamePoints(userId, points);
+            } else {
+                // update week
+                Week w = week.get();
+                int weekPoints = w.getWeekPoints();
+                int weekStrike = w.getWeekStrike();
+                int weekBonuses = w.getWeekBonuses();
+                long weekTimeSpent = w.getWeekTimeSpent();
+                // check for weekly strike
+                AppProperties.Game props = appProperties.getGame();
+                if (weekStrike >= props.getBonusStrike()-1) {
+                    int bonus = props.getBonusSize();
+                    // update/create game bonus, add bonus entry
+                    createOrUpdateGameBonuses(userId, bonus);
+                    saveBonus(userId, bonus);
+                    // reset counter
+                    w.setWeekBonuses(weekBonuses + bonus);
+                    w.setWeekStrike(0);
+                } else {
+                    w.setWeekStrike(++weekStrike);
+                }
+                w.setWeekPoints(weekPoints+points);
+                w.setWeekTimeSpent(weekTimeSpent+timeSpent);
+                createOrUpdateGamePoints(userId, points);
+            }
+        }
+    }
+
+    public boolean isGameOn() {
+        AppProperties.Game props = appProperties.getGame();
+        if (props.isGameOn()) return true;
+        log.debug("Gamification mode is turned off");
+        return false;
     }
 
     private boolean isEnoughPercents(double percent) {
         AppProperties.Game props = appProperties.getGame();
-        if (percent < props.getLow_boundary_from()) {
-            log.debug("Not enough percents = {}", percent);
-            return false;
-        }
-        return true;
+        if (percent >= props.getLowBoundaryFrom()) return true;
+        log.debug("Not enough percents = {}", percent);
+        return false;
     }
 
     private boolean isFromFirstAttempt(@NonNull final Long userId, @NonNull final Long schemeId) {
         // if user has already taken this scheme previously - no points can be granted!
         Slice<Result> results = resultRepository.findFirstByUserIdAndSchemeId(userId, schemeId, PageRequest.of(0, 1));
-        if (results.hasContent()) {
-            log.debug("Not from the first attempt, userId = {}, schemeId = {}", userId, schemeId);
-            return false;
-        }
-        return true;
+        if (!results.hasContent()) return true;
+        log.debug("Not from the first attempt, userId = {}, schemeId = {}", userId, schemeId);
+        return false;
     }
 
-
-    @Transactional
-    public void savePoints(@NonNull final ResultDomain resultDomain) {
-        Long userId = resultDomain.getUser().getUserId();
-        if (!isGameOn()) return;
-        if (!resultDomain.hasPoints()) {
-            resetWeeklyStrike(userId);
-            return;
-        }
-        Integer points = resultDomain.getPoints().get();
-        long timeSpent = resultDomain.getTimeSpent();
-
-        Optional<Week> week = weekRepository.findById(userId);
-
-        if (!week.isPresent()) {
-            Week w = new Week();
-            w.setWeekPoints(points);
-            w.setWeekStrike(1);
-            w.setWeekTimeSpent(timeSpent);
-            w.setStud(em.getReference(Student.class, userId));
-            weekRepository.save(w);
-            createOrUpdateGamePoints(userId, points);
-        } else {
-            // update week
-            Week w = week.get();
-            int weekPoints = w.getWeekPoints();
-            int weekStrike = w.getWeekStrike();
-            int weekBonuses = w.getWeekBonuses();
-            long weekTimeSpent = w.getWeekTimeSpent();
-            // check for weekly strike
-            if (weekStrike>=2) {
-                AppProperties.Game props = appProperties.getGame();
-                int bonus = props.getBonus_size();
-                // update/create game bonus, add bonus entry
-                createOrUpdateGameBonuses(userId, bonus);
-                createBonus(userId, bonus);
-                // reset counter
-                w.setWeekBonuses(weekBonuses + bonus);
-                w.setWeekStrike(0);
-            } else {
-                w.setWeekStrike(++weekStrike);
-            }
-            w.setWeekPoints(weekPoints+points);
-            w.setWeekTimeSpent(weekTimeSpent+timeSpent);
-            createOrUpdateGamePoints(userId, points);
-        }
+    private int getPoints(double percent) {
+        AppProperties.Game props = appProperties.getGame();
+        if (percent >= props.getLowBoundaryFrom() && percent < props.getLowBoundaryTo())
+            return props.getLowBoundaryPoints();
+        if (percent >= props.getMiddleBoundaryFrom() && percent < props.getMiddleBoundaryTo())
+            return props.getMiddleBoundaryPoints();
+        if (percent >= props.getHighBoundaryFrom() && percent <= props.getHighBoundaryTo())
+            return props.getHighBoundaryPoints();
+        log.error("Bad percent, cannot decide gamification points for percent = {}. Fallback to 0 points", percent);
+        return 0;
     }
 
     private void resetWeeklyStrike(@NonNull final Long userId) {
@@ -217,6 +240,20 @@ public class GameService {
         if (week.isPresent()) {
             Week w = week.get();
             w.setWeekStrike(0);
+        }
+    }
+
+    private void createOrUpdateWeeklyTimeSpent(@NonNull final Long userId, long timeSpent) {
+        Optional<Week> week = weekRepository.findById(userId);
+        if (!week.isPresent()) {
+            Week w = new Week();
+            w.setWeekTimeSpent(timeSpent);
+            w.setStud(em.getReference(Student.class, userId));
+            weekRepository.save(w);
+        } else {
+            Week w = week.get();
+            long weekTimeSpent = w.getWeekTimeSpent();
+            w.setWeekTimeSpent(weekTimeSpent + timeSpent);
         }
     }
 
@@ -248,7 +285,7 @@ public class GameService {
         }
     }
 
-    public void createBonus(@NonNull final Long userId, @NonNull final Integer bonus) {
+    private void saveBonus(@NonNull final Long userId, @NonNull final Integer bonus) {
         Bonus b = new Bonus();
         b.setBonus(bonus);
         b.setStudent(em.getReference(Student.class, userId));
@@ -266,7 +303,7 @@ public class GameService {
     @Transactional
     public void calculateAndSaveWeeklyWinners() {
         AppProperties.Game props = appProperties.getGame();
-        int topWeeklyPercentage = props.getTop_weekly();
+        int topWeeklyPercentage = props.getTopWeekly();
         // Get all entries from week table;
         List<Week> all = weekRepository.findAll();
         if (all.isEmpty()) {

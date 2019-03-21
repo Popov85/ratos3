@@ -8,7 +8,7 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"themeResults", "questionsMap", "responsesEvaluated"})
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +35,8 @@ public class ResultDomain {
     private double grade;
 
     private boolean timeOuted;
+
+    private boolean cancelled;
 
     private long timeSpent;
 
@@ -65,7 +67,12 @@ public class ResultDomain {
         return Optional.ofNullable(points);
     }
 
+    /**
+     * Decide if user was smart enough to gain any non-zero points for this learning session
+     * @see ua.edu.ratos.service.ResultService#save(ResultDomain result)
+     * @return true, for this result a user was awarded non-zero points, false otherwise
+     */
     public boolean hasPoints() {
-        return (getPoints().isPresent() && getPoints().get() !=0);
+        return (getPoints().isPresent() && getPoints().get() > 0);
     }
 }

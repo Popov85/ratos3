@@ -10,6 +10,8 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.utils.CollectionShuffler;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +22,9 @@ import java.util.Set;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
-public abstract class QuestionSessionOutDto {
+public abstract class QuestionSessionOutDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected Long questionId;
 

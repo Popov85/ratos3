@@ -10,11 +10,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import ua.edu.ratos.config.properties.AppProperties;
+
 import java.util.Date;
 
 /**
- * This is a web-based educational system for knowledge control embeddable to LMS (Learning Management Systems) named
- * e-RATOS (Embeddable Remote Automatised Teaching and Learning System); <br/>
+ * This is a web-based educational system for training and knowledge control, embeddable to LMS (Learning Management Systems)
+ * called e-RATOS (Embeddable Remote Automatised Teaching and Learning System); <br/>
  * <b>Features:</b>
  * <ul>
  * <li>Embeddable tool provider via LTI 1.x;</li>
@@ -29,7 +31,7 @@ import java.util.Date;
  * @author Andrey P.
  */
 @Slf4j
-@SpringBootApplication()
+@SpringBootApplication
 public class RatosApplication {
 
 	private final JdbcTemplate jdbc;
@@ -42,11 +44,14 @@ public class RatosApplication {
 	@Value("${spring.profiles.active}")
 	private String profile;
 
-	@Value("${ratos.init}")
+	@Value("${ratos.init.re_init}")
 	private boolean init;
 
-	@Value("${ratos.init_locale}")
+	@Value("${ratos.init.locale}")
 	private String locale;
+
+	/*@Autowired
+	private SessionSuite sessionSuite;*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(RatosApplication.class, args);
@@ -62,7 +67,7 @@ public class RatosApplication {
 				ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
 						new ClassPathResource("script/demo/init.sql"));
 			}
-			log.info("Data initialized for H2 demo profile, see /h2-console endpoint for info");
+			log.info("Data initialized for H2 in-memory demo profile, see /h2-console endpoint for info");
 		}
 
 		if ("dev".equals(profile))  {
@@ -70,23 +75,29 @@ public class RatosApplication {
 			// Before switching to the profile, make sure the ratos3 DB exists and empty!
 			if (init) {
 				ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
-						new ClassPathResource("script/demo/init.sql"));
+						new ClassPathResource("script/prod/clear.sql"));
+				ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
+						new ClassPathResource("script/prod/init.sql"));
+				//sessionSuite.generateAvgAndStep();
 				log.info("Data initialized for MySql dev profile");
 			}
 		}
 
-		if ("prod".equals(profile))  {
-			// Before switching to the profile, make sure the ratos3 DB is deployed and empty!
+		// Before switching to the profile, make sure the ratos3 DB is deployed and empty!
+		if ("prod".equals(profile)) {
 			if (init) {
-				String init = "init_en";// fallback locale
-				if ("en".equalsIgnoreCase(locale)) init = "init_en";
-				if ("ru".equalsIgnoreCase(locale)) init = "init_ru";
 				ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
-						new ClassPathResource("script/prod/"+init+".sql"));
+						new ClassPathResource("script/prod/clear.sql"));
+				String init = "init_en";// fallback locale
+				if (AppProperties.Init.Language.EN.equals(locale)) init = "init_en";
+				if (AppProperties.Init.Language.FR.equals(locale)) init = "init_fr";
+				if (AppProperties.Init.Language.RU.equals(locale)) init = "init_ru";
+				ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(),
+						new ClassPathResource("script/prod/" + init + ".sql"));
 				log.info("Production data initialized for MySql prod profile");
 			}
 		}
-
-		log.info("Launched ratos app {}, profile = {}, locale = ", new Date(), profile, locale);
+		log.info("Launched ratos app {}, profile = {}, locale = {}", new Date(), profile, locale);
 	}
+
 }

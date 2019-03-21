@@ -20,6 +20,6 @@ public class LTILaunchService {
      * @return URL of LMS-launch request
      */
     public String getLaunchURL(Long schemeId) {
-        return appProperties.getLti().getLaunch_url()+"?schemeId="+schemeId;
+        return appProperties.getLti().getLaunchUrl()+"?schemeId="+schemeId;
     }
 }

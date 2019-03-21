@@ -42,7 +42,7 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-    // Used to cascaded savePoints all answers with a new question
+    // Used to cascaded doGameProcessing all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMCQ toEntity(@NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = modelMapper.map(dto, AnswerMCQ.class);
@@ -76,7 +76,7 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-    // Used to cascaded savePoints all answers with a new question
+    // Used to cascaded doGameProcessing all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerFBMQ toEntity(@NonNull final AnswerFBMQInDto dto) {
         if (dto.getPhrasesIds().isEmpty())
@@ -97,7 +97,7 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-    // Used to cascaded savePoints all answers with a new question
+    // Used to cascaded doGameProcessing all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMQ toEntity(@NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = modelMapper.map(dto, AnswerMQ.class);
@@ -116,7 +116,7 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-    // Used to cascaded savePoints all answers with a new question
+    // Used to cascaded doGameProcessing all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerSQ toEntity(@NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = modelMapper.map(dto, AnswerSQ.class);

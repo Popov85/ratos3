@@ -22,7 +22,7 @@ import javax.persistence.PersistenceContext;
 @Service
 public class UserQuestionStarredService {
 
-    public static final String ENTITY_NOT_FOUND = "Failed to find starred question by ID";
+    private static final String ENTITY_NOT_FOUND = "Failed to find starred question by ID";
 
     @PersistenceContext
     private EntityManager em;

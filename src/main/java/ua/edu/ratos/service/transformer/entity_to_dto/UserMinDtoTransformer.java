@@ -9,10 +9,9 @@ import ua.edu.ratos.service.dto.out.UserMinOutDto;
 public class UserMinDtoTransformer {
 
     public UserMinOutDto toDto(@NonNull final User entity) {
-        UserMinOutDto user = new UserMinOutDto();
-        user.setName(entity.getName());
-        user.setSurname(entity.getSurname());
-        user.setEmail(entity.getEmail());
-        return user;
+        return new UserMinOutDto()
+                .setName(entity.getName())
+                .setSurname(entity.getSurname())
+                .setEmail(entity.getEmail());
     }
 }

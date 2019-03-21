@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.DepartmentMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
+
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 @Getter
@@ -34,6 +36,8 @@ public class ResultOfStudentSelfOutDto {
     private long sessionLasted;
 
     private boolean timeOuted;
+
+    private boolean cancelled;
 
     private boolean isLMS;
 

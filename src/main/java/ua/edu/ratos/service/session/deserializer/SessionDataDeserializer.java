@@ -7,16 +7,17 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -53,7 +54,8 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         if (!currentBatch.isMissingNode()) {
             String currentBatchTimeOut = root.path("currentBatchTimeOut").asText();
             String currentBatchIssued = root.path("currentBatchIssued").asText();
-            sessionData.setCurrentBatch(getCurrentBatch(currentBatch));
+            // uses custom BatchOutDtoDeserializer
+            sessionData.setCurrentBatch(objectMapper.readValue(root.get("currentBatch").toString(), BatchOutDto.class));
             sessionData.setCurrentBatchTimeOut(LocalDateTime.parse(currentBatchTimeOut));
             sessionData.setCurrentBatchIssued(LocalDateTime.parse(currentBatchIssued));
         }
@@ -65,33 +67,6 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         sessionData.setProgressData(progressData);
         sessionData.setMetaData(metaData);
         return sessionData;
-    }
-
-    private BatchOutDto getCurrentBatch(JsonNode node) throws IOException {
-        List<QuestionSessionOutDto> questions = objectMapper.readerFor(new TypeReference<List<QuestionSessionOutDto>>() {})
-                .readValue(node.path("batch"));
-        ModeDomain modeDomain = objectMapper.treeToValue(node.path("modeDomain"), ModeDomain.class);
-        long timeLeft = node.path("timeLeft").asLong();
-        int questionsLeft = node.path("questionsLeft").asInt();
-        long batchTimeLimit = node.path("batchTimeLimit").asLong();
-        int batchesLeft = node.path("batchesLeft").asInt();
-
-        BatchOutDto batchOutDto = new BatchOutDto.Builder()
-                .withQuestions(questions)
-                .inMode(modeDomain)
-                .withTimeLeft(timeLeft)
-                .withQuestionsLeft(questionsLeft)
-                .withBatchTimeLimit(batchTimeLimit)
-                .withBatchesLeft(batchesLeft)
-                .build();
-
-        // add optional previous result with setter
-        JsonNode previousBatchResult = node.path("previousBatchResult");
-        if (!previousBatchResult.isMissingNode()) {
-            PreviousBatchResult pbr = objectMapper.treeToValue(node.path("previousBatchResult"), PreviousBatchResult.class);
-            batchOutDto.setPreviousBatchResult(pbr);
-        }
-        return batchOutDto;
     }
 
 }

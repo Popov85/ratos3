@@ -59,6 +59,8 @@ public class AnswerDomainTransformer {
         return new AnswerMCQDomain()
                 .setAnswerId(entity.getAnswerId())
                 .setAnswer(entity.getAnswer())
+                .setPercent(entity.getPercent())
+                .setRequired(entity.isRequired())
                 .setResourceDomain((entity.getResource().isPresent()) ?
                         resourceDomainTransformer.toDomain(entity.getResource().get()) : null);
     }

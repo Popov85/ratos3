@@ -22,8 +22,8 @@ public class ShiftService {
      * Mutates the state of SessionData
      * Implements the possibility to skip a given question by moving it
      * to the end of the session list
-     * @param idToShift
-     * @param sessionData
+     * @param idToShift single ID to be shifted
+     * @param sessionData session data
      */
     public void doShift(@NonNull final Long idToShift, @NonNull final SessionData sessionData) {
         final List<QuestionDomain> all = sessionData.getQuestionDomains();
@@ -31,12 +31,12 @@ public class ShiftService {
         final QuestionDomain toShift = questionsMap.get(idToShift);
         // 1. Remove the skipped question from the list
         all.remove(toShift);
-        // & addAnswer it to the end
+        // & add it to the end
         all.add(toShift);
         // 2. Update index
         final int currentIndex = sessionData.getCurrentIndex();
         sessionData.setCurrentIndex(currentIndex-1);
-        log.debug("Skipped question with ID :: {}", idToShift);
+        log.debug("Skipped question with ID = {}", idToShift);
     }
 
     /**
@@ -44,8 +44,8 @@ public class ShiftService {
      * Implements Pyramid algorithm: moves the incorrectly answered questions to the end of the questions list
      * And
      * Updates the current index
-     * @param idsToShift
-     * @param sessionData
+     * @param idsToShift list of ID-s to be shifted
+     * @param sessionData session data
      */
     public void doShift(@NonNull final List<Long> idsToShift, @NonNull final SessionData sessionData) {
         final List<QuestionDomain> all = sessionData.getQuestionDomains();
@@ -56,12 +56,12 @@ public class ShiftService {
                 .collect(Collectors.toList());
         // 1. Remove all the shifted questions from the list
         all.removeAll(toShift);
-        // & addAnswer them to the end
+        // & add them to the end
         all.addAll(toShift);
         // 2. Update index
         final int currentIndex = sessionData.getCurrentIndex();
         final int quantity = toShift.size();
         sessionData.setCurrentIndex(currentIndex-quantity);
-        log.debug("Shifted :: {} questions", toShift.size());
+        log.debug("Shifted = {} questions", toShift.size());
     }
 }

@@ -40,7 +40,7 @@ insert into help_resource(help_id, resource_id) values(3, 8);
 insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1', 1, 1, 1, 1);
+insert into question (title, level, type_id, theme_id, lang_id, is_required) values ('Multiple choice question #1', 1, 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2 (eng)', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #3', 1, 1, 1, 1);
 insert into question (title, level, type_id, theme_id, lang_id) values ('MCQ choice question #4', 1, 1, 2, 1);

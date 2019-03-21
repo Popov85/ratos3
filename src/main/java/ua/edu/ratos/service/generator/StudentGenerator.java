@@ -50,7 +50,7 @@ public class StudentGenerator {
         user.setName("name"+i);
         user.setSurname("surname"+i);
         user.setEmail(user.getName()+"."+user.getSurname()+"@example.com");
-        user.setPassword(("name&surname"+i).toCharArray());
+        user.setPassword(("{noop}name&surname"+i).toCharArray());
         user.setActive(true);
         user.setRoles(new HashSet<>(roles));
         stud.setUser(user);

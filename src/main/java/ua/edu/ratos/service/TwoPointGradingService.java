@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.grade.TwoPointGrading;
+import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
 import ua.edu.ratos.dao.repository.TwoPointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.TwoPointGradingInDto;

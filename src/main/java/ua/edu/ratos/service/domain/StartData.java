@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @ToString
@@ -24,5 +26,9 @@ public class StartData {
         this.schemeId = schemeId;
         this.userId = userId;
         this.lmsId = lmsId;
+    }
+
+    public Optional<Long> getLmsId() {
+        return Optional.ofNullable(lmsId);
     }
 }

@@ -13,8 +13,6 @@ public class StaffDtoTransformer {
 
     private DepartmentMinDtoTransformer departmentMinDtoTransformer;
 
-    private RoleDtoTransformer roleDtoTransformer;
-
     private UserDtoTransformer userDtoTransformer;
 
     @Autowired
@@ -25,11 +23,6 @@ public class StaffDtoTransformer {
     @Autowired
     public void setDepartmentMinDtoTransformer(DepartmentMinDtoTransformer departmentMinDtoTransformer) {
         this.departmentMinDtoTransformer = departmentMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setRoleDtoTransformer(RoleDtoTransformer roleDtoTransformer) {
-        this.roleDtoTransformer = roleDtoTransformer;
     }
 
     @Autowired

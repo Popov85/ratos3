@@ -2,7 +2,7 @@ package ua.edu.ratos.service.transformer.entity_to_dto;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.dao.entity.grade.FourPointGrading;
+import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
 
 @Component

@@ -25,8 +25,8 @@ import java.util.Optional;
 @Service
 public class EducationalSessionServiceImpl implements EducationalSessionService {
 
-    private static final String NO_SUCH_QUESTION = "No such questionId found in the current batch";
-    private static final String OPERATION_NOT_ALLOWED = "This operation is not allowed by grading settings";
+    private static final String NO_SUCH_QUESTION = "No such questionId found in the current batch, questionId = ";
+    private static final String OPERATION_NOT_ALLOWED = "This operation is not allowed by session settings";
     private static final String PRESERVED_SESSIONS_LIMIT = "You have reached the limit of preserved sessions";
     private static final String NO_HELP_AVAILABLE = "No help is available for this question";
     private static final String STARRED_QUESTIONS_LIMIT = "You have reached the limit of starred questions, remove some to proceed";
@@ -98,7 +98,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
         if (!modeDomain.isPreservable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
         Long requestingUserId = securityUtils.getAuthStudId();
         long preservedExist = sessionPreservedService.countByUserId(requestingUserId);
-        int preservedLimit = appProperties.getSession().getPreserved_limit();
+        int preservedLimit = appProperties.getSession().getPreservedLimit();
         if (preservedExist >= preservedLimit) throw new UnsupportedOperationException(PRESERVED_SESSIONS_LIMIT);
         return sessionPreservedService.save(sessionData);
     }
@@ -110,7 +110,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     public void star(@NonNull final StarredInDto starred, @NonNull final SessionData sessionData) {
         ModeDomain modeDomain = validateRequest(starred.getQuestionId(), sessionData);
         if (!modeDomain.isStarrable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
-        int starredLimit = appProperties.getSession().getStarred_limit();
+        int starredLimit = appProperties.getSession().getStarredLimit();
         if (userQuestionStarredService.countByUserId()>=starredLimit)  throw new UnsupportedOperationException(STARRED_QUESTIONS_LIMIT);
         userQuestionStarredService.save(starred.getQuestionId(), starred.getStars());
     }
@@ -165,7 +165,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
 
     private ModeDomain validateRequest(@NonNull final Long questionId, @NonNull final SessionData sessionData) {
         QuestionSessionOutDto question = sessionData.getCurrentBatch().get().getBatchMap().get(questionId);
-        if (question==null) throw new IllegalStateException(NO_SUCH_QUESTION);
+        if (question==null) throw new IllegalStateException(NO_SUCH_QUESTION+questionId);
         return sessionData.getSchemeDomain().getModeDomain();
     }
 

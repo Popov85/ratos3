@@ -1,12 +1,9 @@
 package ua.edu.ratos.security;
 
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,17 +25,13 @@ import ua.edu.ratos.security.lti.LTISecurityUtils;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String profile;
-
     private final AuthenticatedUserDetailsService authenticatedUserDetailsService;
 
     private final LTISecurityUtils ltiSecurityUtils;
 
     @Autowired
     public SecurityConfig(final AuthenticatedUserDetailsService authenticatedUserDetailsService,
-                          final LTISecurityUtils ltiSecurityUtils,
-                          @NonNull final @Value("${spring.profiles.active}") String profile) {
-        this.profile = profile;
+                          final LTISecurityUtils ltiSecurityUtils) {
         this.authenticatedUserDetailsService = authenticatedUserDetailsService;
         this.ltiSecurityUtils = ltiSecurityUtils;
     }
@@ -81,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(ltiAwareUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/login*", "/access-denied*").permitAll()
+            .antMatchers("/actuator/**").permitAll()
             .antMatchers("/sign-up/**").hasAnyRole("LTI", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/student/**").hasAnyRole("STUDENT", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/department/**").hasAnyRole("LAB-ASSISTANT","INSTRUCTOR", "DEP-ADMIN", "GLOBAL-ADMIN")
@@ -92,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/lms/**").hasRole("LMS-USER")
                 .and()
                 .formLogin()
+                .and()
+                .httpBasic()
             .and()
                 .headers()
                 .frameOptions().disable()
@@ -102,20 +98,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public UserDetailsService userDetailsServiceBean() {
         return authenticatedUserDetailsService;
-    }
-
-    @Override
-    @SuppressWarnings("SpellCheckingInspection")
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
-        if ("dev".equals(profile)) {
-            auth.inMemoryAuthentication()
-                    .withUser("student").password("{noop}dT09Rx06").roles("LTI", "STUDENT")
-                    .and()
-                    .withUser("instructor").password("{noop}dT09Rx06").roles("INSTRUCTOR")
-                    .and()
-                    .withUser("admin").password("{noop}dT09Rx06").roles("GLOBAL-ADMIN");
-        }
     }
 
     @Override

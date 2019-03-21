@@ -21,9 +21,6 @@ public class ResourceGenerator {
     @Autowired
     private ResourceRepository resourceRepository;
 
-    /*@Autowired
-    private Rnd rnd;*/
-
     @TrackTime
     @Transactional
     public List<Resource> generate(int quantity) {

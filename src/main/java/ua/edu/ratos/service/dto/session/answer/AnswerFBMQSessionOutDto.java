@@ -6,13 +6,16 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
 @Accessors(chain = true)
-public class AnswerFBMQSessionOutDto {
+public class AnswerFBMQSessionOutDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long answerId;
 

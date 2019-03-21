@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 @Table(name = "result_details")
 public class ResultDetails {
     @Id
-    @Column(name = "result_id")
+    @Column(name = "detail_id")
     private Long detailId;
 
-    @Column(name = "json_data")
+    @MapsId
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "detail_id")
+    private Result result;
+
+    @Column(name = "data")
     private String jsonData;
 
     @Column(name = "when_remove")
     private LocalDateTime whenRemove;
-
-    @MapsId
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "result_id")
-    private Result result;
 
 }

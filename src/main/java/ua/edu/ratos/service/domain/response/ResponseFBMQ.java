@@ -7,13 +7,17 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.ToString;
 import ua.edu.ratos.service.session.Evaluator;
+
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @ToString
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
-public class ResponseFBMQ implements Response {
+public class ResponseFBMQ implements Response, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long questionId;
     private final Set<Pair> enteredPhrases;
@@ -27,7 +31,10 @@ public class ResponseFBMQ implements Response {
 
     @Getter
     @ToString
-    public static class Pair {
+    public static class Pair implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         private final Long answerId;
         private final String enteredPhrase;
 

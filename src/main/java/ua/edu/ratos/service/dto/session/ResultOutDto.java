@@ -1,7 +1,10 @@
 package ua.edu.ratos.service.dto.session;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -29,7 +32,10 @@ public class ResultOutDto {
      */
     private final boolean passed;
 
-    public ResultOutDto(String user, String scheme, boolean passed) {
+    @JsonCreator
+    public ResultOutDto(@NonNull final @JsonProperty("user") String user,
+                        @NonNull final @JsonProperty("scheme") String scheme,
+                        @JsonProperty("passed") boolean passed) {
         this.passed = passed;
         this.user = user;
         this.scheme = scheme;

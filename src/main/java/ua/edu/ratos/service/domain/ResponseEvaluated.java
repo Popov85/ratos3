@@ -7,10 +7,14 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.service.domain.response.Response;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @ToString
-public class ResponseEvaluated {
+public class ResponseEvaluated implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long questionId;
     private final Response response;

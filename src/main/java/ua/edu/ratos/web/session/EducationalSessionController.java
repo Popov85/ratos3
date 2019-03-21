@@ -3,6 +3,7 @@ package ua.edu.ratos.web.session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.dto.out.HelpMinOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
@@ -25,13 +26,20 @@ public class EducationalSessionController {
     //--------------------------------------------------PRESERVE--------------------------------------------------------
 
     @GetMapping(value = "/preserve")
-    public String preserve(@SessionAttribute("sessionData") SessionData sessionData) {
+    public ResponseEntity<String> preserve(@SessionAttribute("sessionData") SessionData sessionData) {
         String key = educationalSessionService.preserve(sessionData);
         log.debug("Preserved session = {}", key);
-        return key;
+        return ResponseEntity.ok(key);
     }
 
     //---------------------------------------------------AJAX-----------------------------------------------------------
+
+    @GetMapping(value = "/questions/{questionId}/helped")
+    public ResponseEntity<HelpMinOutDto> getHelp(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
+        HelpMinOutDto help = educationalSessionService.help(questionId, sessionData);
+        log.debug("Retrieved Help for questionId = {}, help = {}", questionId, help);
+        return ResponseEntity.ok(help);
+    }
 
     @PostMapping(value = "/questions/{questionId}/starred")
     @ResponseStatus(value = HttpStatus.OK)
@@ -52,13 +60,6 @@ public class EducationalSessionController {
     public void unStarred(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
         educationalSessionService.unStar(questionId, sessionData);
         log.debug("UnStarred questionId = {}", questionId);
-    }
-
-    @GetMapping(value = "/questions/{questionId}/helped")
-    public HelpMinOutDto getHelp(@PathVariable Long questionId, @SessionAttribute("sessionData") SessionData sessionData) {
-        HelpMinOutDto help = educationalSessionService.help(questionId, sessionData);
-        log.debug("Retrieved Help for questionId = {}, help = {}", questionId, help);
-        return help;
     }
 
     @PutMapping(value = "/questions/{questionId}/skipped")

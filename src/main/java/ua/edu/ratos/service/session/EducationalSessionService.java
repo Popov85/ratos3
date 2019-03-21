@@ -21,10 +21,7 @@ public interface EducationalSessionService extends StarredSessionService {
      */
     String preserve(SessionData sessionData);
 
-
     //------------------------------------------------------Ajax--------------------------------------------------------
-
-
     /**
      * Provides help for the given question;
      * Technically, many Helps can be associated with a question, but for the sake of simplicity
@@ -35,7 +32,6 @@ public interface EducationalSessionService extends StarredSessionService {
      * @return help DTO
      */
     HelpMinOutDto help(Long questionId, SessionData sessionData);
-
 
     /**
      * Skips the question, puts it to the end of the list to appear in the following batches;
@@ -53,7 +49,6 @@ public interface EducationalSessionService extends StarredSessionService {
      * @param sessionData sessionData object associated with the current learning session
      */
     void skip(Long questionId, SessionData sessionData);
-
 
     /**
      * Complain about a question in case it has any issues

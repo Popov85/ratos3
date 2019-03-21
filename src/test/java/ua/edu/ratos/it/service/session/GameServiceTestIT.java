@@ -6,16 +6,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.dao.entity.game.Game;
 import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.dao.entity.game.Wins;
 import ua.edu.ratos.it.ActiveProfile;
-import ua.edu.ratos.service.domain.ResultDomain;
-import ua.edu.ratos.service.domain.UserDomain;
+import ua.edu.ratos.service.domain.SchemeDomain;
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.GameService;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -37,13 +38,21 @@ public class GameServiceTestIT {
     @Autowired
     private GameService gameService;
 
-    //-------------------------------------------------Check and get points---------------------------------------------
+    @MockBean
+    private SessionData sessionData;
+
+
+    //-------------------------------------------------------Get points-------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void checkAndGetPointsNotEnoughPercentsTest() {
-        Optional<Integer> integer = gameService.checkAndGetPoints(2L, 1L, 79.5);
+    public void getPointsNotEnoughPercentsTest() {
+        when(sessionData.getUserId()).thenReturn(2L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
+        Optional<Integer> integer = gameService.getPoints(sessionData, 79.5);
         assertTrue(integer.isPresent());
         assertEquals(new Integer(0), integer.get());
     }
@@ -51,8 +60,13 @@ public class GameServiceTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_one.sql", "/scripts/game_results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void checkAndGetPointsNotFirstAttemptTest() {
-        Optional<Integer> integer = gameService.checkAndGetPoints(2L, 1L, 85.6);
+    public void getPointsNotFirstAttemptTest() {
+
+        when(sessionData.getUserId()).thenReturn(2L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
+        Optional<Integer> integer = gameService.getPoints(sessionData, 85.6);
         assertTrue(integer.isPresent());
         assertEquals(new Integer(0), integer.get());
     }
@@ -60,27 +74,31 @@ public class GameServiceTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void checkAndGetPointsHighestPercentsTest() {
-        Optional<Integer> integer = gameService.checkAndGetPoints(3L, 1L, 99.9);
+    public void getPointsHighestPercentsTest() {
+
+        when(sessionData.getUserId()).thenReturn(2L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
+        Optional<Integer> integer = gameService.getPoints(sessionData, 99.9);
         assertTrue(integer.isPresent());
         assertEquals(new Integer(5), integer.get());
     }
 
 
     //-------------------------------------------------------Save points------------------------------------------------
-
     @Test
     @Sql(scripts = {"/scripts/init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void savePointsCreateTest() {
-        // Given: userId = 2L scored enough for being granted points first time ever
+    public void doGameProcessingCreateTest() {
+        // Given: userId = 2L scored enough for being granted 5 points (99%) for 781 secs first time ever
         // no entries for this user in week/game tables before
-        ResultDomain resultDomain = new ResultDomain()
-                .setUser(new UserDomain(2L, "TestName", "TestSurname"))
-                .setPoints(5)
-                .setTimeSpent(781);
+        when(sessionData.getUserId()).thenReturn(2L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
         // do save points
-        gameService.savePoints(resultDomain);
+        gameService.doGameProcessing(sessionData, 99, 781);
 
         // expected entry in week table, expected entry in game table
         final Week week = (Week) em.createQuery("select w from Week w where w.weekId=:studId").setParameter("studId", 2L).getSingleResult();
@@ -96,18 +114,19 @@ public class GameServiceTestIT {
         assertEquals(0, game.getTotalBonuses());
     }
 
+
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_one.sql", "/scripts/week_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void savePointsUpdateTest() {
-        // Given: userId = 2L scored enough for being granted points next time in the week
-        // there were entries for this user in week/game tables before(!)
-        ResultDomain resultDomain = new ResultDomain()
-                .setUser(new UserDomain(2L, "TestName", "TestSurname"))
-                .setPoints(3)
-                .setTimeSpent(164);
+    public void doGameProcessingUpdateTest() {
+        // Given: userId = 2L scored enough for being granted 3 points (92%) for 164 secs next time in the week
+        // there were entries for this user in week (10 points, strike 1, time 2036)/game (100 points) tables before(!)
+        when(sessionData.getUserId()).thenReturn(2L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
         // do save points
-        gameService.savePoints(resultDomain);
+        gameService.doGameProcessing(sessionData, 92, 164);
 
         // expected updated entries in week table and in game table
         final Week week = (Week) em.createQuery("select w from Week w where w.weekId=:studId").setParameter("studId", 2L).getSingleResult();
@@ -123,18 +142,20 @@ public class GameServiceTestIT {
         assertEquals(20, game.getTotalBonuses());
     }
 
+
+
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_one.sql", "/scripts/week_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void savePointsStrikeTest() {
-        // Given: userId = 3L scored enough for being granted points 3d time in the week (strike)
-        // there were entries for this user in week/game tables before(!)
-        ResultDomain resultDomain = new ResultDomain()
-                .setUser(new UserDomain(3L, "TestName", "TestSurname"))
-                .setPoints(1)
-                .setTimeSpent(440);
+    public void doGameProcessingStrikeTest() {
+        // Given: userId = 3L scored enough for being granted points 3d time in the row this week (strike)
+        // there were entries for this user in week(20 points, strike 2, bonuses 10, time 4150)/game (100 points, 20 bonuses)  tables before(!)
+        when(sessionData.getUserId()).thenReturn(3L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
         // do save points
-        gameService.savePoints(resultDomain);
+        gameService.doGameProcessing(sessionData, 80, 440);
 
         // expected updated entries in week table (+bonuses, points, reset strike) and in game table (+bonuses and points)
         final Week week = (Week) em.createQuery("select w from Week w where w.weekId=:studId").setParameter("studId", 3L).getSingleResult();
@@ -151,13 +172,43 @@ public class GameServiceTestIT {
         assertEquals(30, game.getTotalBonuses()); // +10
     }
 
-    //-----------------------------------------------Quartz regular weeklyAchievements job------------------------------------------
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_one.sql", "/scripts/week_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void doGameProcessingLostStrikeTest() {
+        // Given: userId = 3L scored NOT enough for being granted any points.
+        // there were entries for this user in week(20 points, strike 2, bonuses 10, time 4150)/game (100 points, 20 bonuses)  tables before(!)
+        when(sessionData.getUserId()).thenReturn(3L);
+        when(sessionData.isGameableSession()).thenReturn(true);
+        when(sessionData.getSchemeDomain()).thenReturn(new SchemeDomain().setSchemeId(1L));
+
+        // do save points
+        gameService.doGameProcessing(sessionData, 40, 440);
+
+        // expected updated entries in week table (+bonuses, points, reset strike) and in game table (+bonuses and points)
+        final Week week = (Week) em.createQuery("select w from Week w where w.weekId=:studId").setParameter("studId", 3L).getSingleResult();
+        assertNotNull(week);
+        assertEquals(20, week.getWeekPoints()); // +0
+        assertEquals(0, week.getWeekStrike()); // =0
+        assertEquals(10, week.getWeekBonuses()); // +0
+        assertEquals(4590, week.getWeekTimeSpent()); //+440
+
+        final Game game = (Game) em.createQuery("select g from Game g where g.gameId=:studId").setParameter("studId", 3L).getSingleResult();
+        assertNotNull(game);
+        assertEquals(100, game.getTotalPoints()); // +0
+        assertEquals(1, game.getTotalWins());
+        assertEquals(20, game.getTotalBonuses()); // +0
+    }
+
+
+
+    //-----------------------------------------------Quartz regular weekly job------------------------------------------
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/week_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void calculateAndSaveWeeklyWinnersFirstWeekTest() {
         gameService.calculateAndSaveWeeklyWinners();
-        // top-3 weeklyAchievements winners
+        // top-3 weekly winners
         List<Wins> result =(List<Wins>) em.createQuery("select w from Wins w").getResultList();
         assertEquals(3, result.size());
         // 9, 11, 18

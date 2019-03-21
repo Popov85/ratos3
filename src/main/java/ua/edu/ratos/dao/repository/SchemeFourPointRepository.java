@@ -2,7 +2,7 @@ package ua.edu.ratos.dao.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ua.edu.ratos.dao.entity.grade.SchemeFourPoint;
+import ua.edu.ratos.dao.entity.grading.SchemeFourPoint;
 
 public interface SchemeFourPointRepository extends JpaRepository<SchemeFourPoint, Long> {
 

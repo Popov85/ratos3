@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.session.deserializer.SessionDataDeserializer;
@@ -20,34 +19,33 @@ import java.util.stream.Collectors;
  *  Here are 3 scenarios:
  * <ul>
  *  <li>Scenario 0: Normal save<br>
- * 1) Result is stored in database
- * 2) User gets result
- * 3) Key is removed from memory (auth. session) programmatically
+ *      1) Result is stored in database
+ *      2) User gets result
+ *      3) Key is removed from memory (auth. session) programmatically
  *  </li>
  *  <li>Scenario 1: User is inactive for longer than is set by session settings (business time limit)<br>
- * 1) Data still alive in memory for 12 hours.
- * 2) Next time user requests to continue within TTL time (12 hours), the result is returned.
- * 3) Result is stored in database, with flag expired
- * 4) Key is removed from memory (auth) programmatically
+ *      1) Data still alive in memory for 12 hours.
+ *      2) Next time user requests to continue within TTL time (12 hours), the result is returned.
+ *      3) Result is stored in database, with flag expired
+ *      4) Key is removed from memory (auth) programmatically
  *  </li>
  *  <li>Scenario 2: User is inactive for more than 12 hours.<br>
- * 1) SessionData data for this key is forever lost in memory due to timeout.
- * 2) User gets his current result if present in incoming BatchOutDto object.
- * 3) Result is not stored in database.
+ *      1) SessionData data for this key is forever lost in memory due to timeout.
+ *      2) User gets his current result if present in incoming BatchOutDto object.
+ *      3) Result is not stored in database.
  *  </li>
  *  </ul>
  */
 @Getter
 @Setter
 @ToString(exclude = {"schemeDomain", "questionDomains", "questionsMap", "currentBatch", "progressData", "metaData"})
-@RedisHash(value = "sessionData")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonDeserialize(using = SessionDataDeserializer.class)
 public class SessionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String BUILD_ERROR = "Failed to toDto SessionData: wrong object state";
+    private static final String BUILD_ERROR = "Failed to create SessionData: wrong object state";
 
     @Id
     private final String key; //if preserved then retrieved the key doesn't change
@@ -213,7 +211,6 @@ public class SessionData implements Serializable {
 
     /**
      * Metadata about a Question, born in the interaction between a user;
-     * only for educational sessions, not exams
      * Key is the question's ID
      */
     private Map<Long, MetaData> metaData = new HashMap<>();
@@ -242,17 +239,29 @@ public class SessionData implements Serializable {
 
 
     @JsonIgnore
-    public boolean hasMoreQuestions() {
-        return (currentIndex < questionDomains.size());
-    }
-
-    @JsonIgnore
     public boolean hasMoreTime() {
         return LocalDateTime.now().isBefore(sessionTimeout);
     }
 
     @JsonIgnore
+    public boolean hasMoreQuestions() {
+        return (currentIndex < questionDomains.size());
+    }
+
+    @JsonIgnore
     public boolean isLMSSession() {
         return this.lmsId!=null;
+    }
+
+    @JsonIgnore
+    public boolean isDynamicSession() {
+        ModeDomain mode = this.schemeDomain.getModeDomain();
+        return (mode.isSkipable() || mode.isPyramid());
+    }
+
+    @JsonIgnore
+    public boolean isGameableSession() {
+        ModeDomain mode = this.schemeDomain.getModeDomain();
+        return (!mode.isSkipable() && !mode.isPyramid() && !mode.isRightAnswer());
     }
 }

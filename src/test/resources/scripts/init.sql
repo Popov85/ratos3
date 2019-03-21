@@ -76,7 +76,7 @@ insert into free_point(name, min_value, pass_value, max_value, staff_id, grading
 values('lms', 0, 0.5, 1, 1, 3, 1);
 
 insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, display_question_results, is_deleted, is_default)
-values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1);
+    values('default', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1);
 
 insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
 values('exam', 1, 0, 0, 0, 0, 0, 1);

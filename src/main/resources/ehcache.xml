@@ -36,31 +36,31 @@
         <heap>2000</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.Grading">
+    <cache alias="ua.edu.ratos.dao.entity.grading.Grading">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.FreePointGrading">
+    <cache alias="ua.edu.ratos.dao.entity.grading.FreePointGrading">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.FourPointGrading">
+    <cache alias="ua.edu.ratos.dao.entity.grading.FourPointGrading">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.TwoPointGrading">
+    <cache alias="ua.edu.ratos.dao.entity.grading.TwoPointGrading">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeFourPoint">
+    <cache alias="ua.edu.ratos.dao.entity.grading.SchemeFourPoint">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeFreePoint">
+    <cache alias="ua.edu.ratos.dao.entity.grading.SchemeFreePoint">
         <heap>50</heap>
     </cache>
 
-    <cache alias="ua.edu.ratos.dao.entity.grade.SchemeTwoPoint">
+    <cache alias="ua.edu.ratos.dao.entity.grading.SchemeTwoPoint">
         <heap>50</heap>
     </cache>
 

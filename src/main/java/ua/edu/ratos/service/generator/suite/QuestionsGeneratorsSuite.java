@@ -54,19 +54,19 @@ public class QuestionsGeneratorsSuite {
     public void generateMin() {
         Suite suite = getMin();
         generate(suite);
-        log.info("Generated min suite for totalByType = {}", suite);
+        log.info("Generated min suite for questions = {}", suite);
     }
 
     public void generateAvg() {
         Suite suite = getAvg();
         generate(suite);
-        log.info("Generated avg suite for totalByType = {}", suite);
+        log.info("Generated avg suite for questions = {}", suite);
     }
 
     public void generateMax() {
         Suite suite = getMax();
         generate(suite);
-        log.info("Generated max suite for totalByType = {}", suite);
+        log.info("Generated max suite for questions = {}", suite);
     }
 
     private Suite getMin() {
@@ -150,7 +150,7 @@ public class QuestionsGeneratorsSuite {
         suite.setMcq(mcqs.size());
         suite.setFbsq(fbsqs.size());
         suite.setFbmq(fbmqs.size());
-        suite.setMcq(mqs.size());
+        suite.setMq(mqs.size());
         suite.setSq(sqs.size());
     }
 }

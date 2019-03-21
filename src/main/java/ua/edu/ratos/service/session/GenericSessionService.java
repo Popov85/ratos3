@@ -7,8 +7,10 @@ import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.domain.SessionData;
 
 /**
- * Generic session interface. Defines generic learning session operations in batches;
- * Single question in batch is a particular case (single question batch), no separate processing for it;
+ * Generic session interface. Defines generic learning session operations all in batches;
+ * Single question in batch is a particular case (single question batch), there is no separate processing for it;
+ * See the only implementation
+ * @see ua.edu.ratos.service.session.GenericSessionServiceImpl
  * @author Andrey P.
  */
 public interface GenericSessionService {
@@ -29,14 +31,21 @@ public interface GenericSessionService {
     BatchOutDto next(BatchInDto batchInDto, SessionData sessionData);
 
     /**
-     * Normal save, provides results for current learning session
+     * Normal finish for basic (non-dynamic sessions)
+     * @param sessionData
+     * @return result of this session
+     */
+    ResultOutDto finish(BatchInDto batchInDto, SessionData sessionData);
+
+    /**
+     * Normal finish for dynamic sessions
      * @param sessionData
      * @return result of this session
      */
     ResultOutDto finish(SessionData sessionData);
 
     /**
-     * Cancel the current dto
+     * Cancel the current session
      * @param sessionData
      * @return current result
      */

@@ -32,7 +32,7 @@ public class MCQGenerator {
     public List<QuestionMCQ> generate(int quantity, List<Theme> themes, List<Resource> resources, List<Help> helps) {
         List<QuestionMCQ> result = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
-            Theme theme = themes.get(rnd.rnd(0, themes.size() - 1));
+            Theme theme = themes.get(rnd.rnd(0, themes.size()));
             Help help = helps.get(rnd.rnd(0, helps.size() - 1));
             QuestionMCQ question = createOne(i, theme, help, resources);
             result.add(question);

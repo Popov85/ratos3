@@ -2,6 +2,8 @@ package ua.edu.ratos.service.domain;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,10 @@ import java.util.List;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class ProgressData {
+public class ProgressData implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Total sum score;
      * if so far user answered 10 out of 20 question, {100, 0, 100, 50, 100, 0, 0, 100, 100, 100}, then

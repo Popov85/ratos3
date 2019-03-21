@@ -37,12 +37,13 @@ public class ResultService {
         if (resultDomain.getLmsId().isPresent())
             r.setLms(em.getReference(LMS.class, resultDomain.getLmsId().get()));
         r.setPassed(resultDomain.isPassed());
-        r.setPoints(resultDomain.getPoints().isPresent());
+        r.setPoints(resultDomain.hasPoints());
         r.setGrade(resultDomain.getGrade());
         r.setPercent(resultDomain.getPercent());
         r.setSessionLasted(resultDomain.getTimeSpent());
         r.setSessionEnded(LocalDateTime.now());
         r.setTimeOuted(resultDomain.isTimeOuted());
+        r.setCancelled(resultDomain.isCancelled());
         resultDomain.getThemeResults().forEach(t -> {
             Theme theme = em.getReference(Theme.class, t.getTheme().getThemeId());
             r.addResultTheme(theme, t.getPercent(), t.getQuantity());

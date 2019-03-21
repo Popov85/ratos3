@@ -51,4 +51,10 @@ public class ResultDetailsService {
                 .getDaysKeepResultDetails();
         return LocalDateTime.now().plusDays(daysKeepResultDetails);
     }
+
+    // Scheduled {daily, weekly, monthly, yearly}
+    @Transactional
+    public void cleanExpired() {
+        resultDetailsRepository.cleanExpired(LocalDateTime.now());
+    }
 }

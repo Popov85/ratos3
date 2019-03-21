@@ -7,13 +7,16 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.PhraseDomain;
 import ua.edu.ratos.service.dto.session.answer.AnswerMQSessionOutDto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Setter
 @Getter
 @ToString
 @Accessors(chain = true)
-public class AnswerMQDomain {
+public class AnswerMQDomain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long answerId;
 

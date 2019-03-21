@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ua.edu.ratos.dao.entity.grade.FourPointGrading;
+import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 
 import java.util.Set;
 

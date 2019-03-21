@@ -12,8 +12,12 @@ import java.io.IOException;
 @Service
 public class SessionDataSerializerService {
 
-    @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     /**
      * Serialize SessionData obj into JSON so that to store it in DB
@@ -45,5 +49,4 @@ public class SessionDataSerializerService {
             throw new RuntimeException("Failed to deserialize SessionData", e);
         }
     }
-
 }

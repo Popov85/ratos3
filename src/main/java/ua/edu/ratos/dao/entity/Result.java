@@ -56,6 +56,9 @@ public class Result {
     @Column(name = "is_timeouted")
     private boolean timeOuted;
 
+    @Column(name = "is_cancelled")
+    private boolean cancelled;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lms_id")
     private LMS lms;
