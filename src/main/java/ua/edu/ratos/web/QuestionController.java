@@ -19,7 +19,6 @@ import ua.edu.ratos.service.QuestionsFileParserService;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.dto.out.question.*;
-import ua.edu.ratos.service.session.sequence.L2CSessionSupport;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -27,15 +26,12 @@ import java.net.URI;
 
 @Slf4j
 @RestController
-//@RequestMapping(path = "/instructor")
+@RequestMapping(path = "/instructor")
 public class QuestionController {
 
     private QuestionService questionService;
 
     private QuestionsFileParserService questionsFileParserService;
-
-    @Autowired
-    private L2CSessionSupport l2CSessionSupport;
 
     @Autowired
     public void setQuestionService(QuestionService questionService) {
@@ -112,31 +108,26 @@ public class QuestionController {
     //--------------------------------------------------One for edit----------------------------------------------------
     // elsewhere out of editor
 
-    @TrackTime
     @GetMapping(value = "/questions-mcq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionMCQOutDto findOneMCQForEditById(@PathVariable Long questionId) {
         return questionService.findOneMCQForEditById(questionId);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbsq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionFBSQOutDto findOneFBSQForEditById(@PathVariable Long questionId) {
         return questionService.findOneFBSQForEditById(questionId);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbmq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionFBMQOutDto findOneFBMQForEditById(@PathVariable Long questionId) {
         return questionService.findOneFBMQForEditById(questionId);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-mq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionMQOutDto findOneMQForEditById(@PathVariable Long questionId) {
         return questionService.findOneMQForEditById(questionId);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-sq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionSQOutDto findOneSQForEditById(@PathVariable Long questionId) {
         return questionService.findOneSQForEditById(questionId);
@@ -145,53 +136,45 @@ public class QuestionController {
     //--------------------------------------------------Staff editor----------------------------------------------------
     // 100 questions loaded by default, options are {100, 200, 500, all}
 
-    @TrackTime
     @GetMapping(value = "/questions-mcq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllMCQForEditByThemeId(themeId, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbsq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionFBSQOutDto> findAllFBSQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllFBSQForEditByThemeId(themeId, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbmq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionFBMQOutDto> findAllFBMQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllFBMQForEditByThemeId(themeId, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-mq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionMQOutDto> findAllFMQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllMQForEditByThemeId(themeId, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-sq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionSQOutDto> findAllSQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllSQForEditByThemeId(themeId, pageable);
     }
 
     
-    //--------------------------------------Staff cross-department search by questionType---------------------------------------
+    //--------------------------------------Staff cross-department search by questionType-------------------------------
     // 30 by default
 
-    @TrackTime
     @GetMapping(value = "/questions-mcq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionMCQOutDto> findAllMCQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllMCQForSearchByDepartmentIdAndTitleContains(letters, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbsq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionFBSQOutDto> findAllFBSQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllFBSQForSearchByDepartmentIdAndTitleContains(letters, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-fbmq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionFBMQOutDto> findAllFBMQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllFBMQForSearchByDepartmentIdAndTitleContains(letters, pageable);
@@ -202,18 +185,9 @@ public class QuestionController {
         return questionService.findAllMQForSearchByDepartmentIdAndTitleContains(letters, pageable);
     }
 
-    @TrackTime
     @GetMapping(value = "/questions-sq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionSQOutDto> findAllSQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllSQForSearchByDepartmentIdAndTitleContains(letters, pageable);
-    }
-
-    //---------------------------------------------------L2C Session support -------------------------------------------
-
-    @GetMapping(value = "/load")
-    public ResponseEntity<String> findAllMQForSearchByDepartmentIdAndTitleLetters(@RequestParam Long schemeId) {
-        l2CSessionSupport.loadAllSchemesQuestionsToL2C(schemeId);
-        return ResponseEntity.ok("All questions of scheme with Id = "+schemeId+" will soon be loaded to L2C");
     }
 
 }

@@ -1,8 +1,11 @@
 package ua.edu.ratos.service.domain;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 /**
  * Usage: when settings require to return the result of evaluation after each BatchInDto
@@ -10,8 +13,10 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-@AllArgsConstructor
-public class PreviousBatchResult {
+public class PreviousBatchResult implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Total accumulative score;
      * if so far user answered 10 out of 20 question
@@ -36,4 +41,12 @@ public class PreviousBatchResult {
      */
     private final BatchEvaluated batchEvaluated;
 
+    @JsonCreator
+    public PreviousBatchResult(@JsonProperty("currentScore") double currentScore,
+                               @JsonProperty("effectiveScore") double effectiveScore,
+                               @JsonProperty("batchEvaluated") BatchEvaluated batchEvaluated) {
+        this.currentScore = currentScore;
+        this.effectiveScore = effectiveScore;
+        this.batchEvaluated = batchEvaluated;
+    }
 }

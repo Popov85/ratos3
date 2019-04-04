@@ -1,5 +1,6 @@
 package ua.edu.ratos.dao.repository;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,8 +21,9 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
     // -----------------------------------------One for different purposes----------------------------------------------
 
+    @Cacheable("scheme")
     @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students where s.schemeId = ?1")
-    @QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    //@QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     Scheme findForSessionById(Long schemeId);
 
     @Query(value = "SELECT s FROM Scheme s join fetch s.themes t join fetch t.settings where s.schemeId = ?1")

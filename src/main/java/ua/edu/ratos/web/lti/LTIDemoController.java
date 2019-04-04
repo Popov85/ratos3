@@ -40,8 +40,8 @@ public class LTIDemoController {
         return "start";
     }
 
-    @PostMapping("/lms/session/post-score")
     @ResponseBody
+    @PostMapping("/lms/session/post-score")
     public String postScoreSpring(@RequestParam double score, @RequestParam Long schemeId, Authentication authentication, HttpServletRequest request) throws Exception {
         log.debug("Try to post score (%, like 60) = {}, for schemeId = {}", score, schemeId);
         ltiOutcomeService.sendOutcome(authentication, request.getScheme(), schemeId, score);

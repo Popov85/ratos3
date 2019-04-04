@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.generator;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Generator of Schemes for performance testing only!
@@ -20,10 +22,22 @@ import java.util.*;
  * 1-3 themes associated with a Scheme;
  * 1-5 settings associated with a SchemeTheme;
  */
+@Slf4j
 @Component
 public class SchemeGenerator {
 
-    private static final int MAX_THEMES_PER_SCHEME = 5;
+    //private static final int MAX_THEMES_PER_SCHEME = 3;
+
+    private static final int MAX_QUESTION_TYPE_ID = 1;
+
+    private static final int MIN_LEVEL_1 = 10;
+    private static final int MAX_LEVEL_1 = 20;
+
+    private static final int MIN_LEVEL_2 = 0;
+    private static final int MAX_LEVEL_2 = 0;
+    private static final int MIN_LEVEL_3 = 0;
+    private static final int MAX_LEVEL_3 = 0;
+
 
     @Autowired
     private Rnd rnd;
@@ -39,58 +53,71 @@ public class SchemeGenerator {
 
     @TrackTime
     @Transactional
-    public List<Scheme> generate(int quantity, List<Theme> themes, List<Department> departments, List<Course> courses) {
+    public List<Scheme> generate(int quantity, List<Theme> themes, List<Department> departments, List<Course> courses, int maxThemes) {
         List<Scheme> result = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
             Department department = departments.get(rnd.rnd(0, departments.size() - 1));
             Course course = courses.get(rnd.rnd(0, courses.size() - 1));
-            Scheme scheme = createOne(i, themes, department, course);
+            Scheme scheme = createOne(themes, department, course, maxThemes);
             schemeRepository.save(scheme);
-            gradingManagerService.save(i, scheme.getGrading().getGradingId(), 1L);
+            gradingManagerService.save(scheme.getSchemeId(), scheme.getGrading().getGradingId(), 1L);
             result.add(scheme);
         }
         return result;
     }
 
-    private Scheme createOne(int i, List<Theme> themes, Department department, Course course) {
+    private Scheme createOne(List<Theme> themes, Department department, Course course, int maxThemes) {
         Scheme scheme = new Scheme();
-        scheme.setName("Scheme_#"+i);
+        scheme.setName("Scheme_#"+UUID.randomUUID());
         scheme.setStaff(em.getReference(Staff.class, 1L));
         scheme.setDepartment(department);
         scheme.setCourse(course);
-        scheme.setGrading(em.getReference(Grading.class, rnd.rndOne(3)));
+        scheme.setGrading(em.getReference(Grading.class, rnd.rndOne(4)));
         scheme.setSettings(em.getReference(Settings.class, 1L));
-        scheme.setStrategy(em.getReference(Strategy.class, rnd.rndOne(3)));
-        scheme.setMode(em.getReference(Mode.class, rnd.rndOne(2)));
-        scheme.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
+        scheme.setStrategy(em.getReference(Strategy.class, rnd.rndOne(4)));
+        scheme.setMode(em.getReference(Mode.class, rnd.rndOne(3)));
+        scheme.setAccess(em.getReference(Access.class, rnd.rndOne(3)));
         scheme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
         scheme.setActive(true);
-        scheme.setThemes(getThemes(MAX_THEMES_PER_SCHEME, themes, scheme));
+        scheme.setThemes(getThemes(themes, scheme, maxThemes));
         return scheme;
     }
 
 
-    private List<SchemeTheme> getThemes(int quantity, List<Theme> themes, Scheme scheme) {
+    private List<SchemeTheme> getThemes(List<Theme> themes, Scheme scheme, int maxThemes) {
+        int quantity = rnd.rnd(1, maxThemes+1);
         List<SchemeTheme> result = new ArrayList<>(quantity);
-        for (int i = 0; i <= rnd.rndOne(quantity); i++) {
+        List<Integer> themesIndices = getUniqueThemeIndices(quantity, themes);
+        log.debug("Schemes themes indices = {}", themesIndices);
+        for (int i = 0; i < quantity; i++) {
             SchemeTheme s = new SchemeTheme();
             s.setScheme(scheme);
-            s.setTheme(themes.get(rnd.rnd(0, themes.size()-1)));
+            s.setTheme(themes.get(themesIndices.get(i)));
             s.setSettings(getSettings(s));
             result.add(s);
         }
         return result;
     }
 
+    private List<Integer> getUniqueThemeIndices(int quantity, List<Theme> themes) {
+        if (themes.size()==1) return Arrays.asList(0);
+        Set<Integer> result = new HashSet<>();
+        while (result.size()<quantity) {
+            int index = this.rnd.rnd(0, themes.size());
+            result.add(index);
+        }
+        return result.stream().collect(Collectors.toList());
+    }
+
     private Set<SchemeThemeSettings> getSettings(SchemeTheme schemeTheme) {
         Set<SchemeThemeSettings> result = new HashSet<>();
-        for (int i = 1; i <= rnd.rndOne(5); i++) {
+        for (int i = 1; i <= rnd.rnd(1, MAX_QUESTION_TYPE_ID+1); i++) {
             SchemeThemeSettings s = new SchemeThemeSettings();
             s.setSchemeTheme(schemeTheme);
-            s.setType(em.getReference(QuestionType.class, rnd.rndOne(5)));
-            s.setLevel1((short) rnd.rndOne(20));
-            s.setLevel2((short) rnd.rndOne(20));
-            s.setLevel3((short) rnd.rndOne(20));
+            s.setType(em.getReference(QuestionType.class, (long)i));
+            s.setLevel1((short) rnd.rnd(MIN_LEVEL_1, MAX_LEVEL_1+1));
+            s.setLevel2((short) rnd.rnd(MIN_LEVEL_2, MAX_LEVEL_2+1));
+            s.setLevel3((short) rnd.rnd(MIN_LEVEL_3, MAX_LEVEL_3+1));
             result.add(s);
         }
         return result;

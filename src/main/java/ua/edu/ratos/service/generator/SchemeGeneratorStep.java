@@ -13,10 +13,7 @@ import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Generator of Schemes for STEP-like scenarios!
@@ -44,17 +41,17 @@ public class SchemeGeneratorStep {
         for (int i = 1; i <= quantity; i++) {
             Department department = departments.get(0);
             Course course = courses.get(0);
-            Scheme scheme = createOne(i, themes, department, course);
+            Scheme scheme = createOne(themes, department, course);
             schemeRepository.save(scheme);
-            gradingManagerService.save(i, scheme.getGrading().getGradingId(), 1L);
+            gradingManagerService.save(scheme.getSchemeId(), scheme.getGrading().getGradingId(), 1L);
             result.add(scheme);
         }
         return result;
     }
 
-    private Scheme createOne(int i, List<Theme> themes, Department department, Course course) {
+    private Scheme createOne(List<Theme> themes, Department department, Course course) {
         Scheme scheme = new Scheme();
-        scheme.setName("Scheme_#"+i);
+        scheme.setName("Scheme_#"+ UUID.randomUUID());
         scheme.setStaff(em.getReference(Staff.class, 1L));
         scheme.setDepartment(department);
         scheme.setCourse(course);

@@ -76,7 +76,6 @@ public class ResultBuilder {
     public ResultDomain build(@NonNull final SessionData sessionData, boolean timeOuted, boolean cancelled) {
         // 1. Calculate percent
         final double percent = progressDataService.getCurrentScore(sessionData);
-
         // 2. Calculate grade and is passed verdict
         final SchemeDomain schemeDomain = sessionData.getSchemeDomain();
         final GradingDomain gradingDomain = schemeDomain.getGradingDomain();

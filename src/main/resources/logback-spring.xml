@@ -68,7 +68,7 @@
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+        <logger name="ua.edu.ratos" additivity="false" level="INFO">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -76,7 +76,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.springframework.jdbc" additivity="false" level="INFO">
+        <logger name="org.springframework.jdbc" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
         <logger name="org.springframework.session" additivity="false" level="ERROR">
@@ -91,11 +91,15 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
+        <logger name="org.springframework.cache" additivity="false" level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
         <logger name="org.springframework.data.redis" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate" additivity="false" level="INFO">
+        <logger name="org.hibernate" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -103,7 +107,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.validator" additivity="false" level="INFO">
+        <logger name="org.hibernate.validator" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -117,11 +121,11 @@
         <root level="ERROR">
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+        <logger name="ua.edu.ratos" additivity="false" level="WARN">
             <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
         </logger>
-        <logger name="org.springframework" additivity="false" level="WARN">
+        <logger name="org.springframework" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>

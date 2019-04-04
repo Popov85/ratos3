@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
+import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
 
@@ -12,7 +13,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"staff", "grading"})
+@ToString(exclude = {"staff", "department", "grading"})
 @Entity
 @Table(name = "free_point")
 @Cacheable
@@ -36,19 +37,23 @@ public class FreePointGrading {
     @Column(name = "max_value")
     private short maxValue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grading_id")
-    private Grading grading;
-
     @Column(name="is_default")
     private boolean isDefault;
 
     @Column(name = "is_deleted")
     private boolean deleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grading_id")
+    private Grading grading;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to")
+    private Department department;
 
     /**
      * This grading system supports only integer values;

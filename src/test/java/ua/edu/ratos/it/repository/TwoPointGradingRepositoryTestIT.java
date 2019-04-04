@@ -61,6 +61,4 @@ public class TwoPointGradingRepositoryTestIT {
     public void findAllByDepartmentIdAndNameLettersContainsTest() {
         Assert.assertEquals(2, TwoPointGradingRepository.findAllByDepartmentIdAndNameLettersContains(2L, "Strict", PageRequest.of(0, 50)).getContent().size());
     }
-
-
 }

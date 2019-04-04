@@ -32,7 +32,7 @@ public class ModeRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllDefaultTest() {
-        Assert.assertEquals(1, modeRepository.findAllDefault().size());
+        Assert.assertEquals(3, modeRepository.findAllDefault().size());
     }
 
 

@@ -64,7 +64,6 @@ public class BasicStartProcessingServiceImpl implements StartProcessingService {
         this.sessionDataService = sessionDataService;
     }
 
-    @TrackTime
     @Override
     public SessionData start(@NonNull final StartData startData) {
         // Load the requested Scheme and build SessionData object

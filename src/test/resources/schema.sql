@@ -300,7 +300,7 @@ CREATE TABLE IF NOT EXISTS   language  (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS question (
   question_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  title VARCHAR(1000) NOT NULL,
+  title VARCHAR(2500) NOT NULL,
   level TINYINT(1) NOT NULL DEFAULT 1,
   type_id INT UNSIGNED NOT NULL,
   lang_id INT UNSIGNED NOT NULL,
@@ -335,7 +335,7 @@ CREATE TABLE IF NOT EXISTS question (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS   answer_mcq  (
   answer_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  answer  VARCHAR(500) NOT NULL,
+  answer  VARCHAR(1000) NOT NULL,
   percent  TINYINT(3) NOT NULL,
   is_required  TINYINT(1) NOT NULL DEFAULT 0,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
@@ -702,28 +702,35 @@ CREATE TABLE IF NOT EXISTS   strategy  (
 -- -----------------------------------------------------
 -- Table settings
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  settings  (
-  set_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  seconds_per_question  INT UNSIGNED NOT NULL DEFAULT -1,
-  strict_seconds_per_question TINYINT(1) NOT NULL DEFAULT 0,
-  questions_per_sheet  INT UNSIGNED NOT NULL DEFAULT 1,
-  days_keep_result_details  INT UNSIGNED NOT NULL DEFAULT 1,
-  level_2_coefficient  FLOAT UNSIGNED NOT NULL DEFAULT 1,
-  level_3_coefficient  FLOAT UNSIGNED NOT NULL DEFAULT 1,
-  display_percent  TINYINT(1) NOT NULL DEFAULT 1,
-  display_mark  TINYINT(1) NOT NULL DEFAULT 1,
-  display_theme_results  TINYINT(1) NOT NULL DEFAULT 0,
-  display_question_results  TINYINT(1) NOT NULL DEFAULT 0,
-  is_default  TINYINT(1) NOT NULL DEFAULT 0,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY ( set_id ),
-  INDEX  fk_settings_staff_staff_id_idx  ( staff_id  ASC),
-  UNIQUE INDEX  settings_name_staff_UNIQUE  ( name  ASC,  staff_id  ASC),
-  CONSTRAINT  fk_settings_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES   staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS settings (
+  set_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  seconds_per_question INT UNSIGNED NOT NULL DEFAULT 60 COMMENT 'Specifies general timing rule: time estimated to answer a question, session time restriction is calculated based on this value: questions*seconds_per_question',
+  strict_seconds_per_question TINYINT(1) NOT NULL,
+  questions_per_sheet INT UNSIGNED NOT NULL DEFAULT 1,
+  days_keep_result_details INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Specifies for how many days to store the extended result in the database, 1 day (24 hours by default)',
+  level_2_coefficient FLOAT UNSIGNED NOT NULL DEFAULT 1,
+  level_3_coefficient FLOAT UNSIGNED NOT NULL DEFAULT 1,
+  display_percent TINYINT(1) NOT NULL DEFAULT 1,
+  display_mark TINYINT(1) NOT NULL DEFAULT 1,
+  display_theme_results TINYINT(1) NOT NULL DEFAULT 1,
+  display_question_results TINYINT(1) NOT NULL DEFAULT 0,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (set_id),
+  UNIQUE INDEX settings_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  INDEX fk_settings_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_settings_belongs_to_dep_id_idx (belongs_to ASC),
+  CONSTRAINT fk_settings_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_settings_belongs_to_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -732,25 +739,32 @@ CREATE TABLE IF NOT EXISTS  settings  (
 -- -----------------------------------------------------
 -- Table mode
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   mode  (
-  mode_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  is_helpable  TINYINT(1) NOT NULL DEFAULT 0,
-  is_pyramid  TINYINT(1) NOT NULL DEFAULT 0,
-  is_skipable  TINYINT(1) NOT NULL DEFAULT 0,
-  is_rightans  TINYINT(1) NOT NULL DEFAULT 0,
-  is_preservable  TINYINT(1) NOT NULL DEFAULT 0,
-  is_reportable  TINYINT(1) NOT NULL DEFAULT 0,
-  is_starrable  TINYINT(1) NOT NULL DEFAULT 0,
-  is_default  TINYINT(1) NOT NULL DEFAULT 0,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY ( mode_id ),
-  INDEX  fk_mode_staff_staff_id_idx  ( staff_id  ASC),
-  UNIQUE INDEX  mode_name_staff_UNIQUE  ( name  ASC,  staff_id  ASC),
-  CONSTRAINT  fk_mode_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES   staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS mode (
+  mode_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  is_helpable TINYINT(1) NOT NULL DEFAULT 0,
+  is_pyramid TINYINT(1) NOT NULL DEFAULT 0,
+  is_skipable TINYINT(1) NOT NULL DEFAULT 0,
+  is_rightans TINYINT(1) NOT NULL DEFAULT 0,
+  is_preservable TINYINT(1) NOT NULL DEFAULT 0,
+  is_reportable TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Specifies if a user can report an error in a question or an answer.',
+  is_starrable TINYINT(1) NOT NULL DEFAULT 0,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (mode_id),
+  UNIQUE INDEX mode_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  INDEX fk_mode_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_mode_belongs_to_dep_id_idx (belongs_to ASC),
+  CONSTRAINT fk_mode_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_mode_belongs_to_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -779,10 +793,10 @@ CREATE TABLE IF NOT EXISTS scheme (
   grading_id INT UNSIGNED NOT NULL,
   access_id INT UNSIGNED NOT NULL,
   course_id INT UNSIGNED NOT NULL,
-  created_by INT UNSIGNED NOT NULL,
-  belongs_to INT UNSIGNED NOT NULL,
   created DATETIME NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
   PRIMARY KEY (scheme_id),
   INDEX fk_scheme_strategy_strategy_id_idx (strategy_id ASC),
   INDEX fk_scheme_settings_settings_id_idx (settings_id ASC),
@@ -842,27 +856,35 @@ CREATE TABLE IF NOT EXISTS scheme (
 -- -----------------------------------------------------
 -- Table  four_point
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  four_point  (
-  four_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  threshold_3  INT NOT NULL,
-  threshold_4  INT NOT NULL,
-  threshold_5  INT NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  is_default  TINYINT(1) NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL,
-  grading_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( four_id ),
-  INDEX  fk_four_point_staff_staff_id_idx  ( staff_id  ASC),
-  INDEX  fk_four_point_grading_grading_id_idx  ( grading_id  ASC),
-  CONSTRAINT  fk_four_point_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES  staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS four_point (
+  four_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  threshold_3 INT NOT NULL,
+  threshold_4 INT NOT NULL,
+  threshold_5 INT NOT NULL,
+  is_default TINYINT(1) NOT NULL,
+  is_deleted TINYINT(1) NOT NULL,
+  grading_id INT UNSIGNED NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (four_id),
+  INDEX fk_four_point_grading_grading_id_idx (grading_id ASC),
+  INDEX fk_four_point_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_four_point_belongs_to_dep_id_idx (belongs_to ASC),
+  UNIQUE INDEX four_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  CONSTRAINT fk_four_point_grading_grading_id
+  FOREIGN KEY (grading_id)
+  REFERENCES grading (grading_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_four_point_grading_grading_id
-  FOREIGN KEY ( grading_id )
-  REFERENCES  grading  ( grading_id )
+  CONSTRAINT fk_four_point_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_four_point_belongs_to_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -892,25 +914,33 @@ CREATE TABLE IF NOT EXISTS  scheme_four_point  (
 -- -----------------------------------------------------
 -- Table two_point
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS two_point  (
-  two_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  threshold  INT NOT NULL,
-  is_default  TINYINT(1) NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL,
-  grading_id  INT UNSIGNED NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  PRIMARY KEY ( two_id ),
-  INDEX  fk_two_point_grading_grading_id_idx  ( grading_id  ASC),
-  INDEX  fk_two_point_staff_staff_id_idx  ( staff_id  ASC),
-  CONSTRAINT  fk_two_point_grading_grading_id
-  FOREIGN KEY ( grading_id )
-  REFERENCES  grading  ( grading_id )
+CREATE TABLE IF NOT EXISTS two_point (
+  two_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  threshold INT NOT NULL,
+  is_default TINYINT(1) NOT NULL,
+  is_deleted TINYINT(1) NOT NULL,
+  grading_id INT UNSIGNED NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (two_id),
+  INDEX fk_two_point_grading_grading_id_idx (grading_id ASC),
+  INDEX fk_two_point_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_two_point_belongs_to_dep_id_idx (belongs_to ASC),
+  UNIQUE INDEX two_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  CONSTRAINT fk_two_point_grading_grading_id
+  FOREIGN KEY (grading_id)
+  REFERENCES grading (grading_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_two_point_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES  staff  ( staff_id )
+  CONSTRAINT fk_two_point_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_two_point_belongs_to_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -941,27 +971,35 @@ CREATE TABLE IF NOT EXISTS  scheme_two_point  (
 -- -----------------------------------------------------
 -- Table  free_point
 -- ----------------------------------------------------
-CREATE TABLE IF NOT EXISTS free_point  (
-  free_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name  VARCHAR(100) NOT NULL,
-  min_value  INT NOT NULL,
-  pass_value  INT NOT NULL,
-  max_value  INT NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
-  grading_id  INT UNSIGNED NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  is_default  TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY ( free_id ),
-  INDEX  fk_free_point_staff_staff_id_idx  ( staff_id  ASC),
-  INDEX  fk_free_point_grading_grading_id_idx  ( grading_id  ASC),
-  CONSTRAINT  fk_free_point_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES  staff  ( staff_id )
+CREATE TABLE IF NOT EXISTS free_point (
+  free_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  min_value INT NOT NULL,
+  pass_value INT NOT NULL,
+  max_value INT NOT NULL,
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  grading_id INT UNSIGNED NOT NULL,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (free_id),
+  INDEX fk_free_point_grading_grading_id_idx (grading_id ASC),
+  INDEX fk_free_point_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_free_point_belongs_to_dep_id_idx (belongs_to ASC),
+  UNIQUE INDEX free_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  CONSTRAINT fk_free_point_grading_grading_id
+  FOREIGN KEY (grading_id)
+  REFERENCES grading (grading_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT  fk_free_point_grading_grading_id
-  FOREIGN KEY ( grading_id )
-  REFERENCES  grading  ( grading_id )
+  CONSTRAINT fk_free_point_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_free_point_belongs_to_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -1205,7 +1243,7 @@ CREATE TABLE IF NOT EXISTS  result_theme  (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS result_details (
   detail_id INT UNSIGNED NOT NULL,
-  data TEXT NOT NULL,
+  data LONGTEXT NOT NULL,
   when_remove DATETIME NOT NULL,
   PRIMARY KEY (detail_id),
   INDEX fk_result_details_result_details_id_idx (detail_id ASC),
@@ -1224,7 +1262,7 @@ CREATE TABLE IF NOT EXISTS   session_preserved  (
   uuid  VARCHAR(61) NOT NULL,
   scheme_id  INT UNSIGNED NOT NULL,
   user_id  INT UNSIGNED NOT NULL,
-  data  TEXT NOT NULL,
+  data LONGTEXT NOT NULL,
   when_preserved  DATETIME NOT NULL,
   progress DOUBLE UNSIGNED NOT NULL,
   PRIMARY KEY ( uuid ),
@@ -1273,18 +1311,26 @@ CREATE TABLE IF NOT EXISTS   user_question_starred  (
 -- -----------------------------------------------------
 -- Table groups
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  groups (
+CREATE TABLE IF NOT EXISTS groups (
   group_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
-  staff_id INT UNSIGNED NOT NULL,
   is_enabled TINYINT(1) NOT NULL DEFAULT 1,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   created DATETIME NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
   PRIMARY KEY (group_id),
-  INDEX fk_group_staff_staff_id_idx (staff_id ASC),
-  CONSTRAINT fk_group_staff_staff_id
-  FOREIGN KEY (staff_id)
-  REFERENCES  staff (staff_id)
+  INDEX fk_groups_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_groups_department_dep_id_idx (belongs_to ASC),
+  UNIQUE INDEX group_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  CONSTRAINT fk_groups_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_groups_department_dep_id
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

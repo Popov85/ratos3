@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"staff", "students"})
+@ToString(exclude = {"staff", "department", "students"})
 @Entity
 @Table(name = "groups")
 @Where(clause = "is_deleted = 0")
@@ -43,8 +43,12 @@ public class Group {
     private LocalDateTime created;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @JoinColumn(name = "created_by")
     private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to")
+    private Department department;
 
     // read-only here
     @ManyToMany(cascade = {CascadeType.MERGE})

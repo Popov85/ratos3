@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
@@ -37,6 +38,7 @@ public class DtoModeTransformer {
     public Mode toEntity(@NonNull final ModeInDto dto) {
         Mode mode = modelMapper.map(dto, Mode.class);
         mode.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        mode.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return mode;
     }
 }

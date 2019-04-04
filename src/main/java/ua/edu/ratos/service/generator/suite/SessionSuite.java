@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.Class;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.generator.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,6 @@ public class SessionSuite {
 
     @Autowired
     private StudentGenerator studentGenerator;
-
-
 
     @Autowired
     private DepartmentGenerator departmentGenerator;
@@ -62,8 +61,14 @@ public class SessionSuite {
 
     public void generateAvgAndStep() {
         Suite suite = getAvg();
-        generateAndStep(suite);
+        generateAndStep(suite, 1000, 1000, 3, 1000);
         log.info("Generated avg suite for session = {}", suite);
+    }
+
+    public void generateMaxAndStep() {
+        Suite suite = getMax();
+        generateAndStep(suite, 50000, 100000, 5, 10000);
+        log.info("Generated max suite for session = {}", suite);
     }
 
     private Suite getMin() {
@@ -76,7 +81,7 @@ public class SessionSuite {
                 .setThemes(10)
                 .setResources(100)
                 .setHelps(100)
-                .setMcq(10000);
+                .setMcq(1000);
     }
 
     private Suite getAvg() {
@@ -84,14 +89,23 @@ public class SessionSuite {
                 .setOrganisations(1)
                 .setFaculties(5)
                 .setClasses(100)
-                .setStudents(1000)
+                .setStudents(100)
                 .setDepartments(50)
-                .setCourses(1000)
-                .setSchemes(10000)
-                .setThemes(10000)
-                .setResources(1000)
-                .setHelps(1000)
-                .setMcq(100000);
+                .setCourses(100)
+                .setResources(100)
+                .setHelps(100);
+    }
+
+    private Suite getMax() {
+        return new Suite()
+                .setOrganisations(1)
+                .setFaculties(5)
+                .setClasses(200)
+                .setStudents(2000)
+                .setDepartments(50)
+                .setCourses(2000)
+                .setResources(2000)
+                .setHelps(2000);
     }
 
 
@@ -107,28 +121,57 @@ public class SessionSuite {
         List<QuestionMCQ> mcqs = mcqGenerator.generate(suite.getMcq(), themes, resources, helps);
     }
 
-    private void generateAndStep(Suite suite) {
+
+    private void generateAndStep(Suite suite, int questionsForSmallSchemes, int questionsForMediumSchemes, int stepSchemes, int questionsForStepSchemes) {
+        long start = System.nanoTime();
         List<Organisation> organisations = organisationGenerator.generate(suite.getOrganisations());
         List<Faculty> faculties = facultyGenerator.generate(suite.getFaculties(), organisations);
         List<Class> classes = classGenerator.generate(suite.getClasses(), faculties);
         List<Student> students = studentGenerator.generate(suite.getStudents(), classes);
         List<Department> departments = departmentGenerator.generate(suite.getDepartments(), faculties);
-        List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);
-        // Themes
-        List<Theme> themes = themeGenerator.generate(suite.getThemes(), courses);
-        // Reserve 10 themes for STEP scenarios
-        List<Theme> themesStep = themes.subList(themes.size()-10, themes.size());
-        List<Theme> themesRegular = themes.subList(0, themes.size()-10);
-        // Reserve 10 schemes for STEP scenarios
-        List<Scheme> schemesRegular = schemeGenerator.generate(suite.getSchemes()-10, themesRegular, departments, courses);
+        List<Course> courses = courseGenerator.generate(1000, departments);
+
+        // Small 500 schemes
+        List<Theme> themesSmall = themeGenerator.generate(500, courses);
+        List<Scheme> schemesSmall = schemeGenerator.generate(500, themesSmall, departments, courses, 3);
         List<Resource> resources = resourceGenerator.generate(suite.getResources());
         List<Help> helps = helpGenerator.generate(suite.getHelps(), resources);
-        // Reserve 10000 questions for 10 themes of STEP scenarios
-        List<QuestionMCQ> mcqsRegular = mcqGenerator.generate(suite.getMcq()-10000, themesRegular, resources, helps);
-        //-------------------------------------------Only for Step schemes----------------------------------------------
-        List<Scheme> schemesStep = schemeGeneratorStep.generate(10, themesStep, departments, courses);
-        List<QuestionMCQ> mcqsStep= mcqGenerator.generate(10000, themesStep, resources, helps);
+        // 50.000
+        mcqGenerator.generate(questionsForSmallSchemes, themesSmall, resources, helps);
+        List<Long> smallSchemesIds = schemesSmall.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
+        themesSmall = null;
+        schemesSmall = null;
+        log.debug("Finished generating questions for small schemes");
 
-        log.debug("Schemes for STEP = {}", schemesStep.stream().map(s->s.getSchemeId()).collect(Collectors.toList()));
+        // Medium 50 schemes
+        List<Theme> themesMedium = themeGenerator.generate(500, courses);
+        List<Scheme> schemesMedium = schemeGenerator.generate(50, themesMedium, departments, courses, 8);
+        // 100.000
+        mcqGenerator.generate(questionsForMediumSchemes, themesMedium, resources, helps);
+        List<Long> mediumSchemesIds = schemesMedium.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
+        themesMedium = null;
+        schemesMedium = null;
+        log.debug("Finished generating questions for medium schemes");
+
+        // STEP - 10 schemes
+        List<Scheme> schemesStep = new ArrayList<>();
+        for (int i = 0; i < stepSchemes; i++) {
+            List<Theme> themesStep = themeGenerator.generate(10, courses);
+            List<Scheme> scheme = schemeGeneratorStep.generate(1, themesStep, departments, courses);
+            schemesStep.addAll(scheme);
+            // 10.000
+            mcqGenerator.generate(questionsForStepSchemes, themesStep, resources, helps);
+            log.debug("Finished generating questions for step schemes, i = {}", i);
+        }
+        List<Long> stepSchemesIds = schemesStep.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
+        themesMedium = null;
+        schemesStep = null;
+        log.debug("Small schemes = {}", smallSchemesIds);
+        log.debug("Medium schemes = {}", mediumSchemesIds);
+        log.debug("STEP schemes = {}", stepSchemesIds);
+
+        long finish = System.nanoTime();
+
+        log.debug("Finished generating test data, time spent = {} min", (finish-start)/60000000000d);
     }
 }

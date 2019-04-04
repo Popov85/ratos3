@@ -25,8 +25,8 @@ public interface SettingsRepository extends JpaRepository<Settings, Long> {
             countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1")
     Page<Settings> findAllByStaffId(Long staffId, Pageable pageable);
 
-    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1",
-            countQuery = "select count(s) from Settings s join s.staff st join st.department d where d.depId =?1")
+    @Query(value="select s from Settings s join fetch s.staff st join s.department d where d.depId = ?1",
+            countQuery = "select count(s) from Settings s join s.department d where d.depId =?1")
     Page<Settings> findAllByDepartmentId(Long depId, Pageable pageable);
 
     //--------------------------------------------------------Table search----------------------------------------------
@@ -35,13 +35,13 @@ public interface SettingsRepository extends JpaRepository<Settings, Long> {
             countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1 and s.name like %?2%")
     Page<Settings> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
 
-    @Query(value="select s from Settings s join fetch s.staff st join st.department d where d.depId = ?1 and s.name like %?2%",
-            countQuery = "select count(s) from Settings s join s.staff st join st.department d where d.depId =?1 and s.name like %?2%")
+    @Query(value="select s from Settings s join fetch s.staff st join s.department d where d.depId = ?1 and s.name like %?2%",
+            countQuery = "select count(s) from Settings s join s.department d where d.depId =?1 and s.name like %?2%")
     Page<Settings> findAllByDepartmentIdAndNameLettersContains(Long depId, String contains, Pageable pageable);
 
     //------------------------------------------------------------ADMIN-------------------------------------------------
 
-    @Query(value="select s from Settings s join fetch s.staff", countQuery = "select count(s) from Settings s")
+    @Query(value="select s from Settings s join fetch s.staff join fetch s.department", countQuery = "select count(s) from Settings s")
     Page<Settings> findAll(Pageable pageable);
 
 }

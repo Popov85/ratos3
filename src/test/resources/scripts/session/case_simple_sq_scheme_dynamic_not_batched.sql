@@ -1,5 +1,5 @@
-insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
-values('training2', 1, 1, 0, 1, 1, 1, 1);
+insert into mode(name, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable, is_default, created_by, belongs_to)
+    values('training2', 1, 0, 1, 1, 1, 1, 0, 1, 1);
 
 insert into scheme(name, is_active, strategy_id, settings_id, mode_id, grading_id, course_id, created, created_by, belongs_to, is_deleted, access_id)
     values('Sample scheme #1', 1, 1, 1, 3, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0, 1);

@@ -32,7 +32,7 @@ public class DynamicNextBatchBuilder extends FirstBatchBuilder {
                 .withQuestionsLeft(getQuestionsLeft(sessionData, batchQuestions.size()))
                 .withBatchesLeft(getBatchesLeft(sessionData, batchQuestions.size()))
                 .withBatchTimeLimit(getBatchTimeLimit(sessionData, batchQuestions.size()))
-                .withPreviousBatchResult(getPreviousBatchResult(sessionData, batchEvaluated).get())
+                .withPreviousBatchResult(getPreviousBatchResult(sessionData, batchEvaluated).orElse(null))
                 .build();
     }
 

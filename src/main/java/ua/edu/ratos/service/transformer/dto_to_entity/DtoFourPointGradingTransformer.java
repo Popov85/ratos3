@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.dao.entity.grading.Grading;
@@ -39,6 +40,7 @@ public class DtoFourPointGradingTransformer {
         FourPointGrading entity = modelMapper.map(dto, FourPointGrading.class);
         entity.setGrading(em.getReference(Grading.class, GRADING_ID));
         entity.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        entity.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return entity;
     }
 

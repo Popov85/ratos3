@@ -23,7 +23,7 @@ public interface FreePointGradingRepository extends JpaRepository<FreePointGradi
     @Query(value="select g from FreePointGrading g join fetch g.staff s where s.staffId = ?1")
     Slice<FreePointGrading> findAllByStaffId(Long staffId, Pageable pageable);
 
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join s.department d where d.depId = ?1")
+    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1")
     Slice<FreePointGrading> findAllByDepartmentId(Long depId, Pageable pageable);
 
     //---------------------------------------------------------Search---------------------------------------------------
@@ -34,10 +34,10 @@ public interface FreePointGradingRepository extends JpaRepository<FreePointGradi
     @Query(value="select g from FreePointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like %?2%")
     Slice<FreePointGrading> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
 
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join s.department d where d.depId = ?1 and g.name like ?2%")
+    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like ?2%")
     Slice<FreePointGrading> findAllByDepartmentIdAndNameStarts(Long depId, String starts, Pageable pageable);
 
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join s.department d where d.depId = ?1 and g.name like %?2%")
+    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like %?2%")
     Slice<FreePointGrading> findAllByDepartmentIdAndNameLettersContains(Long depId, String letters, Pageable pageable);
 
     //----------------------------------------------------------ADMIN---------------------------------------------------

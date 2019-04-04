@@ -1,6 +1,7 @@
 package ua.edu.ratos.service.session;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.transformer.domain_to_dto.ResultDomainDtoTransformer;
 
+@Slf4j
 @Service
 public class RegularFinishProcessingServiceImpl implements FinishProcessingService {
 

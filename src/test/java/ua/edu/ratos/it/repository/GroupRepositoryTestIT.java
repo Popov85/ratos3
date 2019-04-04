@@ -23,7 +23,7 @@ public class GroupRepositoryTestIT {
     @Autowired
     private GroupRepository groupRepository;
 
-    //-------------------------------------------------ONE for edit----------------------------------------------------
+    //-------------------------------------------------ONE for edit-----------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -34,7 +34,7 @@ public class GroupRepositoryTestIT {
         Assert.assertEquals(2, result.getStudents().size());
     }
 
-    //------------------------------------------------INSTRUCTOR table-------------------------------------------------
+    //------------------------------------------------INSTRUCTOR table--------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -47,17 +47,19 @@ public class GroupRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameLettersContainsTest() {
-        Page<Group> result = groupRepository.findAllByStaffIdAndNameLettersContains(1L, "19/20", PageRequest.of(0, 50));
-        Assert.assertEquals(2, result.getContent().size());
+    public void findAllByDepartmentIdTest() {
+        Page<Group> result = groupRepository.findAllByDepartmentId(2L, PageRequest.of(0, 50));
+        Assert.assertEquals(4, result.getContent().size());
     }
+
+    //-----------------------------------------------------Search-------------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdTest() {
-        Page<Group> result = groupRepository.findAllByDepartmentId(2L, PageRequest.of(0, 50));
-        Assert.assertEquals(4, result.getContent().size());
+    public void findAllByStaffIdAndNameLettersContainsTest() {
+        Page<Group> result = groupRepository.findAllByStaffIdAndNameLettersContains(1L, "19/20", PageRequest.of(0, 50));
+        Assert.assertEquals(2, result.getContent().size());
     }
 
     @Test
@@ -68,7 +70,8 @@ public class GroupRepositoryTestIT {
         Assert.assertEquals(2, result.getContent().size());
     }
 
-    //-----------------------------------------------DROPDOWN slice---------------------------------------------------
+    //-----------------------------------------------DROPDOWN slice-----------------------------------------------------
+
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -79,7 +82,7 @@ public class GroupRepositoryTestIT {
     }
 
 
-    //--------------------------------------------------ADMIN---------------------------------------------------------
+    //----------------------------------------------------ADMIN---------------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/group_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

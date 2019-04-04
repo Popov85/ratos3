@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class ThemeGenerator {
@@ -45,7 +46,7 @@ public class ThemeGenerator {
 
     private Theme createOne(int i, Course course) {
         Theme theme = new Theme();
-        theme.setName("Theme_#"+i);
+        theme.setName("Theme_#"+ UUID.randomUUID());
         theme.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
         theme.setStaff(em.getReference(Staff.class, 1L));
         theme.setCourse(course);

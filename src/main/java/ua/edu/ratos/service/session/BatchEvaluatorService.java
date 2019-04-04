@@ -72,7 +72,7 @@ public class BatchEvaluatorService {
                 responsesEvaluated.put(questionId, new ResponseEvaluated(questionId, response, score));
                 log.debug("Evaluated response, ID = {}, score = {}", questionId, score);
             } else {// if not found, consider incorrect
-                log.warn("Empty or no response, incorrect ID = {}", questionId);
+                log.debug("Empty or no response, incorrect ID = {}", questionId);
                 responsesEvaluated.put(questionId, ResponseEvaluated.buildEmpty(questionId));
             }
         }

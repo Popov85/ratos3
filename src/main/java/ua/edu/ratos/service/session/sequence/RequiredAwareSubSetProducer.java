@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class LevelPartProducer {
+public class RequiredAwareSubSetProducer {
 
     private CollectionShuffler collectionShuffler;
 
@@ -24,34 +25,32 @@ public class LevelPartProducer {
         this.collectionShuffler = collectionShuffler;
     }
 
-    public List<Question> getLevelPart(Set<Question> typeList, byte level, short requestedQuantity) {
-        List<Question> levelList = getLevelList(typeList, level);
+    /**
+     * Randomly reduces the amount of questions of given theme, type, level to the requested quantity
+     * making sure all required questions are included.
+     * @param requestedQuantity quantity of questions requested according to scheme's settings
+     * @param questions all existing questions of given theme, type and level
+     * @return the requested quantity of questions of given theme, type, level and required flag
+     */
+    public List<Question> getSubSetWithRequired(short requestedQuantity, @NonNull final Set<Question> questions) {
+        List<Question> list = new ArrayList<>(questions);
         // Eliminate construction phase mistake: if requested level of this type not found (mistake during test construction), return empty list (as a fallback)
-        if (levelList.isEmpty()) return Collections.emptyList();
+        if (requestedQuantity==0 || list.isEmpty()) return Collections.emptyList();
         // Eliminate construction phase mistake: if the actual list from DB is less than is requested, return a reduced number of questions (as a fallback)
-        if (requestedQuantity > levelList.size()) requestedQuantity = (short) levelList.size();
+        if (requestedQuantity > list.size()) requestedQuantity = (short) list.size();
         // make sure all "required" questions are included into the result list
-        List<Question> requiredList = getRequiredList(levelList).get(true);
+        Map<Boolean, List<Question>> map = list.stream().collect(Collectors.partitioningBy(Question::isRequired));
+        List<Question> requiredList = map.get(true);
         if (requiredList.size()==requestedQuantity) return requiredList;
         // rare case, required questions are majority and the resulting list will contain only them
         if (requiredList.size()>requestedQuantity) return collectionShuffler.shuffle(requiredList, requestedQuantity);
         // normal case, required questions are just minority and we still need to randomly select non-required to satisfy request
-        List<Question> resultLevel = new ArrayList<>(requiredList);
+        List<Question> result = new ArrayList<>(requiredList);
         // how many non-required questions should be shuffled
         int dif = requestedQuantity - requiredList.size();
-        List<Question> nonRequiredList = getRequiredList(levelList).get(false);
+        List<Question> nonRequiredList = map.get(false);
         List<Question> shuffled = collectionShuffler.shuffle(nonRequiredList, dif);
-        resultLevel.addAll(shuffled);
-        return resultLevel;
-    }
-
-    private List<Question> getLevelList(Set<Question> questions, byte level) {
-        return questions.stream()
-                .filter(q -> q.getLevel()==level)
-                .collect(Collectors.toList());
-    }
-
-    private Map<Boolean, List<Question>> getRequiredList(List<Question> levelList) {
-        return levelList.stream().collect(Collectors.partitioningBy(Question::isRequired));
+        result.addAll(shuffled);
+        return result;
     }
 }

@@ -1,7 +1,6 @@
 package ua.edu.ratos.it.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -34,21 +34,127 @@ public class QuestionRepositoryTestIT {
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_test_data_types.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findTypesTest() {
-        final Set<Long> types = questionRepository.findTypes(1L);
-        assertEquals(3, types.size());
-        Assert.assertThat(types, containsInAnyOrder(1L, 2L, 3L));
+    public void countByThemeIdTest() {
+        int result = questionRepository.countByThemeId(1L);
+        assertEquals(5, result);
     }
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_test_data_types.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void countTypesTest() {
+    public void countAllTypesByThemeIdTest() {
         Set<TypeAndCount> result = questionRepository.countAllTypesByThemeId(1L);
         assertEquals(3, result.size());
     }
 
 
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_test_data_types.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForTypeLevelMapByThemeIdTest() {
+        final Set<Question> questions = questionRepository.findAllForTypeLevelMapByThemeId(1L);
+        assertEquals(5, questions.size());
+    }
+
+    //---------------------------------------------------Student session------------------------------------------------
+
+    // simple
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_session_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllForSimpleSessionByThemeTypeAndLevelTest() {
+        Set<Question> result = questionRepository.findAllForSimpleSessionByThemeTypeAndLevel(1L, 1L, (byte) 1);
+        assertEquals(3, result.size());
+    }
+
+
+    // cached
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllMCQForCachedSessionWithEverythingByThemeAndLevelTest() {
+        Set<QuestionMCQ> result = questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(1L,  (byte) 1);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbsq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllFBSQForCachedSessionWithEverythingByThemeAndLevelTest() {
+        Set<QuestionFBSQ> result = questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(1L,  (byte) 1);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbmq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllFBMQForCachedSessionWithEverythingByThemeAndLevelTest() {
+        Set<QuestionFBMQ> result = questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(1L,  (byte) 2);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllMQForCachedSessionWithEverythingByThemeAndLevelTest() {
+        Set<QuestionMQ> result = questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(1L,  (byte) 1);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_sq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllSQForCachedSessionWithEverythingByThemeAndLevelTest() {
+        Set<QuestionSQ> result = questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(1L,  (byte) 2);
+        assertEquals(1, result.size());
+    }
+
+    //-----------------------------------------------------Instructor---------------------------------------------------
+
+    // one
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findOneMCQForEditByIdTest() {
+        QuestionMCQ result = questionRepository.findOneMCQForEditById(1L);
+        assertNotNull(result);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbsq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findOneFBSQForEditByIdTest() {
+        QuestionFBSQ result = questionRepository.findOneFBSQForEditById(1L);
+        assertNotNull(result);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbmq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findOneFBMQForEditByIdTest() {
+        QuestionFBMQ result = questionRepository.findOneFBMQForEditById(1L);
+        assertNotNull(result);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findOneMQForEditByIdTest() {
+        QuestionMQ result = questionRepository.findOneMQForEditById(1L);
+        assertNotNull(result);
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_sq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findOneSQForEditByIdTest() {
+        QuestionSQ result = questionRepository.findOneSQForEditById(1L);
+        assertNotNull(result);
+    }
+
+
+    // table
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -64,7 +170,6 @@ public class QuestionRepositoryTestIT {
         final Slice<QuestionMCQ> questions = questionRepository.findAllMCQForSearchByDepartmentIdAndTitleContains(1L, "MCQ", PageRequest.of(0, 30));
         assertEquals(2, questions.getContent().size());
     }
-
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/question_fbsq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -130,35 +235,4 @@ public class QuestionRepositoryTestIT {
         final Slice<QuestionSQ> questions = questionRepository.findAllSQForSearchByDepartmentIdAndTitleContains(1L, "SQ", PageRequest.of(0, 50));
         assertEquals(2, questions.getContent().size());
     }
-
-
-    //--------------------------------------------------STUDENT SESSION JPA---------------------------------------------
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_session_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForSessionByThemeIdAndTypeTest() {
-        final Set<Question> questions = questionRepository.findAllForSessionByThemeIdAndType(1L, 1L);
-        assertEquals(3, questions.size());
-    }
-
-    //--------------------------------------------------STUDENT SESSION DB----------------------------------------------
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_session_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllRequiredByThemeIdAndTypeAndLevelTest() {
-        final Set<Question> questions = questionRepository.findAllRequiredForSessionByThemeIdAndTypeAndLevel(1L, 1L, (byte)1);
-        assertEquals(1, questions.size());
-    }
-
-    @Test
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_session_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findNOutOfMForSessionByThemeIdAndTypeAndLevelTest() {
-        Set<Question> questions = questionRepository.findNOutOfMForSessionByThemeIdAndTypeAndLevel(2L, 1L, (byte) 1, 2);
-        assertEquals(2, questions.size());
-    }
-
-
 }

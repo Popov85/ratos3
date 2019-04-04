@@ -19,7 +19,7 @@ insert into type_level(scheme_theme_id, type_id, level_1, level_2, level_3) valu
 insert into type_level(scheme_theme_id, type_id, level_1, level_2, level_3) values(4, 4, 5, 0, 0);
 insert into type_level(scheme_theme_id, type_id, level_1, level_2, level_3) values(5, 5, 5, 0, 0);
 
-insert into groups(name, is_enabled, staff_id) values('Group #1', 1, 1);
+insert into groups(name, is_enabled, created_by, belongs_to) values('Group #1', 1, 1, 1);
 
 insert into group_scheme(group_id, scheme_id) values(1, 1);
 

@@ -26,8 +26,8 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
             countQuery = "select count(m) from Mode m join m.staff s where s.staffId=?1")
     Page<Mode> findAllForTableByStaffId(Long staffId, Pageable pageable);
 
-    @Query(value="select m from Mode m join fetch m.staff s join s.department d where d.depId = ?1",
-            countQuery = "select count(m) from Mode m join m.staff s join s.department d where d.depId=?1")
+    @Query(value="select m from Mode m join fetch m.staff s join m.department d where d.depId = ?1",
+            countQuery = "select count(m) from Mode m join m.staff s join m.department d where d.depId=?1")
     Page<Mode> findAllForTableByDepartmentId(Long depId, Pageable pageable);
 
     //-------------------------------------------------------Search in table--------------------------------------------
@@ -36,8 +36,8 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
             countQuery = "select count(m) from Mode m join m.staff s where s.staffId=?1 and m.name like %?2%")
     Page<Mode> findAllForTableByStaffIdAndModeNameLettersContains(Long staffId, String letters, Pageable pageable);
 
-    @Query(value="select m from Mode m join fetch m.staff s join s.department d where d.depId = ?1 and m.name like %?2%",
-            countQuery = "select count(m) from Mode m join m.staff s join s.department d where d.depId=?1 and m.name like %?2%")
+    @Query(value="select m from Mode m join fetch m.staff s join m.department d where d.depId = ?1 and m.name like %?2%",
+            countQuery = "select count(m) from Mode m join m.staff s join m.department d where d.depId=?1 and m.name like %?2%")
     Page<Mode> findAllForTableByDepartmentIdAndModeNameLettersContains(Long depId, String letters, Pageable pageable);
 
     //--------------------------------------------------------DropDown--------------------------------------------------
@@ -45,7 +45,7 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
     @Query(value="select m from Mode m join fetch m.staff s where s.staffId = ?1")
     Slice<Mode> findAllForDropDownByStaffId(Long staffId, Pageable pageable);
 
-    @Query(value="select m from Mode m join fetch m.staff s join s.department d where d.depId = ?1")
+    @Query(value="select m from Mode m join fetch m.staff s join m.department d where d.depId = ?1")
     Slice<Mode> findAllForDropDownByDepartmentId(Long depId, Pageable pageable);
 
     //------------------------------------------------------SEARCH dropdown---------------------------------------------
@@ -53,7 +53,7 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
     @Query(value="select m from Mode m join fetch m.staff s where s.staffId = ?1 and m.name like %?2%")
     Slice<Mode> findAllForDropDownByStaffIdAndModeNameLettersContains(Long staffId, String letters, Pageable pageable);
 
-    @Query(value="select m from Mode m join fetch m.staff s join s.department d where d.depId = ?1 and m.name like %?2%")
+    @Query(value="select m from Mode m join fetch m.staff s join m.department d where d.depId = ?1 and m.name like %?2%")
     Slice<Mode> findAllForDropDownByDepartmentIdAndModeNameLettersContains(Long depId, String letters, Pageable pageable);
 
     //-----------------------------------------------------------ADMIN--------------------------------------------------

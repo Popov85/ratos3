@@ -111,7 +111,7 @@ public class AppProperties {
         private boolean saveAbandonedResults;
 
         public enum Algorithm {
-            JPA, DB, DECIDE
+            SIMPLE, CACHED, DECIDE
         }
     }
 

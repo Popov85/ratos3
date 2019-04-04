@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.SchemeThemeService;
 import ua.edu.ratos.service.SchemeThemeSettingsService;
@@ -69,7 +68,6 @@ public class SchemeController {
         return ResponseEntity.created(location).build();
     }
 
-    @TrackTime
     @GetMapping(value = "/schemes/{schemeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SchemeOutDto> findOne(@PathVariable Long schemeId) {
         SchemeOutDto dto = schemeService.findByIdForUpdate(schemeId);

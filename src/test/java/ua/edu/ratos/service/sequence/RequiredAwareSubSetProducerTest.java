@@ -10,9 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
-import ua.edu.ratos.service.domain.question.QuestionDomain;
-import ua.edu.ratos.service.domain.question.QuestionMCQDomain;
-import ua.edu.ratos.service.session.sequence.LevelPartProducer;
+import ua.edu.ratos.service.session.sequence.RequiredAwareSubSetProducer;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,13 +22,13 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-public class LevelPartProducerTest {
+public class RequiredAwareSubSetProducerTest {
 
     @Autowired
-    private LevelPartProducer levelPartProducer;
+    private RequiredAwareSubSetProducer levelPartProducer;
 
     @TestConfiguration
-    static class LevelPartProducerTestContextConfiguration {
+    static class RequiredAwareSubSetProducerTestContextConfiguration {
 
         @Bean
         public CollectionShuffler collectionShuffler() {
@@ -38,8 +36,8 @@ public class LevelPartProducerTest {
         }
 
         @Bean
-        public LevelPartProducer levelPartProducer() {
-            return new LevelPartProducer();
+        public RequiredAwareSubSetProducer levelPartProducer() {
+            return new RequiredAwareSubSetProducer();
         }
     }
 
@@ -60,7 +58,7 @@ public class LevelPartProducerTest {
         QuestionMCQ q10 = createOne(10L, (byte) 1, "MCQ #10", true);
         set.addAll(Arrays.asList(q1, q2, q3, q4, q5, q6, q7, q8, q9, q10));
 
-        List<Question> result = levelPartProducer.getLevelPart(set, (byte) 1, (short) 5);
+        List<Question> result = levelPartProducer.getSubSetWithRequired((short) 5, set);
 
         Assert.assertEquals(5, result.size());
 
@@ -89,7 +87,7 @@ public class LevelPartProducerTest {
         QuestionMCQ q10 = createOne(10L, (byte) 1, "MCQ #10", false);
         set.addAll(Arrays.asList(q1, q2, q3, q4, q5, q6, q7, q8, q9, q10));
 
-        List<Question> result = levelPartProducer.getLevelPart(set, (byte) 1, (short) 5);
+        List<Question> result = levelPartProducer.getSubSetWithRequired((short) 5, set);
 
         Assert.assertEquals(5, result.size());
 
@@ -118,7 +116,7 @@ public class LevelPartProducerTest {
         QuestionMCQ q10 = createOne(10L, (byte) 1, "MCQ #10", true);
         set.addAll(Arrays.asList(q1, q2, q3, q4, q5, q6, q7, q8, q9, q10));
 
-        List<Question> result = levelPartProducer.getLevelPart(set, (byte) 1, (short) 5);
+        List<Question> result = levelPartProducer.getSubSetWithRequired((short) 5, set);
 
         Assert.assertEquals(5, result.size());
 

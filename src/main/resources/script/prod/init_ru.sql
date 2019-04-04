@@ -66,13 +66,13 @@ insert into free_point(name, min_value, pass_value, max_value, staff_id, grading
 insert into free_point(name, min_value, pass_value, max_value, staff_id, grading_id)
     values('LMS', 0, 0.5, 1, 1, 3);
 
-insert into settings(name, staff_id, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, display_question_results, is_deleted, is_default)
-  values('по-умолчанию', 1, 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1);
 
-insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
-    values('экзамен', 1, 0, 0, 0, 0, 0, 1);
-insert into mode(name, staff_id, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable)
-    values('тренировка', 1, 1, 1, 1, 1, 1, 1);
+insert into settings(name, seconds_per_question, strict_seconds_per_question, questions_per_sheet, days_keep_result_details, level_2_coefficient, level_3_coefficient, display_percent, display_mark, display_theme_results, display_question_results, is_deleted, is_default, created_by, belongs_to)
+    values('по-умолчанию', 60, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1);
+insert into mode(name, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable, is_default, created_by, belongs_to)
+    values('экзамен', 0, 0, 0, 0, 0, 1, 1, 1, 1);
+insert into mode(name, is_helpable, is_pyramid, is_skipable, is_rightans, is_preservable, is_reportable, is_default, created_by, belongs_to)
+    values('тренировка', 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 insert into settings_fbq (name, words_limit, symbols_limit, is_numeric, is_typo_allowed, is_case_sensitive, lang_id, staff_id)
     values('eng по-умолчанию', 5, 100, 0, 0, 0, 1, 1);

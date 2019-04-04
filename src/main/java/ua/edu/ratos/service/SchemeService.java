@@ -250,7 +250,6 @@ public class SchemeService {
 
     //-------------------------------------------------One (for session)------------------------------------------------
 
-    @TrackTime
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
         return schemeRepository.findForSessionById(schemeId);

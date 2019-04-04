@@ -25,7 +25,6 @@ public class UserQuestionStarredController {
         this.userQuestionStarredService = userQuestionStarredService;
     }
 
-
     @PutMapping(value = "/questions-starred/{questionId}/stars/{stars}")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateStars(@PathVariable Long questionId, @PathVariable byte stars) {

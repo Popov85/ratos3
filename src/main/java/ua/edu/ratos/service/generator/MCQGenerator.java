@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.generator;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,13 @@ import ua.edu.ratos.dao.repository.QuestionRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
 public class MCQGenerator {
+
+    private static final int MAX_LEVEL = 1;
 
     @PersistenceContext
     private EntityManager em;
@@ -25,6 +28,9 @@ public class MCQGenerator {
 
     @Autowired
     private Rnd rnd;
+
+    @Autowired
+    private StringGenerator stringGenerator;
 
 
     @TrackTime
@@ -36,17 +42,24 @@ public class MCQGenerator {
             Help help = helps.get(rnd.rnd(0, helps.size() - 1));
             QuestionMCQ question = createOne(i, theme, help, resources);
             result.add(question);
+            if (i%1000==0) {
+                questionRepository.saveAll(result);
+                em.flush();
+                result = new ArrayList<>();
+                log.debug("Flushed another patch of MCQ, i = {}", i);
+            }
         }
-        questionRepository.saveAll(result);
         return result;
     }
 
     private QuestionMCQ createOne(int questionId, Theme theme, Help help, List<Resource> resources) {
         QuestionMCQ questionMCQ = new QuestionMCQ();
-        questionMCQ.setQuestion(prefix()+"_question MCQ #"+questionId);
+        // 50-150 words, 5-15 symbols per word
+        String question = stringGenerator.createText(50, 150, 5, 15, true);
+        questionMCQ.setQuestion(stringGenerator.createPrefix()+"_question MCQ #"+questionId+" question: "+question);
         questionMCQ.setType(em.getReference(QuestionType.class, 1L));
         questionMCQ.setLang(em.getReference(Language.class, 1L));
-        questionMCQ.setLevel((byte) rnd.rnd(1, 4));
+        questionMCQ.setLevel((byte) rnd.rnd(1, MAX_LEVEL+1));
         questionMCQ.setTheme(theme);
 
         // each 100th is deleted
@@ -62,13 +75,6 @@ public class MCQGenerator {
         return questionMCQ;
     }
 
-    private String prefix() {
-        List<Character> letters = Arrays.asList('a','b','c','d','e','f','g');
-        return Character.toString(letters.get(rnd.rnd(0, 7)))
-                +Character.toString(letters.get(rnd.rnd(0, 7)))
-                +Character.toString(letters.get(rnd.rnd(0, 7)));
-    }
-
     private List<AnswerMCQ> createAnswers(int questionId, int quantity, List<Resource> resources) {
         List<AnswerMCQ> result = new ArrayList<>();
         for (int i = 1; i < quantity; i++) {
@@ -82,7 +88,8 @@ public class MCQGenerator {
 
     private AnswerMCQ createInCorrectAnswer(int questionId, int answer, List<Resource> resources) {
         AnswerMCQ answerMCQ = new AnswerMCQ();
-        answerMCQ.setAnswer("Answer (incorrect) #"+answer+" to question #"+questionId);
+        String text = stringGenerator.createText(10, 50, 1, 15, false);
+        answerMCQ.setAnswer("Answer (incorrect) #"+answer+" to question #"+questionId+" answer: "+text);
         answerMCQ.setPercent((short)0);
         answerMCQ.setRequired(false);
         Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
@@ -92,7 +99,8 @@ public class MCQGenerator {
 
     private AnswerMCQ createCorrectAnswer(int questionId, int answer, List<Resource> resources) {
         AnswerMCQ answerMCQ = new AnswerMCQ();
-        answerMCQ.setAnswer("Answer (correct) #"+answer+" to question #"+questionId);
+        String text = stringGenerator.createText(10, 50, 1, 15, false);
+        answerMCQ.setAnswer("Answer (correct) #"+answer+" to question #"+questionId+" answer: "+text);
         answerMCQ.setPercent((short)100);
         answerMCQ.setRequired(true);
         Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
@@ -177,7 +185,7 @@ public class MCQGenerator {
     private QuestionMCQ addResource(QuestionMCQ q) {
         Resource resource = new Resource();
         resource.setDescription("Resource for question "+q.getQuestion());
-        resource.setLink("https://resources-for-totalByType.com/"+q.getQuestion());
+        resource.setLink("https://resources-for-question.com/"+q.getQuestion());
         resource.setStaff(em.getReference(Staff.class, 1L));
         q.addResource(resource);
         return q;

@@ -14,9 +14,6 @@ import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import ua.edu.ratos.service.validator.AnswerMCQInDtoValidator;
 import java.net.URI;
 
-/**
- * @link https://g00glen00b.be/validating-the-input-of-your-rest-api-with-spring/
- */
 @Slf4j
 @RestController
 @RequestMapping("/instructor")

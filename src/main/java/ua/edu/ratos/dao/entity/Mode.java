@@ -12,7 +12,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = {"staff"})
+@ToString(exclude = {"staff", "department"})
 @Entity
 @Table(name = "mode")
 @Cacheable
@@ -62,6 +62,10 @@ public class Mode {
     private boolean defaultMode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @JoinColumn(name = "created_by")
     private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to")
+    private Department department;
 }

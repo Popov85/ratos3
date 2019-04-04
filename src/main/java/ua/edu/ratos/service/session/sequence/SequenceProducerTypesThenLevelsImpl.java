@@ -1,8 +1,9 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
 import java.util.*;
@@ -19,7 +20,14 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
 
     private static final List<Byte> LEVEL_PATTERN = Arrays.asList((byte) 1, (byte) 2, (byte) 3);
 
+    private SubSetProducer subSetProducer;
+
     private CollectionShuffler collectionShuffler;
+
+    @Autowired
+    public void setSubSetProducer(SubSetProducer subSetProducer) {
+        this.subSetProducer = subSetProducer;
+    }
 
     @Autowired
     public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
@@ -27,9 +35,12 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
     }
 
     @Override
-    public List<Question> getSequence(List<SchemeTheme> schemeThemes, SequenceMapper sequenceMapper) {
-        List<Question> result = new ArrayList<>();
-        schemeThemes.forEach(s-> result.addAll(sequenceMapper.getNOutOfM(s.getTheme().getThemeId(), s.getSettings())));
+    public List<Question> getSequence(@NonNull final Scheme scheme, @NonNull final QuestionLoader questionLoader) {
+        // load all questions, preferably from cache, can be a lot (10.000)
+        Map<Affiliation, Set<Question>> map = questionLoader.loadAllQuestionsToMap(scheme);
+        // Select a subset according to settings
+        List<Question> result = subSetProducer.getSubSet(map);
+
         // Shuffle and sort according to patterns
         List<Question> resultType = new ArrayList<>();
         TYPE_PATTERN.forEach(typeId->{
@@ -45,7 +56,7 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
     }
 
     @Override
-    public String type() {
+    public String getStrategy() {
         return "types&levels";
     }
 }

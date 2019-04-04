@@ -3,18 +3,18 @@ package ua.edu.ratos.service;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.*;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
-import ua.edu.ratos.service.transformer.entity_to_domain.QuestionDomainTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
 
 import java.util.*;
@@ -29,8 +29,6 @@ public class QuestionService {
 
     private DtoQuestionTransformer dtoQuestionTransformer;
 
-    private QuestionDomainTransformer questionDomainTransformer;
-
     private QuestionDtoTransformer questionDtoTransformer;
 
     private SecurityUtils securityUtils;
@@ -43,11 +41,6 @@ public class QuestionService {
     @Autowired
     public void setDtoQuestionTransformer(DtoQuestionTransformer dtoQuestionTransformer) {
         this.dtoQuestionTransformer = dtoQuestionTransformer;
-    }
-
-    @Autowired
-    public void setQuestionDomainTransformer(QuestionDomainTransformer questionDomainTransformer) {
-        this.questionDomainTransformer = questionDomainTransformer;
     }
 
     @Autowired
@@ -135,6 +128,42 @@ public class QuestionService {
         return questionDtoTransformer.toDto(questionRepository.findOneSQForEditById(questionId));
     }
 
+    //-------------------------------------------------------Session----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<Question> findAllForSessionByThemeIdAndType(@NonNull final Long themeId, @NonNull final Long typeId, byte level) {
+        return questionRepository.findAllForSimpleSessionByThemeTypeAndLevel(themeId, typeId, level);
+    }
+
+    //----------------------------------------------------Cached session------------------------------------------------
+    @Cacheable(value = "question")
+    @Transactional(readOnly = true)
+    public Set<QuestionMCQ> findAllMCQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @Cacheable(value = "question")
+    @Transactional(readOnly = true)
+    public Set<QuestionFBSQ> findAllFBSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @Cacheable(value = "question")
+    @Transactional(readOnly = true)
+    public Set<QuestionFBMQ> findAllFBMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @Cacheable(value = "question")
+    @Transactional(readOnly = true)
+    public Set<QuestionMQ> findAllMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @Cacheable(value = "question")
+    @Transactional(readOnly = true)
+    public Set<QuestionSQ> findAllSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
 
     //----------------------------------------------------Staff table---------------------------------------------------
 

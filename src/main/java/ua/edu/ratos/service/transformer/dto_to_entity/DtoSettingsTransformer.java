@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
@@ -37,6 +38,7 @@ public class DtoSettingsTransformer {
     public Settings toEntity(@NonNull final SettingsInDto dto) {
         Settings settings = modelMapper.map(dto, Settings.class);
         settings.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        settings.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return settings;
     }
 }

@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .and()
-                .httpBasic()
+                .httpBasic() // Disable for production
             .and()
                 .headers()
                 .frameOptions().disable()

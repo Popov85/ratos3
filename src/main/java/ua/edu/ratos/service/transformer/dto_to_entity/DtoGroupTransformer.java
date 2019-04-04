@@ -38,6 +38,7 @@ public class DtoGroupTransformer {
         Group group = modelMapper.map(dto, Group.class);
         group.setCreated(LocalDateTime.now());
         group.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
+        group.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return group;
     }
 }

@@ -1,6 +1,7 @@
 package ua.edu.ratos.service.session;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.BatchEvaluated;
@@ -17,6 +18,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
  * With this implementation, front-end script decides when to launch finish request (with no batchIn) only when it has received an empty batchOut.
  * This is the typical case for educational types of sessions.
  */
+@Slf4j
 @Service
 public class DynamicNextProcessingService implements NextProcessingService {
 

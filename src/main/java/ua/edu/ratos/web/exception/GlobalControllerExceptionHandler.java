@@ -24,7 +24,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ExceptionResponse unknownException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
                 new ExceptionResponse(ex.getMessage(), request.toString());
-        log.error("Unknown error has occurred = {}", ex.getMessage());
+        log.error("Unknown error has occurred with message = {}", ex.getMessage());
         return exceptionResponse;
     }
 

@@ -111,7 +111,7 @@ public class ResultsGeneratorsSuite {
         suite.setCourses(courses.size());
         List<Theme> themes = themeGenerator.generate(suite.getThemes(), courses);
         suite.setThemes(themes.size());
-        List<Scheme> schemes = schemeGenerator.generate(suite.getSchemes(), themes, departments, courses);
+        List<Scheme> schemes = schemeGenerator.generate(suite.getSchemes(), themes, departments, courses, 5);
         suite.setSchemes(schemes.size());
         List<Result> results = resultsGenerator.generate(suite.getResults(), students, schemes);
         suite.setResults(results.size());

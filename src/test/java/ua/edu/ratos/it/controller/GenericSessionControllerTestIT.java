@@ -129,6 +129,8 @@ public class GenericSessionControllerTestIT {
         log.debug("Result = {}", resultOutDto);
 
         // Expected result:
+        assertNotNull(resultOutDto.getScheme());
+        assertNotNull(resultOutDto.getUser());
         assertTrue(resultOutDto.isPassed());
         assertEquals(50.0, resultOutDto.getPercent().doubleValue(), 0.01);
         assertEquals(3.0, resultOutDto.getGrade().doubleValue(), 0.01);
