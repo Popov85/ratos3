@@ -12,12 +12,20 @@ import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
+import java.util.concurrent.Semaphore;
+
 /**
  * Use this implementation for non-LMS sessions.
  */
 @Slf4j
 @Service
 public class BasicStartProcessingServiceImpl implements StartProcessingService {
+
+    // Max threads doing job simultaneously
+    private static final int PERMITS = 10;
+    private static final long THREAD_AWAIT_TIMEOUT = 5;
+
+    private Semaphore semaphore = new Semaphore(PERMITS, true);
 
     static final String NOT_AVAILABLE_OUTSIDE_LMS = "Requested scheme is not available outside LMS";
     static final String NOT_AVAILABLE_FOR_USER = "Requested scheme is not available for this user";
@@ -84,6 +92,7 @@ public class BasicStartProcessingServiceImpl implements StartProcessingService {
         // Update SessionData
         sessionDataService.update(sessionData, batchOutDto);
         log.debug("SessionData is built = {}", sessionData);
+        log.debug("First batch = {}", batchOutDto);
         return sessionData;
     }
 

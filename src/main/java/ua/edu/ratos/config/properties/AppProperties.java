@@ -36,7 +36,8 @@ public class AppProperties {
     public static class Init {
 
         /**
-         * Clear db and re-init with pre-defined values
+         * Clear db and re-init with pre-defined values.
+         * Solely for testing purposes.
          */
         private boolean reInit;
 
@@ -47,6 +48,29 @@ public class AppProperties {
 
         public enum Language {
             EN, FR, RU
+        }
+
+        /**
+         * Specifies if we should populate cache of questions at start-up
+         */
+        private Caching cache;
+
+        /**
+         * Specifies how many threads should do the job of loading to cache at start-up
+         * Use the value 1 for single core CPU, 2 - for dual core CPU, etc.
+         */
+        @Min(1)
+        @Max(32)
+        private int cacheThreads;
+
+        /**
+         * NONE - no cache populating on start up;
+         * LARGE - only large schemes (with multiple themes) to load to cache on start up
+         * LATEST - only latest schemes taken from last 1000 results
+         * ALL - all schemes will be loaded to cache at start-up
+         */
+        public enum Caching {
+            NONE, LARGE, LATEST, ALL
         }
 
     }

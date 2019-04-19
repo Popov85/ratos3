@@ -18,7 +18,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     //------------------------------------------Count for deciding question provider impl-------------------------------
 
-    @Cacheable("quantity")
     @Query(value = "select count(q) from Question q join q.theme t where t.themeId = ?1")
     int countByThemeId(Long themeId);
 

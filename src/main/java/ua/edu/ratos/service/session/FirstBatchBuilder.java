@@ -137,7 +137,7 @@ public class FirstBatchBuilder {
     protected int getBatchesLeft(@NonNull final SessionData sessionData, int questionsPerBatch) {
         final int currentIndex = sessionData.getCurrentIndex()+questionsPerBatch;
         final int totalQuestionsNumber = sessionData.getQuestionDomains().size();
-        if (currentIndex>=totalQuestionsNumber-1) return 0;
+        if (currentIndex>=totalQuestionsNumber) return 0;
         int quantity = (totalQuestionsNumber - currentIndex)/questionsPerBatch;
         if ((totalQuestionsNumber - currentIndex)%questionsPerBatch==0) {
             return quantity;

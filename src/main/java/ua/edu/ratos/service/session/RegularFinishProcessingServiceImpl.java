@@ -47,7 +47,8 @@ public class RegularFinishProcessingServiceImpl implements FinishProcessingServi
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
         boolean timeOuted = !sessionData.hasMoreTime();
         if (sessionData.hasMoreQuestions() && !timeOuted)
-            throw new IllegalStateException(CORRUPT_FINISH_REQUEST);
+            throw new IllegalStateException(CORRUPT_FINISH_REQUEST
+                    +" schemeId = "+sessionData.getSchemeDomain().getSchemeId()+" userId = "+sessionData.getUserId());
         // Reset currentBatch related fields to null
         if (!timeOuted) sessionDataService.finalize(sessionData);
         // Build result object + gamification check

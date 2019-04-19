@@ -3,6 +3,7 @@ package ua.edu.ratos.service;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -135,33 +136,66 @@ public class QuestionService {
     }
 
     //----------------------------------------------------Cached session------------------------------------------------
-    @Cacheable(value = "question")
+
+    @Cacheable(value = "question", key="{'MCQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMCQ> findAllMCQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question")
+    @Cacheable(value = "question", key="{'FBSQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBSQ> findAllFBSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question")
+    @Cacheable(value = "question", key="{'FBMQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBMQ> findAllFBMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question")
+    @Cacheable(value = "question", key="{'MQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMQ> findAllMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question")
+    @Cacheable(value = "question", key="{'SQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionSQ> findAllSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    // -----------------------------------------------Update Cache------------------------------------------------------
+
+    @CachePut(value = "question", key="{'MCQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public Set<QuestionMCQ> findAllMCQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @CachePut(value = "question", key="{'FBSQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public Set<QuestionFBSQ> findAllFBSQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @CachePut(value = "question", key="{'FBMQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public Set<QuestionFBMQ> findAllFBMQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @CachePut(value = "question", key="{'MQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public Set<QuestionMQ> findAllMQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
+        return questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
+    }
+
+    @CachePut(value = "question", key="{'SQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public Set<QuestionSQ> findAllSQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 

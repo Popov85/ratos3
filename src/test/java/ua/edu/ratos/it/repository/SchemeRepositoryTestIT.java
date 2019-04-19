@@ -37,7 +37,7 @@ public class SchemeRepositoryTestIT {
         scheme.getThemes().forEach(t->Assert.assertEquals(1, t.getSettings().size()));
     }
 
-    //-------------------------------------------------------SESSION---------------------------------------------------
+    //-------------------------------------------------------SESSION----------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one_session.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -49,7 +49,33 @@ public class SchemeRepositoryTestIT {
         scheme.getGroups().forEach(g->Assert.assertEquals(2, g.getStudents().size()));
     }
 
-    //------------------------------------------------------SECURITY--------------------------------------------------
+    //-------------------------------------------------------CACHE------------------------------------------------------
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_with_themes_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findLargeForCachedSessionTest() {
+        Slice<Scheme> scheme = schemeRepository.findLargeForCachedSession(PageRequest.of(0, 10));
+        Assert.assertEquals(2, scheme.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_with_themes_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findCoursesSchemesForCachedSessionTest() {
+        Slice<Scheme> scheme = schemeRepository.findCoursesSchemesForCachedSession(2L, PageRequest.of(0, 10));
+        Assert.assertEquals(2, scheme.getContent().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_with_themes_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findDepartmentSchemesForCachedSessionTest() {
+        Slice<Scheme> scheme = schemeRepository.findDepartmentSchemesForCachedSession(2L, PageRequest.of(0, 10));
+        Assert.assertEquals(2, scheme.getContent().size());
+    }
+
+    //------------------------------------------------------SECURITY----------------------------------------------------
 
     @Test
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

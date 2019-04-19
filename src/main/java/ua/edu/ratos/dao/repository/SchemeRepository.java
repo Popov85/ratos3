@@ -1,5 +1,6 @@
 package ua.edu.ratos.dao.repository;
 
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import ua.edu.ratos.dao.entity.Scheme;
 import javax.persistence.QueryHint;
+import java.util.Set;
 
 public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
@@ -21,9 +23,8 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
     // -----------------------------------------One for different purposes----------------------------------------------
 
-    @Cacheable("scheme")
     @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students where s.schemeId = ?1")
-    //@QueryHints(value = { @QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="USE"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="USE")})
     Scheme findForSessionById(Long schemeId);
 
     @Query(value = "SELECT s FROM Scheme s join fetch s.themes t join fetch t.settings where s.schemeId = ?1")
@@ -31,6 +32,25 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
     @Query(value = "SELECT s FROM Scheme s left join fetch s.grading t where s.schemeId = ?1")
     Scheme findForGradingById(Long schemeId);
+
+    //-------------------------------------------Populate cache on start-up---------------------------------------------
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students")
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="REFRESH"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
+    Slice<Scheme> findAllForCachedSession(Pageable pageable);
+
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students where size(s.themes)>1")
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="REFRESH"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
+    Slice<Scheme> findLargeForCachedSession(Pageable pageable);
+
+    //--------------------------------------------Populate cache at run-time--------------------------------------------
+
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students join s.course c where c.courseId=?1")
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="REFRESH"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
+    Slice<Scheme> findCoursesSchemesForCachedSession(Long courseId, Pageable pageable);
+
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students join s.department d where d.depId=?1")
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="REFRESH"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
+    Slice<Scheme> findDepartmentSchemesForCachedSession(Long depId, Pageable pageable);
 
     //--------------------------------------------Instructors (for table)-----------------------------------------------
 

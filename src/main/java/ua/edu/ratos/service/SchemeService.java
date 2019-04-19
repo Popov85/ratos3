@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.repository.GroupSchemeRepository;
@@ -248,8 +247,7 @@ public class SchemeService {
     }
 
 
-    //-------------------------------------------------One (for session)------------------------------------------------
-
+    //--------------------------------------------One (for cached session)----------------------------------------------
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
         return schemeRepository.findForSessionById(schemeId);
@@ -266,6 +264,29 @@ public class SchemeService {
         schemeOutDto.setGradingDetails(gradingDetails);
         return schemeOutDto;
     }
+
+    //----------------------------------------------Start-up cache update-----------------------------------------------
+    @Transactional(readOnly = true)
+    public Slice<Scheme> findAllForCachedSession(@NonNull final Pageable pageable) {
+        return schemeRepository.findAllForCachedSession(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<Scheme> findLargeForCachedSession(@NonNull final Pageable pageable) {
+        return schemeRepository.findLargeForCachedSession(pageable);
+    }
+
+    //-----------------------------------------------Runtime cache update-----------------------------------------------
+    @Transactional(readOnly = true)
+    public Slice<Scheme> findCoursesSchemesForCachedSession(@NonNull final Pageable pageable, @NonNull final Long courseId) {
+        return schemeRepository.findCoursesSchemesForCachedSession(courseId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<Scheme> findDepartmentSchemesForCachedSession(@NonNull final Pageable pageable, @NonNull final Long depId) {
+        return schemeRepository.findDepartmentSchemesForCachedSession(depId, pageable);
+    }
+
 
     //-------------------------------------------------Staff tables-----------------------------------------------------
 
