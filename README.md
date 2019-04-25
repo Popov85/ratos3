@@ -7,7 +7,7 @@ like 10000+ learning sessions per day, with 1000+ simultaneous active sessions o
 within any LTI 1.x-compatible [LMS](https://en.wikipedia.org/wiki/Learning_management_system) like [edX](https://github.com/edx), [Moodle](https://moodle.org/), [Sakai](https://github.com/sakaiproject/sakai), etc. 
 as well as directly from within Intranet or Internet network via a browser.
 
-####Technologies:
+#### Technologies:
 - Java 8;
 - Spring Boot 2.x: Spring Data, Spring Session, Spring Security, Spring MVC;
 - Hibernate 5.x;
@@ -15,18 +15,18 @@ as well as directly from within Intranet or Internet network via a browser.
 - Caffeine cache;
 - Maven.
 
-####Architecture
+#### Architecture
 <iframe src="https://drive.google.com/file/d/1yJV3F1zL8CetbKzlzSYBe0wcqPaqj_Tl/preview" width="1024" height="768">
 </iframe>
 
-####Hardware config:
+#### Hardware config:
 Varies depending on the scale of your organization: quantity of simultaneous users and quantity of questions.
 E.g. for an organization of 10000 concurrent students, and staff of 500 people with questions base of 500000+, 
 minimal requirement is the following:
 - RAM 16Gb, with heap size > 8Gb;
 - Single quad core CPU;
 
-####Features:
+#### Features:
 - Embeddable tool provider via [LTI 1.x](https://www.imsglobal.org/specs/ltiv1p0/implementation-guide);
 - Unlimited test banks and huge test sets per learning session (200+ questions per scheme); 
   5 tried-and-true types of exercises (multiple choice questions, fill blank (single/multiple), matcher, sequence);
@@ -93,15 +93,15 @@ There are two main algorithms for sessions: controlling and educational.
  
  You can combine options and create custom instances of modes and settings and use them if or when needed.
  
- ####Database pre-populating
+#### Database pre-populating
  At deployment time, you can pre-populate the production database with localized entries.
  Currently only supported languages are (EN, FR, RU).
  
- ####Flexible security policies
+#### Flexible security policies
  The application supports flexible security policies by protecting resources with multiple roles:
  student, staff, instructor, department admin, faculty admin, organization admin.
 
-####Turbo-start
+#### Turbo-start
 The app supports populating cache at start-up (hot start) that significantly speeds up the responsiveness.
 The supported options to load cache are:
  - ALL (all schemes and their questions will be loaded on start up);
@@ -111,7 +111,7 @@ The supported options to load cache are:
  Also REST API for re-loading to cache certain schemes, course's schemes or even department's schemes is provided.
  At deployment time you can specify caching options (TTL (time to live) and max cache size) depending of the scale and needs of your organization.
 
-####Off-heap session
+#### Off-heap session
 There is a possibility for off-heap session data storage (RDBMS, Redis, etc.)
 Let's consider these possibilities:
  - Tomcat's http session (in heap) - the fastest but least robust solution. All sessions' data are stored in heap
@@ -123,7 +123,7 @@ Let's consider these possibilities:
  - Redis - the most appropriate trade-off, very fast and very robust. It requires a running Redis server, though.
  Recommended in rather concurrent environments with requirement to protect sessions' data with up to 1000 simultaneous users.
 
-####Gamification
+#### Gamification
 Gamification is to push students into a competitive environment sparkling their interest to study.
 The basic aspect of gamification is gaining points for achievements. By achievements, we mean a non-trivial successful session completion.
 In gamification, only controlling schemes participate (these with no skipping or pyramid capabilities). To gain any points, 
