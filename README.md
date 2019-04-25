@@ -16,8 +16,7 @@ as well as directly from within Intranet or Internet network via a browser.
 - Maven.
 
 #### Architecture
-<iframe src="https://drive.google.com/file/d/1yJV3F1zL8CetbKzlzSYBe0wcqPaqj_Tl/preview" width="1024" height="768">
-</iframe>
+![e-RATOS](https://drive.google.com/uc?export=view&id=1yJV3F1zL8CetbKzlzSYBe0wcqPaqj_Tl)
 
 #### Hardware config:
 Varies depending on the scale of your organization: quantity of simultaneous users and quantity of questions.
