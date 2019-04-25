@@ -56,24 +56,24 @@ public class QuestionsFileParserService {
     }
 
     /**
-     * Parses multipart file and saves all the totalByType to DB
-     * @param multipartFile file with totalByType
+     * Parses multipart file and saves all the questions to DB
+     * @param multipartFile file with questions
      * @param dto metadata of the file
      * @return result on parsing and saving
      */
-    public synchronized QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile, @NonNull final FileInDto dto) throws IOException {
+    public QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile, @NonNull final FileInDto dto) throws IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         QuestionsFileParser parser = getParser(extension);
         final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
         final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
         if (dto.isConfirmed()) {
             save(parsingResult.getQuestions(), dto);
-            log.debug("Saved totalByType into the DB after confirmation, {}", parsingResult.getQuestions().size());
+            log.debug("Saved questions into the DB after confirmation, {}", parsingResult.getQuestions().size());
             return transformer.toDto(parsingResult, true);
         }
         if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
             save(parsingResult.getQuestions(), dto);
-            log.debug("Saved totalByType into the DB with no major issues, {}", parsingResult.getQuestions().size());
+            log.debug("Saved questions into the DB with no major issues, {}", parsingResult.getQuestions().size());
             return transformer.toDto(parsingResult, true);
         } else {
             return transformer.toDto(parsingResult, false);
@@ -81,7 +81,7 @@ public class QuestionsFileParserService {
     }
 
     private void save(@NonNull final List<QuestionMCQ> parsedQuestions, final @NonNull FileInDto dto) {
-        // First, Enrich totalByType with ThemeDomain, Language and Type, second for each non-null helpAvailable, enrich it with Staff
+        // First, Enrich question with Theme, Language and Type, secondly for each non-null Help, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Language language = em.getReference(Language.class, dto.getLangId());

@@ -27,8 +27,8 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
     private String helpLine = "";
 
     @Override
-    protected void parseLine(String line) {
-        if (startStatus == false) throw new IllegalStateException("Parsing control yet not stared!");
+    void parseLine(String line) {
+        if (startStatus == false) throw new IllegalStateException("Parsing process yet not started!");
         if (!line.trim().isEmpty()) {
             String trimmedLine = line.trim();
             Character firstChar = trimmedLine.charAt(0);

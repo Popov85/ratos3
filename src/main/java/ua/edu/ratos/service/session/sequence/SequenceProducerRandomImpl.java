@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Globally randomized strategy:
  * Theme -> Type -> Level -> Question
- * Questions are randomised irrespective to questionType, level and themes
+ * Questions are randomised irrespective to type, level and themes
  */
 @Service
 public class SequenceProducerRandomImpl implements SequenceProducer {

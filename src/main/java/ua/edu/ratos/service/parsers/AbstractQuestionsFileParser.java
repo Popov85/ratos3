@@ -8,20 +8,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractQuestionsFileParser implements QuestionsFileParser {
+abstract class AbstractQuestionsFileParser implements QuestionsFileParser {
 
-    protected boolean startStatus;
+    boolean startStatus;
 
-    protected String currentLine;
+    String currentLine;
 
-    protected int currentRow;
+    int currentRow;
 
-    protected List<QuestionMCQ> questions = new ArrayList<>();
+    List<QuestionMCQ> questions = new ArrayList<>();
 
-    protected List<QuestionsParsingIssue> questionsParsingIssues = new ArrayList<>();
+    List<QuestionsParsingIssue> questionsParsingIssues = new ArrayList<>();
 
-    // protected only for testing purposes
-    protected String header = "";
+    String header = "";
 
     @Override
     public QuestionsParsingResult parseFile(File file, String charset) {
@@ -81,7 +80,7 @@ public abstract class AbstractQuestionsFileParser implements QuestionsFileParser
      * Parses the current line
      * @param line a line to be parsed for special symbols
      */
-    protected abstract void parseLine(String line);
+    abstract void parseLine(String line);
 
 }
 

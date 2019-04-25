@@ -19,7 +19,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
     private boolean answerContinuationPossible;
 
     @Override
-    public void parseLine(String line) {
+    void parseLine(String line) {
         if (startStatus == false) throw new IllegalStateException("Parsing control yet not started!");
         if (!line.trim().isEmpty()) {
             String trimmedLine = line.trim();

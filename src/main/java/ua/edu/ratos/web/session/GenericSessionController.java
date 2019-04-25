@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
@@ -34,7 +33,6 @@ public class GenericSessionController {
         this.securityUtils = securityUtils;
     }
 
-    @TrackTime
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session) {
         if (session.getAttribute("sessionData")!=null)
