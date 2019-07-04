@@ -66,7 +66,7 @@ public class SessionDataBuilderTestIT {
         Assert.assertEquals(0, sessionData.getMetaData().size());
         // methods
         Assert.assertTrue(sessionData.hasMoreQuestions());
-        Assert.assertTrue(sessionData.hasMoreTime());
+        //Assert.assertTrue(sessionData.hasMoreTime());
         Assert.assertFalse(sessionData.isLMSSession());
 
         //log.debug("SessionData = {}", sessionData);

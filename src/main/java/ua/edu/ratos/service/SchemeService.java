@@ -14,12 +14,14 @@ import ua.edu.ratos.dao.repository.GroupSchemeRepository;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
+import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import ua.edu.ratos.service.grading.SchemeGradingServiceFactory;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.SchemeInfoDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeShortDtoTransformer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -51,6 +53,8 @@ public class SchemeService {
     private SchemeShortDtoTransformer schemeShortDtoTransformer;
 
     private SchemeDtoTransformer schemeDtoTransformer;
+
+    private SchemeInfoDtoTransformer schemeInfoDtoTransformer;
 
     private SecurityUtils securityUtils;
 
@@ -94,6 +98,11 @@ public class SchemeService {
     @Autowired
     public void setSchemeDtoTransformer(SchemeDtoTransformer schemeDtoTransformer) {
         this.schemeDtoTransformer = schemeDtoTransformer;
+    }
+
+    @Autowired
+    public void setSchemeInfoDtoTransformer(SchemeInfoDtoTransformer schemeInfoDtoTransformer) {
+        this.schemeInfoDtoTransformer = schemeInfoDtoTransformer;
     }
 
     @Autowired
@@ -251,6 +260,13 @@ public class SchemeService {
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
         return schemeRepository.findForSessionById(schemeId);
+    }
+
+    //-------------------------------------------One for getting basic Info---------------------------------------------
+
+    @Transactional(readOnly = true)
+    public SchemeInfoOutDto findByIdForInfo(@NonNull final Long schemeId) {
+        return schemeInfoDtoTransformer.toDto(schemeRepository.findForInfoById(schemeId));
     }
 
     //------------------------------------------------One (for update)--------------------------------------------------

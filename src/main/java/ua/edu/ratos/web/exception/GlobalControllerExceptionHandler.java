@@ -23,17 +23,26 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse unknownException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
-                new ExceptionResponse(ex.getMessage(), request.toString());
-        log.error("Unknown error has occurred with message = {}", ex.getMessage());
+                new ExceptionResponse(ex.getClass().toString(), ex.getMessage());
+        log.error("Unknown error has occurred with message = {} for request = {}", ex.getMessage(), request.toString());
+        //ex.printStackTrace(); How to get method that caused exception?
+        return exceptionResponse;
+    }
+
+    @ExceptionHandler(value = {SessionAlreadyOpenedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public SessionOpenedExceptionResponse openedException(Exception ex, WebRequest request) {
+        Long schemeId = ((SessionAlreadyOpenedException) ex).getSchemeId();
+        SessionOpenedExceptionResponse exceptionResponse = new SessionOpenedExceptionResponse(schemeId);
+        log.error("Start request for already opened session for user = {} not finished schemeId = {}", request.getUserPrincipal().getName(), schemeId);
         return exceptionResponse;
     }
 
     @ExceptionHandler(value = {RunOutOfTimeException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionResponse timeException(Exception ex, WebRequest request) {
-        final ExceptionResponse exceptionResponse =
-                new ExceptionResponse("RunOutOfTimeException", ex.getMessage());
-        log.error("Time limit is exceeded for user = {}", request.getUserPrincipal().getName());
+    public RunOutOfTimeExceptionResponse timeException(Exception ex, WebRequest request) {
+        final RunOutOfTimeExceptionResponse exceptionResponse = new RunOutOfTimeExceptionResponse();
+        log.error("Session time limit is exceeded for user = {}", request.getUserPrincipal().getName());
         return exceptionResponse;
     }
 

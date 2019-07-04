@@ -37,7 +37,7 @@ public class LTIDemoController {
         log.debug("Started test, Authentication = {}", authentication);
         model.addAttribute("username", ((Principal) authentication.getPrincipal()).getName());
         model.addAttribute("schemeId", schemeId);
-        return "start";
+        return "index";
     }
 
     @ResponseBody

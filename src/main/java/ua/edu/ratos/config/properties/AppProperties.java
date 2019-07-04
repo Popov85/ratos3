@@ -137,6 +137,14 @@ public class AppProperties {
         public enum Algorithm {
             SIMPLE, CACHED, DECIDE
         }
+
+        /**
+         * In case of batch/session timeout, what penalty must be imposed for that?
+         * The percent of the total score that will be distracted.
+         */
+        @Min(0)
+        @Max(100)
+        private double timeoutPenalty;
     }
 
     /**

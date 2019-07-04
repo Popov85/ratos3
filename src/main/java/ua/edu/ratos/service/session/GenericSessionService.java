@@ -31,6 +31,14 @@ public interface GenericSessionService {
     BatchOutDto next(BatchInDto batchInDto, SessionData sessionData);
 
     /**
+     * Provides the current batch of questions for user;
+     * Usually in case of return to already opened session after browser failure
+     * @param sessionData
+     * @return current batchOutDto
+     */
+    BatchOutDto current(SessionData sessionData);
+
+    /**
      * Normal finish for basic (non-dynamic sessions)
      * @param sessionData
      * @return result of this session

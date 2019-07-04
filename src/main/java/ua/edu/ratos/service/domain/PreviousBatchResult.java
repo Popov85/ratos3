@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  * Usage: when settings require to return the result of evaluation after each BatchInDto
- * For educational dto only
+ * For educational session only
  */
 @Getter
 @ToString

@@ -22,8 +22,6 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 @Service
 public class DynamicNextProcessingService implements NextProcessingService {
 
-    private TimingService timingService;
-
     private ResponseProcessor responseProcessor;
 
     private PyramidService pyramidService;
@@ -31,11 +29,6 @@ public class DynamicNextProcessingService implements NextProcessingService {
     private DynamicNextBatchBuilder batchBuilder;
 
     private SessionDataService sessionDataService;
-
-    @Autowired
-    public void setTimingService(TimingService timingService) {
-        this.timingService = timingService;
-    }
 
     @Autowired
     public void setResponseProcessor(ResponseProcessor responseProcessor) {
@@ -57,13 +50,8 @@ public class DynamicNextProcessingService implements NextProcessingService {
         this.sessionDataService = sessionDataService;
     }
 
-
     @Override
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
-
-        // Consider the client script to initiate save request after either batch timeout or session timeout
-        timingService.control(sessionData.getSessionTimeout(), sessionData.getCurrentBatchTimeOut());
-
         // Build next BatchOutDto
         BatchOutDto batchOutDto;
         // If current BatchOutDto contains smth. (we check because in case of skipping we remove elements from it)
@@ -92,6 +80,7 @@ public class DynamicNextProcessingService implements NextProcessingService {
         }
         // update SessionData
         if (!batchOutDto.isEmpty()) sessionDataService.update(sessionData, batchOutDto);
+
         return batchOutDto;
     }
 

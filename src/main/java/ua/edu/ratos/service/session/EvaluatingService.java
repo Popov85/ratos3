@@ -7,6 +7,8 @@ import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.ResponseEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,15 +19,14 @@ public class EvaluatingService {
     private static final String EMPTY_BATCH_OUT_EXCEPTION = "Wrong API usage: Failed to get BatchEvaluated, " +
             "cause of empty current batch in SessionData, all questions in the current batch were probably skipped";
 
+    private final Timeout timeout;
+
     private final BatchEvaluatorService batchEvaluatorService;
 
-    private final BatchEvaluatedBuilder batchEvaluatedBuilderService;
-
     @Autowired
-    public EvaluatingService(@NonNull final BatchEvaluatorService batchEvaluatorService,
-                             @NonNull final BatchEvaluatedBuilder batchEvaluatedBuilderService) {
+    public EvaluatingService(@NonNull final Timeout timeout, @NonNull final BatchEvaluatorService batchEvaluatorService) {
         this.batchEvaluatorService = batchEvaluatorService;
-        this.batchEvaluatedBuilderService = batchEvaluatedBuilderService;
+        this.timeout = timeout;
     }
 
     /**
@@ -42,7 +43,11 @@ public class EvaluatingService {
         final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
         // Find (if any) add IDs of questions of this batch with incorrect responses
         List<Long> incorrectResponseIds = getIncorrectResponseIds(responseEvaluated);
-        return batchEvaluatedBuilderService.build(responseEvaluated, incorrectResponseIds, sessionData);
+        // Calculate time spent
+        final LocalDateTime currentBatchIssued = sessionData.getCurrentBatchIssued();
+        final long timeSpent = TimingService.getTimeSpent(currentBatchIssued);
+        // Is this batch or the whole session time-outed?
+        return new BatchEvaluated(responseEvaluated, incorrectResponseIds, timeSpent, timeout.isTimeouted());
     }
 
     /**

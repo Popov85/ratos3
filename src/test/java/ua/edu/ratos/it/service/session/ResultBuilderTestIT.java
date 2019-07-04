@@ -113,7 +113,7 @@ public class ResultBuilderTestIT {
         when(sessionData.getProgressData()).thenReturn(progressData);
         when(sessionData.getLMSId()).thenReturn(Optional.of(new Long(1L)));
 
-        when(progressDataService.getCurrentScore(sessionData)).thenReturn(85.0);
+        when(progressDataService.getCurrentActualScore(sessionData)).thenReturn(85.0);
         when(progressDataService.toResponseEvaluated(sessionData)).thenReturn(responsesEvaluated);
         when(gradingService.grade(eq(1L), any(GradingDomain.class), eq(85.0))).thenReturn(new GradedResult(true, 5));
         when(gameService.getPoints(any(SessionData.class), eq(85.0))).thenReturn(Optional.of(new Integer(10)));
@@ -154,7 +154,7 @@ public class ResultBuilderTestIT {
     private void initBatchEvaluated(Long questionId, String question, ThemeDomain t, int score) {
         final QuestionDomain q = getQuestion(questionId, question, t);
         final Response r = getResponse(questionId, 1L);
-        ResponseEvaluated re = new ResponseEvaluated(questionId, r, score);
+        ResponseEvaluated re = new ResponseEvaluated(questionId, r, score, (byte)1,false);
         BatchEvaluated b = getBatchEvaluated(questionId, re);
         questionDomains.add(q);
         questionsMap.put(questionId, q);
@@ -165,7 +165,7 @@ public class ResultBuilderTestIT {
     private BatchEvaluated getBatchEvaluated(Long questionId, ResponseEvaluated responseEvaluated) {
         final HashMap<Long, ResponseEvaluated> responsesEvaluated = new HashMap<>();
         responsesEvaluated.put(questionId, responseEvaluated);
-        return new BatchEvaluated(responsesEvaluated, new ArrayList<>(),  100);
+        return new BatchEvaluated(responsesEvaluated, new ArrayList<>(),  100, false);
     }
 
     private QuestionDomain getQuestion(Long questionId, String question, ThemeDomain themeDomain) {
@@ -193,8 +193,13 @@ public class ResultBuilderTestIT {
         schemeDomain.setSchemeId(1L);
         GradingDomain gradingDomain = new GradingDomain();
         gradingDomain.setGradingId(1L);
+
+        SettingsDomain settingsDomain = new SettingsDomain();
+        settingsDomain.setLevel2Coefficient(1.2f);
+        settingsDomain.setLevel3Coefficient(1.5f);
         gradingDomain.setName("four-point");
         schemeDomain.setGradingDomain(gradingDomain);
+        schemeDomain.setSettingsDomain(settingsDomain);
         return schemeDomain;
     }
 }

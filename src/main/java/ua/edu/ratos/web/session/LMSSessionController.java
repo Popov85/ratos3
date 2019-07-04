@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.config.ControlTime;
 import ua.edu.ratos.security.RatosUser;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.domain.StartData;
@@ -36,7 +37,6 @@ public class LMSSessionController {
         this.ltiOutcomeService = ltiOutcomeService;
     }
 
-
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session, Authentication auth) {
         if (session.getAttribute("sessionData")!=null)
@@ -51,6 +51,7 @@ public class LMSSessionController {
         return ResponseEntity.ok(sessionData.getCurrentBatch().get());
     }
 
+    @ControlTime
     @PostMapping(value = "/next", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> next(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchInDto batchInDto) {
         BatchOutDto batchOut = sessionService.next(batchInDto, sessionData);
@@ -58,6 +59,14 @@ public class LMSSessionController {
         return ResponseEntity.ok(batchOut);
     }
 
+    @ControlTime
+    @GetMapping(value = "/session/current", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BatchOutDto> current(@SessionAttribute("sessionData") SessionData sessionData) {
+        log.debug("Current batch in LMS session is requested");
+        return ResponseEntity.ok(sessionService.current(sessionData));
+    }
+
+    @ControlTime
     @PostMapping(value = "/finish-batch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultOutDto> finish(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchInDto batchInDto, Authentication authentication, HttpSession session, HttpServletRequest request) {
         final ResultOutDto resultOut = sessionService.finish(batchInDto, sessionData);
@@ -68,6 +77,7 @@ public class LMSSessionController {
         return ResponseEntity.ok(resultOut);
     }
 
+    @ControlTime
     @PostMapping(value = "/finish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultOutDto> finish(@SessionAttribute("sessionData") SessionData sessionData, Authentication authentication, HttpSession session, HttpServletRequest request) {
         final ResultOutDto resultOut = sessionService.finish(sessionData);
@@ -78,6 +88,7 @@ public class LMSSessionController {
         return ResponseEntity.ok(resultOut);
     }
 
+    @ControlTime
     @GetMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultOutDto> cancel(@SessionAttribute("sessionData") SessionData sessionData, HttpSession session) {
         final ResultOutDto resultOut = sessionService.cancel(sessionData);

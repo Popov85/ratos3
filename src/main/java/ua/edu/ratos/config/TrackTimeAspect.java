@@ -11,7 +11,7 @@ import org.springframework.util.StopWatch;
 @Slf4j
 @Aspect
 @Component
-public class ProfilingAspect {
+public class TrackTimeAspect {
 
     private static final long WARN_THRESHOLD = 500;
 

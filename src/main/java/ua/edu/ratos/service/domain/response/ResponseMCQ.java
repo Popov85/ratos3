@@ -24,7 +24,7 @@ public class ResponseMCQ implements Response, Serializable {
 
     @JsonCreator
     public ResponseMCQ(@JsonProperty("questionId") Long questionId,
-                       @JsonProperty("answersIds") Set<Long> answerIds) {
+                       @JsonProperty("answerIds") Set<Long> answerIds) {
         this.questionId = questionId;
         this.answerIds = answerIds;
     }

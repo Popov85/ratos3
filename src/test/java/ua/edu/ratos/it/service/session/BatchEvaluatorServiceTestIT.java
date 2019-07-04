@@ -130,6 +130,7 @@ public class BatchEvaluatorServiceTestIT extends QuestionGenerator {
         BatchInDto batchInDto = new BatchInDto(responses);
 
         // Actual test begin
+
         Map<Long, ResponseEvaluated> map = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
 
         assertThat(map, hasKey(1L));

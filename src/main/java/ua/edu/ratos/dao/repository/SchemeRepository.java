@@ -1,7 +1,5 @@
 package ua.edu.ratos.dao.repository;
 
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -10,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import ua.edu.ratos.dao.entity.Scheme;
 import javax.persistence.QueryHint;
-import java.util.Set;
 
 public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
@@ -26,6 +23,10 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings left join fetch s.groups g left join fetch g.students where s.schemeId = ?1")
     @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="USE"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="USE")})
     Scheme findForSessionById(Long schemeId);
+
+    @Query(value = "SELECT s FROM Scheme s join fetch s.mode join fetch s.settings join fetch s.strategy join fetch s.grading join fetch s.themes st join fetch st.settings sts join fetch sts.type where s.schemeId = ?1")
+    @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="USE"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="USE")})
+    Scheme findForInfoById(Long schemeId);
 
     @Query(value = "SELECT s FROM Scheme s join fetch s.themes t join fetch t.settings where s.schemeId = ?1")
     Scheme findForThemesManipulationById(Long schemeId);

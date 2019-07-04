@@ -238,10 +238,15 @@ public class SessionData implements Serializable {
     }
 
 
-    @JsonIgnore
+    /*@JsonIgnore
     public boolean hasMoreTime() {
         return LocalDateTime.now().isBefore(sessionTimeout);
     }
+
+    @JsonIgnore
+    public boolean hasMoreTimeForBatch() {
+        return LocalDateTime.now().isBefore(currentBatchTimeOut);
+    }*/
 
     @JsonIgnore
     public boolean hasMoreQuestions() {

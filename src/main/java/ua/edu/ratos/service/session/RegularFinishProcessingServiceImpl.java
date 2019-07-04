@@ -14,6 +14,9 @@ import ua.edu.ratos.service.transformer.domain_to_dto.ResultDomainDtoTransformer
 @Service
 public class RegularFinishProcessingServiceImpl implements FinishProcessingService {
 
+    @Autowired
+    private Timeout timeout;
+
     private SessionDataService sessionDataService;
 
     private ResultBuilder resultBuilder;
@@ -45,7 +48,7 @@ public class RegularFinishProcessingServiceImpl implements FinishProcessingServi
 
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
-        boolean timeOuted = !sessionData.hasMoreTime();
+        boolean timeOuted = timeout.isSessionTimeout();
         if (sessionData.hasMoreQuestions() && !timeOuted)
             throw new IllegalStateException(CORRUPT_FINISH_REQUEST
                     +" schemeId = "+sessionData.getSchemeDomain().getSchemeId()+" userId = "+sessionData.getUserId());

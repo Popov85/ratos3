@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.domain.SettingsDomain;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.domain.response.Response;
@@ -21,18 +20,11 @@ public class BatchEvaluatorService {
     private static final String EMPTY_BATCH_OUT_EXCEPTION = "Wrong API usage: failed to evaluate BatchInDto, " +
             "because of empty current BatchOutDto in SessionData";
 
-    private ResponseEvaluatorService responseEvaluatorService;
-
-    private LevelsEvaluatorService levelsEvaluatorService;
+    private Timeout timeout;
 
     @Autowired
-    public void setResponseEvaluatorService(ResponseEvaluatorService responseEvaluatorService) {
-        this.responseEvaluatorService = responseEvaluatorService;
-    }
-
-    @Autowired
-    public void setLevelsEvaluatorService(LevelsEvaluatorService levelsEvaluatorService) {
-        this.levelsEvaluatorService = levelsEvaluatorService;
+    public void setTimeout(Timeout timeout) {
+        this.timeout = timeout;
     }
 
     /**
@@ -62,15 +54,11 @@ public class BatchEvaluatorService {
             // look up response in BatchInDto
             final Response response = batchInDto.getResponses().get(questionId);
             if (response != null) {// if found, evaluate
-                double score = (response.isNullable() ? 0 : responseEvaluatorService.evaluate(response, questionDomain));
-                // Levels processing (if >1)
-                final byte level = questionDomain.getLevel();
-                if (level>1 && score>0) {
-                    SettingsDomain settings = sessionData.getSchemeDomain().getSettingsDomain();
-                    score = levelsEvaluatorService.evaluateLevels(score, level, settings);
-                }
-                responsesEvaluated.put(questionId, new ResponseEvaluated(questionId, response, score));
-                log.debug("Evaluated response, ID = {}, score = {}", questionId, score);
+                byte level = questionDomain.getLevel();
+                double score = (response.isNullable() ? 0 : response.evaluateWith(new EvaluatorImpl(questionDomain)));
+                responsesEvaluated.put(questionId,
+                        new ResponseEvaluated(questionId, response, score, level, timeout.isTimeouted()));
+                log.debug("Evaluated response = {}, ID = {}, score = {}", response, questionId, score);
             } else {// if not found, consider incorrect
                 log.debug("Empty or no response, incorrect ID = {}", questionId);
                 responsesEvaluated.put(questionId, ResponseEvaluated.buildEmpty(questionId));
@@ -78,6 +66,5 @@ public class BatchEvaluatorService {
         }
         return responsesEvaluated;
     }
-
 
 }

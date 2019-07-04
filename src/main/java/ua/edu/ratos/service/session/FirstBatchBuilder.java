@@ -25,8 +25,6 @@ public class FirstBatchBuilder {
 
     private AppProperties appProperties;
 
-    private TimingService timingService;
-
     private ProgressDataService progressDataService;
 
     private CollectionShuffler collectionShuffler;
@@ -34,11 +32,6 @@ public class FirstBatchBuilder {
     @Autowired
     public void setAppProperties(AppProperties appProperties) {
         this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setTimingService(TimingService timingService) {
-        this.timingService = timingService;
     }
 
     @Autowired
@@ -98,7 +91,8 @@ public class FirstBatchBuilder {
         return collect;
     }
 
-    protected Optional<PreviousBatchResult> getPreviousBatchResult(@NonNull final SessionData sessionData, BatchEvaluated batchEvaluated) {
+    protected Optional<PreviousBatchResult> getPreviousBatchResult(@NonNull final SessionData sessionData,
+                                                                   @NonNull final BatchEvaluated batchEvaluated) {
         if (sessionData.getSchemeDomain().getModeDomain().isRightAnswer()) {
             final double currentScore = progressDataService.getCurrentScore(sessionData);
             final double effectiveScore = progressDataService.getEffectiveScore(sessionData);
@@ -111,7 +105,7 @@ public class FirstBatchBuilder {
     protected long getTimeLeft(@NonNull final SessionData sessionData) {
         long timeLeft = -1;// in sec
         final LocalDateTime sessionTimeout = sessionData.getSessionTimeout();
-        if (timingService.isLimited(sessionTimeout)) {
+        if (TimingService.isLimited(sessionTimeout)) {
             timeLeft = LocalDateTime.now().until(sessionTimeout, ChronoUnit.SECONDS);
         }
         return timeLeft;
@@ -121,7 +115,7 @@ public class FirstBatchBuilder {
         // Return -1 if time is not limited
         long batchTimeLimit = -1; // in sec
         final long perQuestionTimeLimit = sessionData.getPerQuestionTimeLimit();
-        if (timingService.isLimited(perQuestionTimeLimit)) {
+        if (TimingService.isLimited(perQuestionTimeLimit)) {
             batchTimeLimit = questionsPerBatch * perQuestionTimeLimit;
         }
         return batchTimeLimit;

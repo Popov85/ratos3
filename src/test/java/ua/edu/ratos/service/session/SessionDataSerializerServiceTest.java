@@ -162,12 +162,12 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
         progressData.setScore(75.63);
 
         ResponseEvaluated r0 = new ResponseEvaluated(1L,
-                new ResponseMCQ(1L, new HashSet<>(Arrays.asList(1L))), 100);
-        BatchEvaluated b0 = new BatchEvaluated(Collections.singletonMap(1L, r0), Arrays.asList(), 30);
+                new ResponseMCQ(1L, new HashSet<>(Arrays.asList(1L))), 100, (byte)1,false);
+        BatchEvaluated b0 = new BatchEvaluated(Collections.singletonMap(1L, r0), Arrays.asList(), 30, false);
 
         ResponseEvaluated r1 = new ResponseEvaluated(2L,
-                new ResponseFBSQ(2L, "wrong phraseDomain"), 0);
-        BatchEvaluated b1 = new BatchEvaluated(Collections.singletonMap(2L, r1), Arrays.asList(2L), 50);
+                new ResponseFBSQ(2L, "wrong phraseDomain"), 0, (byte)1,false);
+        BatchEvaluated b1 = new BatchEvaluated(Collections.singletonMap(2L, r1), Arrays.asList(2L), 50, false);
 
         ResponseEvaluated r2 = new ResponseEvaluated(3L,
                 new ResponseFBMQ(3L,
@@ -176,8 +176,8 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
                                 new ResponseFBMQ.Pair(2L, "(correct) Target phraseDomain for FBMQ answer #2"),
                                 new ResponseFBMQ.Pair(3L, "(correct) Target phraseDomain for FBMQ answer #3"),
                                 new ResponseFBMQ.Pair(4L, "(correct) Target phraseDomain for FBMQ answer #4")
-                        ))), 100);
-        BatchEvaluated b2 = new BatchEvaluated(Collections.singletonMap(3L, r2), Arrays.asList(), 25);
+                        ))), 100, (byte)1,false);
+        BatchEvaluated b2 = new BatchEvaluated(Collections.singletonMap(3L, r2), Arrays.asList(), 25, false);
 
         progressData.setBatchesEvaluated(Arrays.asList(b0, b1, b2));
 
@@ -242,12 +242,12 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
         progressData.setScore(88.5);
 
         ResponseEvaluated r0 = new ResponseEvaluated(1L,
-                new ResponseMCQ(1L, new HashSet<>(Arrays.asList(1L))), 100);
-        BatchEvaluated b0 = new BatchEvaluated(Collections.singletonMap(1L, r0), Arrays.asList(), 30);
+                new ResponseMCQ(1L, new HashSet<>(Arrays.asList(1L))), 100, (byte)1, false);
+        BatchEvaluated b0 = new BatchEvaluated(Collections.singletonMap(1L, r0), Arrays.asList(), 30, false);
 
         ResponseEvaluated r1 = new ResponseEvaluated(2L,
-                new ResponseFBSQ(2L, "wrong phraseDomain"), 0);
-        BatchEvaluated b1 = new BatchEvaluated(Collections.singletonMap(2L, r1), Arrays.asList(2L), 50);
+                new ResponseFBSQ(2L, "wrong phraseDomain"), 0, (byte)1,false);
+        BatchEvaluated b1 = new BatchEvaluated(Collections.singletonMap(2L, r1), Arrays.asList(2L), 50, false);
 
         ResponseEvaluated r2 = new ResponseEvaluated(3L,
                 new ResponseFBMQ(3L,
@@ -256,8 +256,8 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
                                 new ResponseFBMQ.Pair(2L, "(correct) Target phraseDomain for FBMQ answer #2"),
                                 new ResponseFBMQ.Pair(3L, "(correct) Target phraseDomain for FBMQ answer #3"),
                                 new ResponseFBMQ.Pair(4L, "(correct) Target phraseDomain for FBMQ answer #4")
-                        ))), 100);
-        BatchEvaluated b2 = new BatchEvaluated(Collections.singletonMap(3L, r2), Arrays.asList(), 25);
+                        ))), 100, (byte)1, false);
+        BatchEvaluated b2 = new BatchEvaluated(Collections.singletonMap(3L, r2), Arrays.asList(), 25, false);
 
         ResponseEvaluated r3 = new ResponseEvaluated(4L,
                 new ResponseMQ(4L, new HashSet<>(Arrays.asList(
@@ -265,12 +265,12 @@ public class SessionDataSerializerServiceTest extends QuestionGenerator {
                         new ResponseMQ.Triple(2L, 23L, 24L),
                         new ResponseMQ.Triple(3L, 25L, 26L),
                         new ResponseMQ.Triple(4L, 27L, 28L)
-                ))), 100);
-        BatchEvaluated b3 = new BatchEvaluated(Collections.singletonMap(4L, r3), Arrays.asList(), 30);
+                ))), 100, (byte)1,false);
+        BatchEvaluated b3 = new BatchEvaluated(Collections.singletonMap(4L, r3), Arrays.asList(), 30, false);
 
         ResponseEvaluated r4 = new ResponseEvaluated(5L,
-                new ResponseSQ(5L, Arrays.asList(29L, 30L, 31L, 32L, 33L)), 100);
-        BatchEvaluated b4 = new BatchEvaluated(Collections.singletonMap(5L, r4), Arrays.asList(), 15);
+                new ResponseSQ(5L, Arrays.asList(29L, 30L, 31L, 32L, 33L)), 100, (byte)1,false);
+        BatchEvaluated b4 = new BatchEvaluated(Collections.singletonMap(5L, r4), Arrays.asList(), 15, false);
 
         progressData.setBatchesEvaluated(Arrays.asList(b0, b1, b2, b3, b4));
 

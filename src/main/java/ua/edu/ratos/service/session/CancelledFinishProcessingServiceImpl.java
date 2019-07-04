@@ -12,6 +12,9 @@ import ua.edu.ratos.service.transformer.domain_to_dto.ResultDomainDtoTransformer
 @Service
 public class CancelledFinishProcessingServiceImpl implements FinishProcessingService {
 
+    @Autowired
+    private Timeout timeout;
+
     private ResultBuilder resultBuilder;
 
     private AsyncFinishProcessingService asyncFinishProcessingService;
@@ -36,7 +39,7 @@ public class CancelledFinishProcessingServiceImpl implements FinishProcessingSer
 
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
-        boolean timeOuted = !sessionData.hasMoreTime();
+        boolean timeOuted = timeout.isSessionTimeout();
         ResultDomain resultDomain = resultBuilder.build(sessionData, timeOuted, true);
         // Do regular async db finish operations, if enabled for cancelled sessions
         asyncFinishProcessingService.saveResults(resultDomain, sessionData);

@@ -18,6 +18,7 @@ import ua.edu.ratos.service.SchemeThemeSettingsService;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
+import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
@@ -223,6 +224,7 @@ public class SchemeController {
         schemeThemeService.removeSettings(schemeThemeId, schemeThemeSettingsId);
         log.debug("Deleted schemeThemeSettingsId = {}", schemeThemeSettingsId);
     }
+
 
     //----------------------------------------------------Staff table---------------------------------------------------
 

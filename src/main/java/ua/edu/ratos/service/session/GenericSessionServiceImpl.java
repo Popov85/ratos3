@@ -3,6 +3,7 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
@@ -10,11 +11,14 @@ import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 /**
- * Universal implementation of the interface for each session.
+ * Universal implementation of the interface for typical learning session.
  */
 @Slf4j
 @Service
 public class GenericSessionServiceImpl implements GenericSessionService {
+
+    @Autowired
+    private Timeout timeout;
 
     private StartProcessingFactory startProcessingFactory;
 
@@ -44,7 +48,6 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         this.responseProcessor = responseProcessor;
     }
 
-
     @Override
     public SessionData start(@NonNull final StartData startData) {
         StartProcessingService startProcessingService ;
@@ -68,7 +71,15 @@ public class GenericSessionServiceImpl implements GenericSessionService {
             nextProcessingService = nextProcessingFactory.getNextProcessingService("basic");
             log.debug("Basic (static) session next processing");
         }
+        // Control session time-out
+        timeout.controlSessionTimeout();
         return nextProcessingService.next(batchInDto, sessionData);
+    }
+
+    @Override
+    public BatchOutDto current(@NonNull final SessionData sessionData) {
+        timeout.controlSessionTimeout();
+        return sessionData.getCurrentBatch().orElseThrow(()->new RuntimeException("Current batch not found!"));
     }
 
     /**
@@ -95,7 +106,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      *   1) method next() returns a batch with empty questions list, which means that there are no more questions left
      *      in the current dynamic session;
      *   2) method next() throws time-out exception;
-     *   3) front-end's timer decides that time is over and launches save request.
+     *   3) @Deprecated: front-end's timer decides that time is over and launches save request.
      * @param sessionData
      * @return result DTO (the session's outcome)
      */

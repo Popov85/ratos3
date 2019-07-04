@@ -11,6 +11,12 @@ import java.security.Principal;
 @Profile("prod")
 public class LTILaunchController {
 
+    @GetMapping("/lms/start")
+    public String getStartPage(@RequestParam Long schemeId) {
+        return "start?schemeId="+schemeId;
+    }
+
+
     @PostMapping("/lti/1p0/launch")
     public String launch(@RequestParam Long schemeId, Principal principal) {
         log.debug("Principal = {}", principal);

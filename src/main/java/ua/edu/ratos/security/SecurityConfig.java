@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/login*", "/access-denied*").permitAll()
             .antMatchers("/actuator/**").permitAll()
             .antMatchers("/sign-up/**").hasAnyRole("LTI", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
-            .antMatchers("/student/**").hasAnyRole("STUDENT", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
+            .antMatchers("/student/**","/info/**").hasAnyRole("STUDENT", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/department/**").hasAnyRole("LAB-ASSISTANT","INSTRUCTOR", "DEP-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/instructor/**").hasAnyRole("INSTRUCTOR", "DEP-ADMIN", "GLOBAL-ADMIN")
             .antMatchers("/dep-admin/**").hasAnyRole("DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")

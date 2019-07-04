@@ -1,22 +1,21 @@
 package ua.edu.ratos.web.exception;
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.Getter;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
-@Setter
 @Getter
-@ToString
-@Accessors(chain = true)
 public class ExceptionResponse {
-    private Date timestamp;
-    private String message;
-    private String details;
 
-    public ExceptionResponse(String message, String details) {
-        this.timestamp = new Date();
+    private final String exception;
+
+    private final String message;
+
+    private final OffsetDateTime timestamp;
+
+    public ExceptionResponse(String exception, String message) {
+        this.exception = exception;
         this.message = message;
-        this.details = details;
+        this.timestamp = OffsetDateTime.now();
     }
 }

@@ -1,7 +1,6 @@
 package ua.edu.ratos.service.session;
 
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.domain.SessionData;
@@ -9,14 +8,6 @@ import java.time.LocalDateTime;
 
 @Service
 public class SessionDataService {
-
-    private TimingService timingService;
-
-    @Autowired
-    public void setTimingService(TimingService timingService) {
-        this.timingService = timingService;
-    }
-
     /**
      * Update the state of the current dto based on a new batchOutDto provided
      * @param sessionData
@@ -30,7 +21,7 @@ public class SessionDataService {
         sessionData.setCurrentBatchIssued(LocalDateTime.now());
         // Update batch timing if needed;
         final long perQuestionTimeLimit = sessionData.getPerQuestionTimeLimit();
-        if (timingService.isLimited(perQuestionTimeLimit)) {
+        if (TimingService.isLimited(perQuestionTimeLimit)) {
             sessionData.setCurrentBatchTimeOut(LocalDateTime.now().plusSeconds(batchOutDto.getBatchTimeLimit()));
         }
     }

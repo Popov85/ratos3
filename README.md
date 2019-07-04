@@ -1,4 +1,4 @@
-### e-RATOS (backend)
+### e-RATOS (backend+compiled front-end)
 e-RATOS (Embeddable Remote Automatised Teaching and Controlling System)
 This is a web-based application that provides a rich extensive toolset for students' knowledge control 
 via classical tests. The app can be used by medium and large educational organisations like schools, colleges or universities 
@@ -9,10 +9,11 @@ as well as directly from within Intranet or Internet network via a browser.
 
 #### Technologies:
 - Java 8;
-- Spring Boot 2.x: Spring Data, Spring Session, Spring Security, Spring MVC;
+- Spring Boot 2.x: Spring Data, Spring Security, Spring MVC, Spring Session;
 - Hibernate 5.x;
 - RDBMS (MySql 5.7 or any other);
 - Caffeine cache;
+- React.js (sources [here](https://github.com/Popov85/ratos3-frontend))
 - Maven.
 
 #### Architecture
@@ -110,7 +111,7 @@ The supported options to load cache are:
  Also REST API for re-loading to cache certain schemes, course's schemes or even department's schemes is provided.
  At deployment time you can specify caching options (TTL (time to live) and max cache size) depending of the scale and needs of your organization.
 
-#### Off-heap session
+#### Off-heap http session
 There is a possibility for off-heap session data storage (RDBMS, Redis, etc.)
 Let's consider these possibilities:
  - Tomcat's http session (in heap) - the fastest but least robust solution. All sessions' data are stored in heap

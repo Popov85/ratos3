@@ -13,7 +13,7 @@ import ua.edu.ratos.service.domain.SessionData;
 
 @Slf4j
 @RestController
-@RequestMapping("/student/session")
+@RequestMapping(value = {"/student/session", "/lms/session"})
 public class EducationalSessionController {
 
     private EducationalSessionService educationalSessionService;

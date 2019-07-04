@@ -17,5 +17,14 @@ public class ResultPerQuestionOutDto {
 
     private Response response;
 
+    // a number [0-100]
     private double score;
+
+    //-- Optional values--
+
+    // Add level bounty if any
+    private Double bounty;
+
+    // Add penalty if any
+    private Double penalty;
 }

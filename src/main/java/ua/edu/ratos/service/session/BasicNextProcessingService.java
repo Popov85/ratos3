@@ -23,18 +23,11 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 @Service
 public class BasicNextProcessingService implements NextProcessingService {
 
-    private TimingService timingService;
-
     private ResponseProcessor responseProcessor;
 
     private BasicNextBatchBuilder batchBuilder;
 
     private SessionDataService sessionDataService;
-
-    @Autowired
-    public void setTimingService(TimingService timingService) {
-        this.timingService = timingService;
-    }
 
     @Autowired
     public void setResponseProcessor(ResponseProcessor responseProcessor) {
@@ -51,12 +44,8 @@ public class BasicNextProcessingService implements NextProcessingService {
         this.sessionDataService = sessionDataService;
     }
 
-
     @Override
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
-
-        // Consider the client script to initiate finish request after either batch timeout or session timeout
-        timingService.control(sessionData.getSessionTimeout(), sessionData.getCurrentBatchTimeOut());
 
         final BatchEvaluated batchEvaluated = responseProcessor.doProcessResponse(batchInDto, sessionData);
 
@@ -65,6 +54,7 @@ public class BasicNextProcessingService implements NextProcessingService {
 
         // update SessionData
         sessionDataService.update(sessionData, batchOutDto);
+
         return batchOutDto;
     }
 

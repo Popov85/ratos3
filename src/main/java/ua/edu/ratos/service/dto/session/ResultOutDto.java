@@ -44,6 +44,11 @@ public class ResultOutDto {
     //-----------------------------------------------May be not included------------------------------------------------
 
     /**
+     * Is this session has exceeded the time limit for it?
+     */
+    private Boolean isTimeouted;
+
+    /**
      * Scored percent. Either [0-100], fractions are allowed, e.g. 75.4%.
      * If prohibited by settings, leave it null.
      */

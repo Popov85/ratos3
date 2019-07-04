@@ -22,6 +22,10 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+/**
+ * No methods throw RunOutOfTimeException cause it is not basically educational,
+ * not controlling learning session with session timeout being less important!!!
+ */
 @Service
 public class EducationalSessionServiceImpl implements EducationalSessionService {
 

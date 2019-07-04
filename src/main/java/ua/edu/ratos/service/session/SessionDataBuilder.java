@@ -28,8 +28,6 @@ public class SessionDataBuilder {
 
     private SequenceFactory sequenceFactory;
 
-    private TimingService timingService;
-
     private SchemeDomainTransformer schemeDomainTransformer;
 
     private QuestionDomainTransformer questionDomainTransformer;
@@ -42,11 +40,6 @@ public class SessionDataBuilder {
     @Autowired
     public void setSequenceFactory(SequenceFactory sequenceFactory) {
         this.sequenceFactory = sequenceFactory;
-    }
-
-    @Autowired
-    public void setTimingService(TimingService timingService) {
-        this.timingService = timingService;
     }
 
     @Autowired
@@ -105,8 +98,8 @@ public class SessionDataBuilder {
         // Time control processing
         final int secondsPerQuestion = scheme.getSettings().getSecondsPerQuestion();
         final boolean strictControlTimePerQuestion = scheme.getSettings().isStrictControlTimePerQuestion();
-        final LocalDateTime sessionTimeOut = timingService.getSessionTimeOut(sequence.size(), secondsPerQuestion);
-        final long questionTimeOut = timingService.getQuestionTimeOut(secondsPerQuestion, strictControlTimePerQuestion);
+        final LocalDateTime sessionTimeOut = TimingService.getSessionTimeOut(sequence.size(), secondsPerQuestion);
+        final long questionTimeOut = TimingService.getQuestionTimeOut(secondsPerQuestion, strictControlTimePerQuestion);
 
         // Batch processing
         final int questionsTotal = sequence.size();
