@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.config.properties.AppProperties;
-import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.GenericSessionService;
+import ua.edu.ratos.service.session.SessionDataMap;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSessionListener;
  */
 @Slf4j
 @Component
-public class HttpSessionEndedListener implements HttpSessionListener {
+public class HttpSessionListenerImpl implements HttpSessionListener {
 
     private AppProperties appProperties;
 
@@ -46,23 +46,27 @@ public class HttpSessionEndedListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
+        log.debug("HttpSession timeout, long inactivity case");
         HttpSession session = event.getSession();
-        Object sessionData = session.getAttribute("sessionData");
-        if (sessionData!=null) {
+        Object sessionDataAttribute = session.getAttribute("sessionDataMap");
+        SessionDataMap sessionDataMap = ((sessionDataAttribute == null)
+                ? new SessionDataMap() : (SessionDataMap) sessionDataAttribute);
+        if (sessionDataMap.getOpenedSessions().size()>0) {
             if (appProperties.getSession().isSaveAbandonedResults()) {
-                log.debug("Long inactivity case, try to save abandoned results to DB");
+                log.debug("HttpSession timeout, long inactivity case, try to save abandoned results to DB");
                 // we presume that time dedicated to this session already gone,
-                // then time dedicated to the whole security session was gone as well.
+                // then time dedicated to the whole security session was gone all the more so!
                 try {
-                    genericSessionService.finish((SessionData) sessionData);
+                    sessionDataMap.getOpenedSessions().values()
+                            .forEach(genericSessionService::finish);
                 } catch (Exception e) {
-                    log.error("Failed to save an abandoned session, sessionId = {}, message = {}", session.getId(), e.getMessage());
+                    log.error("Failed to save an abandoned session(s), message = {}", e.getMessage());
                 }
             } else {
-                log.debug("Long inactivity case, sessionData will be forever lost...");
+                log.debug("SessionData(s) will be forever lost...");
             }
         } else {
-            log.trace("No sessionData kept in this session, sessionId = {}, just ignore...", session.getId());
+            log.debug("No sessionData(s) are kept in this http session, id = {}, just ignore...", session.getId());
         }
     }
 }

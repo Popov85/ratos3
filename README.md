@@ -35,6 +35,7 @@ minimal requirement is the following:
 - Locale specific pre-populating the production database at first start-up, supported languages (EN, FR, RU);
 - Flexible security policies (student, staff, instructor, department admin, faculty admin, organization admin);
 - Turbo-start option via configurable parallel cache of questions populating at start-up;
+- Multiple simultaneous learning sessions, comeback to already started session, session preservation;
 - Off-heap session data storage capabilities (RDBMS, Redis, etc.): robust, clustered and JVM independent, though slower;
 - Gamification.
 

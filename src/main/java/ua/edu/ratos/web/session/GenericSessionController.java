@@ -13,7 +13,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.GenericSessionService;
-import ua.edu.ratos.web.exception.SessionAlreadyOpenedException;
+import ua.edu.ratos.service.session.SessionDataMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,55 +38,63 @@ public class GenericSessionController {
 
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session) {
-        if (session.getAttribute("sessionData")!=null) {
-            Object sessionData = session.getAttribute("sessionData");
-            throw new SessionAlreadyOpenedException(((SessionData) sessionData).getSchemeDomain().getSchemeId());
-        }
+        Object sessionDataAttribute = session.getAttribute("sessionDataMap");
+        SessionDataMap sessionDataMap = ((sessionDataAttribute == null)
+                ? new SessionDataMap() : (SessionDataMap) sessionDataAttribute);
+        sessionDataMap.controlAndThrow(schemeId);
         String key = session.getId();
         Long userId = securityUtils.getAuthStudId();
         final SessionData sessionData = sessionService.start(new StartData(key, schemeId, userId));
-        session.setAttribute("sessionData", sessionData);
+        sessionDataMap.add(schemeId, sessionData);
+        session.setAttribute("sessionDataMap", sessionDataMap);
         log.debug("Started non-LMS session key = {} for userId = {} taking schemeId = {}", key, userId, schemeId);
-        return ResponseEntity.ok(sessionData.getCurrentBatch().get());
+        return ResponseEntity.ok(sessionService.current(sessionData));
     }
 
     @ControlTime
-    @PostMapping(value = "/next", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BatchOutDto> next(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchInDto batchInDto) {
+    @PostMapping(value = "/next", params = "schemeId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BatchOutDto> next(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap,
+                                            @RequestBody BatchInDto batchInDto){
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         BatchOutDto batchOut = sessionService.next(batchInDto, sessionData);
         log.debug("Next batch in learning session = {}", batchOut);
         return ResponseEntity.ok(batchOut);
     }
 
     @ControlTime
-    @GetMapping(value = "/current", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BatchOutDto> current(@SessionAttribute("sessionData") SessionData sessionData) {
+    @GetMapping(value = "/current", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BatchOutDto> current(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         return ResponseEntity.ok(sessionService.current(sessionData));
     }
 
     @ControlTime
-    @PostMapping(value = "/finish-batch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultOutDto> finish(@SessionAttribute("sessionData") SessionData sessionData, @RequestBody BatchInDto batchInDto, HttpSession session) {
+    @PostMapping(value = "/finish-batch", params = "schemeId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultOutDto> finish(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap,
+                                               @RequestBody BatchInDto batchInDto, HttpSession session) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         final ResultOutDto resultOut = sessionService.finish(batchInDto, sessionData);
-        session.removeAttribute("sessionData");
+        sessionDataMap.remove(schemeId);
         log.debug("Finished learning session with last batch evaluating, result = {}", resultOut);
         return ResponseEntity.ok(resultOut);
     }
 
     @ControlTime
-    @GetMapping(value = "/finish", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultOutDto> finish(@SessionAttribute("sessionData") SessionData sessionData, HttpSession session) {
+    @GetMapping(value = "/finish", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultOutDto> finish(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         final ResultOutDto resultOut = sessionService.finish(sessionData);
-        session.removeAttribute("sessionData");
+        sessionDataMap.remove(schemeId);
         log.debug("Finished learning session without last batch evaluating");
         return ResponseEntity.ok(resultOut);
     }
 
     @ControlTime
-    @GetMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultOutDto> cancel(@SessionAttribute("sessionData") SessionData sessionData, HttpSession session) {
+    @GetMapping(value = "/cancel", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultOutDto> cancel(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         final ResultOutDto resultOut = sessionService.cancel(sessionData);
-        session.removeAttribute("sessionData");
+        sessionDataMap.remove(schemeId);
         log.debug("Cancelled learning session, {}", resultOut);
         return ResponseEntity.ok(resultOut);
     }

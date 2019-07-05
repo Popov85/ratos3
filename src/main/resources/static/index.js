@@ -1175,7 +1175,190 @@ var propTypes = {
 Failure.propTypes = propTypes;
 var _default = Failure;
 exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9"}],"wAdl":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9"}],"yRft":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Header = function Header(props) {
+  return _react.default.createElement("div", {
+    className: "row mb-1"
+  }, _react.default.createElement("div", {
+    className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
+  }), _react.default.createElement("div", {
+    className: "col-xs-10 col-sm-8 col-md-6 col-lg-4 col-xl-4"
+  }, _react.default.createElement("div", {
+    className: "row text-center"
+  }, _react.default.createElement("div", {
+    className: "col-12"
+  }, _react.default.createElement("div", {
+    className: "alert-sm ".concat(props.color, " pt-3 pb-3")
+  }, props.title)))), _react.default.createElement("div", {
+    className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
+  }));
+};
+
+Header.propTypes = {
+  title: _propTypes.default.string.isRequired
+};
+var _default = Header;
+exports.default = _default;
+},{"react":"HdMw","prop-types":"Iix9"}],"9i99":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _Header = _interopRequireDefault(require("./Header"));
+
+var _Launcher = _interopRequireDefault(require("./Launcher"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Cancelled =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Cancelled, _Component);
+
+  function Cancelled(props) {
+    var _this;
+
+    _classCallCheck(this, Cancelled);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Cancelled).call(this, props));
+    _this.state = {
+      isReStarted: false
+    };
+    return _this;
+  }
+
+  _createClass(Cancelled, [{
+    key: "reStart",
+    value: function reStart() {
+      this.setState({
+        isReStarted: true
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props = this.props,
+          schemeId = _this$props.schemeId,
+          baseUrl = _this$props.baseUrl;
+      if (this.state.isReStarted) return _react.default.createElement(_Launcher.default, {
+        schemeId: schemeId,
+        baseUrl: baseUrl
+      });
+      var _this$props$result = this.props.result,
+          user = _this$props$result.user,
+          scheme = _this$props$result.scheme,
+          passed = _this$props$result.passed;
+      return _react.default.createElement("div", {
+        className: "mt-5"
+      }, _react.default.createElement(_Header.default, {
+        title: "CANCELLED",
+        color: "alert-warning"
+      }), _react.default.createElement("div", {
+        className: "row mt-1"
+      }, _react.default.createElement("div", {
+        className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
+      }), _react.default.createElement("div", {
+        className: "col-xs-10 col-sm-8 col-md-6 col-lg-4 col-xl-4"
+      }, _react.default.createElement("div", {
+        className: "bg-light"
+      }, _react.default.createElement("div", {
+        className: "row mb-1"
+      }, _react.default.createElement("div", {
+        className: "col-4"
+      }, _react.default.createElement("div", {
+        className: "text-secondary"
+      }, "name:")), _react.default.createElement("div", {
+        className: "col-8"
+      }, _react.default.createElement("div", {
+        className: "alert-sm alert-info"
+      }, user))), _react.default.createElement("div", {
+        className: "row mb-1"
+      }, _react.default.createElement("div", {
+        className: "col-4"
+      }, _react.default.createElement("div", {
+        className: "text-secondary"
+      }, "scheme:")), _react.default.createElement("div", {
+        className: "col-8"
+      }, _react.default.createElement("div", {
+        className: "alert-sm alert-info"
+      }, scheme))), _react.default.createElement("div", {
+        className: "row mb-1"
+      }, _react.default.createElement("div", {
+        className: "col-4"
+      }, _react.default.createElement("div", {
+        className: "text-secondary"
+      }, "passed:")), _react.default.createElement("div", {
+        className: "col-8"
+      }, _react.default.createElement("div", {
+        className: "alert-sm alert-".concat(passed ? "success" : "danger")
+      }, passed ? "Yes" : "No"))))), _react.default.createElement("div", {
+        className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
+      })), _react.default.createElement("div", {
+        className: "row text-center mt-3"
+      }, _react.default.createElement("div", {
+        className: "col-12"
+      }, _react.default.createElement("button", {
+        className: "btn btn-secondary",
+        onClick: function onClick() {
+          return _this2.reStart();
+        }
+      }, "ReStart>>"))));
+    }
+  }]);
+
+  return Cancelled;
+}(_react.Component);
+
+Cancelled.propTypes = {
+  schemeId: _propTypes.default.number.isRequired,
+  result: _propTypes.default.object.isRequired,
+  baseUrl: _propTypes.default.string.isRequired
+};
+var _default = Cancelled;
+exports.default = _default;
+},{"react":"HdMw","prop-types":"Iix9","./Header":"yRft","./Launcher":"gUbM"}],"wAdl":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33740,190 +33923,7 @@ var propTypes = {
   baseUrl: _propTypes.default.string.isRequired
 };
 Finish.propTypes = propTypes;
-},{"react":"HdMw","./Launcher":"gUbM","./Result":"tAza","./ResultByThemes":"qbT3","./ResultByQuestions":"YoWB","prop-types":"Iix9"}],"yRft":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Header = function Header(props) {
-  return _react.default.createElement("div", {
-    className: "row mb-1"
-  }, _react.default.createElement("div", {
-    className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
-  }), _react.default.createElement("div", {
-    className: "col-xs-10 col-sm-8 col-md-6 col-lg-4 col-xl-4"
-  }, _react.default.createElement("div", {
-    className: "row text-center"
-  }, _react.default.createElement("div", {
-    className: "col-12"
-  }, _react.default.createElement("div", {
-    className: "alert-sm ".concat(props.color, " pt-3 pb-3")
-  }, props.title)))), _react.default.createElement("div", {
-    className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
-  }));
-};
-
-Header.propTypes = {
-  title: _propTypes.default.string.isRequired
-};
-var _default = Header;
-exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9"}],"9i99":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _Header = _interopRequireDefault(require("./Header"));
-
-var _Launcher = _interopRequireDefault(require("./Launcher"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var Cancelled =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(Cancelled, _Component);
-
-  function Cancelled(props) {
-    var _this;
-
-    _classCallCheck(this, Cancelled);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Cancelled).call(this, props));
-    _this.state = {
-      isReStarted: false
-    };
-    return _this;
-  }
-
-  _createClass(Cancelled, [{
-    key: "reStart",
-    value: function reStart() {
-      this.setState({
-        isReStarted: true
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var _this$props = this.props,
-          schemeId = _this$props.schemeId,
-          baseUrl = _this$props.baseUrl;
-      if (this.state.isReStarted) return _react.default.createElement(_Launcher.default, {
-        schemeId: schemeId,
-        baseUrl: baseUrl
-      });
-      var _this$props$result = this.props.result,
-          user = _this$props$result.user,
-          scheme = _this$props$result.scheme,
-          passed = _this$props$result.passed;
-      return _react.default.createElement("div", {
-        className: "mt-5"
-      }, _react.default.createElement(_Header.default, {
-        title: "CANCELLED",
-        color: "alert-warning"
-      }), _react.default.createElement("div", {
-        className: "row mt-1"
-      }, _react.default.createElement("div", {
-        className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
-      }), _react.default.createElement("div", {
-        className: "col-xs-10 col-sm-8 col-md-6 col-lg-4 col-xl-4"
-      }, _react.default.createElement("div", {
-        className: "bg-light"
-      }, _react.default.createElement("div", {
-        className: "row mb-1"
-      }, _react.default.createElement("div", {
-        className: "col-4"
-      }, _react.default.createElement("div", {
-        className: "text-secondary"
-      }, "name:")), _react.default.createElement("div", {
-        className: "col-8"
-      }, _react.default.createElement("div", {
-        className: "alert-sm alert-info"
-      }, user))), _react.default.createElement("div", {
-        className: "row mb-1"
-      }, _react.default.createElement("div", {
-        className: "col-4"
-      }, _react.default.createElement("div", {
-        className: "text-secondary"
-      }, "scheme:")), _react.default.createElement("div", {
-        className: "col-8"
-      }, _react.default.createElement("div", {
-        className: "alert-sm alert-info"
-      }, scheme))), _react.default.createElement("div", {
-        className: "row mb-1"
-      }, _react.default.createElement("div", {
-        className: "col-4"
-      }, _react.default.createElement("div", {
-        className: "text-secondary"
-      }, "passed:")), _react.default.createElement("div", {
-        className: "col-8"
-      }, _react.default.createElement("div", {
-        className: "alert-sm alert-".concat(passed ? "success" : "danger")
-      }, passed ? "Yes" : "No"))))), _react.default.createElement("div", {
-        className: "col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-4"
-      })), _react.default.createElement("div", {
-        className: "row text-center mt-3"
-      }, _react.default.createElement("div", {
-        className: "col-12"
-      }, _react.default.createElement("button", {
-        className: "btn btn-secondary",
-        onClick: function onClick() {
-          return _this2.reStart();
-        }
-      }, "ReStart>>"))));
-    }
-  }]);
-
-  return Cancelled;
-}(_react.Component);
-
-Cancelled.propTypes = {
-  schemeId: _propTypes.default.number.isRequired,
-  result: _propTypes.default.object.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
-};
-var _default = Cancelled;
-exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./Header":"yRft","./Launcher":"gUbM"}],"osRP":[function(require,module,exports) {
+},{"react":"HdMw","./Launcher":"gUbM","./Result":"tAza","./ResultByThemes":"qbT3","./ResultByQuestions":"YoWB","prop-types":"Iix9"}],"osRP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34085,16 +34085,15 @@ function (_React$Component) {
         return _this2.tick();
       }, 1000);
     }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps, prevState, snapshot) {
-      console.log("Component did update!");
-      /*if (this.state.responses !== prevState.responses) {
-          for (var [key, value] of this.state.responses) {
-              console.log(key + ' = ' + JSON.stringify(value));
-          }
-      }*/
-    }
+    /*componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("Component did update!");
+        if (this.state.responses !== prevState.responses) {
+            for (var [key, value] of this.state.responses) {
+                console.log(key + ' = ' + JSON.stringify(value));
+            }
+        }
+    }*/
+
   }, {
     key: "componentDidCatch",
     value: function componentDidCatch(error, info) {
@@ -34183,6 +34182,7 @@ function (_React$Component) {
       }
 
       batchOut.responses = responses;
+      console.log("Preapared batch of responses = " + JSON.stringify(batchOut));
       return batchOut;
     }
   }, {
@@ -34212,7 +34212,7 @@ function (_React$Component) {
     value: function tryCancelAPICall() {
       var _this3 = this;
 
-      var url = baseUrl + cancelUrl;
+      var url = baseUrl + cancelUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'GET',
         credentials: 'same-origin',
@@ -34258,8 +34258,7 @@ function (_React$Component) {
     value: function tryNextAPICall(batchOut) {
       var _this4 = this;
 
-      var url = baseUrl + nextUrl;
-      console.log("Will send batch of responses = " + JSON.stringify(batchOut));
+      var url = baseUrl + nextUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -34272,7 +34271,7 @@ function (_React$Component) {
         if (!response.ok) throw response;
         return response.json();
       }).then(function (response) {
-        console.log("Successful next call!");
+        //console.log("Successful next call!");
         console.log(response);
 
         if (response.batch.length === 0) {
@@ -34323,7 +34322,7 @@ function (_React$Component) {
     value: function tryFinishAPICall() {
       var _this5 = this;
 
-      var url = baseUrl + finishUrl;
+      var url = baseUrl + finishUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'GET',
         credentials: 'same-origin',
@@ -34368,7 +34367,7 @@ function (_React$Component) {
     value: function tryFinishBatchAPICall(batchOut) {
       var _this6 = this;
 
-      var url = baseUrl + finishBatchUrl;
+      var url = baseUrl + finishBatchUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -34734,7 +34733,238 @@ var propTypes = {
   baseUrl: _propTypes.default.string.isRequired
 };
 Batch.propTypes = propTypes;
-},{"react":"HdMw","prop-types":"Iix9","react-modal":"dIOr","react-countdown-now":"BU/I","./Spinner":"cmYb","./Failure":"89he","./McqMulti":"apY/","./McqSingle":"Kn0O","./Finish":"3nTs","./Cancelled":"9i99","./Utils":"osRP","react-icons/fa":"mJqe","../main.css":"Sr7R"}],"Usmb":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","react-modal":"dIOr","react-countdown-now":"BU/I","./Spinner":"cmYb","./Failure":"89he","./McqMulti":"apY/","./McqSingle":"Kn0O","./Finish":"3nTs","./Cancelled":"9i99","./Utils":"osRP","react-icons/fa":"mJqe","../main.css":"Sr7R"}],"PKgD":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _Logo = _interopRequireDefault(require("./Logo"));
+
+var _Header = _interopRequireDefault(require("./Header"));
+
+var _Cancelled = _interopRequireDefault(require("./Cancelled"));
+
+var _Batch = _interopRequireDefault(require("./Batch"));
+
+var _Spinner = _interopRequireDefault(require("./Spinner"));
+
+var _Failure = _interopRequireDefault(require("./Failure"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var cancelUrl = "/student/session/cancel";
+var currentUrl = "/student/session/current";
+
+var Opened =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Opened, _Component);
+
+  function Opened(props) {
+    var _this;
+
+    _classCallCheck(this, Opened);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Opened).call(this, props));
+    _this.state = {
+      isClosed: false,
+      isContinued: false,
+      result: null,
+      batch: null,
+      isLoaded: true,
+      error: null
+    };
+    return _this;
+  }
+
+  _createClass(Opened, [{
+    key: "reTryCancelAPICall",
+    value: function reTryCancelAPICall() {
+      this.setState({
+        isLoaded: false,
+        error: null
+      });
+      this.tryCancelAPICall();
+    }
+  }, {
+    key: "tryCancelAPICall",
+    value: function tryCancelAPICall() {
+      var _this2 = this;
+
+      var url = this.props.baseUrl + cancelUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      fetch(url, {
+        method: 'GET',
+        credentials: 'same-origin'
+      }).then(function (response) {
+        if (!response.ok) throw Error("Failed to perform cancel API request");
+        return response.json();
+      }).then(function (response) {
+        _this2.setState({
+          isClosed: true,
+          result: response,
+          isLoaded: true,
+          error: null
+        });
+      }).catch(function (error) {
+        console.error(error);
+
+        _this2.setState({
+          isLoaded: true,
+          error: error
+        });
+      });
+    }
+  }, {
+    key: "reTryCurrentAPICall",
+    value: function reTryCurrentAPICall() {
+      this.setState({
+        isLoaded: false,
+        error: null
+      });
+      this.tryCurrentAPICall();
+    }
+  }, {
+    key: "tryCurrentAPICall",
+    value: function tryCurrentAPICall() {
+      var _this3 = this;
+
+      var url = this.props.baseUrl + currentUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      fetch(url, {
+        method: 'GET',
+        credentials: 'same-origin'
+      }).then(function (response) {
+        if (!response.ok) throw Error("Failed to perform current API request");
+        return response.json();
+      }).then(function (response) {
+        _this3.setState({
+          isContinued: true,
+          batch: response,
+          isLoaded: true,
+          error: null
+        });
+      }).catch(function (error) {
+        console.error(error);
+
+        _this3.setState({
+          isLoaded: true,
+          error: error
+        });
+      });
+    }
+  }, {
+    key: "renderCancelled",
+    value: function renderCancelled() {
+      var _this$props = this.props,
+          schemeInfo = _this$props.schemeInfo,
+          baseUrl = _this$props.baseUrl;
+      return _react.default.createElement(_Cancelled.default, {
+        schemeId: schemeInfo.schemeId,
+        result: this.state.result,
+        baseUrl: baseUrl
+      });
+    }
+  }, {
+    key: "renderContinue",
+    value: function renderContinue() {
+      var _this$props2 = this.props,
+          schemeInfo = _this$props2.schemeInfo,
+          baseUrl = _this$props2.baseUrl;
+      return _react.default.createElement(_Batch.default, {
+        schemeInfo: schemeInfo,
+        batch: this.state.batch,
+        baseUrl: baseUrl
+      });
+    }
+  }, {
+    key: "renderButtons",
+    value: function renderButtons() {
+      var _this4 = this;
+
+      return _react.default.createElement("div", {
+        className: "row text-center mt-3"
+      }, _react.default.createElement("div", {
+        className: "col-12"
+      }, _react.default.createElement("button", {
+        className: "btn btn-secondary mr-1",
+        onClick: function onClick() {
+          return _this4.reTryCancelAPICall();
+        },
+        title: "Cancel the opened session and then return to the requested one!"
+      }, "Finish>>"), _react.default.createElement("button", {
+        className: "btn btn-secondary",
+        onClick: function onClick() {
+          return _this4.reTryCurrentAPICall();
+        },
+        title: "Continue the opened session"
+      }, "Continue>>")));
+    }
+  }, {
+    key: "renderFailure",
+    value: function renderFailure() {
+      return _react.default.createElement("div", null, _react.default.createElement(_Failure.default, {
+        message: this.state.error.message
+      }), this.renderButtons());
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$state = this.state,
+          isLoaded = _this$state.isLoaded,
+          isClosed = _this$state.isClosed,
+          isContinued = _this$state.isContinued,
+          error = _this$state.error;
+      if (!isLoaded) return _react.default.createElement(_Spinner.default, {
+        message: "Performing cancel API call"
+      });
+      if (isClosed) return this.renderCancelled();
+      if (isContinued) return this.renderContinue();
+      if (error) return this.renderFailure();
+      return _react.default.createElement("div", {
+        className: "mt-1"
+      }, _react.default.createElement(_Logo.default, null), _react.default.createElement(_Header.default, {
+        title: "PREVIOUS IS OPENED",
+        color: "alert-warning"
+      }), this.renderButtons());
+    }
+  }]);
+
+  return Opened;
+}(_react.Component);
+
+Opened.propTypes = {
+  schemeInfo: _propTypes.default.object.isRequired,
+  baseUrl: _propTypes.default.string.isRequired
+};
+var _default = Opened;
+exports.default = _default;
+},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Header":"yRft","./Cancelled":"9i99","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he"}],"Usmb":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34746,7 +34976,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _Info = _interopRequireDefault(require("./Info"));
+var _Opened = _interopRequireDefault(require("./Opened"));
 
 var _Batch = _interopRequireDefault(require("./Batch"));
 
@@ -34795,7 +35025,6 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Start).call(this, props));
     _this.state = {
       isOpened: false,
-      openedId: null,
       isStarted: false,
       batch: null,
       isLoaded: true,
@@ -34842,12 +35071,17 @@ function (_React$Component) {
 
         try {
           error.json().then(function (body) {
-            console.log("Opened schemeId = " + body.schemeId);
+            if (body.exception === "SessionAlreadyOpenedException") {
+              console.error("Already Opened schemeId = " + _this2.props.schemeInfo.schemeId);
 
-            _this2.setState({
-              isOpened: true,
-              openedId: body.schemeId
-            });
+              _this2.setState({
+                isOpened: true
+              });
+            } else {
+              _this2.setState({
+                error: new Error("Unexpected server error!")
+              });
+            }
           });
         } catch (e) {
           console.error("This is not promise!");
@@ -34865,20 +35099,24 @@ function (_React$Component) {
   }, {
     key: "renderBatch",
     value: function renderBatch() {
+      var _this$props = this.props,
+          schemeInfo = _this$props.schemeInfo,
+          baseUrl = _this$props.baseUrl;
       return _react.default.createElement(_Batch.default, {
-        schemeInfo: this.props.schemeInfo,
-        batch: this.state.batch,
-        baseUrl: this.props.baseUrl
+        schemeInfo: schemeInfo,
+        baseUrl: baseUrl,
+        batch: this.state.batch
       });
     }
   }, {
     key: "renderOpened",
     value: function renderOpened() {
-      return _react.default.createElement(_Info.default, {
-        schemeId: this.state.openedId,
-        requestedInfo: this.props.schemeInfo,
-        baseUrl: this.props.baseUrl,
-        isStart: false
+      var _this$props2 = this.props,
+          schemeInfo = _this$props2.schemeInfo,
+          baseUrl = _this$props2.baseUrl;
+      return _react.default.createElement(_Opened.default, {
+        schemeInfo: schemeInfo,
+        baseUrl: baseUrl
       });
     }
   }, {
@@ -35030,239 +35268,7 @@ var propTypes = {
   baseUrl: _propTypes.default.string.isRequired
 };
 Start.propTypes = propTypes;
-},{"react":"HdMw","prop-types":"Iix9","./Info":"Bens","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he","./Logo":"1HB+","../main.css":"Sr7R","./Header":"yRft"}],"PKgD":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _Logo = _interopRequireDefault(require("./Logo"));
-
-var _Header = _interopRequireDefault(require("./Header"));
-
-var _Cancelled = _interopRequireDefault(require("./Cancelled"));
-
-var _Batch = _interopRequireDefault(require("./Batch"));
-
-var _Spinner = _interopRequireDefault(require("./Spinner"));
-
-var _Failure = _interopRequireDefault(require("./Failure"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var cancelUrl = "/student/session/cancel";
-var currentUrl = "/student/session/current";
-
-var Opened =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(Opened, _Component);
-
-  function Opened(props) {
-    var _this;
-
-    _classCallCheck(this, Opened);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Opened).call(this, props));
-    _this.state = {
-      isClosed: false,
-      isContinued: false,
-      result: null,
-      batch: null,
-      isLoaded: true,
-      error: null
-    };
-    return _this;
-  }
-
-  _createClass(Opened, [{
-    key: "reTryCancelAPICall",
-    value: function reTryCancelAPICall() {
-      this.setState({
-        isLoaded: false,
-        error: null
-      });
-      this.tryCancelAPICall();
-    }
-  }, {
-    key: "tryCancelAPICall",
-    value: function tryCancelAPICall() {
-      var _this2 = this;
-
-      var url = this.props.baseUrl + cancelUrl;
-      fetch(url, {
-        method: 'GET',
-        credentials: 'same-origin'
-      }).then(function (response) {
-        if (!response.ok) throw Error("Failed to perform cancel API request");
-        return response.json();
-      }).then(function (response) {
-        _this2.setState({
-          isClosed: true,
-          result: response,
-          isLoaded: true,
-          error: null
-        });
-      }).catch(function (error) {
-        console.error(error);
-
-        _this2.setState({
-          isLoaded: true,
-          error: error
-        });
-      });
-    }
-  }, {
-    key: "reTryCurrentAPICall",
-    value: function reTryCurrentAPICall() {
-      this.setState({
-        isLoaded: false,
-        error: null
-      });
-      this.tryCurrentAPICall();
-    }
-  }, {
-    key: "tryCurrentAPICall",
-    value: function tryCurrentAPICall() {
-      var _this3 = this;
-
-      var url = this.props.baseUrl + currentUrl;
-      fetch(url, {
-        method: 'GET',
-        credentials: 'same-origin'
-      }).then(function (response) {
-        if (!response.ok) throw Error("Failed to perform current API request");
-        return response.json();
-      }).then(function (response) {
-        _this3.setState({
-          isContinued: true,
-          batch: response,
-          isLoaded: true,
-          error: null
-        });
-      }).catch(function (error) {
-        console.error(error);
-
-        _this3.setState({
-          isLoaded: true,
-          error: error
-        });
-      });
-    }
-  }, {
-    key: "renderCancelled",
-    value: function renderCancelled() {
-      var _this$props = this.props,
-          schemeInfo = _this$props.schemeInfo,
-          baseUrl = _this$props.baseUrl;
-      return _react.default.createElement(_Cancelled.default, {
-        schemeId: schemeInfo.schemeId,
-        result: this.state.result,
-        baseUrl: baseUrl
-      });
-    }
-  }, {
-    key: "renderContinue",
-    value: function renderContinue() {
-      var _this$props2 = this.props,
-          openedInfo = _this$props2.openedInfo,
-          baseUrl = _this$props2.baseUrl;
-      return _react.default.createElement(_Batch.default, {
-        schemeInfo: openedInfo,
-        batch: this.state.batch,
-        baseUrl: baseUrl
-      });
-    }
-  }, {
-    key: "renderButtons",
-    value: function renderButtons() {
-      var _this4 = this;
-
-      return _react.default.createElement("div", {
-        className: "row text-center mt-3"
-      }, _react.default.createElement("div", {
-        className: "col-12"
-      }, _react.default.createElement("button", {
-        className: "btn btn-secondary mr-1",
-        onClick: function onClick() {
-          return _this4.reTryCancelAPICall();
-        },
-        title: "Cancel the opened session and then return to the requested one!"
-      }, "Finish>>"), _react.default.createElement("button", {
-        className: "btn btn-secondary",
-        onClick: function onClick() {
-          return _this4.reTryCurrentAPICall();
-        },
-        title: "Continue the opened session"
-      }, "Continue>>")));
-    }
-  }, {
-    key: "renderFailure",
-    value: function renderFailure() {
-      return _react.default.createElement("div", null, _react.default.createElement(_Failure.default, {
-        message: this.state.error.message
-      }), this.renderButtons());
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$state = this.state,
-          isLoaded = _this$state.isLoaded,
-          isClosed = _this$state.isClosed,
-          isContinued = _this$state.isContinued,
-          error = _this$state.error;
-      if (!isLoaded) return _react.default.createElement(_Spinner.default, {
-        message: "Performing cancel API call"
-      });
-      if (isClosed) return this.renderCancelled();
-      if (isContinued) return this.renderContinue();
-      if (error) return this.renderFailure();
-      return _react.default.createElement("div", {
-        className: "mt-1"
-      }, _react.default.createElement(_Logo.default, null), _react.default.createElement(_Header.default, {
-        title: "PREVIOUS IS OPENED",
-        color: "alert-warning"
-      }), this.renderButtons());
-    }
-  }]);
-
-  return Opened;
-}(_react.Component);
-
-Opened.propTypes = {
-  schemeInfo: _propTypes.default.object.isRequired,
-  openedInfo: _propTypes.default.object.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
-};
-var _default = Opened;
-exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Header":"yRft","./Cancelled":"9i99","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he"}],"Bens":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Opened":"PKgD","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he","./Logo":"1HB+","../main.css":"Sr7R","./Header":"yRft"}],"Bens":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35281,8 +35287,6 @@ var _Spinner = _interopRequireDefault(require("./Spinner"));
 var _Failure = _interopRequireDefault(require("./Failure"));
 
 var _Start = _interopRequireDefault(require("./Start"));
-
-var _Opened = _interopRequireDefault(require("./Opened"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35398,27 +35402,18 @@ function (_Component) {
           isLoaded = _this$state.isLoaded,
           error = _this$state.error,
           schemeInfo = _this$state.schemeInfo;
-      var _this$props = this.props,
-          requestedInfo = _this$props.requestedInfo,
-          baseUrl = _this$props.baseUrl,
-          isStart = _this$props.isStart;
+      var baseUrl = this.props.baseUrl;
       if (!isLoaded) return _react.default.createElement("div", null, _react.default.createElement("div", {
         className: "mb-2"
       }, _react.default.createElement(_Logo.default, null)), _react.default.createElement(_Spinner.default, {
         message: "Loading info from server"
       }));
-      if (error) return this.renderFailure(); // Return either Start or Opened
+      if (error) return this.renderFailure(); // Return Start
 
-      if (isStart) return _react.default.createElement(_Start.default, {
+      return _react.default.createElement(_Start.default, {
         schemeInfo: schemeInfo,
         baseUrl: baseUrl
       });
-      if (!isStart) return _react.default.createElement(_Opened.default, {
-        schemeInfo: requestedInfo,
-        openedInfo: schemeInfo,
-        baseUrl: baseUrl
-      });
-      throw Error("Wrong page parameter");
     }
   }]);
 
@@ -35427,13 +35422,11 @@ function (_Component) {
 
 Info.propTypes = {
   schemeId: _propTypes.default.number.isRequired,
-  requestedInfo: _propTypes.default.object,
-  baseUrl: _propTypes.default.string.isRequired,
-  isStart: _propTypes.default.bool.isRequired
+  baseUrl: _propTypes.default.string.isRequired
 };
 var _default = Info;
 exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Spinner":"cmYb","./Failure":"89he","./Start":"Usmb","./Opened":"PKgD"}],"gUbM":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Spinner":"cmYb","./Failure":"89he","./Start":"Usmb"}],"gUbM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35454,8 +35447,7 @@ var Launcher = function Launcher(props) {
       baseUrl = props.baseUrl;
   return _react.default.createElement(_Info.default, {
     schemeId: schemeId,
-    baseUrl: baseUrl,
-    isStart: true
+    baseUrl: baseUrl
   });
 };
 

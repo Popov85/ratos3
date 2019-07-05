@@ -5,9 +5,11 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.web.exception.RunOutOfTimeException;
 
@@ -29,12 +31,13 @@ import java.time.LocalDateTime;
 @RequestScope
 @Profile({"prod", "dev"})
 public class TimeoutImpl implements Timeout {
-    /**
-     * Add 3 or more seconds (experimental value) to compensate the network round trips time;
-     * Probably, the  client script would initiate the request to server in case of time-out either session or batch (not confirmed);
-     * In turn, server also must check the timeout, but adds 3 or more sec to compensate the network traverse time
-     */
-    private static final long NETWORK_LEEWAY_SECONDS = 3;
+
+    private AppProperties appProperties;
+
+    @Autowired
+    public void setAppProperties(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     private boolean isSessionTimeout;
 
@@ -66,7 +69,9 @@ public class TimeoutImpl implements Timeout {
 
     private boolean isTimeoutedWithLeeway(LocalDateTime businessTimeout) {
         if (TimingService.isUnlimited(businessTimeout)) return false;
-        return LocalDateTime.now().isAfter(businessTimeout.plusSeconds(NETWORK_LEEWAY_SECONDS));
+        // Add timeout leeway if any (non zero)
+        long leeway = appProperties.getSession().getTimeoutLeeway();
+        return LocalDateTime.now().isAfter(businessTimeout.plusSeconds(leeway));
     }
 
     @PostConstruct

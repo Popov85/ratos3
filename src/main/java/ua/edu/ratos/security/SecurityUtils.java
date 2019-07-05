@@ -99,8 +99,7 @@ public class SecurityUtils {
                 .collect(Collectors.toSet());
     }
 
-
-    private Authentication getAuthentication() {
+    public Authentication getAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth==null) throw new SecurityException("Unauthorized");
         return auth;

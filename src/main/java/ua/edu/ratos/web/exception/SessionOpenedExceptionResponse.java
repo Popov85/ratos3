@@ -9,10 +9,7 @@ public class SessionOpenedExceptionResponse extends ExceptionResponse {
 
     private static final String MESSAGE = "Previous session is still opened";
 
-    private final Long schemeId;
-
-    public SessionOpenedExceptionResponse(Long schemeId) {
+    public SessionOpenedExceptionResponse() {
         super(TYPE, MESSAGE);
-        this.schemeId = schemeId;
     }
 }

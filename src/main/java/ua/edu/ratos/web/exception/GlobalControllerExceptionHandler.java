@@ -32,9 +32,9 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(value = {SessionAlreadyOpenedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public SessionOpenedExceptionResponse openedException(Exception ex, WebRequest request) {
-        Long schemeId = ((SessionAlreadyOpenedException) ex).getSchemeId();
-        SessionOpenedExceptionResponse exceptionResponse = new SessionOpenedExceptionResponse(schemeId);
-        log.error("Start request for already opened session for user = {} not finished schemeId = {}", request.getUserPrincipal().getName(), schemeId);
+        SessionOpenedExceptionResponse exceptionResponse = new SessionOpenedExceptionResponse();
+        log.error("Start request for already opened session for user = {} not finished schemeId = {}",
+                request.getUserPrincipal().getName(), ((SessionAlreadyOpenedException) ex).getSchemeId());
         return exceptionResponse;
     }
 

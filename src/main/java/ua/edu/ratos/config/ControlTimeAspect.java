@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.session.SessionDataMap;
 import ua.edu.ratos.service.session.Timeout;
 
 @Slf4j
@@ -14,15 +14,33 @@ import ua.edu.ratos.service.session.Timeout;
 @Component
 public class ControlTimeAspect {
 
-    @Autowired
     private Timeout timeout;
 
+    @Autowired
+    public void setTimeout(Timeout timeout) {
+        this.timeout = timeout;
+    }
+
+    /**
+     * For every end-point that serves learning session after it has been opened,
+     * we control business timeout and check for it as early as possible
+     * (even for unrestricted in time schemes)
+     * in request flow (usually in controllers) and only once within single request!
+     * This is advantageous in borderline cases when user finishes learning session
+     * just before he runs out of time, and in controller, session is still not expired
+     * but during execution process it expires and we have two inconsistent states;
+     * Timeout class eliminates this possibility.
+     * @param joinPoint
+     */
     @Before("@annotation(ua.edu.ratos.config.ControlTime)")
     public void before(JoinPoint joinPoint) {
         try {
-            timeout.setTimeout((SessionData)joinPoint.getArgs()[0]);
+            Object[] args = joinPoint.getArgs();
+            timeout.setTimeout(((SessionDataMap) args[1]).getOrElseThrow((Long)args[0]));
         } catch (Exception e) {
-            throw new RuntimeException("Make sure SessionData goes as the first argument in your annotated methods!", e);
+            //Make sure first argument is schemeId (Long) and
+            //second argument is SessionDataMap in your annotated methods!
+            throw new RuntimeException(e);
         }
         log.debug("Has set timeout for request = {}", timeout);
     }

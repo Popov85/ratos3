@@ -145,6 +145,16 @@ public class AppProperties {
         @Min(0)
         @Max(100)
         private double timeoutPenalty;
+
+        /**
+         * Time in seconds to compensate the network round-trips between batch requests time (experimental value);
+         * Probably, the  client script would initiate the request in case of time-out either session or batch (not confirmed);
+         * In turn, server also must check the timeout, but adds 3 or more sec to compensate the network traverse time.
+         * For unrestricted in time schemes it is not used at all;
+         */
+        @Min(0)
+        @Max(60)
+        private long timeoutLeeway;
     }
 
     /**

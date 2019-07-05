@@ -13,9 +13,4 @@ public class SessionAlreadyOpenedException extends RuntimeException {
         super(DEFAULT_MESSAGE);
         this.schemeId = schemeId;
     }
-
-    public SessionAlreadyOpenedException(String message, Long schemeId) {
-        super(message);
-        this.schemeId = schemeId;
-    }
 }
