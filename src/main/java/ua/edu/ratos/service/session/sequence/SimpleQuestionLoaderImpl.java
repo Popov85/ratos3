@@ -26,7 +26,7 @@ public class SimpleQuestionLoaderImpl extends AbstractQuestionLoader {
     }
 
     @Override
-    public String getType() {
+    public String name() {
         return "simple";
     }
 }

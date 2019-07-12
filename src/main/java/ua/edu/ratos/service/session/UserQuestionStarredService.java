@@ -52,7 +52,7 @@ public class UserQuestionStarredService {
 
     @Transactional
     public void save(@NonNull final Long questionId, final byte star) {
-        Long userId = securityUtils.getAuthStudId();
+        Long userId = securityUtils.getAuthUserId();
         UserQuestionStarredId id = new UserQuestionStarredId(questionId, userId);
         UserQuestionStarred userQuestionStarred = new UserQuestionStarred();
         userQuestionStarred.setUserQuestionStarredId(id);
@@ -64,7 +64,7 @@ public class UserQuestionStarredService {
 
     @Transactional
     public void updateStars(@NonNull final Long questionId, final byte star) {
-        Long userId = securityUtils.getAuthStudId();
+        Long userId = securityUtils.getAuthUserId();
         UserQuestionStarredId id = new UserQuestionStarredId(questionId, userId);
         UserQuestionStarred userQuestionStarred = userQuestionStarredRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND));
@@ -73,7 +73,7 @@ public class UserQuestionStarredService {
 
     @Transactional
     public void deleteById(@NonNull final Long questionId) {
-        Long userId = securityUtils.getAuthStudId();
+        Long userId = securityUtils.getAuthUserId();
         userQuestionStarredRepository.deleteById(new UserQuestionStarredId(questionId, userId));
     }
 
@@ -82,7 +82,7 @@ public class UserQuestionStarredService {
     @Transactional(readOnly = true)
     // Full question with answers, no correct answer
     public QuestionSessionOutDto findOneByQuestionId(@NonNull final Long questionId) {
-        Long userId = securityUtils.getAuthStudId();
+        Long userId = securityUtils.getAuthUserId();
         UserQuestionStarred userQuestionStarred = userQuestionStarredRepository.findById(new UserQuestionStarredId(userId, questionId))
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND));
         return userQuestionStarredDtoTransformer.toDtoExt(userQuestionStarred);
@@ -93,12 +93,12 @@ public class UserQuestionStarredService {
     @Transactional(readOnly = true)
     // Only questions without answers
     public Page<QuestionSessionMinOutDto> findAllByUserId(@NonNull final Pageable pageable) {
-        return userQuestionStarredRepository.findAllByUserId(securityUtils.getAuthStudId(), pageable).map(userQuestionStarredDtoTransformer::toDto);
+        return userQuestionStarredRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(userQuestionStarredDtoTransformer::toDto);
     }
 
     // To check if limit is overflowed
     @Transactional(readOnly = true)
     public long countByUserId() {
-        return userQuestionStarredRepository.countByUserId(securityUtils.getAuthStudId());
+        return userQuestionStarredRepository.countByUserId(securityUtils.getAuthUserId());
     }
 }

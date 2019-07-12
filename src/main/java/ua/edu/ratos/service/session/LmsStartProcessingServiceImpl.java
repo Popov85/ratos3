@@ -1,17 +1,18 @@
 package ua.edu.ratos.service.session;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 @Slf4j
 @Service
-public class LmsStartProcessingServiceImpl implements  StartProcessingService {
+public class LmsStartProcessingServiceImpl implements StartProcessingService {
 
     private SchemeService schemeService;
 
@@ -20,6 +21,8 @@ public class LmsStartProcessingServiceImpl implements  StartProcessingService {
     private FirstBatchBuilder firstBatchBuilder;
 
     private SessionDataService sessionDataService;
+
+    private SecurityUtils securityUtils;
 
     @Autowired
     public void setSchemeService(SchemeService schemeService) {
@@ -41,15 +44,21 @@ public class LmsStartProcessingServiceImpl implements  StartProcessingService {
         this.sessionDataService = sessionDataService;
     }
 
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
+
     @Override
-    public SessionData start(StartData startData) {
+    public SessionData start(@NonNull final Long schemeId, @NonNull final String uuid) {
         // Load the requested Scheme and create SessionData object
-        final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
+        final Scheme scheme = schemeService.findByIdForSession(schemeId);
         if (scheme==null || !scheme.isActive())
             throw new IllegalStateException(NOT_AVAILABLE);
-        log.debug("For LMS session found available scheme  ID = {}", scheme.getSchemeId());
-        Long lmsId = startData.getLmsId().get();
-        final SessionData sessionData = sessionDataBuilder.build(startData.getKey(), startData.getUserId(), scheme, lmsId);
+        Long lmsId = securityUtils.getLmsId();
+        Long userId = securityUtils.getLmsUserId();
+        log.debug("For LMS session found available schemeId = {}, lmsId = {}, userId = {}", scheme.getSchemeId(), lmsId, userId);
+        final SessionData sessionData = sessionDataBuilder.build(uuid, userId, scheme, lmsId);
         // Build first BatchOutDto
         final BatchOutDto batchOutDto = firstBatchBuilder.build(sessionData);
         // Update SessionData
@@ -59,7 +68,7 @@ public class LmsStartProcessingServiceImpl implements  StartProcessingService {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "lms";
     }
 }

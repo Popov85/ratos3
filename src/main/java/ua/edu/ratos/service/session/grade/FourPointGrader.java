@@ -23,7 +23,7 @@ public class FourPointGrader implements Grader {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "four-point";
     }
 }

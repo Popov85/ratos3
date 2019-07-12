@@ -1,37 +1,16 @@
 package ua.edu.ratos.service.session.sequence;
 
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.dao.entity.Strategy;
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
+import ua.edu.ratos.service.AbstractFactory;
+
 import java.util.List;
-import java.util.Map;
 
 @Component
-public class SequenceFactory {
-
-    private List<SequenceProducer> sequenceProducers;
+public class SequenceFactory extends AbstractFactory<String, SequenceProducer> {
 
     @Autowired
-    public void setSequenceProducers(List<SequenceProducer> sequenceProducers) {
-        this.sequenceProducers = sequenceProducers;
-    }
-
-    private Map<String, SequenceProducer> sequenceProducerMap = new HashMap<>();
-
-    @PostConstruct
-    public void init() {
-        for(SequenceProducer sequenceProducer : sequenceProducers) {
-            sequenceProducerMap.put(sequenceProducer.getStrategy(), sequenceProducer);
-        }
-    }
-
-    public SequenceProducer getSequenceProducer(@NonNull final Strategy strategy) {
-        final String name = strategy.getName();
-        final SequenceProducer sequenceProducer = this.sequenceProducerMap.get(name);
-        if(sequenceProducer == null) throw new RuntimeException("Unknown strategy type: " + name);
-        return sequenceProducer;
+    SequenceFactory(List<SequenceProducer> list) {
+        super(list);
     }
 }

@@ -51,7 +51,7 @@ public class SchemeFreePointService implements SchemeGraderService {
     }
 
     @Override
-    public long type() {
-        return 3;
+    public Long name() {
+        return 3L;
     }
 }

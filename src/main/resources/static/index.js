@@ -1166,7 +1166,7 @@ var Failure = function Failure(props) {
   var message = props.message;
   return _react.default.createElement("div", {
     className: "text-center text-danger"
-  }, _react.default.createElement("strong", null, "Failure:"), " ", message ? message : defaultMessage);
+  }, " ", message ? message : defaultMessage);
 };
 
 var propTypes = {
@@ -34235,7 +34235,6 @@ function (_React$Component) {
 
         _this3.setState({
           isLoaded: true,
-          isModal: false,
           error: error
         });
       });
@@ -35034,6 +35033,29 @@ function (_React$Component) {
   }
 
   _createClass(Start, [{
+    key: "logout",
+    value: function logout() {
+      var _this2 = this;
+
+      var url = this.props.baseUrl + "/logout";
+      fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin'
+      }).then(function (response) {
+        if (!response.ok) throw Error("Failed logout request...");
+        return response.text();
+      }).then(function () {
+        window.location.href = _this2.props.baseUrl + "/login?logout";
+      }).catch(function (error) {
+        console.error("Error occurred = " + error.message);
+
+        _this2.setState({
+          isLoaded: true,
+          error: error
+        });
+      });
+    }
+  }, {
     key: "reTryStartAPICall",
     value: function reTryStartAPICall() {
       this.setState({
@@ -35045,7 +35067,7 @@ function (_React$Component) {
   }, {
     key: "tryStartAPICall",
     value: function tryStartAPICall() {
-      var _this2 = this;
+      var _this3 = this;
 
       var url = this.props.baseUrl + startUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
@@ -35060,7 +35082,7 @@ function (_React$Component) {
       }).then(function (response) {
         if (response.batch.length === 0) throw Error("No questions found in the scheme!");
 
-        _this2.setState({
+        _this3.setState({
           isLoaded: true,
           isStarted: true,
           error: null,
@@ -35072,13 +35094,11 @@ function (_React$Component) {
         try {
           error.json().then(function (body) {
             if (body.exception === "SessionAlreadyOpenedException") {
-              console.error("Already Opened schemeId = " + _this2.props.schemeInfo.schemeId);
-
-              _this2.setState({
+              _this3.setState({
                 isOpened: true
               });
             } else {
-              _this2.setState({
+              _this3.setState({
                 error: new Error("Unexpected server error!")
               });
             }
@@ -35086,11 +35106,11 @@ function (_React$Component) {
         } catch (e) {
           console.error("This is not promise!");
 
-          _this2.setState({
+          _this3.setState({
             error: error
           });
         } finally {
-          _this2.setState({
+          _this3.setState({
             isLoaded: true
           });
         }
@@ -35122,7 +35142,7 @@ function (_React$Component) {
   }, {
     key: "renderFailure",
     value: function renderFailure() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _react.default.createElement("div", {
         className: "mt-3"
@@ -35137,14 +35157,14 @@ function (_React$Component) {
       }, _react.default.createElement("button", {
         className: "btn btn-secondary btn-sm pl-5 pr-5",
         onClick: function onClick() {
-          return _this3.reTryStartAPICall();
+          return _this4.reTryStartAPICall();
         }
       }, "Re-try>>"))));
     }
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var _this$state = this.state,
           isStarted = _this$state.isStarted,
@@ -35251,11 +35271,21 @@ function (_React$Component) {
       }, _react.default.createElement("div", {
         className: "col-12"
       }, _react.default.createElement("button", {
-        className: "btn btn-info pl-5 pr-5",
+        className: "btn btn-info pl-5 pr-5 mr-1",
         onClick: function onClick() {
-          return _this4.reTryStartAPICall();
+          return _this5.reTryStartAPICall();
         }
-      }, "Start>>"))));
+      }, "Start>>"))), _react.default.createElement("div", {
+        className: "row text-center mt-3"
+      }, _react.default.createElement("div", {
+        className: "col-12"
+      }, _react.default.createElement("a", {
+        href: "#",
+        "class": "badge badge-secondary",
+        onClick: function onClick() {
+          return _this5.logout();
+        }
+      }, "Logout"))));
     }
   }]);
 
@@ -35457,7 +35487,9 @@ Launcher.propTypes = {
 };
 var _default = Launcher;
 exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./Info":"Bens"}],"Focm":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Info":"Bens"}],"H97Y":[function(require,module,exports) {
+
+},{}],"Focm":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -37259,5 +37291,5 @@ _reactDom.default.render(_react.default.createElement(_Launcher.default, {
 //ReactDOM.render(<Cancelled schemeId = {17} result = {testResult} baseUrl = {realBaseUrl}/>, document.getElementById('app'));
 //ReactDOM.render(<Header title = "PREVIOUS IS OPENED"/>, document.getElementById('app'));
 //ReactDOM.render(<Opened schemeId = {17} mode = {testMode} settings = {testSettings} baseUrl = {realBaseUrl}/>, document.getElementById('app'));
-},{"react":"HdMw","react-dom":"X9zx","./src/Launcher":"gUbM","./src/Start":"Usmb","./src/Batch":"GH7v","./src/Finish":"3nTs","./src/Result":"tAza","./src/Cancelled":"9i99","./src/Opened":"PKgD","./src/Header":"yRft","bootstrap/dist/css/bootstrap.min.css":"Sr7R"}]},{},["Focm"], null)
+},{"react":"HdMw","react-dom":"X9zx","./src/Launcher":"gUbM","./src/Start":"Usmb","./src/Batch":"GH7v","./src/Finish":"3nTs","./src/Result":"tAza","./src/Cancelled":"9i99","./src/Opened":"PKgD","./src/Header":"yRft","bootstrap/dist/css/bootstrap.min.css":"H97Y"}]},{},["Focm"], null)
 //# sourceMappingURL=/index.js.map

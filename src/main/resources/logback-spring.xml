@@ -46,7 +46,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.springframework.security" additivity="false" level="INFO">
+        <logger name="org.springframework.security" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -83,11 +83,11 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.springframework.web" additivity="false" level="ERROR">
+        <logger name="org.springframework.web" additivity="false" level="INFO">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.springframework.security" additivity="false" level="INFO">
+        <logger name="org.springframework.security" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
 

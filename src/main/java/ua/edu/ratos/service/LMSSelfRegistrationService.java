@@ -90,7 +90,7 @@ public class LMSSelfRegistrationService {
     @Transactional(readOnly = true)
     public Slice<FacultyMinOutDto> findAllFacultiesByOrgId(@NonNull final Pageable pageable) {
         // Find orgId by lmsId?
-        Long lmsId = securityUtils.getAuthLmsId();
+        Long lmsId = securityUtils.getLmsId();
         Long orgId = lmsRepository.findById(lmsId).get().getOrganisation().getOrgId();
         return facultyRepository.findAllByOrgId(orgId, pageable).map(facultyMinDtoTransformer::toDto);
     }

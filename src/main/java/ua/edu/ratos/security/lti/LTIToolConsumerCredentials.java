@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
-import ua.edu.ratos.security.LMSUser;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -15,7 +14,7 @@ import java.util.Optional;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class LTIToolConsumerCredentials extends ConsumerCredentials implements Principal, LMSUser {
+public class LTIToolConsumerCredentials extends ConsumerCredentials implements Principal {
 
     private final Long lmsId;
 

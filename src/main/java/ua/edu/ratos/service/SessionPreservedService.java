@@ -68,7 +68,7 @@ public class SessionPreservedService {
         sessionPreserved.setKey(sessionData.getKey());
         sessionPreserved.setData(serializer.serialize(sessionData));
         sessionPreserved.setScheme(em.getReference(Scheme.class, sessionData.getSchemeDomain().getSchemeId()));
-        sessionPreserved.setUser(em.getReference(User.class, securityUtils.getAuthStudId()));
+        sessionPreserved.setUser(em.getReference(User.class, securityUtils.getAuthUserId()));
         sessionPreserved.setWhenPreserved(LocalDateTime.now());
         sessionPreserved.setProgress(sessionData.getProgressData().getProgress());
         sessionPreservedRepository.save(sessionPreserved);
@@ -94,7 +94,7 @@ public class SessionPreservedService {
     public SessionPreserved findOneById(@NonNull final String key) {
         SessionPreserved sessionPreserved = sessionPreservedRepository.findById(key)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND + key));
-        Long currentStudentId = securityUtils.getAuthStudId();
+        Long currentStudentId = securityUtils.getAuthUserId();
         Long preservedUserId = sessionPreserved.getUser().getUserId();
         if (!preservedUserId.equals(currentStudentId)) throw new AccessDeniedException(CORRUPT_RETRIEVAL_ACCESS);
         return sessionPreserved;
@@ -104,7 +104,7 @@ public class SessionPreservedService {
 
     @Transactional(readOnly = true)
     public Slice<SessionPreservedOutDto> findAllByUserId(@NonNull final Pageable pageable) {
-       return sessionPreservedRepository.findAllByUserId(securityUtils.getAuthStudId(), pageable).map(sessionPreservedDtoTransformer::toDto);
+       return sessionPreservedRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(sessionPreservedDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)

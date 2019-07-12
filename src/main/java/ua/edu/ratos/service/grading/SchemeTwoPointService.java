@@ -52,7 +52,7 @@ public class SchemeTwoPointService implements SchemeGraderService {
     }
 
     @Override
-    public long type() {
-        return 2;
+    public Long name() {
+        return 2L;
     }
 }

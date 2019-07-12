@@ -23,7 +23,7 @@ public class FreePointGrader implements Grader {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "free-point";
     }
 }

@@ -43,7 +43,7 @@ public class SequenceProducerRandomImpl implements SequenceProducer {
     }
 
     @Override
-    public String getStrategy() {
+    public String name() {
         return "random";
     }
 }

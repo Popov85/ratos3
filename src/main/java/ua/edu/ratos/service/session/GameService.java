@@ -350,7 +350,7 @@ public class GameService {
 
     @Transactional(readOnly = true)
     public GamerOutDto findMyGamingRating() {
-        Long studId = securityUtils.getAuthStudId();
+        Long studId = securityUtils.getAuthUserId();
         return gamerDtoTransformer.toDto(gamerRepository.findById(studId).get());
     }
 

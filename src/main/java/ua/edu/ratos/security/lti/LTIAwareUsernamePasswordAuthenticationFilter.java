@@ -2,6 +2,7 @@ package ua.edu.ratos.security.lti;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -73,18 +74,27 @@ public class LTIAwareUsernamePasswordAuthenticationFilter extends UsernamePasswo
         return resultingAuthentication;
     }
 
+    // Here we actually do the job of a custom AuthenticationFailureHandler.
+    // The reason why we do the job here is that default behaviour of AbstractFailureHandler erases
+    // possible present LTI OAuth 1.0 authentication before the custom handler takes control!
+    // See https://www.baeldung.com/spring-security-custom-authentication-failure-handler
+    // Here we simply return that previous (if present) LTI-authentication and
+    // let the user repeat the auth attempt, not losing precious LTI-launch request data with info where to post the score!
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
-            throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
         Authentication previousAuth = SecurityContextHolder.getContext().getAuthentication();
         if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(previousAuth)) {
             log.debug("Unsuccessful authentication upgrade for an LTI user, fallback to previous authentication");
-            super.unsuccessfulAuthentication(request, response, failed);
             SecurityContextHolder.getContext().setAuthentication(previousAuth);
         } else {
             log.debug("Unsuccessful authentication for a non-LTI user with UsernamePasswordAuthenticationFilter");
-            super.unsuccessfulAuthentication(request, response, failed);
+            SecurityContextHolder.clearContext();
         }
+        // Replace default behaviour with return 401 Unauthorized
+        super.getRememberMeServices().loginFail(request, response);
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }
 
 }

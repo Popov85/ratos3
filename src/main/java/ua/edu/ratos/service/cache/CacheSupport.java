@@ -57,7 +57,7 @@ public class CacheSupport {
     @Async
     @TrackTime
     public void loadCourse(@NonNull final Long courseId) {
-        cachePopulator.loadMany(batchProviderFactory.getBatchProvider("course"), courseId);
+        cachePopulator.loadMany(batchProviderFactory.getInstance("course"), courseId);
     }
 
     /**
@@ -67,7 +67,7 @@ public class CacheSupport {
     @TrackTime
     public void loadDepartment(@NonNull final Long depId) {
         // depId we get from current user's authentication params
-        cachePopulator.loadMany(batchProviderFactory.getBatchProvider("department"), depId);
+        cachePopulator.loadMany(batchProviderFactory.getInstance("department"), depId);
     }
 
     /**
@@ -79,9 +79,9 @@ public class CacheSupport {
     @TrackTime
     public void loadMany(@NonNull final AppProperties.Init.Caching strategy) {
         if (strategy.equals(ALL)) {
-            cachePopulator.loadMany(batchProviderFactory.getBatchProvider("all"));
+            cachePopulator.loadMany(batchProviderFactory.getInstance("all"));
         } else if (strategy.equals(LARGE)) {
-            cachePopulator.loadMany(batchProviderFactory.getBatchProvider("large"));
+            cachePopulator.loadMany(batchProviderFactory.getInstance("large"));
         } else if (strategy.equals(LATEST)) {
             latestCachePopulator.loadMany();
         } else throw new UnsupportedOperationException("Unsupported cache loading option = "+strategy);
@@ -97,9 +97,9 @@ public class CacheSupport {
     public void loadMany(@NonNull final AppProperties.Init.Caching strategy, int threads) {
         // This strategy takes the most time, but speeds up the runtime significantly
         if (strategy.equals(ALL)) {
-            cachePopulator.loadManyInParallel(batchProviderFactory.getBatchProvider("all"), threads);
+            cachePopulator.loadManyInParallel(batchProviderFactory.getInstance("all"), threads);
         } else if (strategy.equals(LARGE)) { // Use this strategy is you have mainly heavy composite schemes in usage
-            cachePopulator.loadManyInParallel(batchProviderFactory.getBatchProvider("large"), threads);
+            cachePopulator.loadManyInParallel(batchProviderFactory.getInstance("large"), threads);
         } else if (strategy.equals(LATEST)) { // Use this strategy if you want to load at start-up only the scheme's questions that were used recently based on results
             latestCachePopulator.loadManyInParallel(threads);
         } else throw new UnsupportedOperationException("Unsupported cache loading option = "+strategy);

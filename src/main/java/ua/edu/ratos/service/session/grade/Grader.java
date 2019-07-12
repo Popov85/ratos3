@@ -1,6 +1,9 @@
 package ua.edu.ratos.service.session.grade;
 
-public interface Grader {
+import ua.edu.ratos.service.NamedService;
+
+public interface Grader extends NamedService<String> {
+
     GradedResult grade(double percent, long schemeId);
-    String type();
+
 }

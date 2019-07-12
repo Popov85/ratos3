@@ -39,7 +39,7 @@ public class QuestionLoaderTest {
 
         Scheme scheme = schemeRepository.findForSessionById(1L);
 
-        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getQuestionLoader("simple");
+        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getInstance("simple");
 
         Map<Affiliation, Set<Question>> result = simpleQuestionLoader.loadAllQuestionsToMap(scheme);
 
@@ -57,7 +57,7 @@ public class QuestionLoaderTest {
 
         Scheme scheme = schemeRepository.findForSessionById(1L);
 
-        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getQuestionLoader("cached");
+        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getInstance("cached");
 
         Map<Affiliation, Set<Question>> result = simpleQuestionLoader.loadAllQuestionsToMap(scheme);
 
@@ -76,7 +76,7 @@ public class QuestionLoaderTest {
 
         Scheme scheme = schemeRepository.findForSessionById(1L);
 
-        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getQuestionLoader("thread-limited");
+        QuestionLoader simpleQuestionLoader = questionLoaderFactory.getInstance("thread-limited");
 
         Map<Affiliation, Set<Question>> result = simpleQuestionLoader.loadAllQuestionsToMap(scheme);
 

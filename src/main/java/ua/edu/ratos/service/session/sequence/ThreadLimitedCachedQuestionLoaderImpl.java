@@ -41,7 +41,7 @@ public class ThreadLimitedCachedQuestionLoaderImpl extends CachedQuestionLoaderI
     }
 
     @Override
-    public String getType() {
+    public String name() {
         return "thread-limited";
     }
 }

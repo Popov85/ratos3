@@ -23,12 +23,12 @@ public class SchemeGradingManagerService {
      * @param gradingDetailsId
      */
     public void save(long schemeId, long gradingId, long gradingDetailsId) {
-        final SchemeGraderService graderService = gradingServiceFactory.getGraderService(gradingId);
+        final SchemeGraderService graderService = gradingServiceFactory.getInstance(gradingId);
         graderService.save(schemeId, gradingDetailsId);
     }
 
     public void remove(long schemeId, long gradingId) {
-        final SchemeGraderService graderService = gradingServiceFactory.getGraderService(gradingId);
+        final SchemeGraderService graderService = gradingServiceFactory.getInstance(gradingId);
         graderService.delete(schemeId);
     }
 }

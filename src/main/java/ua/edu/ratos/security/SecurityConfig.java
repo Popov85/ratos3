@@ -61,7 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return registration;
     }
 
-    // LTI access denied handler bean
+    // Process a case when already authenticated user lacks authority
+    // to reach protected with hither level security resource.
+    // LTI-aware impl.
     @Bean
     public AccessDeniedHandler ltiAwareAccessDeniedHandler() {
         return new LTIAwareAccessDeniedHandler(ltiSecurityUtils);
@@ -86,13 +88,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/lms/**").hasRole("LMS-USER")
                 .and()
                 .formLogin()
+                    .loginPage("/login")
                 .and()
                 .httpBasic() // Disable for production
             .and()
                 .headers()
                 .frameOptions().disable()
             .and()
-                .exceptionHandling().accessDeniedHandler(ltiAwareAccessDeniedHandler());
+                .exceptionHandling()
+                .accessDeniedHandler(ltiAwareAccessDeniedHandler());
     }
 
     @Override

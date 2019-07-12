@@ -23,7 +23,7 @@ public class TwoPointGrader implements Grader {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "two-point";
     }
 }

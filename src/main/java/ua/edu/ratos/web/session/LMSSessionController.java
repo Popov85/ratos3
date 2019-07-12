@@ -4,12 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.config.ControlTime;
-import ua.edu.ratos.security.RatosUser;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
@@ -40,20 +37,17 @@ public class LMSSessionController {
     }
 
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session, Authentication auth) {
+    public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session) {
         Object sessionDataAttribute = session.getAttribute("sessionDataMap");
         SessionDataMap sessionDataMap = ((sessionDataAttribute == null)
                 ? new SessionDataMap() : (SessionDataMap) sessionDataAttribute);
         sessionDataMap.controlAndThrow(schemeId);
-        RatosUser principal = (RatosUser) auth.getPrincipal();
         String key = session.getId();
-        Long lmsId = principal.getLmsId();
-        Long userId = principal.getUserId();
-        final SessionData sessionData = sessionService.start(new StartData(key, schemeId, userId, lmsId));
+        final SessionData sessionData = sessionService.start(schemeId, key);
         sessionDataMap.add(schemeId, sessionData);
         session.setAttribute("sessionDataMap", sessionDataMap);
-        log.debug("Started LMS sessionId = {} for userId = {} from within lmsId = {}, taking schemeId = {}", key, userId, lmsId, schemeId);
-        return ResponseEntity.ok(sessionService.current(sessionData));
+        log.debug("Started LMS sessionId = {} for a user taking schemeId = {}", key, schemeId);
+        return ResponseEntity.ok(sessionData.getCurrentBatch().orElseThrow(()->new IllegalStateException("Current batch was not found!")));
     }
 
 

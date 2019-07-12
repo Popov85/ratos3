@@ -28,7 +28,7 @@ public class GradingService {
      * @return overall outcome in the given scale
      */
     public GradedResult grade(@NonNull final Long schemeId, @NonNull final GradingDomain gradingDomain, final double percent) {
-        final Grader grader = gradingFactory.getGrader(gradingDomain.getName());
+        final Grader grader = gradingFactory.getInstance(gradingDomain.getName());
         GradedResult grade = grader.grade(percent, schemeId);
         return grade;
     }

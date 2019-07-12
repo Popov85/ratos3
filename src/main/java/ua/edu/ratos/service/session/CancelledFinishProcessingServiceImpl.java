@@ -47,7 +47,7 @@ public class CancelledFinishProcessingServiceImpl implements FinishProcessingSer
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "cancelled";
     }
 }

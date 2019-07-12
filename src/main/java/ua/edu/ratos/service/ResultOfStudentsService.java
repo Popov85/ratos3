@@ -108,13 +108,13 @@ public class ResultOfStudentsService {
 
     @Transactional(readOnly = true)
     public Page<ResultOfStudentSelfOutDto> findAllByStudentId(@NonNull final Pageable pageable) {
-        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthStudId());
+        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthUserId());
         return resultOfStudentRepository.findAll(specs, pageable).map(resultOfStudentSelfDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<ResultOfStudentSelfOutDto> findAllByStudentIdAndSpecs(@NonNull final ResultOfStudentCriteriaSelfInDto dto, @NonNull final Pageable pageable) {
-        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthStudId()).and(ResultOfStudentSelfSpecs.hasSpecs(dto));
+        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthUserId()).and(ResultOfStudentSelfSpecs.hasSpecs(dto));
         return resultOfStudentRepository.findAll(specs, pageable).map(resultOfStudentSelfDtoTransformer::toDto);
     }
     //-----------------------------------------------STUDENT search drop-down-------------------------------------------
@@ -122,7 +122,7 @@ public class ResultOfStudentsService {
     // For self-results search from personal page by {dep/course/scheme}
     @Transactional(readOnly = true)
     public ResultSearchSuiteSelfOutDto findAllSearchParamsFromStudentsResult() {
-        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthStudId());
+        Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthUserId());
         // Up to 10000 results/per student are expected by the end of study, 1000-3000 average
         List<ResultOfStudent> result = resultOfStudentRepository.findAll(specs);
         ResultSearchSuiteSelfOutDto dto = new ResultSearchSuiteSelfOutDto();

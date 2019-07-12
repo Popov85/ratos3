@@ -43,14 +43,14 @@ public class QuestionLoaderResolver {
             int quantity = questionRepository.countByThemeId(themeId);
             if (quantity <=100) {
                 log.debug("Detected single-theme scheme with a few questions = {}, choose simple implementation of question loader", quantity);
-                return sequenceMapperFactory.getQuestionLoader("simple");
+                return sequenceMapperFactory.getInstance("simple");
             } else {
                 log.debug("Detected single-theme scheme with a lot of questions = {}, choose cached implementation of question loader", quantity);
-                return sequenceMapperFactory.getQuestionLoader("cached");
+                return sequenceMapperFactory.getInstance("cached");
             }
         } else {
             log.debug("Detected complex scheme, themes = {}, choose thread-limited implementation of question loader", themes.size());
-            return sequenceMapperFactory.getQuestionLoader("thread-limited");
+            return sequenceMapperFactory.getInstance("thread-limited");
         }
     }
 }

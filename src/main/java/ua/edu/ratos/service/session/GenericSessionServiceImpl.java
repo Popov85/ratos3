@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
@@ -27,6 +28,8 @@ public class GenericSessionServiceImpl implements GenericSessionService {
 
     private ResponseProcessor responseProcessor;
 
+    private SecurityUtils securityUtils;
+
     @Autowired
     public void setStartProcessingFactory(StartProcessingFactory startProcessingFactory) {
         this.startProcessingFactory = startProcessingFactory;
@@ -47,27 +50,32 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         this.responseProcessor = responseProcessor;
     }
 
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
+
     @Override
-    public SessionData start(@NonNull final StartData startData) {
+    public SessionData start(@NonNull final Long schemeId, @NonNull final String uuid) {
         StartProcessingService startProcessingService ;
-        if (startData.getLmsId().isPresent()) {
-            startProcessingService = startProcessingFactory.getStartProcessingService("lms");
-            log.debug("Non-LMS session start processing");
-        } else {
-            startProcessingService = startProcessingFactory.getStartProcessingService("basic");
+        if (securityUtils.isLmsUser()) {
+            startProcessingService = startProcessingFactory.getInstance("lms");
             log.debug("LMS session start processing");
+        } else {
+            startProcessingService = startProcessingFactory.getInstance("basic");
+            log.debug("Non-LMS session start processing");
         }
-        return startProcessingService.start(startData);
+        return startProcessingService.start(schemeId, uuid);
     }
 
     @Override
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         NextProcessingService nextProcessingService;
         if (sessionData.isDynamicSession()) {
-            nextProcessingService = nextProcessingFactory.getNextProcessingService("dynamic");
+            nextProcessingService = nextProcessingFactory.getInstance("dynamic");
             log.debug("Dynamic session next processing");
         } else {
-            nextProcessingService = nextProcessingFactory.getNextProcessingService("basic");
+            nextProcessingService = nextProcessingFactory.getInstance("basic");
             log.debug("Basic (static) session next processing");
         }
         // Control session time-out
@@ -94,7 +102,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
     @Override
     public ResultOutDto finish(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
         responseProcessor.doProcessResponse(batchInDto, sessionData);
-        FinishProcessingService finishProcessingService = finishProcessingFactory.getFinishProcessingService("regular");
+        FinishProcessingService finishProcessingService = finishProcessingFactory.getInstance("regular");
         log.debug("Regular finish with last batch evaluating");
         return finishProcessingService.finish(sessionData);
     }
@@ -111,7 +119,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      */
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
-        FinishProcessingService finishProcessingService = finishProcessingFactory.getFinishProcessingService("regular");
+        FinishProcessingService finishProcessingService = finishProcessingFactory.getInstance("regular");
         log.debug("Regular finish without last batch evaluating");
         return finishProcessingService.finish(sessionData);
     }
@@ -123,7 +131,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      */
     @Override
     public ResultOutDto cancel(@NonNull final SessionData sessionData) {
-        FinishProcessingService finishProcessingService = finishProcessingFactory.getFinishProcessingService("cancelled");
+        FinishProcessingService finishProcessingService = finishProcessingFactory.getInstance("cancelled");
         log.debug("Cancelled finish");
         return finishProcessingService.finish(sessionData);
     }

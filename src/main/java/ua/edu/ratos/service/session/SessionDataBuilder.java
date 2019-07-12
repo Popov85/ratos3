@@ -88,7 +88,7 @@ public class SessionDataBuilder {
         QuestionLoader questionLoader = questionLoaderSelector.select(scheme);
         Strategy strategy = scheme.getStrategy();
         log.debug("Strategy = {}", strategy.getName());
-        SequenceProducer sequenceProducer = sequenceFactory.getSequenceProducer(strategy);
+        SequenceProducer sequenceProducer = sequenceFactory.getInstance(strategy.getName());
         List<Question> questions = sequenceProducer.getSequence(scheme, questionLoader);
         log.debug("Produced the sequence of total = {} question entities, strategy = {}", questions.size(), strategy.getName());
         List<QuestionDomain> sequence = questions.stream().map(questionDomainTransformer::toDomain).collect(Collectors.toList());

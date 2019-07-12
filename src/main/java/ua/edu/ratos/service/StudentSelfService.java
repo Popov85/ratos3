@@ -43,7 +43,7 @@ public class StudentSelfService {
 
     @Transactional
     public void updateNameAndSurname(@NonNull final UserMinInDto dto) {
-        Student stud = studentRepository.findById(securityUtils.getAuthStudId()).get();
+        Student stud = studentRepository.findById(securityUtils.getAuthUserId()).get();
         User user = stud.getUser();
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
@@ -51,14 +51,14 @@ public class StudentSelfService {
 
     @Transactional
     public void updateEmail(@NonNull final EmailInDto email) {
-        Student stud = studentRepository.findById(securityUtils.getAuthStudId()).get();
+        Student stud = studentRepository.findById(securityUtils.getAuthUserId()).get();
         User user = stud.getUser();
         user.setEmail(email.getEmail());
     }
 
     @Transactional
     public void updatePassword(@NonNull final char[] oldPassword, @NonNull final char[] newPassword) {
-        Student stud = studentRepository.findById(securityUtils.getAuthStudId()).get();
+        Student stud = studentRepository.findById(securityUtils.getAuthUserId()).get();
         User user = stud.getUser();
         if (!encoder.matches(new String(oldPassword), new String(user.getPassword())))
             throw new RuntimeException("Old password does not match the one provided");

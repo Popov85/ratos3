@@ -16,7 +16,6 @@ import ua.edu.ratos.dao.entity.ResultThemeId;
 import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.it.ActiveProfile;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
@@ -62,7 +61,7 @@ public class GenericAndEducationalSessionServiceMQTestIT {
          * Non-LMS environment;
          * Scenario: all incorrect questions
          */
-        SessionData sessionData = genericSessionService.start(new StartData("123456", 1L, 2L));
+        SessionData sessionData = genericSessionService.start(1L, "123456");
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         BatchOutDto currentBatch = sessionData.getCurrentBatch().get();
         log.debug("First batch = {}", currentBatch);
@@ -117,7 +116,7 @@ public class GenericAndEducationalSessionServiceMQTestIT {
          * Non-LMS environment;
          * Scenario: 2 correct questions in the last batch
          */
-        SessionData sessionData = genericSessionService.start(new StartData("123456", 1L, 2L));
+        SessionData sessionData = genericSessionService.start(1L, "123456");
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         BatchOutDto currentBatch = sessionData.getCurrentBatch().get();
         log.debug("First batch = {}", currentBatch);
@@ -179,7 +178,7 @@ public class GenericAndEducationalSessionServiceMQTestIT {
          * Non-LMS environment;
          * Scenario: Only 2 correct questions {3L, 6L};
          */
-        SessionData sessionData = genericSessionService.start(new StartData("123456", 1L, 2L));
+        SessionData sessionData = genericSessionService.start(1L, "123456");
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         BatchOutDto currentBatch = sessionData.getCurrentBatch().get();
         log.debug("First batch = {}", currentBatch);
@@ -238,7 +237,7 @@ public class GenericAndEducationalSessionServiceMQTestIT {
          * Non-LMS environment;
          * Scenario: 1 skip in the first batch, single incorrect in each out of 4 batches
          */
-        SessionData sessionData = genericSessionService.start(new StartData("123456", 1L, 2L));
+        SessionData sessionData = genericSessionService.start(1L, "123456");
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         BatchOutDto currentBatch = sessionData.getCurrentBatch().get();
         log.debug("First batch = {}", currentBatch);

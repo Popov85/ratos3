@@ -40,7 +40,7 @@ public class CachedQuestionLoaderImpl extends AbstractQuestionLoader {
     }
 
     @Override
-    public String getType() {
+    public String name() {
         return "cached";
     }
 }

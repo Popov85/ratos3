@@ -49,8 +49,8 @@ public class SchemeFourPointService implements SchemeGraderService {
     }
 
     @Override
-    public long type() {
-        return 1;
+    public Long name() {
+        return 1L;
     }
 
 }

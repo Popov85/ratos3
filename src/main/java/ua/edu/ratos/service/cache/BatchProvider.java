@@ -5,14 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.service.NamedService;
 
-public interface BatchProvider {
+public interface BatchProvider extends NamedService<String> {
 
     int BATCH_SIZE = 20;
 
     Slice<Scheme> getBatch(Pageable pageable, Object... params);
-
-    String type();
 
     default Pageable getPageable() {
         Sort sort = new Sort(Sort.Direction.ASC, "schemeId");

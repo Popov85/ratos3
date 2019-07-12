@@ -56,7 +56,7 @@ public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
     }
 
     @Override
-    public String getStrategy() {
+    public String name() {
         return "types&levels";
     }
 }

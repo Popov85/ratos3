@@ -60,12 +60,12 @@ public class LTIOutcomeService {
      */
     @Async
     public void sendOutcome(final Long schemeId, final Double percent, final String protocol) {
-        LTIUserConsumerCredentials principal = (LTIUserConsumerCredentials) securityUtils.getAuthentication().getPrincipal();
+        LTIUserConsumerCredentials principal = securityUtils.getLmsUserAuthentication();
         String email = principal.getEmail().orElse("unknown e-mail");
         Optional<LTIOutcomeParams> outcome = principal.getOutcome();
         if (!outcome.isPresent())
             throw new RuntimeException("Outcome parameters are not included by LMS and result was not sent back to LMS!" +
-                    " result on schemeId = "+schemeId+ " email = "+email+"with outcome = "+percent);
+                    " result on schemeId = "+schemeId+ " email = "+email+" with outcome = "+percent);
         OAuthRestTemplate authRestTemplate = getOAuthRestTemplate(principal);
         String sourcedId = outcome.get().getSourcedId();
         String outcomeURL = outcome.get().getOutcomeURL();
@@ -97,7 +97,7 @@ public class LTIOutcomeService {
     private OAuthRestTemplate getOAuthRestTemplate(LTIUserConsumerCredentials principal) {
         BaseProtectedResourceDetails resourceDetails = new BaseProtectedResourceDetails();
         resourceDetails.setConsumerKey(principal.getConsumerKey());
-        resourceDetails.setSharedSecret((SignatureSecret) securityUtils.getAuthentication().getCredentials());
+        resourceDetails.setSharedSecret(securityUtils.getOauthSignatureSecret());
         OAuthRestTemplate authRestTemplate = new OAuthRestTemplate(resourceDetails);
         return authRestTemplate;
     }

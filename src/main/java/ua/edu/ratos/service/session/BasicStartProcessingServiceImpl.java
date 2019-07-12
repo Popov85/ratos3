@@ -4,15 +4,12 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.domain.StartData;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-
-import java.util.concurrent.Semaphore;
 
 /**
  * Use this implementation for non-LMS sessions.
@@ -20,12 +17,6 @@ import java.util.concurrent.Semaphore;
 @Slf4j
 @Service
 public class BasicStartProcessingServiceImpl implements StartProcessingService {
-
-    // Max threads doing job simultaneously
-    private static final int PERMITS = 10;
-    private static final long THREAD_AWAIT_TIMEOUT = 5;
-
-    private Semaphore semaphore = new Semaphore(PERMITS, true);
 
     static final String NOT_AVAILABLE_OUTSIDE_LMS = "Requested scheme is not available outside LMS";
     static final String NOT_AVAILABLE_FOR_USER = "Requested scheme is not available for this user";
@@ -41,6 +32,8 @@ public class BasicStartProcessingServiceImpl implements StartProcessingService {
     private FirstBatchBuilder firstBatchBuilder;
 
     private SessionDataService sessionDataService;
+
+    private SecurityUtils securityUtils;
 
     @Autowired
     public void setAppProperties(AppProperties appProperties) {
@@ -72,21 +65,27 @@ public class BasicStartProcessingServiceImpl implements StartProcessingService {
         this.sessionDataService = sessionDataService;
     }
 
+    @Autowired
+    public void setSecurityUtils(SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
+    }
+
     @Override
-    public SessionData start(@NonNull final StartData startData) {
+    public SessionData start(@NonNull final Long schemeId, @NonNull final String uuid) {
         // Load the requested Scheme and build SessionData object
-        final Scheme scheme = schemeService.findByIdForSession(startData.getSchemeId());
+        final Scheme scheme = schemeService.findByIdForSession(schemeId);
         if (scheme==null || !scheme.isActive())
             throw new IllegalStateException(NOT_AVAILABLE);
         if (scheme.isLmsOnly())
             throw new IllegalStateException(NOT_AVAILABLE_OUTSIDE_LMS);
+        Long userId = securityUtils.getAuthUserId();
         if (appProperties.getSession().isIncludeGroups()) {
-            if (!availabilityService.isSchemeAvailable(scheme, startData.getUserId())) {
+            if (!availabilityService.isSchemeAvailable(scheme, userId)) {
                 throw new IllegalStateException(NOT_AVAILABLE_FOR_USER);
             }
         }
-        log.debug("Found available scheme ID = {}, containing themes = {}", scheme.getSchemeId(), scheme.getThemes().size());
-        final SessionData sessionData = sessionDataBuilder.build(startData.getKey(), startData.getUserId(), scheme);
+        log.debug("Found available schemeId = {}, containing themes = {}", scheme.getSchemeId(), scheme.getThemes().size());
+        final SessionData sessionData = sessionDataBuilder.build(uuid, userId, scheme);
         // Build first BatchOutDto
         final BatchOutDto batchOutDto = firstBatchBuilder.build(sessionData);
         // Update SessionData
@@ -97,7 +96,7 @@ public class BasicStartProcessingServiceImpl implements StartProcessingService {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "basic";
     }
 }

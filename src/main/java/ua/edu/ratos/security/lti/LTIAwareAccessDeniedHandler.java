@@ -21,7 +21,6 @@ public class LTIAwareAccessDeniedHandler implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
-
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(auth)) {
 			log.debug("Detected an LTI user lacking authority trying to access protected resource, redirection to /login endpoint");
@@ -31,7 +30,7 @@ public class LTIAwareAccessDeniedHandler implements AccessDeniedHandler {
 			response.sendRedirect(request.getContextPath() + "/login");
 			return;
 		}
-		log.debug("Detected a non-LTI user lacking authority trying to access protected resourceDomain, redirection to /access-denied endpoint");
+		log.debug("Detected a non-LTI user lacking authority trying to access protected resource, redirection to /access-denied endpoint");
 		response.sendRedirect(request.getContextPath() + "/access-denied");
 	}
 

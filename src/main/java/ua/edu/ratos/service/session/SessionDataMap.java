@@ -30,6 +30,12 @@ public class SessionDataMap implements Serializable {
      */
     private Map<Long, SessionData> openedSessions = new HashMap<>();
 
+    /**
+     * Checks if the requested schemeId is already present in the sessionDataMap;
+     * If present, the current http session already has an opened session for the requested scheme;
+     * The client should propose to return back to the opened session or close it.
+     * @param schemeId requested schemeId
+     */
     public void controlAndThrow(@NonNull final Long schemeId) {
         if (openedSessions.containsKey(schemeId))
             throw new SessionAlreadyOpenedException(schemeId);

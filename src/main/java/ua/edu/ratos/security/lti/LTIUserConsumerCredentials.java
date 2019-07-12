@@ -6,13 +6,12 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
-import ua.edu.ratos.security.RatosUser;
 
 @Getter
 @Setter
 @ToString
 @Accessors(chain = true)
-public class LTIUserConsumerCredentials extends LTIToolConsumerCredentials implements RatosUser {
+public class LTIUserConsumerCredentials extends LTIToolConsumerCredentials {
     /**
      * Unique identifier of a user within TP
      */

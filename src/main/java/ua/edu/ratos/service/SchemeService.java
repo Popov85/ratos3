@@ -276,7 +276,7 @@ public class SchemeService {
         SchemeOutDto schemeOutDto = schemeDtoTransformer.toDto(schemeRepository.findForEditById(schemeId));
         // Work here to add grading details DTO;
         Long gradingId = schemeOutDto.getGrading().getGradingId();
-        Object gradingDetails = schemeGradingServiceFactory.getGraderService(gradingId).findDetails(schemeId);
+        Object gradingDetails = schemeGradingServiceFactory.getInstance(gradingId).findDetails(schemeId);
         schemeOutDto.setGradingDetails(gradingDetails);
         return schemeOutDto;
     }

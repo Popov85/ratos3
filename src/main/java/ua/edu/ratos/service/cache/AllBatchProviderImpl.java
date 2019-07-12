@@ -23,7 +23,7 @@ class AllBatchProviderImpl implements BatchProvider {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "all";
     }
 

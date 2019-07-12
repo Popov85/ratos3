@@ -2,13 +2,11 @@ package ua.edu.ratos.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.security.lti.LTIToolConsumerCredentials;
-
-import java.util.Set;
-import java.util.stream.Collectors;
+import ua.edu.ratos.security.lti.LTIUserConsumerCredentials;
 
 /**
  * Convenience security methods for usage throughout the app
@@ -19,6 +17,8 @@ public class SecurityUtils {
 
     @Value("${spring.profiles.active}")
     private String profile;
+
+    //-------------------------------------Staff-------------------------------------
 
     /**
      * Obtain ID of the current authenticated staff
@@ -63,59 +63,113 @@ public class SecurityUtils {
         return ((AuthenticatedStaff) auth.getPrincipal()).getOrgId();
     }
 
-    /**
-     * Obtain ID of LMS a user is authenticated from
-     * @return lmsId
-     */
-    public Long getAuthLmsId() {
-        if ("h2".equals(profile) || "mysql".equals(profile)) return 1L;
-        Authentication auth = getLmsAuthentication();
-        return ((LTIToolConsumerCredentials) auth.getPrincipal()).getLmsId();
+    private Authentication getStaffAuthentication() {
+        Authentication auth = getAuthentication();
+        if (auth.getPrincipal().getClass()!= AuthenticatedStaff.class)
+            throw new SecurityException("Lack of authority");
+        return auth;
     }
 
+
+    //----------------------------------------User------------------------------------
+
     /**
-     * Obtain ID of currently authenticated student
-     * For Unit-testing: fallback to default values, 2L
-     * @return studId
+     * Obtain ID of any currently authenticated  user (whether staff or student)
+     * For Unit-testing: fallback to default values, 2L.
+     * Do not use this method for job withing LMS!
+     * Only for usage outside LMS authentication: cabinets, statistics
+     * @return userId
      */
-    public Long getAuthStudId() {
+    public Long getAuthUserId() {
         if ("h2".equals(profile) || "mysql".equals(profile)) return 2L;
         Authentication auth = getAuthentication();
-        if (!(auth.getPrincipal() instanceof AuthenticatedUser))
+        if (auth.getPrincipal().getClass()!= AuthenticatedUser.class)
             throw new SecurityException("Lack of authority");
         return ((AuthenticatedUser) auth.getPrincipal()).getUserId();
     }
 
 
+    //----------------------------------------LMS--------------------------------------
+
     /**
-     * Obtain all granted roles for the current authenticated staff
-     * @return set of roles
+     * Checks if the current user comes from within some known LMS and fully authenticated.
+     * For Unit-testing: fallback to false (non-LMS user)
+     * @return verdict
      */
-    public Set<String> getAuthStaffRoles() {
-        Authentication auth = getStaffAuthentication();
-        return ((AuthenticatedStaff) auth.getPrincipal()).getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
+    public boolean isLmsUser() {
+        if ("h2".equals(profile) || "mysql".equals(profile)) return false;
+        Authentication auth = getAuthentication();
+        if (auth.getPrincipal().getClass()!= LTIUserConsumerCredentials.class) return false;
+        LTIUserConsumerCredentials credentials = (LTIUserConsumerCredentials) auth.getPrincipal();
+        if (credentials.getLmsId()==null || credentials.getUserId()==null || credentials.getLmsId()<=0 || credentials.getUserId()<=0)
+            return false;
+        return true;
     }
 
-    public Authentication getAuthentication() {
+    /**
+     * Obtain ID of LMS, with which a user is currently authenticated
+     * @return lmsId
+     */
+    public Long getLmsId() {
+        if ("h2".equals(profile) || "mysql".equals(profile)) return 1L;
+        LTIToolConsumerCredentials auth = getLmsToolAuthentication();
+        Long lmsId = auth.getLmsId();
+        if (lmsId==null || lmsId<=0)
+            throw new SecurityException("Nullable lmsId");
+        return lmsId;
+    }
+
+    /**
+     * Obtain ID of User, authenticated within LMS
+     * @return lmsId
+     */
+    public Long getLmsUserId() {
+        if ("h2".equals(profile) || "mysql".equals(profile)) return 2L;
+        LTIUserConsumerCredentials auth = getLmsUserAuthentication();
+        Long userId = auth.getUserId();
+        if (userId==null || userId<=0)
+            throw new SecurityException("Nullable userId");
+        return userId;
+    }
+
+    /**
+     * Obtain LTI tool consumer credentials
+     * @return LTIToolConsumerCredentials
+     */
+    public LTIToolConsumerCredentials getLmsToolAuthentication() {
+        Authentication auth = getAuthentication();
+        if (auth.getPrincipal().getClass()!= LTIToolConsumerCredentials.class)
+            throw new SecurityException("Lack of authority: non-lms user");
+        return (LTIToolConsumerCredentials) auth;
+    }
+
+    /**
+     * Obtain LTI tool + userId credentials
+     * @return LTIUserConsumerCredentials
+     */
+    public LTIUserConsumerCredentials getLmsUserAuthentication() {
+        Authentication auth = getAuthentication();
+        if (auth.getPrincipal().getClass()!= LTIUserConsumerCredentials.class)
+            throw new SecurityException("Lack of authority: non-authenticated lms user");
+        return (LTIUserConsumerCredentials) auth;
+    }
+
+    /**
+     * Obtain SignatureSecret for posting score to LMS
+     * @return OAuth 1.0 SignatureSecret
+     */
+    public SignatureSecret getOauthSignatureSecret() {
+        Object credentials = getAuthentication().getCredentials();
+        if (!(credentials instanceof SignatureSecret))
+            throw new SecurityException("No SignatureSecret was found!");
+        return (SignatureSecret) credentials;
+    }
+
+    //----------------------------------Private------------------------------
+
+    private Authentication getAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth==null) throw new SecurityException("Unauthorized");
-        return auth;
-    }
-
-    private Authentication getStaffAuthentication() {
-        Authentication auth = getAuthentication();
-        if (!(auth.getPrincipal() instanceof AuthenticatedStaff))
-            throw new SecurityException("Lack of authority");
-        return auth;
-    }
-
-    private Authentication getLmsAuthentication() {
-        Authentication auth = getAuthentication();
-        if (!(auth.getPrincipal() instanceof LTIToolConsumerCredentials))
-            throw new SecurityException("Lack of authority");
         return auth;
     }
 

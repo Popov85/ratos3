@@ -62,7 +62,7 @@ public class RegularFinishProcessingServiceImpl implements FinishProcessingServi
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "regular";
     }
 }

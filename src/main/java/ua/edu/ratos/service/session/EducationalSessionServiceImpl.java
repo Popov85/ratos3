@@ -100,7 +100,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
     public String preserve(@NonNull final SessionData sessionData) {
         ModeDomain modeDomain = sessionData.getSchemeDomain().getModeDomain();
         if (!modeDomain.isPreservable()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
-        Long requestingUserId = securityUtils.getAuthStudId();
+        Long requestingUserId = securityUtils.getAuthUserId();
         long preservedExist = sessionPreservedService.countByUserId(requestingUserId);
         int preservedLimit = appProperties.getSession().getPreservedLimit();
         if (preservedExist >= preservedLimit) throw new UnsupportedOperationException(PRESERVED_SESSIONS_LIMIT);

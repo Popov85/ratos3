@@ -59,7 +59,7 @@ public class BasicNextProcessingService implements NextProcessingService {
     }
 
     @Override
-    public String type() {
+    public String name() {
         return "basic";
     }
 }

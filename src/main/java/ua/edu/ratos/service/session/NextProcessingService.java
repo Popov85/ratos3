@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.session;
 
+import ua.edu.ratos.service.NamedService;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
@@ -9,7 +10,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
  * @see ua.edu.ratos.service.session.BasicNextProcessingService
  * @see ua.edu.ratos.service.session.DynamicNextProcessingService
  */
-public interface NextProcessingService {
+public interface NextProcessingService extends NamedService<String> {
 
     /**
      * Provides the next batch of questions for end-user.
@@ -18,6 +19,4 @@ public interface NextProcessingService {
      * @return next batch out
      */
     BatchOutDto next(BatchInDto batchInDto, SessionData sessionData);
-
-    String type();
 }

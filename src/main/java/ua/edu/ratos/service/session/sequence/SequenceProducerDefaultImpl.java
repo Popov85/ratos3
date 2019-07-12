@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
@@ -57,7 +56,7 @@ public class SequenceProducerDefaultImpl implements SequenceProducer {
     }
 
     @Override
-    public String getStrategy() {
+    public String name() {
         return "default";
     }
 

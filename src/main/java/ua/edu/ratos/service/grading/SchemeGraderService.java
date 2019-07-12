@@ -1,9 +1,12 @@
 package ua.edu.ratos.service.grading;
 
-public interface SchemeGraderService {
+import ua.edu.ratos.service.NamedService;
+
+public interface SchemeGraderService extends NamedService<Long> {
+
     void save(long schemeId, long gradingDetailsId);
+
     void delete(long schemeId);
-    long type();
 
     /**
      * Finds one of the {FourPointGradingOutDto, FreePointGradingOutDto, TwoPointGradingOutDto}

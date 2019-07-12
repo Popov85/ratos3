@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import ua.edu.ratos.web.exception.RatosAsyncExceptionHandler;
 
-@Configuration
 @EnableAsync
+@Configuration
 @Profile({"prod", "dev", "demo"})
 public class AsyncConfig extends AsyncConfigurerSupport {
 

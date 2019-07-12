@@ -38,10 +38,10 @@ public class QuestionLoaderSelector {
         AppProperties.Session.Algorithm algorithm = appProperties.getSession().getRandomAlgorithm();
         if (algorithm.equals(AppProperties.Session.Algorithm.SIMPLE)) {
             log.debug("Selected simple implementation of question loader");
-            return questionLoaderFactory.getQuestionLoader("simple");
+            return questionLoaderFactory.getInstance("simple");
         } else if (algorithm.equals(AppProperties.Session.Algorithm.CACHED)) {
             log.debug("Selected cached implementation of question loader");
-            return questionLoaderFactory.getQuestionLoader("cached");
+            return questionLoaderFactory.getInstance("cached");
         } else if (algorithm.equals(AppProperties.Session.Algorithm.DECIDE)) {
             // Try to resolve
             return sequenceMapperResolver.resolve(scheme);
