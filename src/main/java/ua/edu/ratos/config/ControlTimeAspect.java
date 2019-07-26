@@ -23,13 +23,13 @@ public class ControlTimeAspect {
 
     /**
      * For every end-point that serves learning session after it has been opened,
-     * we control business timeout and check for it as early as possible
+     * we control business timeout and check for timeout as early as possible
      * (even for unrestricted in time schemes)
      * in request flow (usually in controllers) and only once within single request!
      * This is advantageous in borderline cases when user finishes learning session
      * just before he runs out of time, and in controller, session is still not expired
      * but during execution process it expires and we have two inconsistent states;
-     * Timeout class eliminates this possibility.
+     * Timeout class eliminates this possibility by keeping the same result of validation throughout the request.
      * @param joinPoint
      */
     @Before("@annotation(ua.edu.ratos.config.ControlTime)")

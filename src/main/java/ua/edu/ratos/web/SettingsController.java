@@ -44,7 +44,7 @@ public class SettingsController {
     }
 
     // Make sure to include setId to DTO object
-    @PutMapping("/settings/{setId}")
+    @PutMapping(value = "/settings/{setId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void update(@PathVariable Long setId, @Validated @RequestBody SettingsInDto dto) {
         settingsService.update(dto);

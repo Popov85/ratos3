@@ -64,20 +64,23 @@ public class PhraseService {
 
     @Transactional
     public void updatePhrase(@NonNull final Long phraseId, @NonNull final String phrase) {
-        phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
+        phraseRepository.findById(phraseId)
+                .orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
                 .setPhrase(phrase);
     }
 
     @Transactional
     public void updateResource(@NonNull final Long phraseId, @NonNull final Long resId) {
-        Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId));
+        Phrase phrase = phraseRepository.findById(phraseId)
+                .orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId));
         phrase.clearResources();
         phrase.addResource(em.getReference(Resource.class, resId));
     }
 
     @Transactional
     public void deleteById(@NonNull final Long phraseId) {
-        phraseRepository.findById(phraseId).orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
+        phraseRepository.findById(phraseId)
+                .orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId))
                 .setDeleted(true);
     }
 

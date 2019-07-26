@@ -74,19 +74,22 @@ public class LMSService {
 
     @Transactional
     public void updateName(@NonNull final Long lmsId, @NonNull final String name) {
-        lmsRepository.findById(lmsId).orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
+        lmsRepository.findById(lmsId)
+                .orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
                 .setName(name);
     }
 
     @Transactional
     public void updateVersion(@NonNull final Long lmsId, @NonNull final Long versionId) {
-        lmsRepository.findById(lmsId).orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
+        lmsRepository.findById(lmsId)
+                .orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
                 .setLtiVersion(em.getReference(LTIVersion.class, versionId));
     }
 
     @Transactional
     public void updateCredentials(@NonNull final Long lmsId, @NonNull final String key, @NonNull final String secret) {
-        LTICredentials credentials = lmsRepository.findById(lmsId).orElseThrow(() -> new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
+        LTICredentials credentials = lmsRepository.findById(lmsId)
+                .orElseThrow(() -> new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
                 .getCredentials();
         credentials.setKey(key);
         credentials.setSecret(secret);
@@ -108,7 +111,8 @@ public class LMSService {
 
     @Transactional
     public void delete(@NonNull final Long lmsId){
-        lmsRepository.findById(lmsId).orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
+        lmsRepository.findById(lmsId)
+                .orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND + lmsId))
                 .setDeleted(true);
     }
 

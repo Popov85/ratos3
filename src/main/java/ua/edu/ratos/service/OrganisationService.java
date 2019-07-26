@@ -1,5 +1,6 @@
 package ua.edu.ratos.service;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class OrganisationService {
         this.organisationRepository = organisationRepository;
     }
 
-    public void deleteById(Long orgId) {
-        log.warn("Organisation is to be removed, Id= {}", orgId);
+    public void deleteById(@NonNull final Long orgId) {
+        log.warn("Organisation is to be removed, orgId= {}", orgId);
         organisationRepository.findById(orgId).get().setDeleted(true);
     }
+
 }

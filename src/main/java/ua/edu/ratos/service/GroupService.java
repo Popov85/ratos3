@@ -74,7 +74,7 @@ public class GroupService {
         this.groupDtoTransformer = groupDtoTransformer;
     }
 
-    //---------------------------------------------------------CRUD-----------------------------------------------------
+    //-------------------------------------------------------CRUD-------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final GroupInDto dto) {
@@ -83,7 +83,8 @@ public class GroupService {
 
     @Transactional
     public void updateName(@NonNull final Long groupId, @NonNull final String name) {
-        groupRepository.findById(groupId).orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId))
+        groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId))
                 .setName(name);
     }
 
@@ -103,7 +104,8 @@ public class GroupService {
 
     @Transactional
     public void deleteById(@NonNull final Long groupId) {
-        groupRepository.findById(groupId).orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId))
+        groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId))
                 .setDeleted(true);
     }
 

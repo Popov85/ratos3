@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.lms.LMS;
 
+import java.util.Optional;
+
 public interface LMSRepository extends JpaRepository<LMS, Long> {
 
     //---------------------------------------------------STUDENT LTI session--------------------------------------------
@@ -18,6 +20,11 @@ public interface LMSRepository extends JpaRepository<LMS, Long> {
 
     @Query(value = "SELECT l FROM LMS l join fetch l.ltiVersion join fetch l.origins join fetch l.credentials c where l.lmsId = ?1")
     LMS findOneForEditById(Long lmsId);
+
+    //---------------------------------------------ONE for self-registration--------------------------------------------
+
+    @Query(value = "SELECT l FROM LMS l join fetch l.organisation where l.lmsId = ?1")
+    Optional<LMS> findOneForRegById(Long lmsId);
 
     //---------------------------------------------------ORG-ADMIN table------------------------------------------------
 

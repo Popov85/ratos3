@@ -92,13 +92,15 @@ public class QuestionService {
 
     @Transactional
     public void update(@NonNull final Long questionId, @NonNull final QuestionInDto dto) {
-        final Question entity = questionRepository.findById(questionId).orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
         dtoQuestionTransformer.mapDto(dto, entity);
     }
 
     @Transactional
     public void deleteById(@NonNull final Long questionId) {
-        questionRepository.findById(questionId).orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId))
+        questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId))
                 .setDeleted(true);
     }
 

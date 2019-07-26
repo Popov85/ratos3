@@ -30,6 +30,8 @@ public class AppProperties {
 
     private Game game;
 
+    private Security security;
+
     @Getter
     @Setter
     @ToString
@@ -262,5 +264,25 @@ public class AppProperties {
          * The same like previous but for time-outed sessions.
          */
         private boolean processTimeoutedResults;
+    }
+
+    /**
+     * All about security in e-RATOS
+     */
+    @Getter
+    @Setter
+    @ToString
+    public static class Security {
+
+        /**
+         * Allow students self-registration inside lms;
+         */
+        private boolean lmsRegistration;
+
+        /**
+         * Allow students self-registration outside lms;
+         */
+        private boolean nonLmsRegistration;
+
     }
 }

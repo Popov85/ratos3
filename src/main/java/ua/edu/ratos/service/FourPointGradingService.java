@@ -18,6 +18,8 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class FourPointGradingService {
 
+    private static final String ID_IS_NOT_INCLUDED = "FourId is not included, reject update!";
+
     private static final String FOUR_NOT_FOUND = "The requested FourPointGrading not found, fourId = ";
 
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default FourPointGrading cannot be modified";
@@ -59,8 +61,11 @@ public class FourPointGradingService {
 
     @Transactional
     public void update(@NonNull final FourPointGradingInDto dto) {
-        if (dto.getFourId()==null) throw new RuntimeException("FourPointGrading's DTO must contain fourId to be updated");
-        FourPointGrading entity = fourPointGradingRepository.findById(dto.getFourId()).orElseThrow(() -> new EntityNotFoundException(FOUR_NOT_FOUND + dto.getFourId()));
+        Long fourId = dto.getFourId();
+        if (fourId == null || fourId ==0)
+            throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        FourPointGrading entity = fourPointGradingRepository.findById(fourId)
+                .orElseThrow(() -> new EntityNotFoundException(FOUR_NOT_FOUND + fourId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
         entity.setName(dto.getName());
         entity.setThreshold3(dto.getThreshold3());

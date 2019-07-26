@@ -59,22 +59,24 @@ public class ResourceService {
 
     @Transactional
     public void updateLink(@NonNull final Long resId, @NonNull final String link) {
-        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+        resourceRepository.findById(resId)
+                .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
                 .setLink(link);
     }
 
     @Transactional
     public void updateDescription(@NonNull final Long resId, @NonNull final String description) {
-        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+        resourceRepository.findById(resId)
+                .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
                 .setDescription(description);
     }
 
     @Transactional
     public void deleteById(@NonNull final Long resId) {
-        resourceRepository.findById(resId).orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
+        resourceRepository.findById(resId)
+                .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
                 .setDeleted(true);
     }
-
 
     //----------------------------------------------One (for update)----------------------------------------------------
 

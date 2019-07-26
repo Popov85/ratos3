@@ -28678,11 +28678,5296 @@ var FaRegWindowRestore = function (props) {
 
 exports.FaRegWindowRestore = FaRegWindowRestore;
 FaRegWindowRestore.displayName = "FaRegWindowRestore";
-},{"../lib":"H2wQ"}],"Sr7R":[function(require,module,exports) {
+},{"../lib":"H2wQ"}],"osRP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var Utils = {
+  baseUrl: function baseUrl() {
+    var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
+    return !baseUrl || baseUrl === "http://localhost:1234" ? "http://localhost:8090" : baseUrl;
+  },
+  // split array into chunks of n
+  chunkArray: function chunkArray(arr, size) {
+    var result = [];
+
+    for (var i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+
+    return result;
+  },
+  isEmptyArray: function isEmptyArray(array) {
+    return !Array.isArray(!array) || !array.length;
+  },
+  helper3: function helper3(param1, param2) {}
+};
+var _default = Utils;
+exports.default = _default;
+},{}],"SN4b":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Utils = _interopRequireDefault(require("./Utils"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ApiRegistration = {
+  //Single organization (from LMS context)
+  loadOrganization: function loadOrganization(errorLoadOrgId) {
+    var endpoint = "/lti/self-registration/organisation";
+    var url = _Utils.default.baseUrl() + endpoint;
+    return fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json'
+      })
+    }).then(function (response) {
+      if (!response.ok) throw Error("Failed API request for orgId");
+      return response.json();
+    }).catch(function (error) {
+      console.error(error.message);
+      errorLoadOrgId(error);
+    });
+  },
+  //Organizations
+  loadOrganizations: function loadOrganizations(lms, errorLoadOrg) {
+    var endpoint = (lms ? "/lti" : "") + "/self-registration/organisations";
+    var url = _Utils.default.baseUrl() + endpoint;
+    return fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json'
+      })
+    }).then(function (response) {
+      if (!response.ok) throw Error("Failed API request for organizations");
+      return response.json();
+    }).catch(function (error) {
+      console.error(error.message);
+      errorLoadOrg(error);
+    });
+  },
+  //Faculties
+  loadFaculties: function loadFaculties(lms, orgId, errorLoadFac) {
+    var endpoint = (lms ? "/lti" : "") + "/self-registration/faculties?orgId=" + orgId;
+    var url = _Utils.default.baseUrl() + endpoint;
+    return fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json'
+      })
+    }).then(function (response) {
+      if (!response.ok) throw Error("Failed API request for faculties");
+      return response.json();
+    }).catch(function (error) {
+      console.error(error.message);
+      errorLoadFac(error);
+    });
+  },
+  //Classes
+  loadClasses: function loadClasses(lms, facId, errorLoadClasses) {
+    var endpoint = (lms ? "/lti" : "") + "/self-registration/classes?facId=" + facId;
+    var url = _Utils.default.baseUrl() + endpoint;
+    return fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json'
+      })
+    }).then(function (response) {
+      if (!response.ok) throw Error("Failed API request for classes");
+      return response.json();
+    }).catch(function (error) {
+      console.error(error.message);
+      errorLoadClasses(error);
+    });
+  }
+};
+var _default = ApiRegistration;
+exports.default = _default;
+},{"./Utils":"osRP"}],"QMaW":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = assertString;
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function assertString(input) {
+  var isString = typeof input === 'string' || input instanceof String;
+
+  if (!isString) {
+    var invalidType;
+
+    if (input === null) {
+      invalidType = 'null';
+    } else {
+      invalidType = _typeof(input);
+
+      if (invalidType === 'object' && input.constructor && input.constructor.hasOwnProperty('name')) {
+        invalidType = input.constructor.name;
+      } else {
+        invalidType = "a ".concat(invalidType);
+      }
+    }
+
+    throw new TypeError("Expected string but received ".concat(invalidType, "."));
+  }
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{}],"rSuR":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = toDate;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function toDate(date) {
+  (0, _assertString.default)(date);
+  date = Date.parse(date);
+  return !isNaN(date) ? new Date(date) : null;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"qMz2":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = toFloat;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function toFloat(str) {
+  (0, _assertString.default)(str);
+  return parseFloat(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"POb+":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = toInt;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function toInt(str, radix) {
+  (0, _assertString.default)(str);
+  return parseInt(str, radix || 10);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"iU/H":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = toBoolean;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function toBoolean(str, strict) {
+  (0, _assertString.default)(str);
+
+  if (strict) {
+    return str === '1' || str === 'true';
+  }
+
+  return str !== '0' && str !== 'false' && str !== '';
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"lkt0":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = equals;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function equals(str, comparison) {
+  (0, _assertString.default)(str);
+  return str === comparison;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"RZcC":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = toString;
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function toString(input) {
+  if (_typeof(input) === 'object' && input !== null) {
+    if (typeof input.toString === 'function') {
+      input = input.toString();
+    } else {
+      input = '[object Object]';
+    }
+  } else if (input === null || typeof input === 'undefined' || isNaN(input) && !input.length) {
+    input = '';
+  }
+
+  return String(input);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{}],"GBl7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = contains;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _toString = _interopRequireDefault(require("./util/toString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function contains(str, elem) {
+  (0, _assertString.default)(str);
+  return str.indexOf((0, _toString.default)(elem)) >= 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/toString":"RZcC"}],"wWis":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = matches;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function matches(str, pattern, modifiers) {
+  (0, _assertString.default)(str);
+
+  if (Object.prototype.toString.call(pattern) !== '[object RegExp]') {
+    pattern = new RegExp(pattern, modifiers);
+  }
+
+  return pattern.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"d6UF":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = merge;
+
+function merge() {
+  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var defaults = arguments.length > 1 ? arguments[1] : undefined;
+
+  for (var key in defaults) {
+    if (typeof obj[key] === 'undefined') {
+      obj[key] = defaults[key];
+    }
+  }
+
+  return obj;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{}],"FRf3":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isByteLength;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+/* eslint-disable prefer-rest-params */
+
+
+function isByteLength(str, options) {
+  (0, _assertString.default)(str);
+  var min;
+  var max;
+
+  if (_typeof(options) === 'object') {
+    min = options.min || 0;
+    max = options.max;
+  } else {
+    // backwards compatibility: isByteLength(str, min [, max])
+    min = arguments[1];
+    max = arguments[2];
+  }
+
+  var len = encodeURI(str).split(/%..|./).length - 1;
+  return len >= min && (typeof max === 'undefined' || len <= max);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"Bh5o":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isFQDN;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var default_fqdn_options = {
+  require_tld: true,
+  allow_underscores: false,
+  allow_trailing_dot: false
+};
+
+function isFQDN(str, options) {
+  (0, _assertString.default)(str);
+  options = (0, _merge.default)(options, default_fqdn_options);
+  /* Remove the optional trailing dot before checking validity */
+
+  if (options.allow_trailing_dot && str[str.length - 1] === '.') {
+    str = str.substring(0, str.length - 1);
+  }
+
+  var parts = str.split('.');
+
+  for (var i = 0; i < parts.length; i++) {
+    if (parts[i].length > 63) {
+      return false;
+    }
+  }
+
+  if (options.require_tld) {
+    var tld = parts.pop();
+
+    if (!parts.length || !/^([a-z\u00a1-\uffff]{2,}|xn[a-z0-9-]{2,})$/i.test(tld)) {
+      return false;
+    } // disallow spaces
+
+
+    if (/[\s\u2002-\u200B\u202F\u205F\u3000\uFEFF\uDB40\uDC20]/.test(tld)) {
+      return false;
+    }
+  }
+
+  for (var part, _i = 0; _i < parts.length; _i++) {
+    part = parts[_i];
+
+    if (options.allow_underscores) {
+      part = part.replace(/_/g, '');
+    }
+
+    if (!/^[a-z\u00a1-\uffff0-9-]+$/i.test(part)) {
+      return false;
+    } // disallow full-width chars
+
+
+    if (/[\uff01-\uff5e]/.test(part)) {
+      return false;
+    }
+
+    if (part[0] === '-' || part[part.length - 1] === '-') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/merge":"d6UF"}],"F6o8":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isIP;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var ipv4Maybe = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+var ipv6Block = /^[0-9A-F]{1,4}$/i;
+
+function isIP(str) {
+  var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  (0, _assertString.default)(str);
+  version = String(version);
+
+  if (!version) {
+    return isIP(str, 4) || isIP(str, 6);
+  } else if (version === '4') {
+    if (!ipv4Maybe.test(str)) {
+      return false;
+    }
+
+    var parts = str.split('.').sort(function (a, b) {
+      return a - b;
+    });
+    return parts[3] <= 255;
+  } else if (version === '6') {
+    var blocks = str.split(':');
+    var foundOmissionBlock = false; // marker to indicate ::
+    // At least some OS accept the last 32 bits of an IPv6 address
+    // (i.e. 2 of the blocks) in IPv4 notation, and RFC 3493 says
+    // that '::ffff:a.b.c.d' is valid for IPv4-mapped IPv6 addresses,
+    // and '::a.b.c.d' is deprecated, but also valid.
+
+    var foundIPv4TransitionBlock = isIP(blocks[blocks.length - 1], 4);
+    var expectedNumberOfBlocks = foundIPv4TransitionBlock ? 7 : 8;
+
+    if (blocks.length > expectedNumberOfBlocks) {
+      return false;
+    } // initial or final ::
+
+
+    if (str === '::') {
+      return true;
+    } else if (str.substr(0, 2) === '::') {
+      blocks.shift();
+      blocks.shift();
+      foundOmissionBlock = true;
+    } else if (str.substr(str.length - 2) === '::') {
+      blocks.pop();
+      blocks.pop();
+      foundOmissionBlock = true;
+    }
+
+    for (var i = 0; i < blocks.length; ++i) {
+      // test for a :: which can not be at the string start/end
+      // since those cases have been handled above
+      if (blocks[i] === '' && i > 0 && i < blocks.length - 1) {
+        if (foundOmissionBlock) {
+          return false; // multiple :: in address
+        }
+
+        foundOmissionBlock = true;
+      } else if (foundIPv4TransitionBlock && i === blocks.length - 1) {// it has been checked before that the last
+        // block is a valid IPv4 address
+      } else if (!ipv6Block.test(blocks[i])) {
+        return false;
+      }
+    }
+
+    if (foundOmissionBlock) {
+      return blocks.length >= 1;
+    }
+
+    return blocks.length === expectedNumberOfBlocks;
+  }
+
+  return false;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"H23W":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isEmail;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+var _isByteLength = _interopRequireDefault(require("./isByteLength"));
+
+var _isFQDN = _interopRequireDefault(require("./isFQDN"));
+
+var _isIP = _interopRequireDefault(require("./isIP"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+
+function _iterableToArrayLimit(arr, i) {
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+var default_email_options = {
+  allow_display_name: false,
+  require_display_name: false,
+  allow_utf8_local_part: true,
+  require_tld: true
+};
+/* eslint-disable max-len */
+
+/* eslint-disable no-control-regex */
+
+var splitNameAddress = /^([^\x00-\x1F\x7F-\x9F\cX]+)<(.+)>$/i;
+var emailUserPart = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~]+$/i;
+var gmailUserPart = /^[a-z\d]+$/;
+var quotedEmailUser = /^([\s\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e]|(\\[\x01-\x09\x0b\x0c\x0d-\x7f]))*$/i;
+var emailUserUtf8Part = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+$/i;
+var quotedEmailUserUtf8 = /^([\s\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i;
+var defaultMaxEmailLength = 254;
+/* eslint-enable max-len */
+
+/* eslint-enable no-control-regex */
+
+/**
+ * Validate display name according to the RFC2822: https://tools.ietf.org/html/rfc2822#appendix-A.1.2
+ * @param {String} display_name
+ */
+
+function validateDisplayName(display_name) {
+  var trim_quotes = display_name.match(/^"(.+)"$/i);
+  var display_name_without_quotes = trim_quotes ? trim_quotes[1] : display_name; // display name with only spaces is not valid
+
+  if (!display_name_without_quotes.trim()) {
+    return false;
+  } // check whether display name contains illegal character
+
+
+  var contains_illegal = /[\.";<>]/.test(display_name_without_quotes);
+
+  if (contains_illegal) {
+    // if contains illegal characters,
+    // must to be enclosed in double-quotes, otherwise it's not a valid display name
+    if (!trim_quotes) {
+      return false;
+    } // the quotes in display name must start with character symbol \
+
+
+    var all_start_with_back_slash = display_name_without_quotes.split('"').length === display_name_without_quotes.split('\\"').length;
+
+    if (!all_start_with_back_slash) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isEmail(str, options) {
+  (0, _assertString.default)(str);
+  options = (0, _merge.default)(options, default_email_options);
+
+  if (options.require_display_name || options.allow_display_name) {
+    var display_email = str.match(splitNameAddress);
+
+    if (display_email) {
+      var display_name;
+
+      var _display_email = _slicedToArray(display_email, 3);
+
+      display_name = _display_email[1];
+      str = _display_email[2]; // sometimes need to trim the last space to get the display name
+      // because there may be a space between display name and email address
+      // eg. myname <address@gmail.com>
+      // the display name is `myname` instead of `myname `, so need to trim the last space
+
+      if (display_name.endsWith(' ')) {
+        display_name = display_name.substr(0, display_name.length - 1);
+      }
+
+      if (!validateDisplayName(display_name)) {
+        return false;
+      }
+    } else if (options.require_display_name) {
+      return false;
+    }
+  }
+
+  if (!options.ignore_max_length && str.length > defaultMaxEmailLength) {
+    return false;
+  }
+
+  var parts = str.split('@');
+  var domain = parts.pop();
+  var user = parts.join('@');
+  var lower_domain = domain.toLowerCase();
+
+  if (options.domain_specific_validation && (lower_domain === 'gmail.com' || lower_domain === 'googlemail.com')) {
+    /*
+      Previously we removed dots for gmail addresses before validating.
+      This was removed because it allows `multiple..dots@gmail.com`
+      to be reported as valid, but it is not.
+      Gmail only normalizes single dots, removing them from here is pointless,
+      should be done in normalizeEmail
+    */
+    user = user.toLowerCase(); // Removing sub-address from username before gmail validation
+
+    var username = user.split('+')[0]; // Dots are not included in gmail length restriction
+
+    if (!(0, _isByteLength.default)(username.replace('.', ''), {
+      min: 6,
+      max: 30
+    })) {
+      return false;
+    }
+
+    var _user_parts = username.split('.');
+
+    for (var i = 0; i < _user_parts.length; i++) {
+      if (!gmailUserPart.test(_user_parts[i])) {
+        return false;
+      }
+    }
+  }
+
+  if (!(0, _isByteLength.default)(user, {
+    max: 64
+  }) || !(0, _isByteLength.default)(domain, {
+    max: 254
+  })) {
+    return false;
+  }
+
+  if (!(0, _isFQDN.default)(domain, {
+    require_tld: options.require_tld
+  })) {
+    if (!options.allow_ip_domain) {
+      return false;
+    }
+
+    if (!(0, _isIP.default)(domain)) {
+      if (!domain.startsWith('[') || !domain.endsWith(']')) {
+        return false;
+      }
+
+      var noBracketdomain = domain.substr(1, domain.length - 2);
+
+      if (noBracketdomain.length === 0 || !(0, _isIP.default)(noBracketdomain)) {
+        return false;
+      }
+    }
+  }
+
+  if (user[0] === '"') {
+    user = user.slice(1, user.length - 1);
+    return options.allow_utf8_local_part ? quotedEmailUserUtf8.test(user) : quotedEmailUser.test(user);
+  }
+
+  var pattern = options.allow_utf8_local_part ? emailUserUtf8Part : emailUserPart;
+  var user_parts = user.split('.');
+
+  for (var _i2 = 0; _i2 < user_parts.length; _i2++) {
+    if (!pattern.test(user_parts[_i2])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/merge":"d6UF","./isByteLength":"FRf3","./isFQDN":"Bh5o","./isIP":"F6o8"}],"saN4":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isURL;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _isFQDN = _interopRequireDefault(require("./isFQDN"));
+
+var _isIP = _interopRequireDefault(require("./isIP"));
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var default_url_options = {
+  protocols: ['http', 'https', 'ftp'],
+  require_tld: true,
+  require_protocol: false,
+  require_host: true,
+  require_valid_protocol: true,
+  allow_underscores: false,
+  allow_trailing_dot: false,
+  allow_protocol_relative_urls: false
+};
+var wrapped_ipv6 = /^\[([^\]]+)\](?::([0-9]+))?$/;
+
+function isRegExp(obj) {
+  return Object.prototype.toString.call(obj) === '[object RegExp]';
+}
+
+function checkHost(host, matches) {
+  for (var i = 0; i < matches.length; i++) {
+    var match = matches[i];
+
+    if (host === match || isRegExp(match) && match.test(host)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function isURL(url, options) {
+  (0, _assertString.default)(url);
+
+  if (!url || url.length >= 2083 || /[\s<>]/.test(url)) {
+    return false;
+  }
+
+  if (url.indexOf('mailto:') === 0) {
+    return false;
+  }
+
+  options = (0, _merge.default)(options, default_url_options);
+  var protocol, auth, host, hostname, port, port_str, split, ipv6;
+  split = url.split('#');
+  url = split.shift();
+  split = url.split('?');
+  url = split.shift();
+  split = url.split('://');
+
+  if (split.length > 1) {
+    protocol = split.shift().toLowerCase();
+
+    if (options.require_valid_protocol && options.protocols.indexOf(protocol) === -1) {
+      return false;
+    }
+  } else if (options.require_protocol) {
+    return false;
+  } else if (url.substr(0, 2) === '//') {
+    if (!options.allow_protocol_relative_urls) {
+      return false;
+    }
+
+    split[0] = url.substr(2);
+  }
+
+  url = split.join('://');
+
+  if (url === '') {
+    return false;
+  }
+
+  split = url.split('/');
+  url = split.shift();
+
+  if (url === '' && !options.require_host) {
+    return true;
+  }
+
+  split = url.split('@');
+
+  if (split.length > 1) {
+    if (options.disallow_auth) {
+      return false;
+    }
+
+    auth = split.shift();
+
+    if (auth.indexOf(':') >= 0 && auth.split(':').length > 2) {
+      return false;
+    }
+  }
+
+  hostname = split.join('@');
+  port_str = null;
+  ipv6 = null;
+  var ipv6_match = hostname.match(wrapped_ipv6);
+
+  if (ipv6_match) {
+    host = '';
+    ipv6 = ipv6_match[1];
+    port_str = ipv6_match[2] || null;
+  } else {
+    split = hostname.split(':');
+    host = split.shift();
+
+    if (split.length) {
+      port_str = split.join(':');
+    }
+  }
+
+  if (port_str !== null) {
+    port = parseInt(port_str, 10);
+
+    if (!/^[0-9]+$/.test(port_str) || port <= 0 || port > 65535) {
+      return false;
+    }
+  }
+
+  if (!(0, _isIP.default)(host) && !(0, _isFQDN.default)(host, options) && (!ipv6 || !(0, _isIP.default)(ipv6, 6))) {
+    return false;
+  }
+
+  host = host || ipv6;
+
+  if (options.host_whitelist && !checkHost(host, options.host_whitelist)) {
+    return false;
+  }
+
+  if (options.host_blacklist && checkHost(host, options.host_blacklist)) {
+    return false;
+  }
+
+  return true;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./isFQDN":"Bh5o","./isIP":"F6o8","./util/merge":"d6UF"}],"CA48":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMACAddress;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var macAddress = /^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$/;
+var macAddressNoColons = /^([0-9a-fA-F]){12}$/;
+
+function isMACAddress(str, options) {
+  (0, _assertString.default)(str);
+
+  if (options && options.no_colons) {
+    return macAddressNoColons.test(str);
+  }
+
+  return macAddress.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"UXrm":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isIPRange;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _isIP = _interopRequireDefault(require("./isIP"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var subnetMaybe = /^\d{1,2}$/;
+
+function isIPRange(str) {
+  (0, _assertString.default)(str);
+  var parts = str.split('/'); // parts[0] -> ip, parts[1] -> subnet
+
+  if (parts.length !== 2) {
+    return false;
+  }
+
+  if (!subnetMaybe.test(parts[1])) {
+    return false;
+  } // Disallow preceding 0 i.e. 01, 02, ...
+
+
+  if (parts[1].length > 1 && parts[1].startsWith('0')) {
+    return false;
+  }
+
+  return (0, _isIP.default)(parts[0], 4) && parts[1] <= 32 && parts[1] >= 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./isIP":"F6o8"}],"OY6B":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isBoolean;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isBoolean(str) {
+  (0, _assertString.default)(str);
+  return ['true', 'false', '1', '0'].indexOf(str) >= 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"uNDA":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.commaDecimal = exports.dotDecimal = exports.arabicLocales = exports.englishLocales = exports.decimal = exports.alphanumeric = exports.alpha = void 0;
+var alpha = {
+  'en-US': /^[A-Z]+$/i,
+  'bg-BG': /^[А-Я]+$/i,
+  'cs-CZ': /^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]+$/i,
+  'da-DK': /^[A-ZÆØÅ]+$/i,
+  'de-DE': /^[A-ZÄÖÜß]+$/i,
+  'el-GR': /^[Α-ω]+$/i,
+  'es-ES': /^[A-ZÁÉÍÑÓÚÜ]+$/i,
+  'fr-FR': /^[A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ]+$/i,
+  'it-IT': /^[A-ZÀÉÈÌÎÓÒÙ]+$/i,
+  'nb-NO': /^[A-ZÆØÅ]+$/i,
+  'nl-NL': /^[A-ZÁÉËÏÓÖÜÚ]+$/i,
+  'nn-NO': /^[A-ZÆØÅ]+$/i,
+  'hu-HU': /^[A-ZÁÉÍÓÖŐÚÜŰ]+$/i,
+  'pl-PL': /^[A-ZĄĆĘŚŁŃÓŻŹ]+$/i,
+  'pt-PT': /^[A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ]+$/i,
+  'ru-RU': /^[А-ЯЁ]+$/i,
+  'sl-SI': /^[A-ZČĆĐŠŽ]+$/i,
+  'sk-SK': /^[A-ZÁČĎÉÍŇÓŠŤÚÝŽĹŔĽÄÔ]+$/i,
+  'sr-RS@latin': /^[A-ZČĆŽŠĐ]+$/i,
+  'sr-RS': /^[А-ЯЂЈЉЊЋЏ]+$/i,
+  'sv-SE': /^[A-ZÅÄÖ]+$/i,
+  'tr-TR': /^[A-ZÇĞİıÖŞÜ]+$/i,
+  'uk-UA': /^[А-ЩЬЮЯЄIЇҐі]+$/i,
+  'ku-IQ': /^[ئابپتجچحخدرڕزژسشعغفڤقکگلڵمنوۆھەیێيطؤثآإأكضصةظذ]+$/i,
+  ar: /^[ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ]+$/
+};
+exports.alpha = alpha;
+var alphanumeric = {
+  'en-US': /^[0-9A-Z]+$/i,
+  'bg-BG': /^[0-9А-Я]+$/i,
+  'cs-CZ': /^[0-9A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]+$/i,
+  'da-DK': /^[0-9A-ZÆØÅ]+$/i,
+  'de-DE': /^[0-9A-ZÄÖÜß]+$/i,
+  'el-GR': /^[0-9Α-ω]+$/i,
+  'es-ES': /^[0-9A-ZÁÉÍÑÓÚÜ]+$/i,
+  'fr-FR': /^[0-9A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ]+$/i,
+  'it-IT': /^[0-9A-ZÀÉÈÌÎÓÒÙ]+$/i,
+  'hu-HU': /^[0-9A-ZÁÉÍÓÖŐÚÜŰ]+$/i,
+  'nb-NO': /^[0-9A-ZÆØÅ]+$/i,
+  'nl-NL': /^[0-9A-ZÁÉËÏÓÖÜÚ]+$/i,
+  'nn-NO': /^[0-9A-ZÆØÅ]+$/i,
+  'pl-PL': /^[0-9A-ZĄĆĘŚŁŃÓŻŹ]+$/i,
+  'pt-PT': /^[0-9A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ]+$/i,
+  'ru-RU': /^[0-9А-ЯЁ]+$/i,
+  'sl-SI': /^[0-9A-ZČĆĐŠŽ]+$/i,
+  'sk-SK': /^[0-9A-ZÁČĎÉÍŇÓŠŤÚÝŽĹŔĽÄÔ]+$/i,
+  'sr-RS@latin': /^[0-9A-ZČĆŽŠĐ]+$/i,
+  'sr-RS': /^[0-9А-ЯЂЈЉЊЋЏ]+$/i,
+  'sv-SE': /^[0-9A-ZÅÄÖ]+$/i,
+  'tr-TR': /^[0-9A-ZÇĞİıÖŞÜ]+$/i,
+  'uk-UA': /^[0-9А-ЩЬЮЯЄIЇҐі]+$/i,
+  'ku-IQ': /^[٠١٢٣٤٥٦٧٨٩0-9ئابپتجچحخدرڕزژسشعغفڤقکگلڵمنوۆھەیێيطؤثآإأكضصةظذ]+$/i,
+  ar: /^[٠١٢٣٤٥٦٧٨٩0-9ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ]+$/
+};
+exports.alphanumeric = alphanumeric;
+var decimal = {
+  'en-US': '.',
+  ar: '٫'
+};
+exports.decimal = decimal;
+var englishLocales = ['AU', 'GB', 'HK', 'IN', 'NZ', 'ZA', 'ZM'];
+exports.englishLocales = englishLocales;
+
+for (var locale, i = 0; i < englishLocales.length; i++) {
+  locale = "en-".concat(englishLocales[i]);
+  alpha[locale] = alpha['en-US'];
+  alphanumeric[locale] = alphanumeric['en-US'];
+  decimal[locale] = decimal['en-US'];
+} // Source: http://www.localeplanet.com/java/
+
+
+var arabicLocales = ['AE', 'BH', 'DZ', 'EG', 'IQ', 'JO', 'KW', 'LB', 'LY', 'MA', 'QM', 'QA', 'SA', 'SD', 'SY', 'TN', 'YE'];
+exports.arabicLocales = arabicLocales;
+
+for (var _locale, _i = 0; _i < arabicLocales.length; _i++) {
+  _locale = "ar-".concat(arabicLocales[_i]);
+  alpha[_locale] = alpha.ar;
+  alphanumeric[_locale] = alphanumeric.ar;
+  decimal[_locale] = decimal.ar;
+} // Source: https://en.wikipedia.org/wiki/Decimal_mark
+
+
+var dotDecimal = ['ar-EG', 'ar-LB', 'ar-LY'];
+exports.dotDecimal = dotDecimal;
+var commaDecimal = ['bg-BG', 'cs-CZ', 'da-DK', 'de-DE', 'el-GR', 'en-ZM', 'es-ES', 'fr-FR', 'it-IT', 'ku-IQ', 'hu-HU', 'nb-NO', 'nn-NO', 'nl-NL', 'pl-PL', 'pt-PT', 'ru-RU', 'sl-SI', 'sr-RS@latin', 'sr-RS', 'sv-SE', 'tr-TR', 'uk-UA'];
+exports.commaDecimal = commaDecimal;
+
+for (var _i2 = 0; _i2 < dotDecimal.length; _i2++) {
+  decimal[dotDecimal[_i2]] = decimal['en-US'];
+}
+
+for (var _i3 = 0; _i3 < commaDecimal.length; _i3++) {
+  decimal[commaDecimal[_i3]] = ',';
+}
+
+alpha['pt-BR'] = alpha['pt-PT'];
+alphanumeric['pt-BR'] = alphanumeric['pt-PT'];
+decimal['pt-BR'] = decimal['pt-PT']; // see #862
+
+alpha['pl-Pl'] = alpha['pl-PL'];
+alphanumeric['pl-Pl'] = alphanumeric['pl-PL'];
+decimal['pl-Pl'] = decimal['pl-PL'];
+},{}],"EJdN":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isAlpha;
+exports.locales = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _alpha = require("./alpha");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isAlpha(str) {
+  var locale = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'en-US';
+  (0, _assertString.default)(str);
+
+  if (locale in _alpha.alpha) {
+    return _alpha.alpha[locale].test(str);
+  }
+
+  throw new Error("Invalid locale '".concat(locale, "'"));
+}
+
+var locales = Object.keys(_alpha.alpha);
+exports.locales = locales;
+},{"./util/assertString":"QMaW","./alpha":"uNDA"}],"QaMP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isAlphanumeric;
+exports.locales = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _alpha = require("./alpha");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isAlphanumeric(str) {
+  var locale = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'en-US';
+  (0, _assertString.default)(str);
+
+  if (locale in _alpha.alphanumeric) {
+    return _alpha.alphanumeric[locale].test(str);
+  }
+
+  throw new Error("Invalid locale '".concat(locale, "'"));
+}
+
+var locales = Object.keys(_alpha.alphanumeric);
+exports.locales = locales;
+},{"./util/assertString":"QMaW","./alpha":"uNDA"}],"6ESc":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isNumeric;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var numeric = /^[+-]?([0-9]*[.])?[0-9]+$/;
+var numericNoSymbols = /^[0-9]+$/;
+
+function isNumeric(str, options) {
+  (0, _assertString.default)(str);
+
+  if (options && options.no_symbols) {
+    return numericNoSymbols.test(str);
+  }
+
+  return numeric.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"yJuz":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isInt;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var int = /^(?:[-+]?(?:0|[1-9][0-9]*))$/;
+var intLeadingZeroes = /^[-+]?[0-9]+$/;
+
+function isInt(str, options) {
+  (0, _assertString.default)(str);
+  options = options || {}; // Get the regex to use for testing, based on whether
+  // leading zeroes are allowed or not.
+
+  var regex = options.hasOwnProperty('allow_leading_zeroes') && !options.allow_leading_zeroes ? int : intLeadingZeroes; // Check min/max/lt/gt
+
+  var minCheckPassed = !options.hasOwnProperty('min') || str >= options.min;
+  var maxCheckPassed = !options.hasOwnProperty('max') || str <= options.max;
+  var ltCheckPassed = !options.hasOwnProperty('lt') || str < options.lt;
+  var gtCheckPassed = !options.hasOwnProperty('gt') || str > options.gt;
+  return regex.test(str) && minCheckPassed && maxCheckPassed && ltCheckPassed && gtCheckPassed;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"TljE":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isPort;
+
+var _isInt = _interopRequireDefault(require("./isInt"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isPort(str) {
+  return (0, _isInt.default)(str, {
+    min: 0,
+    max: 65535
+  });
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./isInt":"yJuz"}],"T1FC":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isLowercase;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isLowercase(str) {
+  (0, _assertString.default)(str);
+  return str === str.toLowerCase();
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"Ubgl":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isUppercase;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isUppercase(str) {
+  (0, _assertString.default)(str);
+  return str === str.toUpperCase();
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"KFyf":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isAscii;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* eslint-disable no-control-regex */
+
+
+var ascii = /^[\x00-\x7F]+$/;
+/* eslint-enable no-control-regex */
+
+function isAscii(str) {
+  (0, _assertString.default)(str);
+  return ascii.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"4wfV":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isFullWidth;
+exports.fullWidth = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var fullWidth = /[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]/;
+exports.fullWidth = fullWidth;
+
+function isFullWidth(str) {
+  (0, _assertString.default)(str);
+  return fullWidth.test(str);
+}
+},{"./util/assertString":"QMaW"}],"ZAg4":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isHalfWidth;
+exports.halfWidth = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var halfWidth = /[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]/;
+exports.halfWidth = halfWidth;
+
+function isHalfWidth(str) {
+  (0, _assertString.default)(str);
+  return halfWidth.test(str);
+}
+},{"./util/assertString":"QMaW"}],"GsBI":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isVariableWidth;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _isFullWidth = require("./isFullWidth");
+
+var _isHalfWidth = require("./isHalfWidth");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isVariableWidth(str) {
+  (0, _assertString.default)(str);
+  return _isFullWidth.fullWidth.test(str) && _isHalfWidth.halfWidth.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./isFullWidth":"4wfV","./isHalfWidth":"ZAg4"}],"Ej/r":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMultibyte;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* eslint-disable no-control-regex */
+
+
+var multibyte = /[^\x00-\x7F]/;
+/* eslint-enable no-control-regex */
+
+function isMultibyte(str) {
+  (0, _assertString.default)(str);
+  return multibyte.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"E4Q5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isSurrogatePair;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var surrogatePair = /[\uD800-\uDBFF][\uDC00-\uDFFF]/;
+
+function isSurrogatePair(str) {
+  (0, _assertString.default)(str);
+  return surrogatePair.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"DuYM":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isFloat;
+exports.locales = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _alpha = require("./alpha");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isFloat(str, options) {
+  (0, _assertString.default)(str);
+  options = options || {};
+  var float = new RegExp("^(?:[-+])?(?:[0-9]+)?(?:\\".concat(options.locale ? _alpha.decimal[options.locale] : '.', "[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$"));
+
+  if (str === '' || str === '.' || str === '-' || str === '+') {
+    return false;
+  }
+
+  var value = parseFloat(str.replace(',', '.'));
+  return float.test(str) && (!options.hasOwnProperty('min') || value >= options.min) && (!options.hasOwnProperty('max') || value <= options.max) && (!options.hasOwnProperty('lt') || value < options.lt) && (!options.hasOwnProperty('gt') || value > options.gt);
+}
+
+var locales = Object.keys(_alpha.decimal);
+exports.locales = locales;
+},{"./util/assertString":"QMaW","./alpha":"uNDA"}],"QqH7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var includes = function includes(arr, val) {
+  return arr.some(function (arrVal) {
+    return val === arrVal;
+  });
+};
+
+var _default = includes;
+exports.default = _default;
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{}],"3CF6":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isDecimal;
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _includes = _interopRequireDefault(require("./util/includes"));
+
+var _alpha = require("./alpha");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function decimalRegExp(options) {
+  var regExp = new RegExp("^[-+]?([0-9]+)?(\\".concat(_alpha.decimal[options.locale], "[0-9]{").concat(options.decimal_digits, "})").concat(options.force_decimal ? '' : '?', "$"));
+  return regExp;
+}
+
+var default_decimal_options = {
+  force_decimal: false,
+  decimal_digits: '1,',
+  locale: 'en-US'
+};
+var blacklist = ['', '-', '+'];
+
+function isDecimal(str, options) {
+  (0, _assertString.default)(str);
+  options = (0, _merge.default)(options, default_decimal_options);
+
+  if (options.locale in _alpha.decimal) {
+    return !(0, _includes.default)(blacklist, str.replace(/ /g, '')) && decimalRegExp(options).test(str);
+  }
+
+  throw new Error("Invalid locale '".concat(options.locale, "'"));
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/merge":"d6UF","./util/assertString":"QMaW","./util/includes":"QqH7","./alpha":"uNDA"}],"JwiM":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isHexadecimal;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var hexadecimal = /^[0-9A-F]+$/i;
+
+function isHexadecimal(str) {
+  (0, _assertString.default)(str);
+  return hexadecimal.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"bzOQ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isDivisibleBy;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _toFloat = _interopRequireDefault(require("./toFloat"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isDivisibleBy(str, num) {
+  (0, _assertString.default)(str);
+  return (0, _toFloat.default)(str) % parseInt(num, 10) === 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./toFloat":"qMz2"}],"Tl8x":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isHexColor;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var hexcolor = /^#?([0-9A-F]{3}|[0-9A-F]{6})$/i;
+
+function isHexColor(str) {
+  (0, _assertString.default)(str);
+  return hexcolor.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"ueUj":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISRC;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+} // see http://isrc.ifpi.org/en/isrc-standard/code-syntax
+
+
+var isrc = /^[A-Z]{2}[0-9A-Z]{3}\d{2}\d{5}$/;
+
+function isISRC(str) {
+  (0, _assertString.default)(str);
+  return isrc.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"oZX3":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMD5;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var md5 = /^[a-f0-9]{32}$/;
+
+function isMD5(str) {
+  (0, _assertString.default)(str);
+  return md5.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"DHJt":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isHash;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var lengths = {
+  md5: 32,
+  md4: 32,
+  sha1: 40,
+  sha256: 64,
+  sha384: 96,
+  sha512: 128,
+  ripemd128: 32,
+  ripemd160: 40,
+  tiger128: 32,
+  tiger160: 40,
+  tiger192: 48,
+  crc32: 8,
+  crc32b: 8
+};
+
+function isHash(str, algorithm) {
+  (0, _assertString.default)(str);
+  var hash = new RegExp("^[a-f0-9]{".concat(lengths[algorithm], "}$"));
+  return hash.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"YBiP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isJWT;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var jwt = /^([A-Za-z0-9\-_~+\/]+[=]{0,2})\.([A-Za-z0-9\-_~+\/]+[=]{0,2})(?:\.([A-Za-z0-9\-_~+\/]+[=]{0,2}))?$/;
+
+function isJWT(str) {
+  (0, _assertString.default)(str);
+  return jwt.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"15iJ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isJSON;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function isJSON(str) {
+  (0, _assertString.default)(str);
+
+  try {
+    var obj = JSON.parse(str);
+    return !!obj && _typeof(obj) === 'object';
+  } catch (e) {
+    /* ignore */
+  }
+
+  return false;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"dSFb":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isEmpty;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var default_is_empty_options = {
+  ignore_whitespace: false
+};
+
+function isEmpty(str, options) {
+  (0, _assertString.default)(str);
+  options = (0, _merge.default)(options, default_is_empty_options);
+  return (options.ignore_whitespace ? str.trim().length : str.length) === 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/merge":"d6UF"}],"Ve45":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isLength;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+/* eslint-disable prefer-rest-params */
+
+
+function isLength(str, options) {
+  (0, _assertString.default)(str);
+  var min;
+  var max;
+
+  if (_typeof(options) === 'object') {
+    min = options.min || 0;
+    max = options.max;
+  } else {
+    // backwards compatibility: isLength(str, min [, max])
+    min = arguments[1];
+    max = arguments[2];
+  }
+
+  var surrogatePairs = str.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g) || [];
+  var len = str.length - surrogatePairs.length;
+  return len >= min && (typeof max === 'undefined' || len <= max);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"lffP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isUUID;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var uuid = {
+  3: /^[0-9A-F]{8}-[0-9A-F]{4}-3[0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i,
+  4: /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
+  5: /^[0-9A-F]{8}-[0-9A-F]{4}-5[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
+  all: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
+};
+
+function isUUID(str) {
+  var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'all';
+  (0, _assertString.default)(str);
+  var pattern = uuid[version];
+  return pattern && pattern.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"iVju":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMongoId;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _isHexadecimal = _interopRequireDefault(require("./isHexadecimal"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isMongoId(str) {
+  (0, _assertString.default)(str);
+  return (0, _isHexadecimal.default)(str) && str.length === 24;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./isHexadecimal":"JwiM"}],"SDfY":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isAfter;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _toDate = _interopRequireDefault(require("./toDate"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isAfter(str) {
+  var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String(new Date());
+  (0, _assertString.default)(str);
+  var comparison = (0, _toDate.default)(date);
+  var original = (0, _toDate.default)(str);
+  return !!(original && comparison && original > comparison);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./toDate":"rSuR"}],"gYzw":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isBefore;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _toDate = _interopRequireDefault(require("./toDate"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isBefore(str) {
+  var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String(new Date());
+  (0, _assertString.default)(str);
+  var comparison = (0, _toDate.default)(date);
+  var original = (0, _toDate.default)(str);
+  return !!(original && comparison && original < comparison);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./toDate":"rSuR"}],"Ujjq":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isIn;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _toString = _interopRequireDefault(require("./util/toString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function isIn(str, options) {
+  (0, _assertString.default)(str);
+  var i;
+
+  if (Object.prototype.toString.call(options) === '[object Array]') {
+    var array = [];
+
+    for (i in options) {
+      // https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md#ignoring-code-for-coverage-purposes
+      // istanbul ignore else
+      if ({}.hasOwnProperty.call(options, i)) {
+        array[i] = (0, _toString.default)(options[i]);
+      }
+    }
+
+    return array.indexOf(str) >= 0;
+  } else if (_typeof(options) === 'object') {
+    return options.hasOwnProperty(str);
+  } else if (options && typeof options.indexOf === 'function') {
+    return options.indexOf(str) >= 0;
+  }
+
+  return false;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/toString":"RZcC"}],"RRcm":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isCreditCard;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* eslint-disable max-len */
+
+
+var creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11}|6[27][0-9]{14})$/;
+/* eslint-enable max-len */
+
+function isCreditCard(str) {
+  (0, _assertString.default)(str);
+  var sanitized = str.replace(/[- ]+/g, '');
+
+  if (!creditCard.test(sanitized)) {
+    return false;
+  }
+
+  var sum = 0;
+  var digit;
+  var tmpNum;
+  var shouldDouble;
+
+  for (var i = sanitized.length - 1; i >= 0; i--) {
+    digit = sanitized.substring(i, i + 1);
+    tmpNum = parseInt(digit, 10);
+
+    if (shouldDouble) {
+      tmpNum *= 2;
+
+      if (tmpNum >= 10) {
+        sum += tmpNum % 10 + 1;
+      } else {
+        sum += tmpNum;
+      }
+    } else {
+      sum += tmpNum;
+    }
+
+    shouldDouble = !shouldDouble;
+  }
+
+  return !!(sum % 10 === 0 ? sanitized : false);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"7rCo":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isIdentityCard;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var validators = {
+  ES: function ES(str) {
+    (0, _assertString.default)(str);
+    var DNI = /^[0-9X-Z][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+    var charsValue = {
+      X: 0,
+      Y: 1,
+      Z: 2
+    };
+    var controlDigits = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E']; // sanitize user input
+
+    var sanitized = str.trim().toUpperCase(); // validate the data structure
+
+    if (!DNI.test(sanitized)) {
+      return false;
+    } // validate the control digit
+
+
+    var number = sanitized.slice(0, -1).replace(/[X,Y,Z]/g, function (char) {
+      return charsValue[char];
+    });
+    return sanitized.endsWith(controlDigits[number % 23]);
+  },
+  'he-IL': function heIL(str) {
+    var DNI = /^\d{9}$/; // sanitize user input
+
+    var sanitized = str.trim(); // validate the data structure
+
+    if (!DNI.test(sanitized)) {
+      return false;
+    }
+
+    var id = sanitized;
+    var sum = 0,
+        incNum;
+
+    for (var i = 0; i < id.length; i++) {
+      incNum = Number(id[i]) * (i % 2 + 1); // Multiply number by 1 or 2
+
+      sum += incNum > 9 ? incNum - 9 : incNum; // Sum the digits up and add to total
+    }
+
+    return sum % 10 === 0;
+  },
+  'zh-TW': function zhTW(str) {
+    var ALPHABET_CODES = {
+      A: 10,
+      B: 11,
+      C: 12,
+      D: 13,
+      E: 14,
+      F: 15,
+      G: 16,
+      H: 17,
+      I: 34,
+      J: 18,
+      K: 19,
+      L: 20,
+      M: 21,
+      N: 22,
+      O: 35,
+      P: 23,
+      Q: 24,
+      R: 25,
+      S: 26,
+      T: 27,
+      U: 28,
+      V: 29,
+      W: 32,
+      X: 30,
+      Y: 31,
+      Z: 33
+    };
+    var sanitized = str.trim().toUpperCase();
+    if (!/^[A-Z][0-9]{9}$/.test(sanitized)) return false;
+    return Array.from(sanitized).reduce(function (sum, number, index) {
+      if (index === 0) {
+        var code = ALPHABET_CODES[number];
+        return code % 10 * 9 + Math.floor(code / 10);
+      }
+
+      if (index === 9) {
+        return (10 - sum % 10 - Number(number)) % 10 === 0;
+      }
+
+      return sum + Number(number) * (9 - index);
+    }, 0);
+  }
+};
+
+function isIdentityCard(str, locale) {
+  (0, _assertString.default)(str);
+
+  if (locale in validators) {
+    return validators[locale](str);
+  } else if (locale === 'any') {
+    for (var key in validators) {
+      // https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md#ignoring-code-for-coverage-purposes
+      // istanbul ignore else
+      if (validators.hasOwnProperty(key)) {
+        var validator = validators[key];
+
+        if (validator(str)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  throw new Error("Invalid locale '".concat(locale, "'"));
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"ARCT":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISIN;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var isin = /^[A-Z]{2}[0-9A-Z]{9}[0-9]$/;
+
+function isISIN(str) {
+  (0, _assertString.default)(str);
+
+  if (!isin.test(str)) {
+    return false;
+  }
+
+  var checksumStr = str.replace(/[A-Z]/g, function (character) {
+    return parseInt(character, 36);
+  });
+  var sum = 0;
+  var digit;
+  var tmpNum;
+  var shouldDouble = true;
+
+  for (var i = checksumStr.length - 2; i >= 0; i--) {
+    digit = checksumStr.substring(i, i + 1);
+    tmpNum = parseInt(digit, 10);
+
+    if (shouldDouble) {
+      tmpNum *= 2;
+
+      if (tmpNum >= 10) {
+        sum += tmpNum + 1;
+      } else {
+        sum += tmpNum;
+      }
+    } else {
+      sum += tmpNum;
+    }
+
+    shouldDouble = !shouldDouble;
+  }
+
+  return parseInt(str.substr(str.length - 1), 10) === (10000 - sum) % 10;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"p8Rf":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISBN;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var isbn10Maybe = /^(?:[0-9]{9}X|[0-9]{10})$/;
+var isbn13Maybe = /^(?:[0-9]{13})$/;
+var factor = [1, 3];
+
+function isISBN(str) {
+  var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  (0, _assertString.default)(str);
+  version = String(version);
+
+  if (!version) {
+    return isISBN(str, 10) || isISBN(str, 13);
+  }
+
+  var sanitized = str.replace(/[\s-]+/g, '');
+  var checksum = 0;
+  var i;
+
+  if (version === '10') {
+    if (!isbn10Maybe.test(sanitized)) {
+      return false;
+    }
+
+    for (i = 0; i < 9; i++) {
+      checksum += (i + 1) * sanitized.charAt(i);
+    }
+
+    if (sanitized.charAt(9) === 'X') {
+      checksum += 10 * 10;
+    } else {
+      checksum += 10 * sanitized.charAt(9);
+    }
+
+    if (checksum % 11 === 0) {
+      return !!sanitized;
+    }
+  } else if (version === '13') {
+    if (!isbn13Maybe.test(sanitized)) {
+      return false;
+    }
+
+    for (i = 0; i < 12; i++) {
+      checksum += factor[i % 2] * sanitized.charAt(i);
+    }
+
+    if (sanitized.charAt(12) - (10 - checksum % 10) % 10 === 0) {
+      return !!sanitized;
+    }
+  }
+
+  return false;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"WNF1":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISSN;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var issn = '^\\d{4}-?\\d{3}[\\dX]$';
+
+function isISSN(str) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  (0, _assertString.default)(str);
+  var testIssn = issn;
+  testIssn = options.require_hyphen ? testIssn.replace('?', '') : testIssn;
+  testIssn = options.case_sensitive ? new RegExp(testIssn) : new RegExp(testIssn, 'i');
+
+  if (!testIssn.test(str)) {
+    return false;
+  }
+
+  var digits = str.replace('-', '').toUpperCase();
+  var checksum = 0;
+
+  for (var i = 0; i < digits.length; i++) {
+    var digit = digits[i];
+    checksum += (digit === 'X' ? 10 : +digit) * (8 - i);
+  }
+
+  return checksum % 11 === 0;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"HEYP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMobilePhone;
+exports.locales = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* eslint-disable max-len */
+
+
+var phones = {
+  'ar-AE': /^((\+?971)|0)?5[024568]\d{7}$/,
+  'ar-BH': /^(\+?973)?(3|6)\d{7}$/,
+  'ar-DZ': /^(\+?213|0)(5|6|7)\d{8}$/,
+  'ar-EG': /^((\+?20)|0)?1[0125]\d{8}$/,
+  'ar-IQ': /^(\+?964|0)?7[0-9]\d{8}$/,
+  'ar-JO': /^(\+?962|0)?7[789]\d{7}$/,
+  'ar-KW': /^(\+?965)[569]\d{7}$/,
+  'ar-SA': /^(!?(\+?966)|0)?5\d{8}$/,
+  'ar-SY': /^(!?(\+?963)|0)?9\d{8}$/,
+  'ar-TN': /^(\+?216)?[2459]\d{7}$/,
+  'be-BY': /^(\+?375)?(24|25|29|33|44)\d{7}$/,
+  'bg-BG': /^(\+?359|0)?8[789]\d{7}$/,
+  'bn-BD': /^(\+?880|0)1[1356789][0-9]{8}$/,
+  'cs-CZ': /^(\+?420)? ?[1-9][0-9]{2} ?[0-9]{3} ?[0-9]{3}$/,
+  'da-DK': /^(\+?45)?\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/,
+  'de-DE': /^(\+49)?0?1(5[0-25-9]\d|6([23]|0\d?)|7([0-57-9]|6\d))\d{7}$/,
+  'el-GR': /^(\+?30|0)?(69\d{8})$/,
+  'en-AU': /^(\+?61|0)4\d{8}$/,
+  'en-GB': /^(\+?44|0)7\d{9}$/,
+  'en-GH': /^(\+233|0)(20|50|24|54|27|57|26|56|23|28)\d{7}$/,
+  'en-HK': /^(\+?852\-?)?[456789]\d{3}\-?\d{4}$/,
+  'en-IE': /^(\+?353|0)8[356789]\d{7}$/,
+  'en-IN': /^(\+?91|0)?[6789]\d{9}$/,
+  'en-KE': /^(\+?254|0)(7|1)\d{8}$/,
+  'en-MT': /^(\+?356|0)?(99|79|77|21|27|22|25)[0-9]{6}$/,
+  'en-MU': /^(\+?230|0)?\d{8}$/,
+  'en-NG': /^(\+?234|0)?[789]\d{9}$/,
+  'en-NZ': /^(\+?64|0)[28]\d{7,9}$/,
+  'en-PK': /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/,
+  'en-RW': /^(\+?250|0)?[7]\d{8}$/,
+  'en-SG': /^(\+65)?[89]\d{7}$/,
+  'en-TZ': /^(\+?255|0)?[67]\d{8}$/,
+  'en-UG': /^(\+?256|0)?[7]\d{8}$/,
+  'en-US': /^((\+1|1)?( |-)?)?(\([2-9][0-9]{2}\)|[2-9][0-9]{2})( |-)?([2-9][0-9]{2}( |-)?[0-9]{4})$/,
+  'en-ZA': /^(\+?27|0)\d{9}$/,
+  'en-ZM': /^(\+?26)?09[567]\d{7}$/,
+  'es-CL': /^(\+?56|0)[2-9]\d{1}\d{7}$/,
+  'es-ES': /^(\+?34)?(6\d{1}|7[1234])\d{7}$/,
+  'es-MX': /^(\+?52)?(1|01)?\d{10,11}$/,
+  'es-PY': /^(\+?595|0)9[9876]\d{7}$/,
+  'es-UY': /^(\+598|0)9[1-9][\d]{6}$/,
+  'et-EE': /^(\+?372)?\s?(5|8[1-4])\s?([0-9]\s?){6,7}$/,
+  'fa-IR': /^(\+?98[\-\s]?|0)9[0-39]\d[\-\s]?\d{3}[\-\s]?\d{4}$/,
+  'fi-FI': /^(\+?358|0)\s?(4(0|1|2|4|5|6)?|50)\s?(\d\s?){4,8}\d$/,
+  'fj-FJ': /^(\+?679)?\s?\d{3}\s?\d{4}$/,
+  'fo-FO': /^(\+?298)?\s?\d{2}\s?\d{2}\s?\d{2}$/,
+  'fr-FR': /^(\+?33|0)[67]\d{8}$/,
+  'he-IL': /^(\+972|0)([23489]|5[012345689]|77)[1-9]\d{6}$/,
+  'hu-HU': /^(\+?36)(20|30|70)\d{7}$/,
+  'id-ID': /^(\+?62|0)8(1[123456789]|2[1238]|3[1238]|5[12356789]|7[78]|9[56789]|8[123456789])([\s?|\d]{5,11})$/,
+  'it-IT': /^(\+?39)?\s?3\d{2} ?\d{6,7}$/,
+  'ja-JP': /^(\+?81|0)[789]0[ \-]?[1-9]\d{2}[ \-]?\d{5}$/,
+  'kk-KZ': /^(\+?7|8)?7\d{9}$/,
+  'kl-GL': /^(\+?299)?\s?\d{2}\s?\d{2}\s?\d{2}$/,
+  'ko-KR': /^((\+?82)[ \-]?)?0?1([0|1|6|7|8|9]{1})[ \-]?\d{3,4}[ \-]?\d{4}$/,
+  'lt-LT': /^(\+370|8)\d{8}$/,
+  'ms-MY': /^(\+?6?01){1}(([0145]{1}(\-|\s)?\d{7,8})|([236789]{1}(\s|\-)?\d{7}))$/,
+  'nb-NO': /^(\+?47)?[49]\d{7}$/,
+  'nl-BE': /^(\+?32|0)4?\d{8}$/,
+  'nl-NL': /^(\+?31|0)6?\d{8}$/,
+  'nn-NO': /^(\+?47)?[49]\d{7}$/,
+  'pl-PL': /^(\+?48)? ?[5-8]\d ?\d{3} ?\d{2} ?\d{2}$/,
+  'pt-BR': /(?=^(\+?5{2}\-?|0)[1-9]{2}\-?\d{4}\-?\d{4}$)(^(\+?5{2}\-?|0)[1-9]{2}\-?[6-9]{1}\d{3}\-?\d{4}$)|(^(\+?5{2}\-?|0)[1-9]{2}\-?9[6-9]{1}\d{3}\-?\d{4}$)/,
+  'pt-PT': /^(\+?351)?9[1236]\d{7}$/,
+  'ro-RO': /^(\+?4?0)\s?7\d{2}(\/|\s|\.|\-)?\d{3}(\s|\.|\-)?\d{3}$/,
+  'ru-RU': /^(\+?7|8)?9\d{9}$/,
+  'sl-SI': /^(\+386\s?|0)(\d{1}\s?\d{3}\s?\d{2}\s?\d{2}|\d{2}\s?\d{3}\s?\d{3})$/,
+  'sk-SK': /^(\+?421)? ?[1-9][0-9]{2} ?[0-9]{3} ?[0-9]{3}$/,
+  'sr-RS': /^(\+3816|06)[- \d]{5,9}$/,
+  'sv-SE': /^(\+?46|0)[\s\-]?7[\s\-]?[02369]([\s\-]?\d){7}$/,
+  'th-TH': /^(\+66|66|0)\d{9}$/,
+  'tr-TR': /^(\+?90|0)?5\d{9}$/,
+  'uk-UA': /^(\+?38|8)?0\d{9}$/,
+  'vi-VN': /^(\+?84|0)((3([2-9]))|(5([2689]))|(7([0|6-9]))|(8([1-6|89]))|(9([0-9])))([0-9]{7})$/,
+  'zh-CN': /^((\+|00)86)?1([358][0-9]|4[579]|6[67]|7[0135678]|9[189])[0-9]{8}$/,
+  'zh-TW': /^(\+?886\-?|0)?9\d{8}$/
+};
+/* eslint-enable max-len */
+// aliases
+
+phones['en-CA'] = phones['en-US'];
+phones['fr-BE'] = phones['nl-BE'];
+phones['zh-HK'] = phones['en-HK'];
+
+function isMobilePhone(str, locale, options) {
+  (0, _assertString.default)(str);
+
+  if (options && options.strictMode && !str.startsWith('+')) {
+    return false;
+  }
+
+  if (Array.isArray(locale)) {
+    return locale.some(function (key) {
+      // https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md#ignoring-code-for-coverage-purposes
+      // istanbul ignore else
+      if (phones.hasOwnProperty(key)) {
+        var phone = phones[key];
+
+        if (phone.test(str)) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+  } else if (locale in phones) {
+    return phones[locale].test(str); // alias falsey locale as 'any'
+  } else if (!locale || locale === 'any') {
+    for (var key in phones) {
+      // istanbul ignore else
+      if (phones.hasOwnProperty(key)) {
+        var phone = phones[key];
+
+        if (phone.test(str)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  throw new Error("Invalid locale '".concat(locale, "'"));
+}
+
+var locales = Object.keys(phones);
+exports.locales = locales;
+},{"./util/assertString":"QMaW"}],"FcpF":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isCurrency;
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function currencyRegex(options) {
+  var decimal_digits = "\\d{".concat(options.digits_after_decimal[0], "}");
+  options.digits_after_decimal.forEach(function (digit, index) {
+    if (index !== 0) decimal_digits = "".concat(decimal_digits, "|\\d{").concat(digit, "}");
+  });
+  var symbol = "(\\".concat(options.symbol.replace(/\./g, '\\.'), ")").concat(options.require_symbol ? '' : '?'),
+      negative = '-?',
+      whole_dollar_amount_without_sep = '[1-9]\\d*',
+      whole_dollar_amount_with_sep = "[1-9]\\d{0,2}(\\".concat(options.thousands_separator, "\\d{3})*"),
+      valid_whole_dollar_amounts = ['0', whole_dollar_amount_without_sep, whole_dollar_amount_with_sep],
+      whole_dollar_amount = "(".concat(valid_whole_dollar_amounts.join('|'), ")?"),
+      decimal_amount = "(\\".concat(options.decimal_separator, "(").concat(decimal_digits, "))").concat(options.require_decimal ? '' : '?');
+  var pattern = whole_dollar_amount + (options.allow_decimal || options.require_decimal ? decimal_amount : ''); // default is negative sign before symbol, but there are two other options (besides parens)
+
+  if (options.allow_negatives && !options.parens_for_negatives) {
+    if (options.negative_sign_after_digits) {
+      pattern += negative;
+    } else if (options.negative_sign_before_digits) {
+      pattern = negative + pattern;
+    }
+  } // South African Rand, for example, uses R 123 (space) and R-123 (no space)
+
+
+  if (options.allow_negative_sign_placeholder) {
+    pattern = "( (?!\\-))?".concat(pattern);
+  } else if (options.allow_space_after_symbol) {
+    pattern = " ?".concat(pattern);
+  } else if (options.allow_space_after_digits) {
+    pattern += '( (?!$))?';
+  }
+
+  if (options.symbol_after_digits) {
+    pattern += symbol;
+  } else {
+    pattern = symbol + pattern;
+  }
+
+  if (options.allow_negatives) {
+    if (options.parens_for_negatives) {
+      pattern = "(\\(".concat(pattern, "\\)|").concat(pattern, ")");
+    } else if (!(options.negative_sign_before_digits || options.negative_sign_after_digits)) {
+      pattern = negative + pattern;
+    }
+  } // ensure there's a dollar and/or decimal amount, and that
+  // it doesn't start with a space or a negative sign followed by a space
+
+
+  return new RegExp("^(?!-? )(?=.*\\d)".concat(pattern, "$"));
+}
+
+var default_currency_options = {
+  symbol: '$',
+  require_symbol: false,
+  allow_space_after_symbol: false,
+  symbol_after_digits: false,
+  allow_negatives: true,
+  parens_for_negatives: false,
+  negative_sign_before_digits: false,
+  negative_sign_after_digits: false,
+  allow_negative_sign_placeholder: false,
+  thousands_separator: ',',
+  decimal_separator: '.',
+  allow_decimal: true,
+  require_decimal: false,
+  digits_after_decimal: [2],
+  allow_space_after_digits: false
+};
+
+function isCurrency(str, options) {
+  (0, _assertString.default)(str);
+  options = (0, _merge.default)(options, default_currency_options);
+  return currencyRegex(options).test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/merge":"d6UF","./util/assertString":"QMaW"}],"vN5U":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISO8601;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* eslint-disable max-len */
+// from http://goo.gl/0ejHHW
+
+
+var iso8601 = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-3])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+/* eslint-enable max-len */
+
+var isValidDate = function isValidDate(str) {
+  // str must have passed the ISO8601 check
+  // this check is meant to catch invalid dates
+  // like 2009-02-31
+  // first check for ordinal dates
+  var ordinalMatch = str.match(/^(\d{4})-?(\d{3})([ T]{1}\.*|$)/);
+
+  if (ordinalMatch) {
+    var oYear = Number(ordinalMatch[1]);
+    var oDay = Number(ordinalMatch[2]); // if is leap year
+
+    if (oYear % 4 === 0 && oYear % 100 !== 0 || oYear % 400 === 0) return oDay <= 366;
+    return oDay <= 365;
+  }
+
+  var match = str.match(/(\d{4})-?(\d{0,2})-?(\d*)/).map(Number);
+  var year = match[1];
+  var month = match[2];
+  var day = match[3];
+  var monthString = month ? "0".concat(month).slice(-2) : month;
+  var dayString = day ? "0".concat(day).slice(-2) : day; // create a date object and compare
+
+  var d = new Date("".concat(year, "-").concat(monthString || '01', "-").concat(dayString || '01'));
+
+  if (month && day) {
+    return d.getUTCFullYear() === year && d.getUTCMonth() + 1 === month && d.getUTCDate() === day;
+  }
+
+  return true;
+};
+
+function isISO8601(str, options) {
+  (0, _assertString.default)(str);
+  var check = iso8601.test(str);
+  if (!options) return check;
+  if (check && options.strict) return isValidDate(str);
+  return check;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"cG9o":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isRFC3339;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/* Based on https://tools.ietf.org/html/rfc3339#section-5.6 */
+
+
+var dateFullYear = /[0-9]{4}/;
+var dateMonth = /(0[1-9]|1[0-2])/;
+var dateMDay = /([12]\d|0[1-9]|3[01])/;
+var timeHour = /([01][0-9]|2[0-3])/;
+var timeMinute = /[0-5][0-9]/;
+var timeSecond = /([0-5][0-9]|60)/;
+var timeSecFrac = /(\.[0-9]+)?/;
+var timeNumOffset = new RegExp("[-+]".concat(timeHour.source, ":").concat(timeMinute.source));
+var timeOffset = new RegExp("([zZ]|".concat(timeNumOffset.source, ")"));
+var partialTime = new RegExp("".concat(timeHour.source, ":").concat(timeMinute.source, ":").concat(timeSecond.source).concat(timeSecFrac.source));
+var fullDate = new RegExp("".concat(dateFullYear.source, "-").concat(dateMonth.source, "-").concat(dateMDay.source));
+var fullTime = new RegExp("".concat(partialTime.source).concat(timeOffset.source));
+var rfc3339 = new RegExp("".concat(fullDate.source, "[ tT]").concat(fullTime.source));
+
+function isRFC3339(str) {
+  (0, _assertString.default)(str);
+  return rfc3339.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"S8GP":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISO31661Alpha2;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _includes = _interopRequireDefault(require("./util/includes"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+} // from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+
+
+var validISO31661Alpha2CountriesCodes = ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW'];
+
+function isISO31661Alpha2(str) {
+  (0, _assertString.default)(str);
+  return (0, _includes.default)(validISO31661Alpha2CountriesCodes, str.toUpperCase());
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/includes":"QqH7"}],"WK24":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isISO31661Alpha3;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _includes = _interopRequireDefault(require("./util/includes"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+} // from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+
+
+var validISO31661Alpha3CountriesCodes = ['AFG', 'ALA', 'ALB', 'DZA', 'ASM', 'AND', 'AGO', 'AIA', 'ATA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BMU', 'BTN', 'BOL', 'BES', 'BIH', 'BWA', 'BVT', 'BRA', 'IOT', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CYM', 'CAF', 'TCD', 'CHL', 'CHN', 'CXR', 'CCK', 'COL', 'COM', 'COG', 'COD', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'ETH', 'FLK', 'FRO', 'FJI', 'FIN', 'FRA', 'GUF', 'PYF', 'ATF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GIB', 'GRC', 'GRL', 'GRD', 'GLP', 'GUM', 'GTM', 'GGY', 'GIN', 'GNB', 'GUY', 'HTI', 'HMD', 'VAT', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'IMN', 'ISR', 'ITA', 'JAM', 'JPN', 'JEY', 'JOR', 'KAZ', 'KEN', 'KIR', 'PRK', 'KOR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LIE', 'LTU', 'LUX', 'MAC', 'MKD', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MSR', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'NFK', 'MNP', 'NOR', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'PCN', 'POL', 'PRT', 'PRI', 'QAT', 'REU', 'ROU', 'RUS', 'RWA', 'BLM', 'SHN', 'KNA', 'LCA', 'MAF', 'SPM', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SXM', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'SGS', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'SJM', 'SWZ', 'SWE', 'CHE', 'SYR', 'TWN', 'TJK', 'TZA', 'THA', 'TLS', 'TGO', 'TKL', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TCA', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UMI', 'URY', 'UZB', 'VUT', 'VEN', 'VNM', 'VGB', 'VIR', 'WLF', 'ESH', 'YEM', 'ZMB', 'ZWE'];
+
+function isISO31661Alpha3(str) {
+  (0, _assertString.default)(str);
+  return (0, _includes.default)(validISO31661Alpha3CountriesCodes, str.toUpperCase());
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./util/includes":"QqH7"}],"/lo5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isBase32;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var base32 = /^[A-Z2-7]+=*$/;
+
+function isBase32(str) {
+  (0, _assertString.default)(str);
+  var len = str.length;
+
+  if (len > 0 && len % 8 === 0 && base32.test(str)) {
+    return true;
+  }
+
+  return false;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"yLio":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isBase64;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var notBase64 = /[^A-Z0-9+\/=]/i;
+
+function isBase64(str) {
+  (0, _assertString.default)(str);
+  var len = str.length;
+
+  if (!len || len % 4 !== 0 || notBase64.test(str)) {
+    return false;
+  }
+
+  var firstPaddingChar = str.indexOf('=');
+  return firstPaddingChar === -1 || firstPaddingChar === len - 1 || firstPaddingChar === len - 2 && str[len - 1] === '=';
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"mbo5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isDataURI;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var validMediaType = /^[a-z]+\/[a-z0-9\-\+]+$/i;
+var validAttribute = /^[a-z\-]+=[a-z0-9\-]+$/i;
+var validData = /^[a-z0-9!\$&'\(\)\*\+,;=\-\._~:@\/\?%\s]*$/i;
+
+function isDataURI(str) {
+  (0, _assertString.default)(str);
+  var data = str.split(',');
+
+  if (data.length < 2) {
+    return false;
+  }
+
+  var attributes = data.shift().trim().split(';');
+  var schemeAndMediaType = attributes.shift();
+
+  if (schemeAndMediaType.substr(0, 5) !== 'data:') {
+    return false;
+  }
+
+  var mediaType = schemeAndMediaType.substr(5);
+
+  if (mediaType !== '' && !validMediaType.test(mediaType)) {
+    return false;
+  }
+
+  for (var i = 0; i < attributes.length; i++) {
+    if (i === attributes.length - 1 && attributes[i].toLowerCase() === 'base64') {// ok
+    } else if (!validAttribute.test(attributes[i])) {
+      return false;
+    }
+  }
+
+  for (var _i = 0; _i < data.length; _i++) {
+    if (!validData.test(data[_i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"vGQ5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMagnetURI;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var magnetURI = /^magnet:\?xt=urn:[a-z0-9]+:[a-z0-9]{32,40}&dn=.+&tr=.+$/i;
+
+function isMagnetURI(url) {
+  (0, _assertString.default)(url);
+  return magnetURI.test(url.trim());
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"bWgf":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isMimeType;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+/*
+  Checks if the provided string matches to a correct Media type format (MIME type)
+
+  This function only checks is the string format follows the
+  etablished rules by the according RFC specifications.
+  This function supports 'charset' in textual media types
+  (https://tools.ietf.org/html/rfc6657).
+
+  This function does not check against all the media types listed
+  by the IANA (https://www.iana.org/assignments/media-types/media-types.xhtml)
+  because of lightness purposes : it would require to include
+  all these MIME types in this librairy, which would weigh it
+  significantly. This kind of effort maybe is not worth for the use that
+  this function has in this entire librairy.
+
+  More informations in the RFC specifications :
+  - https://tools.ietf.org/html/rfc2045
+  - https://tools.ietf.org/html/rfc2046
+  - https://tools.ietf.org/html/rfc7231#section-3.1.1.1
+  - https://tools.ietf.org/html/rfc7231#section-3.1.1.5
+*/
+// Match simple MIME types
+// NB :
+//   Subtype length must not exceed 100 characters.
+//   This rule does not comply to the RFC specs (what is the max length ?).
+
+
+var mimeTypeSimple = /^(application|audio|font|image|message|model|multipart|text|video)\/[a-zA-Z0-9\.\-\+]{1,100}$/i; // eslint-disable-line max-len
+// Handle "charset" in "text/*"
+
+var mimeTypeText = /^text\/[a-zA-Z0-9\.\-\+]{1,100};\s?charset=("[a-zA-Z0-9\.\-\+\s]{0,70}"|[a-zA-Z0-9\.\-\+]{0,70})(\s?\([a-zA-Z0-9\.\-\+\s]{1,20}\))?$/i; // eslint-disable-line max-len
+// Handle "boundary" in "multipart/*"
+
+var mimeTypeMultipart = /^multipart\/[a-zA-Z0-9\.\-\+]{1,100}(;\s?(boundary|charset)=("[a-zA-Z0-9\.\-\+\s]{0,70}"|[a-zA-Z0-9\.\-\+]{0,70})(\s?\([a-zA-Z0-9\.\-\+\s]{1,20}\))?){0,2}$/i; // eslint-disable-line max-len
+
+function isMimeType(str) {
+  (0, _assertString.default)(str);
+  return mimeTypeSimple.test(str) || mimeTypeText.test(str) || mimeTypeMultipart.test(str);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"w8R9":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var lat = /^\(?[+-]?(90(\.0+)?|[1-8]?\d(\.\d+)?)$/;
+var long = /^\s?[+-]?(180(\.0+)?|1[0-7]\d(\.\d+)?|\d{1,2}(\.\d+)?)\)?$/;
+
+function _default(str) {
+  (0, _assertString.default)(str);
+  if (!str.includes(',')) return false;
+  var pair = str.split(',');
+  return lat.test(pair[0]) && long.test(pair[1]);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"2/5w":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+exports.locales = void 0;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+} // common patterns
+
+
+var threeDigit = /^\d{3}$/;
+var fourDigit = /^\d{4}$/;
+var fiveDigit = /^\d{5}$/;
+var sixDigit = /^\d{6}$/;
+var patterns = {
+  AD: /^AD\d{3}$/,
+  AT: fourDigit,
+  AU: fourDigit,
+  BE: fourDigit,
+  BG: fourDigit,
+  BR: /^\d{5}-\d{3}$/,
+  CA: /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][\s\-]?\d[ABCEGHJ-NPRSTV-Z]\d$/i,
+  CH: fourDigit,
+  CZ: /^\d{3}\s?\d{2}$/,
+  DE: fiveDigit,
+  DK: fourDigit,
+  DZ: fiveDigit,
+  EE: fiveDigit,
+  ES: fiveDigit,
+  FI: fiveDigit,
+  FR: /^\d{2}\s?\d{3}$/,
+  GB: /^(gir\s?0aa|[a-z]{1,2}\d[\da-z]?\s?(\d[a-z]{2})?)$/i,
+  GR: /^\d{3}\s?\d{2}$/,
+  HR: /^([1-5]\d{4}$)/,
+  HU: fourDigit,
+  ID: fiveDigit,
+  IL: fiveDigit,
+  IN: sixDigit,
+  IS: threeDigit,
+  IT: fiveDigit,
+  JP: /^\d{3}\-\d{4}$/,
+  KE: fiveDigit,
+  LI: /^(948[5-9]|949[0-7])$/,
+  LT: /^LT\-\d{5}$/,
+  LU: fourDigit,
+  LV: /^LV\-\d{4}$/,
+  MX: fiveDigit,
+  MT: /^[A-Za-z]{3}\s{0,1}\d{4}$/,
+  NL: /^\d{4}\s?[a-z]{2}$/i,
+  NO: fourDigit,
+  NZ: fourDigit,
+  PL: /^\d{2}\-\d{3}$/,
+  PR: /^00[679]\d{2}([ -]\d{4})?$/,
+  PT: /^\d{4}\-\d{3}?$/,
+  RO: sixDigit,
+  RU: sixDigit,
+  SA: fiveDigit,
+  SE: /^\d{3}\s?\d{2}$/,
+  SI: fourDigit,
+  SK: /^\d{3}\s?\d{2}$/,
+  TN: fourDigit,
+  TW: /^\d{3}(\d{2})?$/,
+  UA: fiveDigit,
+  US: /^\d{5}(-\d{4})?$/,
+  ZA: fourDigit,
+  ZM: fiveDigit
+};
+var locales = Object.keys(patterns);
+exports.locales = locales;
+
+function _default(str, locale) {
+  (0, _assertString.default)(str);
+
+  if (locale in patterns) {
+    return patterns[locale].test(str);
+  } else if (locale === 'any') {
+    for (var key in patterns) {
+      // https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md#ignoring-code-for-coverage-purposes
+      // istanbul ignore else
+      if (patterns.hasOwnProperty(key)) {
+        var pattern = patterns[key];
+
+        if (pattern.test(str)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  throw new Error("Invalid locale '".concat(locale, "'"));
+}
+},{"./util/assertString":"QMaW"}],"4QK2":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ltrim;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function ltrim(str, chars) {
+  (0, _assertString.default)(str); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+
+  var pattern = chars ? new RegExp("^[".concat(chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "]+"), 'g') : /^\s+/g;
+  return str.replace(pattern, '');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"cofQ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = rtrim;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function rtrim(str, chars) {
+  (0, _assertString.default)(str); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+
+  var pattern = chars ? new RegExp("[".concat(chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "]+$"), 'g') : /\s+$/g;
+  return str.replace(pattern, '');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"QM3k":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = trim;
+
+var _rtrim = _interopRequireDefault(require("./rtrim"));
+
+var _ltrim = _interopRequireDefault(require("./ltrim"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function trim(str, chars) {
+  return (0, _rtrim.default)((0, _ltrim.default)(str, chars), chars);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./rtrim":"cofQ","./ltrim":"4QK2"}],"/lTN":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = escape;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function escape(str) {
+  (0, _assertString.default)(str);
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\//g, '&#x2F;').replace(/\\/g, '&#x5C;').replace(/`/g, '&#96;');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"mI0W":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = unescape;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function unescape(str) {
+  (0, _assertString.default)(str);
+  return str.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x2F;/g, '/').replace(/&#x5C;/g, '\\').replace(/&#96;/g, '`');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"WziB":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = blacklist;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function blacklist(str, chars) {
+  (0, _assertString.default)(str);
+  return str.replace(new RegExp("[".concat(chars, "]+"), 'g'), '');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"VQqr":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = stripLow;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+var _blacklist = _interopRequireDefault(require("./blacklist"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function stripLow(str, keep_new_lines) {
+  (0, _assertString.default)(str);
+  var chars = keep_new_lines ? '\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F' : '\\x00-\\x1F\\x7F';
+  return (0, _blacklist.default)(str, chars);
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW","./blacklist":"WziB"}],"Zpqp":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = whitelist;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function whitelist(str, chars) {
+  (0, _assertString.default)(str);
+  return str.replace(new RegExp("[^".concat(chars, "]+"), 'g'), '');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"+FLp":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isWhitelisted;
+
+var _assertString = _interopRequireDefault(require("./util/assertString"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function isWhitelisted(str, chars) {
+  (0, _assertString.default)(str);
+
+  for (var i = str.length - 1; i >= 0; i--) {
+    if (chars.indexOf(str[i]) === -1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/assertString":"QMaW"}],"FOdn":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = normalizeEmail;
+
+var _merge = _interopRequireDefault(require("./util/merge"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var default_normalize_email_options = {
+  // The following options apply to all email addresses
+  // Lowercases the local part of the email address.
+  // Please note this may violate RFC 5321 as per http://stackoverflow.com/a/9808332/192024).
+  // The domain is always lowercased, as per RFC 1035
+  all_lowercase: true,
+  // The following conversions are specific to GMail
+  // Lowercases the local part of the GMail address (known to be case-insensitive)
+  gmail_lowercase: true,
+  // Removes dots from the local part of the email address, as that's ignored by GMail
+  gmail_remove_dots: true,
+  // Removes the subaddress (e.g. "+foo") from the email address
+  gmail_remove_subaddress: true,
+  // Conversts the googlemail.com domain to gmail.com
+  gmail_convert_googlemaildotcom: true,
+  // The following conversions are specific to Outlook.com / Windows Live / Hotmail
+  // Lowercases the local part of the Outlook.com address (known to be case-insensitive)
+  outlookdotcom_lowercase: true,
+  // Removes the subaddress (e.g. "+foo") from the email address
+  outlookdotcom_remove_subaddress: true,
+  // The following conversions are specific to Yahoo
+  // Lowercases the local part of the Yahoo address (known to be case-insensitive)
+  yahoo_lowercase: true,
+  // Removes the subaddress (e.g. "-foo") from the email address
+  yahoo_remove_subaddress: true,
+  // The following conversions are specific to Yandex
+  // Lowercases the local part of the Yandex address (known to be case-insensitive)
+  yandex_lowercase: true,
+  // The following conversions are specific to iCloud
+  // Lowercases the local part of the iCloud address (known to be case-insensitive)
+  icloud_lowercase: true,
+  // Removes the subaddress (e.g. "+foo") from the email address
+  icloud_remove_subaddress: true
+}; // List of domains used by iCloud
+
+var icloud_domains = ['icloud.com', 'me.com']; // List of domains used by Outlook.com and its predecessors
+// This list is likely incomplete.
+// Partial reference:
+// https://blogs.office.com/2013/04/17/outlook-com-gets-two-step-verification-sign-in-by-alias-and-new-international-domains/
+
+var outlookdotcom_domains = ['hotmail.at', 'hotmail.be', 'hotmail.ca', 'hotmail.cl', 'hotmail.co.il', 'hotmail.co.nz', 'hotmail.co.th', 'hotmail.co.uk', 'hotmail.com', 'hotmail.com.ar', 'hotmail.com.au', 'hotmail.com.br', 'hotmail.com.gr', 'hotmail.com.mx', 'hotmail.com.pe', 'hotmail.com.tr', 'hotmail.com.vn', 'hotmail.cz', 'hotmail.de', 'hotmail.dk', 'hotmail.es', 'hotmail.fr', 'hotmail.hu', 'hotmail.id', 'hotmail.ie', 'hotmail.in', 'hotmail.it', 'hotmail.jp', 'hotmail.kr', 'hotmail.lv', 'hotmail.my', 'hotmail.ph', 'hotmail.pt', 'hotmail.sa', 'hotmail.sg', 'hotmail.sk', 'live.be', 'live.co.uk', 'live.com', 'live.com.ar', 'live.com.mx', 'live.de', 'live.es', 'live.eu', 'live.fr', 'live.it', 'live.nl', 'msn.com', 'outlook.at', 'outlook.be', 'outlook.cl', 'outlook.co.il', 'outlook.co.nz', 'outlook.co.th', 'outlook.com', 'outlook.com.ar', 'outlook.com.au', 'outlook.com.br', 'outlook.com.gr', 'outlook.com.pe', 'outlook.com.tr', 'outlook.com.vn', 'outlook.cz', 'outlook.de', 'outlook.dk', 'outlook.es', 'outlook.fr', 'outlook.hu', 'outlook.id', 'outlook.ie', 'outlook.in', 'outlook.it', 'outlook.jp', 'outlook.kr', 'outlook.lv', 'outlook.my', 'outlook.ph', 'outlook.pt', 'outlook.sa', 'outlook.sg', 'outlook.sk', 'passport.com']; // List of domains used by Yahoo Mail
+// This list is likely incomplete
+
+var yahoo_domains = ['rocketmail.com', 'yahoo.ca', 'yahoo.co.uk', 'yahoo.com', 'yahoo.de', 'yahoo.fr', 'yahoo.in', 'yahoo.it', 'ymail.com']; // List of domains used by yandex.ru
+
+var yandex_domains = ['yandex.ru', 'yandex.ua', 'yandex.kz', 'yandex.com', 'yandex.by', 'ya.ru']; // replace single dots, but not multiple consecutive dots
+
+function dotsReplacer(match) {
+  if (match.length > 1) {
+    return match;
+  }
+
+  return '';
+}
+
+function normalizeEmail(email, options) {
+  options = (0, _merge.default)(options, default_normalize_email_options);
+  var raw_parts = email.split('@');
+  var domain = raw_parts.pop();
+  var user = raw_parts.join('@');
+  var parts = [user, domain]; // The domain is always lowercased, as it's case-insensitive per RFC 1035
+
+  parts[1] = parts[1].toLowerCase();
+
+  if (parts[1] === 'gmail.com' || parts[1] === 'googlemail.com') {
+    // Address is GMail
+    if (options.gmail_remove_subaddress) {
+      parts[0] = parts[0].split('+')[0];
+    }
+
+    if (options.gmail_remove_dots) {
+      // this does not replace consecutive dots like example..email@gmail.com
+      parts[0] = parts[0].replace(/\.+/g, dotsReplacer);
+    }
+
+    if (!parts[0].length) {
+      return false;
+    }
+
+    if (options.all_lowercase || options.gmail_lowercase) {
+      parts[0] = parts[0].toLowerCase();
+    }
+
+    parts[1] = options.gmail_convert_googlemaildotcom ? 'gmail.com' : parts[1];
+  } else if (icloud_domains.indexOf(parts[1]) >= 0) {
+    // Address is iCloud
+    if (options.icloud_remove_subaddress) {
+      parts[0] = parts[0].split('+')[0];
+    }
+
+    if (!parts[0].length) {
+      return false;
+    }
+
+    if (options.all_lowercase || options.icloud_lowercase) {
+      parts[0] = parts[0].toLowerCase();
+    }
+  } else if (outlookdotcom_domains.indexOf(parts[1]) >= 0) {
+    // Address is Outlook.com
+    if (options.outlookdotcom_remove_subaddress) {
+      parts[0] = parts[0].split('+')[0];
+    }
+
+    if (!parts[0].length) {
+      return false;
+    }
+
+    if (options.all_lowercase || options.outlookdotcom_lowercase) {
+      parts[0] = parts[0].toLowerCase();
+    }
+  } else if (yahoo_domains.indexOf(parts[1]) >= 0) {
+    // Address is Yahoo
+    if (options.yahoo_remove_subaddress) {
+      var components = parts[0].split('-');
+      parts[0] = components.length > 1 ? components.slice(0, -1).join('-') : components[0];
+    }
+
+    if (!parts[0].length) {
+      return false;
+    }
+
+    if (options.all_lowercase || options.yahoo_lowercase) {
+      parts[0] = parts[0].toLowerCase();
+    }
+  } else if (yandex_domains.indexOf(parts[1]) >= 0) {
+    if (options.all_lowercase || options.yandex_lowercase) {
+      parts[0] = parts[0].toLowerCase();
+    }
+
+    parts[1] = 'yandex.ru'; // all yandex domains are equal, 1st preffered
+  } else if (options.all_lowercase) {
+    // Any other address
+    parts[0] = parts[0].toLowerCase();
+  }
+
+  return parts.join('@');
+}
+
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./util/merge":"d6UF"}],"+jfQ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _toDate = _interopRequireDefault(require("./lib/toDate"));
+
+var _toFloat = _interopRequireDefault(require("./lib/toFloat"));
+
+var _toInt = _interopRequireDefault(require("./lib/toInt"));
+
+var _toBoolean = _interopRequireDefault(require("./lib/toBoolean"));
+
+var _equals = _interopRequireDefault(require("./lib/equals"));
+
+var _contains = _interopRequireDefault(require("./lib/contains"));
+
+var _matches = _interopRequireDefault(require("./lib/matches"));
+
+var _isEmail = _interopRequireDefault(require("./lib/isEmail"));
+
+var _isURL = _interopRequireDefault(require("./lib/isURL"));
+
+var _isMACAddress = _interopRequireDefault(require("./lib/isMACAddress"));
+
+var _isIP = _interopRequireDefault(require("./lib/isIP"));
+
+var _isIPRange = _interopRequireDefault(require("./lib/isIPRange"));
+
+var _isFQDN = _interopRequireDefault(require("./lib/isFQDN"));
+
+var _isBoolean = _interopRequireDefault(require("./lib/isBoolean"));
+
+var _isAlpha = _interopRequireWildcard(require("./lib/isAlpha"));
+
+var _isAlphanumeric = _interopRequireWildcard(require("./lib/isAlphanumeric"));
+
+var _isNumeric = _interopRequireDefault(require("./lib/isNumeric"));
+
+var _isPort = _interopRequireDefault(require("./lib/isPort"));
+
+var _isLowercase = _interopRequireDefault(require("./lib/isLowercase"));
+
+var _isUppercase = _interopRequireDefault(require("./lib/isUppercase"));
+
+var _isAscii = _interopRequireDefault(require("./lib/isAscii"));
+
+var _isFullWidth = _interopRequireDefault(require("./lib/isFullWidth"));
+
+var _isHalfWidth = _interopRequireDefault(require("./lib/isHalfWidth"));
+
+var _isVariableWidth = _interopRequireDefault(require("./lib/isVariableWidth"));
+
+var _isMultibyte = _interopRequireDefault(require("./lib/isMultibyte"));
+
+var _isSurrogatePair = _interopRequireDefault(require("./lib/isSurrogatePair"));
+
+var _isInt = _interopRequireDefault(require("./lib/isInt"));
+
+var _isFloat = _interopRequireWildcard(require("./lib/isFloat"));
+
+var _isDecimal = _interopRequireDefault(require("./lib/isDecimal"));
+
+var _isHexadecimal = _interopRequireDefault(require("./lib/isHexadecimal"));
+
+var _isDivisibleBy = _interopRequireDefault(require("./lib/isDivisibleBy"));
+
+var _isHexColor = _interopRequireDefault(require("./lib/isHexColor"));
+
+var _isISRC = _interopRequireDefault(require("./lib/isISRC"));
+
+var _isMD = _interopRequireDefault(require("./lib/isMD5"));
+
+var _isHash = _interopRequireDefault(require("./lib/isHash"));
+
+var _isJWT = _interopRequireDefault(require("./lib/isJWT"));
+
+var _isJSON = _interopRequireDefault(require("./lib/isJSON"));
+
+var _isEmpty = _interopRequireDefault(require("./lib/isEmpty"));
+
+var _isLength = _interopRequireDefault(require("./lib/isLength"));
+
+var _isByteLength = _interopRequireDefault(require("./lib/isByteLength"));
+
+var _isUUID = _interopRequireDefault(require("./lib/isUUID"));
+
+var _isMongoId = _interopRequireDefault(require("./lib/isMongoId"));
+
+var _isAfter = _interopRequireDefault(require("./lib/isAfter"));
+
+var _isBefore = _interopRequireDefault(require("./lib/isBefore"));
+
+var _isIn = _interopRequireDefault(require("./lib/isIn"));
+
+var _isCreditCard = _interopRequireDefault(require("./lib/isCreditCard"));
+
+var _isIdentityCard = _interopRequireDefault(require("./lib/isIdentityCard"));
+
+var _isISIN = _interopRequireDefault(require("./lib/isISIN"));
+
+var _isISBN = _interopRequireDefault(require("./lib/isISBN"));
+
+var _isISSN = _interopRequireDefault(require("./lib/isISSN"));
+
+var _isMobilePhone = _interopRequireWildcard(require("./lib/isMobilePhone"));
+
+var _isCurrency = _interopRequireDefault(require("./lib/isCurrency"));
+
+var _isISO = _interopRequireDefault(require("./lib/isISO8601"));
+
+var _isRFC = _interopRequireDefault(require("./lib/isRFC3339"));
+
+var _isISO31661Alpha = _interopRequireDefault(require("./lib/isISO31661Alpha2"));
+
+var _isISO31661Alpha2 = _interopRequireDefault(require("./lib/isISO31661Alpha3"));
+
+var _isBase = _interopRequireDefault(require("./lib/isBase32"));
+
+var _isBase2 = _interopRequireDefault(require("./lib/isBase64"));
+
+var _isDataURI = _interopRequireDefault(require("./lib/isDataURI"));
+
+var _isMagnetURI = _interopRequireDefault(require("./lib/isMagnetURI"));
+
+var _isMimeType = _interopRequireDefault(require("./lib/isMimeType"));
+
+var _isLatLong = _interopRequireDefault(require("./lib/isLatLong"));
+
+var _isPostalCode = _interopRequireWildcard(require("./lib/isPostalCode"));
+
+var _ltrim = _interopRequireDefault(require("./lib/ltrim"));
+
+var _rtrim = _interopRequireDefault(require("./lib/rtrim"));
+
+var _trim = _interopRequireDefault(require("./lib/trim"));
+
+var _escape = _interopRequireDefault(require("./lib/escape"));
+
+var _unescape = _interopRequireDefault(require("./lib/unescape"));
+
+var _stripLow = _interopRequireDefault(require("./lib/stripLow"));
+
+var _whitelist = _interopRequireDefault(require("./lib/whitelist"));
+
+var _blacklist = _interopRequireDefault(require("./lib/blacklist"));
+
+var _isWhitelisted = _interopRequireDefault(require("./lib/isWhitelisted"));
+
+var _normalizeEmail = _interopRequireDefault(require("./lib/normalizeEmail"));
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};
+
+          if (desc.get || desc.set) {
+            Object.defineProperty(newObj, key, desc);
+          } else {
+            newObj[key] = obj[key];
+          }
+        }
+      }
+    }
+
+    newObj.default = obj;
+    return newObj;
+  }
+}
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+var version = '11.1.0';
+var validator = {
+  version: version,
+  toDate: _toDate.default,
+  toFloat: _toFloat.default,
+  toInt: _toInt.default,
+  toBoolean: _toBoolean.default,
+  equals: _equals.default,
+  contains: _contains.default,
+  matches: _matches.default,
+  isEmail: _isEmail.default,
+  isURL: _isURL.default,
+  isMACAddress: _isMACAddress.default,
+  isIP: _isIP.default,
+  isIPRange: _isIPRange.default,
+  isFQDN: _isFQDN.default,
+  isBoolean: _isBoolean.default,
+  isAlpha: _isAlpha.default,
+  isAlphaLocales: _isAlpha.locales,
+  isAlphanumeric: _isAlphanumeric.default,
+  isAlphanumericLocales: _isAlphanumeric.locales,
+  isNumeric: _isNumeric.default,
+  isPort: _isPort.default,
+  isLowercase: _isLowercase.default,
+  isUppercase: _isUppercase.default,
+  isAscii: _isAscii.default,
+  isFullWidth: _isFullWidth.default,
+  isHalfWidth: _isHalfWidth.default,
+  isVariableWidth: _isVariableWidth.default,
+  isMultibyte: _isMultibyte.default,
+  isSurrogatePair: _isSurrogatePair.default,
+  isInt: _isInt.default,
+  isFloat: _isFloat.default,
+  isFloatLocales: _isFloat.locales,
+  isDecimal: _isDecimal.default,
+  isHexadecimal: _isHexadecimal.default,
+  isDivisibleBy: _isDivisibleBy.default,
+  isHexColor: _isHexColor.default,
+  isISRC: _isISRC.default,
+  isMD5: _isMD.default,
+  isHash: _isHash.default,
+  isJWT: _isJWT.default,
+  isJSON: _isJSON.default,
+  isEmpty: _isEmpty.default,
+  isLength: _isLength.default,
+  isByteLength: _isByteLength.default,
+  isUUID: _isUUID.default,
+  isMongoId: _isMongoId.default,
+  isAfter: _isAfter.default,
+  isBefore: _isBefore.default,
+  isIn: _isIn.default,
+  isCreditCard: _isCreditCard.default,
+  isIdentityCard: _isIdentityCard.default,
+  isISIN: _isISIN.default,
+  isISBN: _isISBN.default,
+  isISSN: _isISSN.default,
+  isMobilePhone: _isMobilePhone.default,
+  isMobilePhoneLocales: _isMobilePhone.locales,
+  isPostalCode: _isPostalCode.default,
+  isPostalCodeLocales: _isPostalCode.locales,
+  isCurrency: _isCurrency.default,
+  isISO8601: _isISO.default,
+  isRFC3339: _isRFC.default,
+  isISO31661Alpha2: _isISO31661Alpha.default,
+  isISO31661Alpha3: _isISO31661Alpha2.default,
+  isBase32: _isBase.default,
+  isBase64: _isBase2.default,
+  isDataURI: _isDataURI.default,
+  isMagnetURI: _isMagnetURI.default,
+  isMimeType: _isMimeType.default,
+  isLatLong: _isLatLong.default,
+  ltrim: _ltrim.default,
+  rtrim: _rtrim.default,
+  trim: _trim.default,
+  escape: _escape.default,
+  unescape: _unescape.default,
+  stripLow: _stripLow.default,
+  whitelist: _whitelist.default,
+  blacklist: _blacklist.default,
+  isWhitelisted: _isWhitelisted.default,
+  normalizeEmail: _normalizeEmail.default,
+  toString: toString
+};
+var _default = validator;
+exports.default = _default;
+module.exports = exports.default;
+module.exports.default = exports.default;
+},{"./lib/toDate":"rSuR","./lib/toFloat":"qMz2","./lib/toInt":"POb+","./lib/toBoolean":"iU/H","./lib/equals":"lkt0","./lib/contains":"GBl7","./lib/matches":"wWis","./lib/isEmail":"H23W","./lib/isURL":"saN4","./lib/isMACAddress":"CA48","./lib/isIP":"F6o8","./lib/isIPRange":"UXrm","./lib/isFQDN":"Bh5o","./lib/isBoolean":"OY6B","./lib/isAlpha":"EJdN","./lib/isAlphanumeric":"QaMP","./lib/isNumeric":"6ESc","./lib/isPort":"TljE","./lib/isLowercase":"T1FC","./lib/isUppercase":"Ubgl","./lib/isAscii":"KFyf","./lib/isFullWidth":"4wfV","./lib/isHalfWidth":"ZAg4","./lib/isVariableWidth":"GsBI","./lib/isMultibyte":"Ej/r","./lib/isSurrogatePair":"E4Q5","./lib/isInt":"yJuz","./lib/isFloat":"DuYM","./lib/isDecimal":"3CF6","./lib/isHexadecimal":"JwiM","./lib/isDivisibleBy":"bzOQ","./lib/isHexColor":"Tl8x","./lib/isISRC":"ueUj","./lib/isMD5":"oZX3","./lib/isHash":"DHJt","./lib/isJWT":"YBiP","./lib/isJSON":"15iJ","./lib/isEmpty":"dSFb","./lib/isLength":"Ve45","./lib/isByteLength":"FRf3","./lib/isUUID":"lffP","./lib/isMongoId":"iVju","./lib/isAfter":"SDfY","./lib/isBefore":"gYzw","./lib/isIn":"Ujjq","./lib/isCreditCard":"RRcm","./lib/isIdentityCard":"7rCo","./lib/isISIN":"ARCT","./lib/isISBN":"p8Rf","./lib/isISSN":"WNF1","./lib/isMobilePhone":"HEYP","./lib/isCurrency":"FcpF","./lib/isISO8601":"vN5U","./lib/isRFC3339":"cG9o","./lib/isISO31661Alpha2":"S8GP","./lib/isISO31661Alpha3":"WK24","./lib/isBase32":"/lo5","./lib/isBase64":"yLio","./lib/isDataURI":"mbo5","./lib/isMagnetURI":"vGQ5","./lib/isMimeType":"bWgf","./lib/isLatLong":"w8R9","./lib/isPostalCode":"2/5w","./lib/ltrim":"4QK2","./lib/rtrim":"cofQ","./lib/trim":"QM3k","./lib/escape":"/lTN","./lib/unescape":"mI0W","./lib/stripLow":"VQqr","./lib/whitelist":"Zpqp","./lib/blacklist":"WziB","./lib/isWhitelisted":"+FLp","./lib/normalizeEmail":"FOdn"}],"0YWz":[function(require,module,exports) {
+module.exports = {
+  error: {
+    length: 'Length should be a valid positive number',
+    password: 'Password should be a valid string'
+  },
+  regex: {
+    digits: /\d+/,
+    letters: /[a-zA-Z]+/,
+    uppercase: /[A-Z]+/,
+    lowercase: /[a-z]+/,
+    symbols: /[`~\!@#\$%\^\&\*\(\)\-_\=\+\[\{\}\]\\\|;:'",<.>\/\?€£¥₹]+/,
+    spaces: /[\s]+/
+  }
+};
+
+},{}],"1tEx":[function(require,module,exports) {
+/**
+ * Generic method to test regex
+ *
+ * @private
+ * @param {string} regex - regex to test
+ *                           with password
+ */
+var regex = require('./constants').regex;
+
+function _process(regexp) {
+  return new RegExp(regexp).test(this.password) === this.positive;
+}
+
+module.exports = {
+
+  /**
+   * Method to invert the next validations
+   *
+   * @param {RegExp} [symbol] - custom Regex which should not be present
+   */
+  not: function not(symbol) {
+    this.positive = false;
+    if (symbol) {
+      return _process.call(this, symbol);
+    }
+    return true;
+  },
+
+  /**
+   * Method to invert the effects of not()
+   *
+   * @param {RegExp} [symbol] - custom Regex which should be present
+   */
+  has: function has(symbol) {
+    this.positive = true;
+    if (symbol) {
+      return _process.call(this, symbol);
+    }
+    return true;
+  },
+
+  /**
+   * Method to invert the effects of not() and
+   * to make the api readable and chainable
+   *
+   */
+  is: function is() {
+    this.positive = true;
+    return true;
+  },
+
+  /**
+   * Method to specify a minimum length
+   *
+   * @param {number} num - minimum length
+   */
+  min: function min(num) {
+    return this.password.length >= num;
+  },
+
+  /**
+   * Method to specify a maximum length
+   *
+   * @param {number} num - maximum length
+   */
+  max: function max(num) {
+    return this.password.length <= num;
+  },
+
+  /**
+   * Method to validate the presense of digits
+   */
+  digits: function digits() {
+    return _process.call(this, regex.digits);
+  },
+
+  /**
+   * Method to validate the presense of letters
+   */
+  letters: function letters() {
+    return _process.call(this, regex.letters);
+  },
+
+  /**
+   * Method to validate the presense of uppercase letters
+   */
+  uppercase: function uppercase() {
+    return _process.call(this, regex.uppercase);
+  },
+
+  /**
+   * Method to validate the presense of lowercase letters
+   */
+  lowercase: function lowercase() {
+    return _process.call(this, regex.lowercase);
+  },
+
+  /**
+   * Method to validate the presense of symbols
+   */
+  symbols: function symbols() {
+    return _process.call(this, regex.symbols);
+  },
+
+  /**
+   * Method to validate the presense of space
+   */
+  spaces: function spaces() {
+    return _process.call(this, regex.spaces);
+  },
+
+  /**
+   * Method to provide pre-defined values for password
+   *
+   * @param {array} list - list of values allowed
+   */
+  oneOf: function oneOf(list) {
+    return list.indexOf(this.password) >= 0 === this.positive;
+  }
+};
+
+},{"./constants":"0YWz"}],"oVmU":[function(require,module,exports) {
+var lib = require('./lib');
+var error = require('./constants').error;
+
+/**
+ * Validates that a number is a valid length (positive number)
+ *
+ * @private
+ * @param {number} num - Number to validate
+ */
+function _validateLength(num) {
+  if (!num || typeof num !== 'number' || num < 0) {
+    throw new Error(error.length);
+  }
+}
+
+/**
+ * Tests a validation and return the result
+ *
+ * @private
+ * @param {string} property - Property to validate
+ * @return {boolean} Boolean value indicting the validity
+ *           of the password against the property
+ */
+function _isPasswordValidFor(property) {
+  return lib[property.method].apply(this, property.arguments);
+}
+
+/**
+ * Registers the properties of a password-validation schema object
+ *
+ * @private
+ * @param {string} func - Property name
+ * @param {array} args - arguments for the func property
+ */
+function _register(func, args) {
+  // Add property to the schema
+  this.properties.push({ method: func, arguments: args });
+  return this;
+}
+
+/**
+ * Creates a password-validator schema
+ *
+ * @constructor
+ */
+function PasswordValidator() {
+  // Initialize a schema with no properties defined
+  this.properties = [];
+}
+
+/**
+ * Method to validate the password against schema
+ *
+ * @param {string} pwd - password to valdiate
+ * @param {object} options - optional options to configure validation
+ * @param {boolean} [options.list] - asks for a list of validation
+ *           failures instead of just true/false
+ * @return {boolean|array} Boolean value indicting the validity
+ *           of the password as per schema, if 'options.list'
+ *           is not set. Otherwise, it returns an array of
+ *           property names which failed validations
+ */
+PasswordValidator.prototype.validate = function (pwd, options) {
+  // Checks if pwd is invalid
+  if (typeof pwd !== 'string') {
+    throw new Error(error.password);
+  }
+
+  // Sets password string
+  this.password = pwd;
+
+  // Sets that no inversion takes place by default
+  this.positive = true;
+
+  var _this = this;
+
+  if (options && options.list === true) {
+    return this.properties.reduce(function (errorList, property) {
+      // Applies all validations defined in lib one by one
+      if (!_isPasswordValidFor.call(_this, property)) {
+        // If the validation for a property fails,
+        // add it to the error list
+        return errorList.concat(property.method);
+      }
+      return errorList;
+    }, []);
+  }
+
+  // Returns the result of the validations
+  return this.properties.every(function (property) {
+    // Applies all validations defined in lib one by one
+    return _isPasswordValidFor.call(_this, property);
+  });
+};
+
+/**
+ * Rule to invert the next applied rules.
+ * All the rules applied after 'not' will have opposite effect,
+ * until 'has' rule is applied
+ */
+PasswordValidator.prototype.not = function not() {
+  return _register.call(this, 'not', arguments);
+};
+
+/**
+ * Rule to invert the effects of 'not'
+ * Apart from that, 'has' is also used
+ * to make the api readable and chainable
+ */
+PasswordValidator.prototype.has = function has() {
+  return _register.call(this, 'has', arguments);
+};
+
+/**
+ * Rule to invert the effects of 'not'
+ * Apart from that, 'is' is also used
+ * to make the api readable and chainable
+ */
+PasswordValidator.prototype.is = function is() {
+  return _register.call(this, 'is', arguments);
+};
+
+/**
+ * Rule to specify a minimum length of the password
+ *
+ * @param {number} num - minimum length
+ */
+PasswordValidator.prototype.min = function min(num) {
+  _validateLength(num);
+  return _register.call(this, 'min', arguments);
+};
+
+/**
+ * Rule to specify a maximum length of the password
+ *
+ * @param {number} num - maximum length
+ */
+PasswordValidator.prototype.max = function max(num) {
+  _validateLength(num);
+  return _register.call(this, 'max', arguments);
+};
+
+/**
+ * Rule to mendate the presense of digits in the password
+ */
+PasswordValidator.prototype.digits = function digits() {
+  return _register.call(this, 'digits', arguments);
+};
+
+/**
+ * Rule to mendate the presense of letters in the password
+ */
+PasswordValidator.prototype.letters = function letters() {
+  return _register.call(this, 'letters', arguments);
+};
+
+/**
+ * Rule to mendate the presense of uppercase letters in the password
+ */
+PasswordValidator.prototype.uppercase = function uppercase() {
+  return _register.call(this, 'uppercase', arguments);
+};
+
+/**
+ * Rule to mendate the presense of lowercase letters in the password
+ */
+PasswordValidator.prototype.lowercase = function lowercase() {
+  return _register.call(this, 'lowercase', arguments);
+};
+
+/**
+ * Rule to mendate the presense of symbols in the password
+ */
+PasswordValidator.prototype.symbols = function symbols() {
+  return _register.call(this, 'symbols', arguments);
+};
+
+/**
+ * Rule to mendate the presense of space in the password
+ * It can be used along with 'not' to not allow spaces
+ * in the password
+ */
+PasswordValidator.prototype.spaces = function spaces() {
+  return _register.call(this, 'spaces', arguments);
+};
+
+/**
+ * Rule to whitelist words to be used as password
+ *
+ * @param {array} list - list of values allowed
+ */
+PasswordValidator.prototype.oneOf = function oneOf() {
+  return _register.call(this, 'oneOf', arguments);
+};
+
+module.exports = PasswordValidator;
+
+},{"./lib":"1tEx","./constants":"0YWz"}],"TNHS":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _validator = _interopRequireDefault(require("validator"));
+
+var _passwordValidator = _interopRequireDefault(require("password-validator"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UtilsValidation = {
+  // Validates password
+  isPasswordValid: function isPasswordValid(password) {
+    if (!password) return false;
+    var validator = new _passwordValidator.default().is().min(8).is().max(100).has().uppercase().has().lowercase().has().digits().has().not().spaces();
+    return validator.validate(password);
+  },
+  // Validates email
+  isEmailValid: function isEmailValid(email) {
+    if (!email) return false;
+    return _validator.default.isEmail(email);
+  },
+  // Validates select
+  isSelectValid: function isSelectValid(item) {
+    if (!item) return false;
+    if (!isNaN(item)) return true;
+    return _validator.default.isNumeric(item);
+  }
+};
+var _default = UtilsValidation;
+exports.default = _default;
+},{"validator":"+jfQ","password-validator":"oVmU"}],"Jz7l":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _Login = _interopRequireDefault(require("./Login"));
+
+var _fa = require("react-icons/fa");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var RegistrationSuccess =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(RegistrationSuccess, _Component);
+
+  function RegistrationSuccess(props) {
+    var _this;
+
+    _classCallCheck(this, RegistrationSuccess);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(RegistrationSuccess).call(this, props));
+    _this.state = {
+      // Return back to login with new username & password
+      isLogin: false
+    };
+    return _this;
+  }
+
+  _createClass(RegistrationSuccess, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var isLogin = this.state.isLogin;
+
+      if (isLogin) {
+        var _this$props = this.props,
+            email = _this$props.email,
+            password = _this$props.password;
+        return _react.default.createElement(_Login.default, {
+          username: email,
+          password: password
+        });
+      }
+
+      return _react.default.createElement("div", {
+        className: "container-fluid"
+      }, _react.default.createElement("div", {
+        className: "row mt-5"
+      }, _react.default.createElement("div", {
+        className: "col-1 col-sm-2 col-md-3 col-lg-4"
+      }), _react.default.createElement("div", {
+        className: "col-10 col-sm-8 col-md-6 col-lg-4"
+      }, _react.default.createElement("div", {
+        className: "card bg-transparent"
+      }, _react.default.createElement("div", {
+        className: "card-header pt-1 pb-1"
+      }, _react.default.createElement("small", null, _react.default.createElement("div", {
+        className: "text-secondary text-center"
+      }, "Registration"))), _react.default.createElement("div", {
+        className: "card-body"
+      }, _react.default.createElement("div", {
+        className: "alert alert-success text-center p-1",
+        role: "success"
+      }, _react.default.createElement("strong", null, "Successful registration!")), _react.default.createElement("div", {
+        className: "form-group text-center mb-n1"
+      }, _react.default.createElement("button", {
+        type: "button",
+        value: "Sign In",
+        className: "btn btn-sm btn-success pl-5 pr-5",
+        onClick: function onClick() {
+          return _this2.setState({
+            isLogin: true
+          });
+        }
+      }, _react.default.createElement("div", {
+        className: "align-middle"
+      }, _react.default.createElement(_fa.FaSignInAlt, {
+        color: "white"
+      }), " Sign In")))))), _react.default.createElement("div", {
+        className: "col-1 col-sm-2 col-md-3 col-lg-4"
+      })));
+    }
+  }]);
+
+  return RegistrationSuccess;
+}(_react.Component);
+
+RegistrationSuccess.propTypes = {
+  email: _propTypes.default.string.isRequired,
+  password: _propTypes.default.string.isRequired
+};
+var _default = RegistrationSuccess;
+exports.default = _default;
+},{"react":"HdMw","prop-types":"Iix9","./Login":"veJo","react-icons/fa":"mJqe"}],"Sr7R":[function(require,module,exports) {
 
 },{}],"H97Y":[function(require,module,exports) {
 
-},{}],"veJo":[function(require,module,exports) {
+},{}],"FdYk":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _Login = _interopRequireDefault(require("./Login"));
+
+var _Failure = _interopRequireDefault(require("./Failure"));
+
+var _fa = require("react-icons/fa");
+
+var _ApiRegistration = _interopRequireDefault(require("./ApiRegistration"));
+
+var _UtilsValidation = _interopRequireDefault(require("./UtilsValidation"));
+
+var _RegistrationSuccess = _interopRequireDefault(require("./RegistrationSuccess"));
+
+var _Utils = _interopRequireDefault(require("./Utils"));
+
+require("../main.css");
+
+require("bootstrap/dist/css/bootstrap.min.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Registration =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Registration, _Component);
+
+  function Registration(props) {
+    var _this;
+
+    _classCallCheck(this, Registration);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Registration).call(this, props));
+    _this.state = {
+      // In what context we are working now {lms or nonLms}
+      isLmsContext: props.regOptions.lms,
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      year: "",
+      organisation: "",
+      faculty: "",
+      clazz: "",
+      //To be loaded from server
+      organisations: [],
+      faculties: [],
+      classes: [],
+      showPassword: false,
+      isNameValid: "undefined",
+      isSurnameValid: "undefined",
+      isEmailValid: "undefined",
+      isPasswordValid: "undefined",
+      isConfirmPasswordValid: "undefined",
+      isPasswordSame: "undefined",
+      isOrgValid: "undefined",
+      isFacValid: "undefined",
+      isClassValid: "undefined",
+      isYearValid: "undefined",
+      //Sets to true after successful registration
+      isRegSuccess: false,
+      // Return back to login
+      isRegCancelled: false,
+      isLoading: false,
+      isOrgLoading: false,
+      isFacLoading: false,
+      isClassLoading: false,
+      orgError: null,
+      facError: null,
+      classError: null,
+      error: null
+    };
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this));
+    _this.handleOrgChange = _this.handleOrgChange.bind(_assertThisInitialized(_this));
+    _this.handleFacChange = _this.handleFacChange.bind(_assertThisInitialized(_this));
+    _this.errorLoadOrgId = _this.errorLoadOrgId.bind(_assertThisInitialized(_this));
+    _this.errorLoadOrg = _this.errorLoadOrg.bind(_assertThisInitialized(_this));
+    _this.errorLoadFac = _this.errorLoadFac.bind(_assertThisInitialized(_this));
+    _this.errorLoadClasses = _this.errorLoadClasses.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Registration, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var isLmsContext = this.state.isLmsContext;
+
+      if (isLmsContext) {
+        // If LMS, API call for orgId
+        this.loadOrgId();
+      } else {
+        // Else show list of organisations
+        this.reTryLoadOrg();
+      }
+    }
+  }, {
+    key: "loadOrgId",
+    value: function loadOrgId() {
+      var _this2 = this;
+
+      _ApiRegistration.default.loadOrganization(this.errorLoadOrgId).then(function (orgId) {
+        console.log("orgId = ", orgId);
+
+        _this2.setState({
+          organisation: orgId
+        });
+
+        _this2.reTryLoadFac(orgId);
+      });
+    }
+  }, {
+    key: "errorLoadOrgId",
+    value: function errorLoadOrgId(error) {
+      this.setState({
+        error: error.message
+      });
+    }
+  }, {
+    key: "reTryLoadOrg",
+    value: function reTryLoadOrg() {
+      console.log("Try to load organizations..");
+      this.setState({
+        isOrgLoading: true,
+        orgError: null
+      });
+      this.loadOrg();
+    }
+  }, {
+    key: "loadOrg",
+    value: function loadOrg() {
+      var _this3 = this;
+
+      var isLmsContext = this.state.isLmsContext;
+
+      _ApiRegistration.default.loadOrganizations(isLmsContext, this.errorLoadOrg).then(function (organisations) {
+        console.log("organisations = ", organisations);
+
+        if (!organisations) {
+          organisations = [];
+        } else {
+          // Add empty option at the beginning
+          organisations.unshift({
+            orgId: "",
+            name: "Select"
+          });
+        }
+
+        _this3.setState({
+          isOrgLoading: false,
+          organisations: organisations
+        });
+      });
+    }
+  }, {
+    key: "errorLoadOrg",
+    value: function errorLoadOrg(error) {
+      this.setState({
+        isOrgLoading: false,
+        orgError: error.message
+      });
+    }
+  }, {
+    key: "reTryLoadFac",
+    value: function reTryLoadFac(orgId) {
+      console.log("Try to load faculties of orgId = ", orgId);
+      this.setState({
+        isFacLoading: true,
+        facError: null
+      });
+      this.loadFac(orgId);
+    }
+  }, {
+    key: "loadFac",
+    value: function loadFac(orgId) {
+      var _this4 = this;
+
+      var isLmsContext = this.state.isLmsContext;
+
+      _ApiRegistration.default.loadFaculties(isLmsContext, orgId, this.errorLoadFac).then(function (faculties) {
+        console.log("faculties = ", faculties);
+
+        if (!faculties) {
+          _this4.setState({
+            isFacLoading: false,
+            faculties: []
+          });
+        } else {
+          faculties.unshift({
+            facId: "",
+            name: "Select"
+          });
+
+          _this4.setState({
+            isFacLoading: false,
+            faculties: faculties
+          });
+        }
+      });
+    }
+  }, {
+    key: "errorLoadFac",
+    value: function errorLoadFac(error) {
+      this.setState({
+        isFacLoading: false,
+        facError: error.message
+      });
+    }
+  }, {
+    key: "reTryLoadClasses",
+    value: function reTryLoadClasses(facId) {
+      console.log("Try to load classes of facId = ", facId);
+      this.setState({
+        isClassLoading: true,
+        classError: null
+      });
+      this.loadClasses(facId);
+    }
+  }, {
+    key: "loadClasses",
+    value: function loadClasses(facId) {
+      var _this5 = this;
+
+      var isLmsContext = this.state.isLmsContext;
+
+      _ApiRegistration.default.loadClasses(isLmsContext, facId, this.errorLoadClass).then(function (classes) {
+        console.log("classes = ", classes);
+
+        if (!classes) {
+          _this5.setState({
+            isClassLoading: false,
+            classes: []
+          });
+        } else {
+          classes.unshift({
+            classId: "",
+            name: "Select"
+          });
+
+          _this5.setState({
+            isClassLoading: false,
+            classes: classes
+          });
+        }
+      });
+    }
+  }, {
+    key: "errorLoadClasses",
+    value: function errorLoadClasses(error) {
+      this.setState({
+        isClassLoading: false,
+        classError: error.message
+      });
+    }
+  }, {
+    key: "reTry",
+    value: function reTry(action) {
+      if (action === "org") {
+        this.reTryLoadOrg();
+      } else if (action === "fac") {
+        this.reTryLoadFac(this.state.organisation);
+      } else if (action === "clazz") {
+        this.reTryLoadClass(this.state.faculty);
+      } else {
+        console.error("Wrong retry() method param!");
+        return;
+      }
+    }
+  }, {
+    key: "resetForm",
+    value: function resetForm() {
+      if (this.state.isLoading) return;
+      var _this$state = this.state,
+          isLmsContext = _this$state.isLmsContext,
+          organisation = _this$state.organisation;
+      var org = isLmsContext ? organisation : "undefined";
+      this.setState({
+        name: "",
+        surname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        year: "",
+        organisation: org,
+        faculty: "",
+        clazz: "",
+        showPassword: false,
+        isNameValid: "undefined",
+        isSurnameValid: "undefined",
+        isEmailValid: "undefined",
+        isPasswordValid: "undefined",
+        isConfirmPasswordValid: "undefined",
+        isPasswordSame: "undefined",
+        isOrgValid: "undefined",
+        isFacValid: "undefined",
+        isClassValid: "undefined",
+        isYearValid: "undefined",
+        error: null
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(event) {
+      var _this6 = this;
+
+      event.preventDefault();
+      var regData = this.getRegData();
+      console.log("Submitting: ", regData);
+      if (!this.validate()) return;
+      var isLmsContext = this.state.isLmsContext;
+      var url = _Utils.default.baseUrl() + (isLmsContext ? "/lti/sign-up" : "/sign-up");
+      fetch(url, {
+        method: 'POST',
+        headers: new Headers({
+          'content-type': 'application/json'
+        }),
+        body: JSON.stringify(regData)
+      }).then(function (response) {
+        // TODO: show server message to user!
+        if (!response.ok) throw response;
+
+        _this6.setState({
+          isRegSuccess: true,
+          isLoading: false
+        });
+      }).catch(function (error) {
+        try {
+          error.json().then(function (body) {
+            _this6.setState({
+              error: new Error(body.message)
+            });
+          });
+        } catch (e) {
+          _this6.setState({
+            error: new Error("Failed to register!")
+          });
+        } finally {
+          _this6.setState({
+            isLoading: false
+          });
+        }
+      });
+    }
+  }, {
+    key: "validate",
+    value: function validate() {
+      var _this$state2 = this.state,
+          name = _this$state2.name,
+          surname = _this$state2.surname,
+          email = _this$state2.email,
+          password = _this$state2.password,
+          confirmPassword = _this$state2.confirmPassword,
+          organisation = _this$state2.organisation,
+          faculty = _this$state2.faculty,
+          clazz = _this$state2.clazz,
+          year = _this$state2.year;
+      var isNameValid = name.length > 2;
+      var isSurnameValid = surname.length > 2;
+
+      var isEmailValid = _UtilsValidation.default.isEmailValid(email);
+
+      var isPasswordValid = _UtilsValidation.default.isPasswordValid(password);
+
+      var isConfirmedPasswordValid = _UtilsValidation.default.isPasswordValid(confirmPassword);
+
+      var isPasswordSame = password === confirmPassword;
+
+      var isOrgValid = _UtilsValidation.default.isSelectValid(organisation);
+
+      var isFacValid = _UtilsValidation.default.isSelectValid(faculty);
+
+      var isClassValid = _UtilsValidation.default.isSelectValid(clazz);
+
+      var isYearValid = _UtilsValidation.default.isSelectValid(year);
+
+      if (!isNameValid || !isSurnameValid || !isEmailValid || !isPasswordValid || !isConfirmedPasswordValid || !isPasswordSame || !isOrgValid || !isFacValid || !isClassValid || !isYearValid) {
+        this.setState({
+          isNameValid: isNameValid,
+          isSurnameValid: isSurnameValid,
+          isEmailValid: isEmailValid,
+          isPasswordValid: isPasswordValid,
+          isConfirmPasswordValid: isConfirmedPasswordValid,
+          isPasswordSame: isPasswordSame,
+          isOrgValid: isOrgValid,
+          isFacValid: isFacValid,
+          isClassValid: isClassValid,
+          isYearValid: isYearValid,
+          isLoading: false,
+          error: null
+        });
+        return false;
+      }
+
+      this.setState({
+        isNameValid: "undefined",
+        isSurnameValid: "undefined",
+        isEmailValid: "undefined",
+        isPasswordValid: "undefined",
+        isConfirmPasswordValid: "undefined",
+        isPasswordSame: "undefined",
+        isOrgValid: "undefined",
+        isFacValid: "undefined",
+        isClassValid: "undefined",
+        isYearValid: "undefined",
+        isLoading: true,
+        error: null
+      });
+      return true;
+    }
+  }, {
+    key: "getRegData",
+    value: function getRegData() {
+      var _this$state3 = this.state,
+          name = _this$state3.name,
+          surname = _this$state3.surname,
+          email = _this$state3.email,
+          password = _this$state3.password;
+      var userData = {};
+      userData.name = name;
+      userData.surname = surname;
+      userData.email = email;
+      userData.password = password;
+      var _this$state4 = this.state,
+          organisation = _this$state4.organisation,
+          faculty = _this$state4.faculty,
+          year = _this$state4.year,
+          clazz = _this$state4.clazz;
+      var regData = {};
+      regData.user = userData;
+      regData.orgId = organisation;
+      regData.facId = faculty;
+      regData.classId = clazz;
+      regData.entranceYear = year;
+      return regData;
+    }
+  }, {
+    key: "handleInputChange",
+    value: function handleInputChange(event) {
+      var target = event.target;
+      var name = target.name;
+      var value = target.value;
+      this.setState(_defineProperty({}, name, value));
+    }
+  }, {
+    key: "handleOrgChange",
+    value: function handleOrgChange(event) {
+      var value = event.target.value;
+      this.setState({
+        organisation: value,
+        faculty: "",
+        clazz: ""
+      });
+      this.reTryLoadFac(value);
+    }
+  }, {
+    key: "handleFacChange",
+    value: function handleFacChange(event) {
+      var value = event.target.value;
+      this.setState({
+        faculty: value,
+        clazz: ""
+      });
+      this.reTryLoadClasses(value);
+    }
+  }, {
+    key: "switchVisibility",
+    value: function switchVisibility() {
+      if (this.state.isLoading) return;
+      this.setState({
+        showPassword: !this.state.showPassword
+      });
+    }
+  }, {
+    key: "renderPassword",
+    value: function renderPassword() {
+      return _react.default.createElement("input", {
+        name: "password",
+        type: this.state.showPassword ? "text" : "password",
+        className: "form-control ".concat(this.state.isPasswordValid === 'undefined' ? '' : this.state.isPasswordValid ? 'is-valid' : 'is-invalid'),
+        placeholder: "Password",
+        value: this.state.password,
+        onChange: this.handleInputChange
+      });
+    }
+  }, {
+    key: "renderConfirmPassword",
+    value: function renderConfirmPassword() {
+      return _react.default.createElement("input", {
+        name: "confirmPassword",
+        type: this.state.showPassword ? "text" : "password",
+        className: "form-control ".concat(this.state.isConfirmPasswordValid === 'undefined' ? '' : this.state.isConfirmPasswordValid ? 'is-valid' : 'is-invalid'),
+        placeholder: "Confirm password",
+        value: this.state.confirmPassword,
+        onChange: this.handleInputChange
+      });
+    }
+  }, {
+    key: "renderNameFeedback",
+    value: function renderNameFeedback() {
+      var isNameValid = this.state.isNameValid;
+      if (isNameValid === "undefined") return null;
+      if (isNameValid === false) return _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide a valid name..");
+      return _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Name looks good!");
+    }
+  }, {
+    key: "renderSurnameFeedback",
+    value: function renderSurnameFeedback() {
+      var isSurnameValid = this.state.isSurnameValid;
+      if (isSurnameValid === "undefined") return null;
+      if (isSurnameValid === false) return _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide a valid surname..");
+      return _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Surname looks good!");
+    }
+  }, {
+    key: "renderEmailFeedback",
+    value: function renderEmailFeedback() {
+      var isEmailValid = this.state.isEmailValid;
+      if (isEmailValid === "undefined") return null;
+      if (isEmailValid === false) return _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide a valid email..");
+      return _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Email looks good!");
+    }
+  }, {
+    key: "renderPasswordFeedback",
+    value: function renderPasswordFeedback() {
+      var isPasswordValid = this.state.isPasswordValid;
+      if (isPasswordValid === "undefined") return null;
+      if (isPasswordValid === false) return _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide a valid password..");
+      return _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Password looks good!");
+    }
+  }, {
+    key: "renderConfirmPasswordFeedback",
+    value: function renderConfirmPasswordFeedback() {
+      var isConfirmPasswordValid = this.state.isConfirmPasswordValid;
+      if (isConfirmPasswordValid === "undefined") return null;
+      if (isConfirmPasswordValid === false) return _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide a valid password..");
+      return _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Confirmed password looks good!");
+    }
+  }, {
+    key: "renderSamePasswordsFeedback",
+    value: function renderSamePasswordsFeedback() {
+      var _this$state5 = this.state,
+          isPasswordValid = _this$state5.isPasswordValid,
+          isConfirmPasswordValid = _this$state5.isConfirmPasswordValid,
+          isPasswordSame = _this$state5.isPasswordSame;
+      if (isPasswordSame === "undefined" || !isPasswordValid || !isConfirmPasswordValid) return null;
+      if (isPasswordSame === false) return _react.default.createElement("small", null, _react.default.createElement("div", {
+        className: "text-danger"
+      }, "Passwords do not match!"));
+    }
+  }, {
+    key: "renderOrganisations",
+    value: function renderOrganisations() {
+      if (this.state.isLmsContext) return null;
+      return _react.default.createElement("div", null, _react.default.createElement("div", {
+        className: "input-group form-group"
+      }, _react.default.createElement("div", {
+        className: "input-group-prepend"
+      }, _react.default.createElement("label", {
+        className: "input-group-text",
+        htmlFor: "inputGroupSelect01"
+      }, "Organisation")), _react.default.createElement("select", {
+        name: "organisation",
+        id: "inputGroupSelect01",
+        className: "custom-select ".concat(this.state.isOrgValid === 'undefined' ? '' : this.state.isOrgValid ? 'is-valid' : 'is-invalid'),
+        value: this.state.organisation,
+        onChange: this.handleOrgChange
+      }, this.state.organisations.map(function (o) {
+        return _react.default.createElement("option", {
+          key: o.orgId,
+          value: o.orgId
+        }, o.name);
+      })), this.state.isOrgValid === "undefined" ? null : this.state.isOrgValid === false ? _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, choose an organisation..") : _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Organization is selected!")), this.state.isOrgLoading ? this.renderMessageFetching() : this.state.orgError ? this.renderMessageFailure("org") : null);
+    }
+  }, {
+    key: "renderSubmitting",
+    value: function renderSubmitting() {
+      if (!this.state.isLoading) return null;
+      return _react.default.createElement("div", {
+        className: "text-center text-info mt-n2 mb-2"
+      }, _react.default.createElement("span", null, "Authorizing...", _react.default.createElement("div", {
+        className: "spinner-grow spinner-grow-sm text-info",
+        role: "uploading"
+      })));
+    }
+  }, {
+    key: "renderMessageFetching",
+    value: function renderMessageFetching() {
+      return _react.default.createElement("div", {
+        className: "mb-4"
+      }, _react.default.createElement("small", null, _react.default.createElement("span", {
+        className: "text-secondary mt-n3 float-right"
+      }, "Fetching data...")));
+    }
+  }, {
+    key: "renderMessageFailure",
+    value: function renderMessageFailure(action) {
+      var _this7 = this;
+
+      return _react.default.createElement("div", {
+        className: "mb-4"
+      }, _react.default.createElement("small", null, _react.default.createElement("span", {
+        className: "text-danger mt-n3 float-right"
+      }, "Failed to load!\xA0", _react.default.createElement("a", {
+        href: "#",
+        className: "badge badge-secondary",
+        onClick: function onClick() {
+          return _this7.reTry(action);
+        }
+      }, "ReTry"))));
+    }
+  }, {
+    key: "renderFailure",
+    value: function renderFailure() {
+      if (!this.state.error) return null;
+      return _react.default.createElement("div", {
+        className: "alert alert-danger p-1",
+        role: "alert"
+      }, _react.default.createElement(_Failure.default, {
+        message: this.state.error.message
+      }));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this8 = this;
+
+      var _this$state6 = this.state,
+          isRegCancelled = _this$state6.isRegCancelled,
+          isRegSuccess = _this$state6.isRegSuccess;
+      if (isRegCancelled) return _react.default.createElement(_Login.default, null);
+
+      if (isRegSuccess) {
+        var _this$state7 = this.state,
+            email = _this$state7.email,
+            password = _this$state7.password;
+        return _react.default.createElement(_RegistrationSuccess.default, {
+          email: email,
+          password: password
+        });
+      }
+
+      return _react.default.createElement("div", {
+        className: "container-fluid"
+      }, _react.default.createElement("div", {
+        className: "row mt-5"
+      }, _react.default.createElement("div", {
+        className: "col-1 col-sm-2 col-md-3 col-lg-4"
+      }), _react.default.createElement("div", {
+        className: "col-10 col-sm-8 col-md-6 col-lg-4"
+      }, _react.default.createElement("div", {
+        className: "card bg-transparent"
+      }, _react.default.createElement("div", {
+        className: "card-header pt-1 pb-1"
+      }, _react.default.createElement("small", null, _react.default.createElement("div", {
+        className: "text-secondary text-center"
+      }, "Registration"))), _react.default.createElement("div", {
+        className: "card-body"
+      }, this.renderSubmitting(), this.renderFailure(), _react.default.createElement("form", {
+        onSubmit: this.handleSubmit
+      }, _react.default.createElement("fieldset", {
+        disabled: this.state.isLoading ? true : false
+      }, _react.default.createElement("div", {
+        className: "input-group form-group",
+        title: "Name"
+      }, _react.default.createElement("input", {
+        type: "text",
+        name: "name",
+        className: "form-control ".concat(this.state.isNameValid === 'undefined' ? '' : this.state.isNameValid ? 'is-valid' : 'is-invalid'),
+        placeholder: "Name",
+        value: this.state.name,
+        onChange: this.handleInputChange,
+        title: "Your first name"
+      }), this.renderNameFeedback()), _react.default.createElement("div", {
+        className: "input-group form-group",
+        title: "Surname"
+      }, _react.default.createElement("input", {
+        type: "text",
+        name: "surname",
+        className: "form-control ".concat(this.state.isSurnameValid === 'undefined' ? '' : this.state.isSurnameValid ? 'is-valid' : 'is-invalid'),
+        placeholder: "Surname",
+        value: this.state.surname,
+        onChange: this.handleInputChange
+      }), this.renderSurnameFeedback()), _react.default.createElement("div", {
+        className: "input-group form-group",
+        title: "Email"
+      }, _react.default.createElement("input", {
+        type: "email",
+        name: "email",
+        className: "form-control ".concat(this.state.isEmailValid === 'undefined' ? '' : this.state.isEmailValid ? 'is-valid' : 'is-invalid'),
+        placeholder: "email@example.com",
+        value: this.state.email,
+        onChange: this.handleInputChange
+      }), this.renderEmailFeedback()), _react.default.createElement("div", {
+        className: "input-group form-group",
+        title: "Password"
+      }, this.renderPassword(), this.renderPasswordFeedback()), _react.default.createElement("div", {
+        className: "input-group form-group mt-n2",
+        title: "Confirm password"
+      }, this.renderConfirmPassword(), this.renderConfirmPasswordFeedback(), this.renderSamePasswordsFeedback()), _react.default.createElement("div", {
+        className: "text-right mt-n3 mb-n2",
+        title: "Change password visibility"
+      }, _react.default.createElement("a", {
+        href: "#",
+        className: "badge badge-secondary pl-2 pr-2",
+        onClick: function onClick() {
+          return _this8.switchVisibility();
+        }
+      }, this.state.showPassword ? _react.default.createElement(_fa.FaEye, {
+        color: "white"
+      }) : _react.default.createElement(_fa.FaEyeSlash, {
+        color: "white"
+      }))), _react.default.createElement("hr", null), this.renderOrganisations(), _react.default.createElement("div", {
+        className: "input-group form-group"
+      }, _react.default.createElement("div", {
+        className: "input-group-prepend"
+      }, _react.default.createElement("label", {
+        className: "input-group-text",
+        htmlFor: "inputGroupSelect02"
+      }, "Faculty")), _react.default.createElement("select", {
+        name: "faculty",
+        id: "inputGroupSelect02",
+        className: "custom-select ".concat(this.state.isFacValid === 'undefined' ? '' : this.state.isFacValid ? 'is-valid' : 'is-invalid'),
+        value: this.state.faculty,
+        onChange: this.handleFacChange
+      }, this.state.faculties.map(function (item) {
+        return _react.default.createElement("option", {
+          key: item.facId,
+          value: item.facId
+        }, item.name);
+      })), this.state.isFacValid === "undefined" ? null : this.state.isFacValid === false ? _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, choose a faculty..") : _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Faculty is selected!")), this.state.isFacLoading ? this.renderMessageFetching() : this.state.facError ? this.renderMessageFailure("fac") : null, _react.default.createElement("div", {
+        className: "input-group form-group"
+      }, _react.default.createElement("div", {
+        className: "input-group-prepend"
+      }, _react.default.createElement("label", {
+        className: "input-group-text",
+        htmlFor: "inputGroupSelect03"
+      }, "Class")), _react.default.createElement("select", {
+        name: "clazz",
+        id: "inputGroupSelect03",
+        className: "custom-select ".concat(this.state.isClassValid === 'undefined' ? '' : this.state.isClassValid ? 'is-valid' : 'is-invalid'),
+        value: this.state.clazz,
+        onChange: this.handleInputChange
+      }, this.state.classes.map(function (item) {
+        return _react.default.createElement("option", {
+          key: item.classId,
+          value: item.classId
+        }, item.name);
+      })), this.state.isClassValid === "undefined" ? null : this.state.isClassValid === false ? _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, choose a class..") : _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Class is selected!")), this.state.isClassLoading ? this.renderMessageFetching() : this.state.classError ? this.renderMessageFailure("clazz") : null, _react.default.createElement("div", {
+        className: "input-group form-group w-50",
+        title: "Entrance year"
+      }, _react.default.createElement("div", {
+        className: "input-group-prepend"
+      }, _react.default.createElement("label", {
+        className: "input-group-text",
+        htmlFor: "inputGroupSelect04"
+      }, "Year")), _react.default.createElement("select", {
+        name: "year",
+        id: "inputGroupSelect04",
+        className: "custom-select ".concat(this.state.isYearValid === 'undefined' ? '' : this.state.isYearValid ? 'is-valid' : 'is-invalid'),
+        value: this.state.year,
+        onChange: this.handleInputChange
+      }, _react.default.createElement("option", {
+        value: null
+      }), _react.default.createElement("option", {
+        value: 2017
+      }, "2017"), _react.default.createElement("option", {
+        value: 2018
+      }, "2018"), _react.default.createElement("option", {
+        value: 2019
+      }, "2019"), _react.default.createElement("option", {
+        value: 2020
+      }, "2020"), _react.default.createElement("option", {
+        value: 2021
+      }, "2021"), _react.default.createElement("option", {
+        value: 2022
+      }, "2022"), _react.default.createElement("option", {
+        value: 2023
+      }, "2023"), _react.default.createElement("option", {
+        value: 2024
+      }, "2024"), _react.default.createElement("option", {
+        value: 2025
+      }, "2025")), this.state.isYearValid === "undefined" ? null : this.state.isYearValid === false ? _react.default.createElement("div", {
+        className: "invalid-feedback"
+      }, "Please, provide year of entrance..") : _react.default.createElement("div", {
+        className: "valid-feedback"
+      }, "Entrance year looks good!")), _react.default.createElement("div", {
+        className: "form-group text-center mb-n1"
+      }, _react.default.createElement("button", {
+        type: "submit",
+        value: "Sign Up",
+        className: "btn btn-sm btn-success pl-5 pr-5"
+      }, _react.default.createElement("div", {
+        className: "align-middle"
+      }, _react.default.createElement(_fa.FaSignInAlt, {
+        color: "white"
+      }), " Sign Up"))), _react.default.createElement("div", {
+        className: "form-group text-center mt-2 mb-n3"
+      }, _react.default.createElement("a", {
+        href: "#",
+        className: "badge badge-secondary",
+        onClick: function onClick() {
+          return _this8.resetForm();
+        }
+      }, "Reset"))))), _react.default.createElement("div", {
+        className: "card-footer pt-1 pb-1"
+      }, _react.default.createElement("div", {
+        className: "text-center text-secondary"
+      }, _react.default.createElement("small", null, "Already registered? ", _react.default.createElement("a", {
+        href: "#",
+        onClick: function onClick() {
+          return _this8.setState({
+            isRegCancelled: true
+          });
+        }
+      }, "Login now!")))))), _react.default.createElement("div", {
+        className: "col-1 col-sm-2 col-md-3 col-lg-4"
+      })));
+    }
+  }]);
+
+  return Registration;
+}(_react.Component);
+
+Registration.propTypes = {
+  regOptions: _propTypes.default.object.isRequired // like: { lms: false, allowed: true },
+
+};
+var _default = Registration;
+exports.default = _default;
+},{"react":"HdMw","prop-types":"Iix9","./Login":"veJo","./Failure":"89he","react-icons/fa":"mJqe","./ApiRegistration":"SN4b","./UtilsValidation":"TNHS","./RegistrationSuccess":"Jz7l","./Utils":"osRP","../main.css":"Sr7R","bootstrap/dist/css/bootstrap.min.css":"H97Y"}],"veJo":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28698,7 +33983,13 @@ var _LogoMini = _interopRequireDefault(require("./LogoMini"));
 
 var _Failure = _interopRequireDefault(require("./Failure"));
 
+var _Registration = _interopRequireDefault(require("./Registration"));
+
 var _fa = require("react-icons/fa");
+
+var _UtilsValidation = _interopRequireDefault(require("./UtilsValidation"));
+
+var _Utils = _interopRequireDefault(require("./Utils"));
 
 require("../main.css");
 
@@ -28709,6 +34000,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -28738,28 +34031,93 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Login).call(this, props));
     _this.state = {
-      username: "student@example.com",
-      password: "dT09Rx06",
+      username: !props.username ? "student@example.com" : props.username,
+      password: !props.password ? "dT09Rx06" : props.password,
       isRemember: false,
       showPassword: false,
       isEmailValid: "undefined",
       isPasswordValid: "undefined",
-      isLoaded: true,
+      // Sets by API call: is self-registration of users allowed by server settings?
+      regOptions: {
+        lms: false,
+        allowed: false
+      },
+      // Go to registration view
+      isRegister: false,
+      isLoading: false,
       error: null
     };
     _this.handleAuthentication = _this.handleAuthentication.bind(_assertThisInitialized(_this));
-    _this.handleUsernameChange = _this.handleUsernameChange.bind(_assertThisInitialized(_this));
-    _this.handlePasswordChange = _this.handlePasswordChange.bind(_assertThisInitialized(_this));
-    _this.validateEmail = _this.validateEmail.bind(_assertThisInitialized(_this));
-    _this.validatePassword = _this.validatePassword.bind(_assertThisInitialized(_this));
+    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this)); //this.didRegister = this.didRegister.bind(this);
+    //this.doLogin = this.doLogin.bind(this);
+
     return _this;
   }
 
   _createClass(Login, [{
-    key: "preTryAuthenticate",
-    value: function preTryAuthenticate() {
-      var isEmailValid = this.validateEmail();
-      var isPasswordValid = this.validatePassword();
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      console.log("Trying to fetch reg. options...");
+      var url = _Utils.default.baseUrl() + "/self-registration/options";
+      fetch(url, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: new Headers({
+          'Accept': 'application/json'
+        })
+      }).then(function (response) {
+        if (!response.ok) throw Error("Failed to get reg. options"); // Headers LMS-Registration and Non-LMS-Registration are expected
+        // If not default result to false
+
+        return response.json();
+      }).then(function (response) {
+        console.log(response);
+
+        _this2.setState({
+          regOptions: response
+        });
+      }).catch(function (error) {
+        console.error(error.message + " fallback to default");
+      });
+    }
+  }, {
+    key: "handleAuthentication",
+    value: function handleAuthentication(event) {
+      var _this3 = this;
+
+      event.preventDefault();
+      console.log("Submitting: " + JSON.stringify(this.state));
+      if (!this.validate()) return;
+      var url = _Utils.default.baseUrl() + "/login?username=" + this.state.username + "&password=" + this.state.password;
+      fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin'
+      }).then(function (response) {
+        // Either 302 (redirect) or 401 Unauthorized (unauthenticated) expected
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+
+        if (!response.ok) throw Error("Failed authentication request. Correct your credentials and try again.");
+        throw Error("Unexpected response status = " + response.status);
+      }).catch(function (error) {
+        console.error("Error occurred = " + error.message);
+
+        _this3.setState({
+          isLoading: false,
+          error: error
+        });
+      });
+    }
+  }, {
+    key: "validate",
+    value: function validate() {
+      var isEmailValid = _UtilsValidation.default.isEmailValid(this.state.username);
+
+      var isPasswordValid = _UtilsValidation.default.isPasswordValid(this.state.password);
 
       if (!isEmailValid || !isPasswordValid) {
         this.setState({
@@ -28773,87 +34131,51 @@ function (_Component) {
       this.setState({
         isEmailValid: "undefined",
         isPasswordValid: "undefined",
-        isLoaded: false,
+        isLoading: true,
         error: null
       });
       return true;
     }
   }, {
-    key: "handleAuthentication",
-    value: function handleAuthentication(event) {
-      var _this2 = this;
-
-      event.preventDefault();
-      console.log("Submitting: " + JSON.stringify(this.state));
-      if (!this.preTryAuthenticate()) return;
-      var url = this.props.baseUrl + "/login?username=" + this.state.username + "&password=" + this.state.password;
-      fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin'
-      }).then(function (response) {
-        // Either 302 (redirect) or 401 Unauthorized (unauthenticeted) expected
-        if (response.redirected) {
-          window.location.href = response.url;
-          return;
-        }
-
-        if (!response.ok) throw Error("Failed authentication request..");
-        throw Error("Unexpected response status = " + response.status);
-      }).catch(function (error) {
-        console.error("Error occurred = " + error.message);
-
-        _this2.setState({
-          error: error
-        });
-      });
+    key: "handleInputChange",
+    value: function handleInputChange(event) {
+      var target = event.target;
+      var name = target.name;
+      var value = target.type === 'checkbox' ? target.checked : target.value;
+      this.setState(_defineProperty({}, name, value));
     }
   }, {
-    key: "handleUsernameChange",
-    value: function handleUsernameChange(event) {
+    key: "resetForm",
+    value: function resetForm() {
+      if (this.state.isLoading) return;
       this.setState({
-        username: event.target.value
-      });
-    }
-  }, {
-    key: "handlePasswordChange",
-    value: function handlePasswordChange(event) {
-      this.setState({
-        password: event.target.value
-      });
-    }
-  }, {
-    key: "handleRememberChange",
-    value: function handleRememberChange() {
-      this.setState({
-        isRemember: !this.state.isRemember
+        username: "",
+        password: "",
+        isRemember: false,
+        showPassword: false,
+        isEmailValid: "undefined",
+        isPasswordValid: "undefined",
+        error: null
       });
     }
   }, {
     key: "switchVisibility",
     value: function switchVisibility() {
+      if (this.state.isLoading) return;
       this.setState({
         showPassword: !this.state.showPassword
       });
     }
   }, {
-    key: "validateEmail",
-    value: function validateEmail() {
-      return this.state.username.length > 2 && this.state.username.includes('@') ? true : false;
-    }
-  }, {
-    key: "validatePassword",
-    value: function validatePassword() {
-      return this.state.password.length > 6 ? true : false;
-    }
-  }, {
     key: "renderPassword",
     value: function renderPassword() {
       return _react.default.createElement("input", {
+        name: "password",
         type: this.state.showPassword ? "text" : "password",
         className: "form-control ".concat(this.state.isPasswordValid === 'undefined' ? '' : this.state.isPasswordValid ? 'is-valid' : 'is-invalid'),
         placeholder: "password",
         value: this.state.password,
-        onChange: this.handlePasswordChange
+        onChange: this.handleInputChange
       });
     }
   }, {
@@ -28863,7 +34185,7 @@ function (_Component) {
       if (isEmailValid === "undefined") return null;
       if (isEmailValid === false) return _react.default.createElement("div", {
         className: "invalid-feedback"
-      }, "Please provide a valid email..");
+      }, "Please, provide a valid email..");
       return _react.default.createElement("div", {
         className: "valid-feedback"
       }, "Email looks good!");
@@ -28875,27 +34197,61 @@ function (_Component) {
       if (isPasswordValid === "undefined") return null;
       if (isPasswordValid === false) return _react.default.createElement("div", {
         className: "invalid-feedback"
-      }, "Please provide a valid password..");
+      }, "Please, provide a valid password..");
       return _react.default.createElement("div", {
         className: "valid-feedback"
       }, "Password looks good!");
+    }
+  }, {
+    key: "renderChecking",
+    value: function renderChecking() {
+      if (!this.state.isLoading) return null;
+      return _react.default.createElement("div", {
+        className: "text-center text-info mt-n2 mb-2"
+      }, _react.default.createElement("span", null, "Authentication...", _react.default.createElement("div", {
+        className: "spinner-grow spinner-grow-sm text-info",
+        role: "status"
+      })));
+    }
+  }, {
+    key: "renderFooter",
+    value: function renderFooter() {
+      var _this4 = this;
+
+      if (!this.state.regOptions.allowed) return null;
+      return _react.default.createElement("div", {
+        className: "text-center text-secondary"
+      }, _react.default.createElement("small", null, "Don't have an account? ", _react.default.createElement("a", {
+        href: "#",
+        onClick: function onClick() {
+          return _this4.setState({
+            isRegister: true
+          });
+        }
+      }, "Sign Up")));
     }
   }, {
     key: "renderFailure",
     value: function renderFailure() {
       if (!this.state.error) return null;
       return _react.default.createElement("div", {
-        className: "alert alert-danger",
+        className: "alert alert-danger p-1",
         role: "alert"
-      }, _react.default.createElement("small", null, _react.default.createElement(_Failure.default, {
+      }, _react.default.createElement(_Failure.default, {
         message: this.state.error.message
-      })));
+      }));
     }
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this5 = this;
 
+      var _this$state = this.state,
+          isRegister = _this$state.isRegister,
+          regOptions = _this$state.regOptions;
+      if (isRegister) return _react.default.createElement(_Registration.default, {
+        regOptions: regOptions
+      });
       return _react.default.createElement("div", {
         className: "container-fluid"
       }, _react.default.createElement(_LogoMini.default, null), _react.default.createElement("div", {
@@ -28907,9 +34263,15 @@ function (_Component) {
       }, _react.default.createElement("div", {
         className: "card bg-transparent"
       }, _react.default.createElement("div", {
+        className: "card-header pt-1 pb-1"
+      }, _react.default.createElement("small", null, _react.default.createElement("div", {
+        className: "text-secondary text-center"
+      }, "Authentication"))), _react.default.createElement("div", {
         className: "card-body"
-      }, this.renderFailure(), _react.default.createElement("form", {
+      }, this.renderChecking(), this.renderFailure(), _react.default.createElement("form", {
         onSubmit: this.handleAuthentication
+      }, _react.default.createElement("fieldset", {
+        disabled: this.state.isLoading ? true : false
       }, _react.default.createElement("div", {
         className: "input-group form-group"
       }, _react.default.createElement("div", {
@@ -28920,10 +34282,11 @@ function (_Component) {
         color: "white"
       }))), _react.default.createElement("input", {
         type: "text",
+        name: "username",
         className: "form-control ".concat(this.state.isEmailValid === 'undefined' ? '' : this.state.isEmailValid ? 'is-valid' : 'is-invalid'),
-        placeholder: "e-mail",
+        placeholder: "name@example.com",
         value: this.state.username,
-        onChange: this.handleUsernameChange
+        onChange: this.handleInputChange
       }), this.renderEmailFeedback()), _react.default.createElement("div", {
         className: "input-group form-group"
       }, _react.default.createElement("div", {
@@ -28931,7 +34294,7 @@ function (_Component) {
       }, _react.default.createElement("span", {
         className: "input-group-text bg-info",
         onClick: function onClick() {
-          return _this3.switchVisibility();
+          return _this5.switchVisibility();
         }
       }, this.state.showPassword ? _react.default.createElement(_fa.FaEye, {
         color: "white"
@@ -28941,28 +34304,31 @@ function (_Component) {
         className: "custom-control custom-checkbox"
       }, _react.default.createElement("input", {
         type: "checkbox",
+        name: "isRemember",
         checked: this.state.isRemember,
-        onChange: function onChange() {
-          return _this3.handleRememberChange();
-        },
+        onChange: this.handleInputChange,
         className: "custom-control-input",
         id: "remember"
       }), _react.default.createElement("label", {
-        className: "custom-control-label text-secondary",
+        className: "custom-control-label text-secondary mt-n2",
         htmlFor: "remember"
       }, "Remember me")), _react.default.createElement("div", {
-        className: "form-group"
+        className: "form-group text-center mb-n1"
       }, _react.default.createElement("input", {
         type: "submit",
-        value: "Login>>",
-        className: "btn btn-info pl-4 pr-4 float-right"
-      })))), _react.default.createElement("div", {
-        className: "card-footer"
-      }, _react.default.createElement("div", {
-        className: "text-center text-secondary"
-      }, _react.default.createElement("small", null, "Don't have an account? ", _react.default.createElement("a", {
-        href: "#"
-      }, "Sign Up"))), _react.default.createElement("div", {
+        value: "Log In",
+        className: "btn btn-sm btn-info pl-5 pr-5 mr-1"
+      })), _react.default.createElement("div", {
+        className: "form-group text-center mt-2 mb-n3"
+      }, _react.default.createElement("a", {
+        href: "#",
+        className: "badge badge-secondary",
+        onClick: function onClick() {
+          return _this5.resetForm();
+        }
+      }, "Reset"))))), _react.default.createElement("div", {
+        className: "card-footer pt-0 pb-0"
+      }, this.renderFooter(), _react.default.createElement("div", {
         className: "d-flex justify-content-center"
       }, _react.default.createElement("small", null, _react.default.createElement("a", {
         href: "#"
@@ -28976,11 +34342,12 @@ function (_Component) {
 }(_react.Component);
 
 Login.propTypes = {
-  baseUrl: _propTypes.default.string
+  username: _propTypes.default.string,
+  password: _propTypes.default.string
 };
 var _default = Login;
 exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./LogoMini":"K8xy","./Failure":"89he","react-icons/fa":"mJqe","../main.css":"Sr7R","bootstrap/dist/css/bootstrap.min.css":"H97Y"}],"mnjM":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./LogoMini":"K8xy","./Failure":"89he","./Registration":"FdYk","react-icons/fa":"mJqe","./UtilsValidation":"TNHS","./Utils":"osRP","../main.css":"Sr7R","bootstrap/dist/css/bootstrap.min.css":"H97Y"}],"mnjM":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -28989,17 +34356,10 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _Login = _interopRequireDefault(require("./src/Login"));
 
-var _LogoMini = _interopRequireDefault(require("./src/LogoMini"));
-
 require("bootstrap/dist/css/bootstrap.min.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-var realBaseUrl = !baseUrl || baseUrl === "http://localhost:1234" ? "http://localhost:8090" : baseUrl;
-
-_reactDom.default.render(_react.default.createElement(_Login.default, {
-  baseUrl: realBaseUrl
-}), document.getElementById('app')); //ReactDOM.render(<LogoMini baseUrl={realBaseUrl}/>, document.getElementById('app'));
-},{"react":"HdMw","react-dom":"X9zx","./src/Login":"veJo","./src/LogoMini":"K8xy","bootstrap/dist/css/bootstrap.min.css":"H97Y"}]},{},["mnjM"], null)
+_reactDom.default.render(_react.default.createElement(_Login.default, null), document.getElementById('app'));
+},{"react":"HdMw","react-dom":"X9zx","./src/Login":"veJo","bootstrap/dist/css/bootstrap.min.css":"H97Y"}]},{},["mnjM"], null)
 //# sourceMappingURL=/login.js.map

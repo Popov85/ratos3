@@ -53,6 +53,7 @@ public class SettingsFBService {
 
     @Transactional
     public void update(@NonNull final SettingsFBInDto dto) {
+        if (dto.getSettingsId()==null) throw new RuntimeException("SettingsId is not found!");
         settingsFBRepository.save(dtoSettingsFBTransformer.toEntity(dto));
     }
 

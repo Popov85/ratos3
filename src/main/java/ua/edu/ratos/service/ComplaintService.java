@@ -50,7 +50,7 @@ public class ComplaintService {
 
     /**
      * A user can simultaneously send multiple types of complaints about single question.
-     * All complaints of the same questionType and about the same question are summarized.
+     * All complaints of the same type and about the same question are summarized.
      * @param questionId question a user complains on
      * @param complaintTypes a set of complaint types
      * @param depId department to which the question belongs (derives from a session scheme's department)

@@ -63,8 +63,10 @@ public class StudentService {
     @Transactional
     @Secured({"ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public void deactivate(@NonNull final Long studId) {
-        studentRepository.findById(studId).orElseThrow(()->new EntityNotFoundException(STUDENT_NOT_FOUND + studId))
-                .getUser().setActive(false);
+        studentRepository.findById(studId)
+                .orElseThrow(()->new EntityNotFoundException(STUDENT_NOT_FOUND + studId))
+                .getUser()
+                .setActive(false);
     }
 
     //--------------------------------------------------------One (for edit)--------------------------------------------

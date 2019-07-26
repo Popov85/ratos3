@@ -1279,12 +1279,9 @@ function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      var _this$props = this.props,
-          schemeId = _this$props.schemeId,
-          baseUrl = _this$props.baseUrl;
+      var schemeId = this.props.schemeId;
       if (this.state.isReStarted) return _react.default.createElement(_Launcher.default, {
-        schemeId: schemeId,
-        baseUrl: baseUrl
+        schemeId: schemeId
       });
       var _this$props$result = this.props.result,
           user = _this$props$result.user,
@@ -1353,8 +1350,7 @@ function (_Component) {
 
 Cancelled.propTypes = {
   schemeId: _propTypes.default.number.isRequired,
-  result: _propTypes.default.object.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
+  result: _propTypes.default.object.isRequired
 };
 var _default = Cancelled;
 exports.default = _default;
@@ -33793,6 +33789,8 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
 var _Launcher = _interopRequireDefault(require("./Launcher"));
 
 var _Result = _interopRequireDefault(require("./Result"));
@@ -33800,8 +33798,6 @@ var _Result = _interopRequireDefault(require("./Result"));
 var _ResultByThemes = _interopRequireDefault(require("./ResultByThemes"));
 
 var _ResultByQuestions = _interopRequireDefault(require("./ResultByQuestions"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33891,12 +33887,9 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this$props = this.props,
-          schemeId = _this$props.schemeId,
-          baseUrl = _this$props.baseUrl;
+      var schemeId = this.props.schemeId;
       if (this.state.reStart) return _react.default.createElement(_Launcher.default, {
-        schemeId: schemeId,
-        baseUrl: baseUrl
+        schemeId: schemeId
       });
       return _react.default.createElement("div", null, _react.default.createElement(_Result.default, {
         result: this.props.result
@@ -33919,11 +33912,10 @@ var propTypes = {
   schemeId: _propTypes.default.number.isRequired,
   result: _propTypes.default.object.isRequired,
   mode: _propTypes.default.object.isRequired,
-  settings: _propTypes.default.object.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
+  settings: _propTypes.default.object.isRequired
 };
 Finish.propTypes = propTypes;
-},{"react":"HdMw","./Launcher":"gUbM","./Result":"tAza","./ResultByThemes":"qbT3","./ResultByQuestions":"YoWB","prop-types":"Iix9"}],"osRP":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Launcher":"gUbM","./Result":"tAza","./ResultByThemes":"qbT3","./ResultByQuestions":"YoWB"}],"osRP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33931,9 +33923,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var Utils = {
+  baseUrl: function baseUrl() {
+    var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
+    return !baseUrl || baseUrl === "http://localhost:1234" ? "http://localhost:8090" : baseUrl;
+  },
   // split array into chunks of n
   chunkArray: function chunkArray(arr, size) {
-    //console.log("chunkArray was invoked");
     var result = [];
 
     for (var i = 0; i < arr.length; i += size) {
@@ -33942,8 +33937,9 @@ var Utils = {
 
     return result;
   },
-  helper1: function helper1() {},
-  helper2: function helper2(param1) {},
+  isEmptyArray: function isEmptyArray(array) {
+    return !Array.isArray(!array) || !array.length;
+  },
   helper3: function helper3(param1, param2) {}
 };
 var _default = Utils;
@@ -34010,7 +34006,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 var nextUrl = "/student/session/next";
 var finishUrl = "/student/session/finish";
 var finishBatchUrl = "/student/session/finish-batch";
@@ -34212,7 +34207,7 @@ function (_React$Component) {
     value: function tryCancelAPICall() {
       var _this3 = this;
 
-      var url = baseUrl + cancelUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      var url = _Utils.default.baseUrl() + cancelUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'GET',
         credentials: 'same-origin',
@@ -34257,7 +34252,7 @@ function (_React$Component) {
     value: function tryNextAPICall(batchOut) {
       var _this4 = this;
 
-      var url = baseUrl + nextUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      var url = _Utils.default.baseUrl() + nextUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -34321,7 +34316,7 @@ function (_React$Component) {
     value: function tryFinishAPICall() {
       var _this5 = this;
 
-      var url = baseUrl + finishUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      var url = _Utils.default.baseUrl() + finishUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'GET',
         credentials: 'same-origin',
@@ -34366,7 +34361,7 @@ function (_React$Component) {
     value: function tryFinishBatchAPICall(batchOut) {
       var _this6 = this;
 
-      var url = baseUrl + finishBatchUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      var url = _Utils.default.baseUrl() + finishBatchUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -34699,24 +34694,19 @@ function (_React$Component) {
           isFinished = _this$state.isFinished,
           isClearResponses = _this$state.isClearResponses,
           result = _this$state.result;
-      var _this$props = this.props,
-          schemeInfo = _this$props.schemeInfo,
-          baseUrl = _this$props.baseUrl;
+      var schemeInfo = this.props.schemeInfo;
       if (isCancelled) return _react.default.createElement(_Cancelled.default, {
         schemeId: schemeInfo.schemeId,
-        result: result,
-        baseUrl: baseUrl
+        result: result
       });
       if (isFinished) return _react.default.createElement(_Finish.default, {
         schemeId: schemeInfo.schemeId,
         settings: schemeInfo.settings,
-        result: result,
-        baseUrl: this.props.baseUrl
+        result: result
       });
       if (isClearResponses) return _react.default.createElement(Batch, {
         schemeInfo: schemeInfo,
-        batch: this.state.batch,
-        baseUrl: baseUrl
+        batch: this.state.batch
       });
       return this.renderBatch();
     }
@@ -34728,8 +34718,7 @@ function (_React$Component) {
 exports.default = Batch;
 var propTypes = {
   schemeInfo: _propTypes.default.object.isRequired,
-  batch: _propTypes.default.object,
-  baseUrl: _propTypes.default.string.isRequired
+  batch: _propTypes.default.object
 };
 Batch.propTypes = propTypes;
 },{"react":"HdMw","prop-types":"Iix9","react-modal":"dIOr","react-countdown-now":"BU/I","./Spinner":"cmYb","./Failure":"89he","./McqMulti":"apY/","./McqSingle":"Kn0O","./Finish":"3nTs","./Cancelled":"9i99","./Utils":"osRP","react-icons/fa":"mJqe","../main.css":"Sr7R"}],"PKgD":[function(require,module,exports) {
@@ -34989,6 +34978,8 @@ require("../main.css");
 
 var _Header = _interopRequireDefault(require("./Header"));
 
+var _Utils = _interopRequireDefault(require("./Utils"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -35037,7 +35028,7 @@ function (_React$Component) {
     value: function logout() {
       var _this2 = this;
 
-      var url = this.props.baseUrl + "/logout";
+      var url = _Utils.default.baseUrl() + "/logout";
       fetch(url, {
         method: 'POST',
         credentials: 'same-origin'
@@ -35045,7 +35036,7 @@ function (_React$Component) {
         if (!response.ok) throw Error("Failed logout request...");
         return response.text();
       }).then(function () {
-        window.location.href = _this2.props.baseUrl + "/login?logout";
+        window.location.href = _Utils.default.baseUrl() + "/login?logout";
       }).catch(function (error) {
         console.error("Error occurred = " + error.message);
 
@@ -35069,7 +35060,7 @@ function (_React$Component) {
     value: function tryStartAPICall() {
       var _this3 = this;
 
-      var url = this.props.baseUrl + startUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
+      var url = _Utils.default.baseUrl() + startUrl + "?schemeId=" + this.props.schemeInfo.schemeId;
       fetch(url, {
         method: 'GET',
         credentials: 'same-origin',
@@ -35119,24 +35110,18 @@ function (_React$Component) {
   }, {
     key: "renderBatch",
     value: function renderBatch() {
-      var _this$props = this.props,
-          schemeInfo = _this$props.schemeInfo,
-          baseUrl = _this$props.baseUrl;
+      var schemeInfo = this.props.schemeInfo;
       return _react.default.createElement(_Batch.default, {
         schemeInfo: schemeInfo,
-        baseUrl: baseUrl,
         batch: this.state.batch
       });
     }
   }, {
     key: "renderOpened",
     value: function renderOpened() {
-      var _this$props2 = this.props,
-          schemeInfo = _this$props2.schemeInfo,
-          baseUrl = _this$props2.baseUrl;
+      var schemeInfo = this.props.schemeInfo;
       return _react.default.createElement(_Opened.default, {
-        schemeInfo: schemeInfo,
-        baseUrl: baseUrl
+        schemeInfo: schemeInfo
       });
     }
   }, {
@@ -35294,11 +35279,10 @@ function (_React$Component) {
 
 exports.default = Start;
 var propTypes = {
-  schemeInfo: _propTypes.default.object.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
+  schemeInfo: _propTypes.default.object.isRequired
 };
 Start.propTypes = propTypes;
-},{"react":"HdMw","prop-types":"Iix9","./Opened":"PKgD","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he","./Logo":"1HB+","../main.css":"Sr7R","./Header":"yRft"}],"Bens":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Opened":"PKgD","./Batch":"GH7v","./Spinner":"cmYb","./Failure":"89he","./Logo":"1HB+","../main.css":"Sr7R","./Header":"yRft","./Utils":"osRP"}],"Bens":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35317,6 +35301,8 @@ var _Spinner = _interopRequireDefault(require("./Spinner"));
 var _Failure = _interopRequireDefault(require("./Failure"));
 
 var _Start = _interopRequireDefault(require("./Start"));
+
+var _Utils = _interopRequireDefault(require("./Utils"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35378,7 +35364,7 @@ function (_Component) {
     value: function tryInfoAPICall() {
       var _this2 = this;
 
-      var infoUrl = this.props.baseUrl + "/info/schemes/" + this.props.schemeId;
+      var infoUrl = _Utils.default.baseUrl() + "/info/schemes/" + this.props.schemeId;
       fetch(infoUrl, {
         method: 'GET',
         credentials: 'same-origin'
@@ -35432,17 +35418,14 @@ function (_Component) {
           isLoaded = _this$state.isLoaded,
           error = _this$state.error,
           schemeInfo = _this$state.schemeInfo;
-      var baseUrl = this.props.baseUrl;
       if (!isLoaded) return _react.default.createElement("div", null, _react.default.createElement("div", {
         className: "mb-2"
       }, _react.default.createElement(_Logo.default, null)), _react.default.createElement(_Spinner.default, {
         message: "Loading info from server"
       }));
-      if (error) return this.renderFailure(); // Return Start
-
+      if (error) return this.renderFailure();
       return _react.default.createElement(_Start.default, {
-        schemeInfo: schemeInfo,
-        baseUrl: baseUrl
+        schemeInfo: schemeInfo
       });
     }
   }]);
@@ -35451,12 +35434,11 @@ function (_Component) {
 }(_react.Component);
 
 Info.propTypes = {
-  schemeId: _propTypes.default.number.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
+  schemeId: _propTypes.default.number.isRequired
 };
 var _default = Info;
 exports.default = _default;
-},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Spinner":"cmYb","./Failure":"89he","./Start":"Usmb"}],"gUbM":[function(require,module,exports) {
+},{"react":"HdMw","prop-types":"Iix9","./Logo":"1HB+","./Spinner":"cmYb","./Failure":"89he","./Start":"Usmb","./Utils":"osRP"}],"gUbM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35473,17 +35455,14 @@ var _Info = _interopRequireDefault(require("./Info"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Launcher = function Launcher(props) {
-  var schemeId = props.schemeId,
-      baseUrl = props.baseUrl;
+  var schemeId = props.schemeId;
   return _react.default.createElement(_Info.default, {
-    schemeId: schemeId,
-    baseUrl: baseUrl
+    schemeId: schemeId
   });
 };
 
 Launcher.propTypes = {
-  schemeId: _propTypes.default.number.isRequired,
-  baseUrl: _propTypes.default.string.isRequired
+  schemeId: _propTypes.default.number.isRequired
 };
 var _default = Launcher;
 exports.default = _default;
@@ -37278,12 +37257,9 @@ var testSchemeInfo = {
 var search = window.location.search;
 var params = new URLSearchParams(search);
 var schemeId = params.get('schemeId');
-var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-var realBaseUrl = !baseUrl || baseUrl === "http://localhost:1234" ? "http://localhost:8090" : baseUrl;
 
 _reactDom.default.render(_react.default.createElement(_Launcher.default, {
-  schemeId: !schemeId ? 1 : schemeId,
-  baseUrl: realBaseUrl
+  schemeId: !schemeId ? 1 : schemeId
 }), document.getElementById('app')); //ReactDOM.render(<Start schemeId={(!schemeId) ? 1 : schemeId} baseUrl = {realBaseUrl}/>, document.getElementById('app'));
 //ReactDOM.render(<Batch schemeInfo={testSchemeInfo} batch = {realBatch} baseUrl = {realBaseUrl}/>, document.getElementById('app'));
 //ReactDOM.render(<Finish schemeId = {10} result = {realTestResult} mode = {testMode} settings = {testSettings} baseUrl = {realBaseUrl}/>, document.getElementById('app'));

@@ -4,6 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Also see for /access-denied mapping
+ * @see SecurityController
+ */
 @Slf4j
 @Controller
 public class PagesController {
@@ -13,11 +17,6 @@ public class PagesController {
                         @RequestParam(name= "logout", required = false) String logout) {
         log.debug("Error = {} Logout = {}", error, logout);
         return "login";
-    }
-
-    @GetMapping(value = "/access-denied")
-    public String accessDenied() {
-        return "access-denied";
     }
 
     @GetMapping("/student/start")

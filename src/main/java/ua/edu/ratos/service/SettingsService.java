@@ -13,12 +13,13 @@ import ua.edu.ratos.service.dto.in.SettingsInDto;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SettingsDtoTransformer;
+
 import javax.persistence.EntityNotFoundException;
 
 @Service
 public class SettingsService {
 
-    private static final String SETTINGS_NOT_FOUND = "The requested Settings not found, setId = ";
+    private static final String ID_IS_NOT_INCLUDED = "SetId is not included, reject update!";
 
     private static final String DEFAULT_SETTINGS_CANNOT_BE_MODIFIED = "Default settings cannot be modified!";
 
@@ -57,28 +58,26 @@ public class SettingsService {
         return settingsRepository.save(dtoSettingsTransformer.toEntity(dto)).getSetId();
     }
 
+    // Not the "redundant save" anti-pattern!!
+    // Exactly 2 queries: select, update + dynamic update(!)
     @Transactional
     public void update(@NonNull final SettingsInDto dto) {
-        Settings settings = settingsRepository.findById(dto.getSetId())
-                .orElseThrow(() -> new EntityNotFoundException(SETTINGS_NOT_FOUND + dto.getSetId()));
-        if (settings.isDefault()) throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED );
-        settings.setName(dto.getName());
-        settings.setDaysKeepResultDetails(dto.getDaysKeepResultDetails());
-        settings.setDisplayMark(dto.isDisplayMark());
-        settings.setDisplayPercent(dto.isDisplayPercent());
-        settings.setDisplayThemeResults(dto.isDisplayThemeResults());
-        settings.setDisplayQuestionResults(dto.isDisplayQuestionResults());
-        settings.setLevel2Coefficient(dto.getLevel2Coefficient());
-        settings.setLevel3Coefficient(dto.getLevel3Coefficient());
-        settings.setQuestionsPerSheet(dto.getQuestionsPerSheet());
-        settings.setSecondsPerQuestion(dto.getSecondsPerQuestion());
-        settings.setStrictControlTimePerQuestion(dto.isStrictControlTimePerQuestion());
+        Long setId = dto.getSetId();
+        if (setId == null || setId == 0)
+            throw new RuntimeException(ID_IS_NOT_INCLUDED + setId);
+        Settings settings = settingsRepository.findById(setId)
+                .orElseThrow(() -> new EntityNotFoundException("Settings not found"+ setId));
+        if (settings.isDefault())
+            throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED );
+        // Will merge actually
+        settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
     }
 
     @Transactional
     public void deleteById(@NonNull final Long setId) {
-        Settings settings = settingsRepository.findById(setId).orElseThrow(() -> new EntityNotFoundException(SETTINGS_NOT_FOUND + setId));
-        if (settings.isDefault()) throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED );
+        Settings settings = settingsRepository.findById(setId)
+                .orElseThrow(() -> new EntityNotFoundException("Settings not found" + setId));
+        if (settings.isDefault()) throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED);
         settings.setDeleted(true);
     }
 

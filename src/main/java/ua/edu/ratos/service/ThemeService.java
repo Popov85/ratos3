@@ -100,28 +100,32 @@ public class ThemeService {
     @Transactional
     public void updateName(@NonNull final Long themeId, @NonNull final String name) {
         checkModificationPossibility(themeId);
-        themeRepository.findById(themeId).orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
+        themeRepository.findById(themeId)
+                .orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
                 .setName(name);
     }
 
     @Transactional
     public void updateAccess(@NonNull final Long themeId, @NonNull final Long accessId) {
         checkModificationPossibility(themeId);
-        themeRepository.findById(themeId).orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
+        themeRepository.findById(themeId)
+                .orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
                 .setAccess(em.getReference(Access.class, accessId));
     }
 
     @Transactional
     public void updateCourse(@NonNull final Long themeId, @NonNull final Long courseId) {
         checkModificationPossibility(themeId);
-        themeRepository.findById(themeId).orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
+        themeRepository.findById(themeId)
+                .orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
                 .setCourse(em.getReference(Course.class, courseId));
     }
 
     @Transactional
     public void deleteById(@NonNull final Long themeId) {
         checkModificationPossibility(themeId);
-        themeRepository.findById(themeId).orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
+        themeRepository.findById(themeId)
+                .orElseThrow(() -> new EntityNotFoundException(THEME_NOT_FOUND + themeId))
                 .setDeleted(true);
     }
 

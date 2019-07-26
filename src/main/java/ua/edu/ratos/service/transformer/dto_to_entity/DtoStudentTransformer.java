@@ -10,6 +10,8 @@ import ua.edu.ratos.dao.entity.Class;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Component
 public class DtoStudentTransformer {
@@ -29,6 +31,7 @@ public class DtoStudentTransformer {
         Student stud = new Student();
         stud.setStudId(dto.getStudId());
         User user = dtoUserTransformer.toEntity(dto.getUser());
+        user.setRoles(new HashSet<>(Arrays.asList(em.getReference(Role.class, 2L))));
         stud.setUser(user);
         stud.setEntranceYear(dto.getEntranceYear());
         stud.setStudentClass(em.getReference(Class.class, dto.getClassId()));

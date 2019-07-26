@@ -50,7 +50,7 @@ public class StudentController {
         log.debug("Deactivated Student, studentId = {}", studentId);
     }
 
-    //---------------------------------------------Staff group management table----------------------------------------
+    //---------------------------------------------Staff group management table-----------------------------------------
 
     @GetMapping(value = "/lab/students/by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<StudOutDto> findAllByDepartmentId(@PageableDefault(sort = {"surname"}, value = 50) Pageable pageable) {

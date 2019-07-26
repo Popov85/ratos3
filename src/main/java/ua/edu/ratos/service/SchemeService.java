@@ -132,42 +132,48 @@ public class SchemeService {
     @Transactional
     public void updateName(@NonNull final Long schemeId, @NonNull final String name) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setName(name);
     }
 
     @Transactional
     public void updateSettings(@NonNull final Long schemeId, @NonNull final Long setId) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setSettings(em.getReference(Settings.class, setId));
     }
 
     @Transactional
     public void updateMode(@NonNull final Long schemeId, @NonNull final Long modeId) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setMode(em.getReference(Mode.class, modeId));
     }
 
     @Transactional
     public void updateStrategy(@NonNull final Long schemeId, @NonNull final Long strId) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setStrategy(em.getReference(Strategy.class, strId));
     }
 
     @Transactional
     public void updateAccess(@NonNull final Long schemeId, @NonNull final Long accessId) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setAccess(em.getReference(Access.class, accessId));
     }
 
     @Transactional
     public void updateCourse(@NonNull final Long schemeId, @NonNull final Long courseId) {
         checkModificationPossibility(schemeId);
-        schemeRepository.findById(schemeId).orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
+        schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId))
                 .setCourse(em.getReference(Course.class, courseId));
     }
 

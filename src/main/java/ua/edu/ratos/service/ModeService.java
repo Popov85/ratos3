@@ -21,6 +21,8 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class ModeService {
 
+    private static final String ID_IS_NOT_INCLUDED = "ModeId is not included, reject update!";
+
     private static final String MODE_NOT_FOUND = "The requested Mode not found, modeId = ";
 
     private static final String DEFAULT_MODES_CANNOT_BE_MODIFIED = "Default modes cannot be modified!";
@@ -62,17 +64,12 @@ public class ModeService {
 
     @Transactional
     public void update(@NonNull final ModeInDto dto) {
-        if (dto.getModeId()==null) throw new RuntimeException("Mode's DTO must contain modeId to be updated");
-        Mode mode = modeRepository.findById(dto.getModeId()).orElseThrow(() -> new EntityNotFoundException());
+        Long modeId = dto.getModeId();
+        if (modeId ==null || modeId ==0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        Mode mode = modeRepository.findById(modeId)
+                .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND +modeId));
         if (mode.isDefaultMode()) throw new RuntimeException(DEFAULT_MODES_CANNOT_BE_MODIFIED);
-        mode.setName(dto.getName());
-        mode.setHelpable(dto.isHelpable());
-        mode.setPreservable(dto.isPreservable());
-        mode.setPyramid(dto.isPyramid());
-        mode.setReportable(dto.isReportable());
-        mode.setRightAnswer(dto.isRightAnswer());
-        mode.setSkipable(dto.isSkipable());
-        mode.setStarrable(dto.isStarrable());
+        modeRepository.save(dtoModeTransformer.toEntity(dto));
     }
 
     @Transactional

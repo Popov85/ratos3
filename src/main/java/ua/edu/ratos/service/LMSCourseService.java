@@ -72,21 +72,24 @@ public class LMSCourseService {
     @Transactional
     public void updateName(@NonNull final Long courseId, @NonNull final String name) {
         checkModificationPossibility(courseId);
-        lmsCourseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
+        lmsCourseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
                 .getCourse().setName(name);
     }
 
     @Transactional
     public void updateAccess(@NonNull final Long courseId, @NonNull final Long accessId) {
         checkModificationPossibility(courseId);
-        lmsCourseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
+        lmsCourseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
                 .getCourse().setAccess(em.getReference(Access.class, accessId));
     }
 
     @Transactional
     public void deleteById(@NonNull final Long courseId) {
         checkModificationPossibility(courseId);
-        lmsCourseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
+        lmsCourseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId))
                 .getCourse().setDeleted(true);
     }
 
@@ -94,7 +97,6 @@ public class LMSCourseService {
         LMSCourse course = lmsCourseRepository.findForSecurityById(courseId);
         accessChecker.checkModifyAccess(course.getCourse().getAccess(), course.getCourse().getStaff());
     }
-
 
     //-----------------------------------------------------One (for update)---------------------------------------------
 

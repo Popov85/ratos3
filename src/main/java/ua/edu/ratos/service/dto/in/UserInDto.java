@@ -21,7 +21,7 @@ public class UserInDto {
     @Email(message = "{dto.email}")
     private String email;
 
-    @NotBlank(message = "{dto.string.required}")
+    @NotEmpty(message = "{dto.string.required}")
     @Size(min = 8, max = 100, message = "{dto.string.invalid}")
     private char[] password;
 }

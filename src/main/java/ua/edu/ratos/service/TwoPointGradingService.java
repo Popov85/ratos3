@@ -19,6 +19,8 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class TwoPointGradingService {
 
+    private static final String ID_IS_NOT_INCLUDED = "TwoId is not included, reject update!";
+
     private static final String TWO_NOT_FOUND = "The requested TwoPointGrading not found, twoId = ";
 
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default TwoPointGrading cannot be modified";
@@ -51,7 +53,7 @@ public class TwoPointGradingService {
         this.securityUtils = securityUtils;
     }
 
-    //--------------------------------CRUD-------------------------------
+    //-------------------------------------------------CRUD-------------------------------------------------------------
 
     @Transactional
     public Long save(@NonNull final TwoPointGradingInDto dto) {
@@ -60,8 +62,10 @@ public class TwoPointGradingService {
 
     @Transactional
     public void update(@NonNull final TwoPointGradingInDto dto) {
-        if (dto.getTwoId()==null) throw new RuntimeException("TwoPointGrading's DTO must contain twoId to be updated");
-        TwoPointGrading entity = twoPointGradingRepository.findById(dto.getTwoId()).orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + dto.getTwoId()));
+        Long twoId = dto.getTwoId();
+        if (twoId == null || twoId ==0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        TwoPointGrading entity = twoPointGradingRepository.findById(twoId)
+                .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
         entity.setName(dto.getName());
         entity.setThreshold(dto.getThreshold());
@@ -69,19 +73,20 @@ public class TwoPointGradingService {
 
     @Transactional
     public void deleteById(@NonNull final Long twoId) {
-        TwoPointGrading entity = twoPointGradingRepository.findById(twoId).orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId));
+        TwoPointGrading entity = twoPointGradingRepository.findById(twoId)
+                .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
         entity.setDeleted(true);
     }
 
-    //----------------------------------ONE-----------------------------------
+    //-------------------------------------------------ONE--------------------------------------------------------------
 
     @Transactional(readOnly = true)
     public TwoPointGradingOutDto findOneForEdit(@NonNull final Long twoId) {
         return twoPointGradingDtoTransformer.toDto(twoPointGradingRepository.findOneForEdit(twoId));
     }
 
-    //-----------------------------INSTRUCTOR search---------------------------
+    //-------------------------------------------------INSTRUCTOR search------------------------------------------------
 
     @Transactional(readOnly = true)
     public Slice<TwoPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {

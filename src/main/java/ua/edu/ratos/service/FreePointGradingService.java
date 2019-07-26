@@ -13,21 +13,24 @@ import ua.edu.ratos.service.dto.in.FreePointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoFreePointGradingTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer;
+
 import javax.persistence.EntityNotFoundException;
 
 @Service
 public class FreePointGradingService {
 
+    private static final String ID_IS_NOT_INCLUDED = "FreeId is not included, reject update!";
+
     private static final String FREE_NOT_FOUND = "The requested FreePointGrading not found, freeId = ";
 
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default FreePointGrading cannot be modified";
-    
+
     private FreePointGradingRepository freePointGradingRepository;
-    
+
     private FreePointGradingDtoTransformer freePointGradingDtoTransformer;
-    
+
     private DtoFreePointGradingTransformer dtoFreePointGradingTransformer;
-    
+
     private SecurityUtils securityUtils;
 
     @Autowired
@@ -59,8 +62,10 @@ public class FreePointGradingService {
 
     @Transactional
     public void update(@NonNull final FreePointGradingInDto dto) {
-        if (dto.getFreeId()==null) throw new RuntimeException("FreePointGrading's DTO must contain freeId to be updated");
-        FreePointGrading entity = freePointGradingRepository.findById(dto.getFreeId()).orElseThrow(() -> new EntityNotFoundException(FREE_NOT_FOUND + dto.getFreeId()));
+        Long freeId = dto.getFreeId();
+        if (freeId == null || freeId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        FreePointGrading entity = freePointGradingRepository.findById(freeId)
+                .orElseThrow(() -> new EntityNotFoundException(FREE_NOT_FOUND + freeId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
         entity.setName(dto.getName());
         entity.setMinValue(dto.getMinValue());

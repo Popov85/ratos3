@@ -64,13 +64,15 @@ public class HelpService {
 
     @Transactional
     public void updateName(@NonNull final Long helpId, @NonNull final String name) {
-        helpRepository.findById(helpId).orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId))
+        helpRepository.findById(helpId)
+                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId))
                 .setName(name);
     }
 
     @Transactional
     public void updateHelp(@NonNull final Long helpId, @NonNull final String help) {
-        helpRepository.findById(helpId).orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId))
+        helpRepository.findById(helpId)
+                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId))
                 .setHelp(help);
     }
 

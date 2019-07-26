@@ -13,22 +13,22 @@ import javax.validation.constraints.Positive;
 @Setter
 @ToString
 public class StudentInDto {
-
+    // For updates, solely
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long studId;
 
     private @Valid UserInDto user;
 
-    @Min(value = 2000, message="{dto.year}")
-    private int entranceYear;
-
     @Positive(message = "{dto.fk.required}")
-    private long classId;
+    private long orgId;
 
     @Positive(message = "{dto.fk.required}")
     private long facId;
 
     @Positive(message = "{dto.fk.required}")
-    private long orgId;
+    private long classId;
+
+    @Min(value = 2000, message="{dto.year}")
+    private int entranceYear;
 
 }

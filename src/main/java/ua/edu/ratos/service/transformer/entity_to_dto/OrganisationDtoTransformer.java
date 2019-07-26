@@ -11,6 +11,7 @@ public class OrganisationDtoTransformer {
     public OrganisationOutDto toDto(@NonNull final Organisation entity) {
         return new OrganisationOutDto()
                 .setOrgId(entity.getOrgId())
-                .setName(entity.getName());
+                .setName(entity.getName())
+                .setDeleted(entity.isDeleted());
     }
 }

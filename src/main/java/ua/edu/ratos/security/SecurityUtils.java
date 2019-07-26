@@ -94,6 +94,7 @@ public class SecurityUtils {
     /**
      * Checks if the current user comes from within some known LMS and fully authenticated.
      * For Unit-testing: fallback to false (non-LMS user)
+     * This method throws RuntimeException if user is not authenticated
      * @return verdict
      */
     public boolean isLmsUser() {
@@ -103,6 +104,20 @@ public class SecurityUtils {
         LTIUserConsumerCredentials credentials = (LTIUserConsumerCredentials) auth.getPrincipal();
         if (credentials.getLmsId()==null || credentials.getUserId()==null || credentials.getLmsId()<=0 || credentials.getUserId()<=0)
             return false;
+        return true;
+    }
+
+    /**
+     * Use this check if an exception thrown in case of unauthenticated user is not desirable
+     * @return verdict
+     */
+    public boolean isLtiUser() {
+        if ("h2".equals(profile) || "mysql".equals(profile)) return false;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth==null) return false;
+        if (!(auth.getPrincipal() instanceof LTIToolConsumerCredentials)) return false;
+        LTIToolConsumerCredentials credentials = (LTIToolConsumerCredentials) auth.getPrincipal();
+        if (credentials.getLmsId()==null || credentials.getLmsId()<=0) return false;
         return true;
     }
 

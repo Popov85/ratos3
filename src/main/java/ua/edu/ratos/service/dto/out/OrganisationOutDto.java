@@ -14,4 +14,6 @@ public class OrganisationOutDto {
     private Long orgId;
 
     private String name;
+
+    private boolean deleted;
 }

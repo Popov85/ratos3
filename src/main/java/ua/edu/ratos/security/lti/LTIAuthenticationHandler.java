@@ -18,6 +18,7 @@ import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.dao.repository.lms.LMSRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -101,9 +102,9 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
             throw new RuntimeException("No such LMS found for the given consumer key in the LTI launch request!");
         }
         if (email!=null && !email.isEmpty()) {
-            User user = userRepository.findByEmail(email);
-            if (user!=null) {
-                Long userId = user.getUserId();
+            Optional<User> user = userRepository.findByEmail(email);
+            if (user.isPresent()) {
+                Long userId = user.get().getUserId();
                 LTIUserConsumerCredentials principal = LTIUserConsumerCredentials
                         .create(userId, lmsId, authentication.getConsumerCredentials());
                 principal.setEmail(email).setUser(lmsUser).setOutcome(ltiOutcomeParams);

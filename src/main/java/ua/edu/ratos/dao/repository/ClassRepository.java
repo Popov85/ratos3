@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Class;
 
+import java.util.Set;
+
 public interface ClassRepository extends JpaRepository<Class, Long> {
 
     //--------------------------------------------REGISTRATION dropdown-------------------------------------------------
+
+    @Query(value="select c from Class c join c.faculty f where f.facId = ?1")
+    Set<Class> findAllByFacultyId(Long facId);
 
     @Query(value="select c from Class c join c.faculty f where f.facId = ?1")
     Slice<Class> findAllByFacultyId(Long facId, Pageable pageable);

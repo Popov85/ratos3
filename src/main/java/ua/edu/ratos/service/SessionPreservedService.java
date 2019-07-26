@@ -90,7 +90,7 @@ public class SessionPreservedService {
         sessionPreservedRepository.delete(sessionPreserved);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public SessionPreserved findOneById(@NonNull final String key) {
         SessionPreserved sessionPreserved = sessionPreservedRepository.findById(key)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND + key));
