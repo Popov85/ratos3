@@ -34048,9 +34048,7 @@ function (_Component) {
       error: null
     };
     _this.handleAuthentication = _this.handleAuthentication.bind(_assertThisInitialized(_this));
-    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this)); //this.didRegister = this.didRegister.bind(this);
-    //this.doLogin = this.doLogin.bind(this);
-
+    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -34090,10 +34088,17 @@ function (_Component) {
       event.preventDefault();
       console.log("Submitting: " + JSON.stringify(this.state));
       if (!this.validate()) return;
-      var url = _Utils.default.baseUrl() + "/login?username=" + this.state.username + "&password=" + this.state.password;
+      var url = _Utils.default.baseUrl() + "/login"; //?username=" +
+      //this.state.username + "&password=" + this.state.password+"&remember-me="+(this.state.isRemember ? "on":"off");
+
+      var payload = this.getAuthData();
+      console.log(payload);
       fetch(url, {
         method: 'POST',
-        credentials: 'same-origin'
+        headers: new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }),
+        body: payload
       }).then(function (response) {
         // Either 302 (redirect) or 401 Unauthorized (unauthenticated) expected
         if (response.redirected) {
@@ -34135,6 +34140,22 @@ function (_Component) {
         error: null
       });
       return true;
+    }
+  }, {
+    key: "getAuthData",
+    value: function getAuthData() {
+      var _this$state = this.state,
+          username = _this$state.username,
+          password = _this$state.password,
+          isRemember = _this$state.isRemember;
+      var authData = {};
+      authData.username = username;
+      authData.password = password;
+      authData['remember-me'] = isRemember ? "on" : "off";
+      var searchParams = Object.keys(authData).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(authData[key]);
+      }).join('&');
+      return searchParams;
     }
   }, {
     key: "handleInputChange",
@@ -34246,9 +34267,9 @@ function (_Component) {
     value: function render() {
       var _this5 = this;
 
-      var _this$state = this.state,
-          isRegister = _this$state.isRegister,
-          regOptions = _this$state.regOptions;
+      var _this$state2 = this.state,
+          isRegister = _this$state2.isRegister,
+          regOptions = _this$state2.regOptions;
       if (isRegister) return _react.default.createElement(_Registration.default, {
         regOptions: regOptions
       });
@@ -34304,11 +34325,11 @@ function (_Component) {
         className: "custom-control custom-checkbox"
       }, _react.default.createElement("input", {
         type: "checkbox",
+        id: "remember",
         name: "isRemember",
-        checked: this.state.isRemember,
-        onChange: this.handleInputChange,
         className: "custom-control-input",
-        id: "remember"
+        checked: this.state.isRemember,
+        onChange: this.handleInputChange
       }), _react.default.createElement("label", {
         className: "custom-control-label text-secondary mt-n2",
         htmlFor: "remember"
