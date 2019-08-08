@@ -16,13 +16,11 @@ import java.io.IOException;
 @AllArgsConstructor
 public class LTIAwareAccessDeniedHandler implements AccessDeniedHandler {
 
-	private final LTISecurityUtils ltiSecurityUtils;
-
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(auth)) {
+		if (LTISecurityUtils.isLMSUserWithOnlyLTIRole(auth)) {
 			log.debug("Detected an LTI user lacking authority trying to access protected resource, redirection to /login endpoint");
 			// Remember the request pathway
 			RequestCache requestCache = new HttpSessionRequestCache();

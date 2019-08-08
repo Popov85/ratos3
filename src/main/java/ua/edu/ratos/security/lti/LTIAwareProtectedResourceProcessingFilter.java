@@ -12,15 +12,13 @@ import org.springframework.security.oauth.provider.filter.ProtectedResourceProce
 @AllArgsConstructor
 public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResourceProcessingFilter {
 
-    private final LTISecurityUtils ltiSecurityUtils;
-
     /**
      * Default behavior is to reset the Authentication to the previous state that was before doing this filter.
      * So if previous authentication was null, it will be again null after this filter has done its job.
      * Now we need to override this, by resetting back to previous only in case of failed attempt to authenticate with OAuth
      * Otherwise let this new authentication to remain and create authentication session
-     * with ROLE_LTI (or ROLE_LMS-USER if e-mail parameter has proven the user identity)
-     * Also, in case we already had an authenticated full-fledged user (LMS-USER) before the launch,
+     * with ROLE_LTI (or ROLE_LMS-USER if e-mail parameter has proven the user's identity)
+     * Also, in case we already have an authenticated full-fledged user (LMS-USER) before the launch,
      * do not lose his authentication,
      * but rather merge the new OAuth launch credentials with the existing LMS-USER role.
      * @param previousAuthentication previous authentication that was in the security context before running the launch request
@@ -36,8 +34,8 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
         }
         // If OAuth authentication just provided only LTI role (but failed to provide LMS-USER role)
         // and previous authentication was LMS-USER, merge them and set to the context
-        if (ltiSecurityUtils.isLMSUserWithOnlyLTIRole(oauthAuthentication)
-                && ltiSecurityUtils.isLMSUserWithFullUSERRole(previousAuthentication)) {
+        if (LTISecurityUtils.isLMSUserWithOnlyLTIRole(oauthAuthentication)
+                && LTISecurityUtils.isLMSUserWithFullUSERRole(previousAuthentication)) {
             log.debug("Try to merge authentication (existing LMS-USER and new LTI)");
             Authentication resultingAuthentication = mergeAuthentication(previousAuthentication, oauthAuthentication);
             super.resetPreviousAuthentication(resultingAuthentication);
@@ -45,6 +43,15 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
     }
 
 
+    /**
+     * What if already fully authenticated user jumps to another LMS course/module/theme and tries to take tests.
+     * Here we have a new OAuth credentials with a new remote endpoint to sent score.
+     * We cannot lose this information cause we will be unable to send the score for this test.
+     * The solution is to merge the new OAuth credentials with the existing fully authenticated user credentials
+     * @param previousAuthentication
+     * @param oauthAuthentication
+     * @return merged authentication object
+     */
     private Authentication mergeAuthentication(Authentication previousAuthentication, Authentication oauthAuthentication) {
         LTIToolConsumerCredentials updatedPrincipal = (LTIToolConsumerCredentials)oauthAuthentication.getPrincipal();
         LTIUserConsumerCredentials previousPrincipal = (LTIUserConsumerCredentials) previousAuthentication.getPrincipal();
@@ -61,7 +68,7 @@ public class LTIAwareProtectedResourceProcessingFilter extends ProtectedResource
 
         Authentication resultingAuthentication =
                 new UsernamePasswordAuthenticationToken(resultingPrincipal, updatedSignatureSecret, previousAuthentication.getAuthorities());
-        log.debug("Merged authentication (Password+new LTI) for user ID :: {} ", previousPrincipal.getUserId());
+        log.debug("Merged authentication (Password+new LTI) for user ID = {} ", previousPrincipal.getUserId());
         return resultingAuthentication;
     }
 }

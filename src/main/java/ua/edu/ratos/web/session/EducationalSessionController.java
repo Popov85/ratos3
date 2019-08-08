@@ -99,4 +99,6 @@ public class EducationalSessionController {
         educationalSessionService.complain(dto, sessionData);
         log.debug("Complained about questionId = {}, complaint = {}", questionId, dto);
     }
+
+    // TODO: Paused request serving!
 }

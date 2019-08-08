@@ -1,12 +1,12 @@
 package ua.edu.ratos.security.lti;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@UtilityClass
 public class LTISecurityUtils {
 
 	@SuppressWarnings("RedundantIfStatement")

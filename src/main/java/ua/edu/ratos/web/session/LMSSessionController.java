@@ -62,7 +62,7 @@ public class LMSSessionController {
     }
 
     @ControlTime
-    @GetMapping(value = "/session/current", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/current", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> current(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
         SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         log.debug("Current batch in LMS session is requested");

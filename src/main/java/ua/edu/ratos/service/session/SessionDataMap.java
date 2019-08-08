@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.web.exception.SessionAlreadyOpenedException;
+import ua.edu.ratos.web.exception.SessionNotFoundException;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -44,8 +45,7 @@ public class SessionDataMap implements Serializable {
 
     public SessionData getOrElseThrow(@NonNull final Long schemeId) {
         SessionData sessionData = openedSessions.get(schemeId);
-        if (sessionData==null) throw
-                new RuntimeException("Learning session for schemeId ="+schemeId+" not found!");
+        if (sessionData==null) throw new SessionNotFoundException(schemeId);
         log.debug("Retrieved sessionData in the map for schemeId = {}", schemeId);
         return sessionData;
     }

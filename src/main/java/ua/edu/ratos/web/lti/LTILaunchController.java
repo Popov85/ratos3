@@ -17,6 +17,6 @@ public class LTILaunchController {
 
     @PostMapping("/lti/1p0/launch")
     public String launch(@RequestParam Long schemeId) {
-        return "redirect:/lms/session/start?schemeId="+schemeId;
+        return "redirect:/lms/start?schemeId="+schemeId;
     }
 }

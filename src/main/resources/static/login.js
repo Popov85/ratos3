@@ -1121,17 +1121,25 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var defaultMessage = 'failed to perform API request';
+var defaultMessage = 'failed to perform the action';
 
 var Failure = function Failure(props) {
   var message = props.message;
-  return _react.default.createElement("div", {
+  var serverError = props.serverError;
+  return _react.default.createElement("div", null, _react.default.createElement("div", {
     className: "text-center text-danger"
-  }, " ", message ? message : defaultMessage);
+  }, " ", message ? message : defaultMessage), serverError ? _react.default.createElement("div", {
+    className: "d-flex justify-content-center"
+  }, _react.default.createElement("details", {
+    open: false
+  }, _react.default.createElement("summary", {
+    className: "border text-secondary"
+  }, _react.default.createElement("small", null, "Server message")), _react.default.createElement("small", null, serverError.message))) : null);
 };
 
 var propTypes = {
-  message: _propTypes.default.string
+  message: _propTypes.default.string,
+  serverError: _propTypes.default.object
 };
 Failure.propTypes = propTypes;
 var _default = Failure;
@@ -28702,8 +28710,7 @@ var Utils = {
   },
   isEmptyArray: function isEmptyArray(array) {
     return !Array.isArray(!array) || !array.length;
-  },
-  helper3: function helper3(param1, param2) {}
+  }
 };
 var _default = Utils;
 exports.default = _default;
@@ -28739,7 +28746,7 @@ var ApiRegistration = {
   },
   //Organizations
   loadOrganizations: function loadOrganizations(lms, errorLoadOrg) {
-    var endpoint = (lms ? "/lti" : "") + "/self-registration/organisations";
+    var endpoint = (lms === true ? "/lti" : "") + "/self-registration/organisations";
     var url = _Utils.default.baseUrl() + endpoint;
     return fetch(url, {
       method: 'GET',
@@ -28756,7 +28763,7 @@ var ApiRegistration = {
   },
   //Faculties
   loadFaculties: function loadFaculties(lms, orgId, errorLoadFac) {
-    var endpoint = (lms ? "/lti" : "") + "/self-registration/faculties?orgId=" + orgId;
+    var endpoint = (lms === true ? "/lti" : "") + "/self-registration/faculties?orgId=" + orgId;
     var url = _Utils.default.baseUrl() + endpoint;
     return fetch(url, {
       method: 'GET',
@@ -28773,7 +28780,7 @@ var ApiRegistration = {
   },
   //Classes
   loadClasses: function loadClasses(lms, facId, errorLoadClasses) {
-    var endpoint = (lms ? "/lti" : "") + "/self-registration/classes?facId=" + facId;
+    var endpoint = (lms === true ? "/lti" : "") + "/self-registration/classes?facId=" + facId;
     var url = _Utils.default.baseUrl() + endpoint;
     return fetch(url, {
       method: 'GET',
@@ -34019,6 +34026,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+// Set to "" for production server
+var defaultUsername = "student@example.com";
+var defaultPassword = "dT09Rx06";
+
 var Login =
 /*#__PURE__*/
 function (_Component) {
@@ -34031,8 +34042,8 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Login).call(this, props));
     _this.state = {
-      username: !props.username ? "student@example.com" : props.username,
-      password: !props.password ? "dT09Rx06" : props.password,
+      username: !props.username ? defaultUsername : props.username,
+      password: !props.password ? defaultPassword : props.password,
       isRemember: false,
       showPassword: false,
       isEmailValid: "undefined",
@@ -34088,9 +34099,7 @@ function (_Component) {
       event.preventDefault();
       console.log("Submitting: " + JSON.stringify(this.state));
       if (!this.validate()) return;
-      var url = _Utils.default.baseUrl() + "/login"; //?username=" +
-      //this.state.username + "&password=" + this.state.password+"&remember-me="+(this.state.isRemember ? "on":"off");
-
+      var url = _Utils.default.baseUrl() + "/login";
       var payload = this.getAuthData();
       console.log(payload);
       fetch(url, {

@@ -12,7 +12,6 @@ import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.GenericSessionService;
 import ua.edu.ratos.service.session.SessionDataMap;
-
 import javax.servlet.http.HttpSession;
 
 @Slf4j
@@ -68,6 +67,7 @@ public class GenericSessionController {
         log.debug("Finished learning session with last batch evaluating, result = {}", resultOut);
         return ResponseEntity.ok(resultOut);
     }
+
 
     @ControlTime
     @GetMapping(value = "/finish", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)

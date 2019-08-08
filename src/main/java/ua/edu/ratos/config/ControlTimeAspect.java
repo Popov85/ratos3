@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.session.SessionDataMap;
 import ua.edu.ratos.service.session.Timeout;
+import ua.edu.ratos.web.exception.SessionNotFoundException;
 
 @Slf4j
 @Aspect
@@ -37,10 +38,12 @@ public class ControlTimeAspect {
         try {
             Object[] args = joinPoint.getArgs();
             timeout.setTimeout(((SessionDataMap) args[1]).getOrElseThrow((Long)args[0]));
+        } catch(SessionNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             //Make sure first argument is schemeId (Long) and
             //second argument is SessionDataMap in your annotated methods!
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to process aspect", e);
         }
         log.debug("Has set timeout for request = {}", timeout);
     }

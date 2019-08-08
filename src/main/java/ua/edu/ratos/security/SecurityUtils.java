@@ -88,6 +88,13 @@ public class SecurityUtils {
         return ((AuthenticatedUser) auth.getPrincipal()).getUserId();
     }
 
+    public String getAuthUsername() {
+        if ("h2".equals(profile) || "mysql".equals(profile)) return "Test";
+        Authentication auth = getAuthentication();
+        if (auth.getPrincipal().getClass()!= AuthenticatedUser.class)
+            throw new SecurityException("Lack of authority");
+        return ((AuthenticatedUser) auth.getPrincipal()).getUsername();
+    }
 
     //----------------------------------------LMS--------------------------------------
 

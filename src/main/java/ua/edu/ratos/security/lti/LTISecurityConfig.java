@@ -45,13 +45,11 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LMSOriginRepository lmsOriginRepository;
 
-    private final LTISecurityUtils ltiSecurityUtils;
 
     @Autowired
     public LTISecurityConfig(final LTIConsumerDetailsService ltiConsumerDetailsService,
                              final LTIAuthenticationHandler ltiAuthenticationHandler,
                              final LMSOriginRepository lmsOriginRepository,
-                             final LTISecurityUtils ltiSecurityUtils,
                              @NonNull final @Value("${spring.profiles.active}") String profile,
                              @NonNull final @Value("${ratos.lti.launch_path}") String ltiLaunchPath) {
         this.profile = profile;
@@ -64,7 +62,6 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
         this.ltiConsumerDetailsService = ltiConsumerDetailsService;
         this.ltiAuthenticationHandler = ltiAuthenticationHandler;
         this.lmsOriginRepository = lmsOriginRepository;
-        this.ltiSecurityUtils = ltiSecurityUtils;
     }
 
     // CORS bean
@@ -93,8 +90,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ProtectedResourceProcessingFilter ltiAwareProtectedResourceProcessingFilter() {
-        ProtectedResourceProcessingFilter filter =
-                new LTIAwareProtectedResourceProcessingFilter(ltiSecurityUtils);
+        ProtectedResourceProcessingFilter filter = new LTIAwareProtectedResourceProcessingFilter();
         filter.setConsumerDetailsService(ltiConsumerDetailsService);
         filter.setAuthHandler(ltiAuthenticationHandler);
         filter.setTokenServices(oauthProviderTokenServices());
@@ -104,7 +100,6 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setIgnoreMissingCredentials(false);
         return filter;
     }
-
 
     @Bean
     public FilterRegistrationBean<ProtectedResourceProcessingFilter> ltiAwareProtectedResourceProcessingFilterRegistration() {
@@ -123,8 +118,7 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .cors()
-            .and()
+            .cors().disable()
             .antMatcher(ltiLaunchPath)
             .addFilterBefore(ltiAwareProtectedResourceProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
