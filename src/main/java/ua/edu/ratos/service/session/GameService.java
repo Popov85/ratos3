@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +20,15 @@ import ua.edu.ratos.dao.repository.ResultRepository;
 import ua.edu.ratos.dao.repository.game.*;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.dto.out.game.*;
-import ua.edu.ratos.service.transformer.entity_to_dto.*;
+import ua.edu.ratos.service.dto.out.game.AllTimesGamerOutDto;
+import ua.edu.ratos.service.dto.out.game.GamerOutDto;
+import ua.edu.ratos.service.dto.out.game.WeeklyGamerOutDto;
+import ua.edu.ratos.service.dto.out.game.WinnerOutDto;
+import ua.edu.ratos.service.transformer.entity_to_dto.GamerDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.TotalTopDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.WeeklyGamerDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.WinnerDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
@@ -31,94 +38,36 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class GameService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
-    private ResultRepository resultRepository;
+    private final ResultRepository resultRepository;
 
-    private GameRepository gameRepository;
+    private final GameRepository gameRepository;
 
-    private WeekRepository weekRepository;
+    private final WeekRepository weekRepository;
 
-    private BonusRepository bonusRepository;
+    private final BonusRepository bonusRepository;
 
-    private WinsRepository winsRepository;
+    private final WinsRepository winsRepository;
 
-    private GamerRepository gamerRepository;
+    private final GamerRepository gamerRepository;
 
-    private GamerDtoTransformer gamerDtoTransformer;
+    private final GamerDtoTransformer gamerDtoTransformer;
 
-    private WinnerDtoTransformer winnerDtoTransformer;
+    private final WinnerDtoTransformer winnerDtoTransformer;
 
-    private WeeklyGamerDtoTransformer weeklyGamerDtoTransformer;
+    private final WeeklyGamerDtoTransformer weeklyGamerDtoTransformer;
 
-    private TotalTopDtoTransformer totalTopDtoTransformer;
+    private final TotalTopDtoTransformer totalTopDtoTransformer;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setResultRepository(ResultRepository resultRepository) {
-        this.resultRepository = resultRepository;
-    }
-
-    @Autowired
-    public void setGameRepository(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
-    }
-
-    @Autowired
-    public void setWeekRepository(WeekRepository weekRepository) {
-        this.weekRepository = weekRepository;
-    }
-
-    @Autowired
-    public void setBonusRepository(BonusRepository bonusRepository) {
-        this.bonusRepository = bonusRepository;
-    }
-
-    @Autowired
-    public void setWinsRepository(WinsRepository winsRepository) {
-        this.winsRepository = winsRepository;
-    }
-
-    @Autowired
-    public void setGamerRepository(GamerRepository gamerRepository) {
-        this.gamerRepository = gamerRepository;
-    }
-
-    @Autowired
-    public void setGamerDtoTransformer(GamerDtoTransformer gamerDtoTransformer) {
-        this.gamerDtoTransformer = gamerDtoTransformer;
-    }
-
-    @Autowired
-    public void setWinnerDtoTransformer(WinnerDtoTransformer winnerDtoTransformer) {
-        this.winnerDtoTransformer = winnerDtoTransformer;
-    }
-
-    @Autowired
-    public void setWeeklyGamerDtoTransformer(WeeklyGamerDtoTransformer weeklyGamerDtoTransformer) {
-        this.weeklyGamerDtoTransformer = weeklyGamerDtoTransformer;
-    }
-
-    @Autowired
-    public void setTotalTopDtoTransformer(TotalTopDtoTransformer totalTopDtoTransformer) {
-        this.totalTopDtoTransformer = totalTopDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
 
     /**
      * Allows to quickly decide if a user has gained any gamification points for this session.

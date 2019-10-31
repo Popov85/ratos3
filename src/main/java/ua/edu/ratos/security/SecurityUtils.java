@@ -83,7 +83,7 @@ public class SecurityUtils {
     public Long getAuthUserId() {
         if ("h2".equals(profile) || "mysql".equals(profile)) return 2L;
         Authentication auth = getAuthentication();
-        if (auth.getPrincipal().getClass()!= AuthenticatedUser.class)
+        if (!(auth.getPrincipal() instanceof AuthenticatedUser))
             throw new SecurityException("Lack of authority");
         return ((AuthenticatedUser) auth.getPrincipal()).getUserId();
     }
@@ -91,7 +91,7 @@ public class SecurityUtils {
     public String getAuthUsername() {
         if ("h2".equals(profile) || "mysql".equals(profile)) return "Test";
         Authentication auth = getAuthentication();
-        if (auth.getPrincipal().getClass()!= AuthenticatedUser.class)
+        if (!(auth.getPrincipal() instanceof AuthenticatedUser))
             throw new SecurityException("Lack of authority");
         return ((AuthenticatedUser) auth.getPrincipal()).getUsername();
     }

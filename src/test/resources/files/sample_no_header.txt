@@ -1,9 +1,0 @@
-    #
-    Question0 Line 1
-    Question0 Line 2
-    Question0 Line 3
-    1
-    Correct answer 1
-    Continuation of correct answer 2
-    Continuation of correct answer 3
-    0

@@ -1,13 +1,13 @@
 package ua.edu.ratos.service.dto.out;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-@ToString
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 public class LevelsOutDto {
     private String type;

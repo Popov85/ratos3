@@ -25,14 +25,6 @@ public class SettingsOutDto {
 
     private float level3Coefficient;
 
-    private boolean displayPercent;
-
-    private boolean displayMark;
-
-    private boolean displayThemeResults;
-
-    private boolean displayQuestionResults;
-
     private boolean strictControlTimePerQuestion;
 
     private StaffMinOutDto staff;

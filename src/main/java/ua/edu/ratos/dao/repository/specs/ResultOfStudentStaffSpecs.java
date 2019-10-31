@@ -19,6 +19,12 @@ public class ResultOfStudentStaffSpecs {
     public static Specification<ResultOfStudent> ofDepartment(@NonNull final Long depId) {
         return (Specification<ResultOfStudent>) (root, query, builder) -> {
             Path<Department> departmentPath = root.get(ResultOfStudent_.department);
+            if (Long.class != query.getResultType()) {
+                root.fetch(ResultOfStudent_.scheme.getName(), JoinType.LEFT);
+                root.fetch(ResultOfStudent_.student.getName(), JoinType.LEFT)
+                        .fetch(Student_.user.getName(), JoinType.LEFT);
+                root.fetch(ResultOfStudent_.department.getName(), JoinType.LEFT);
+            }
             return builder.equal(departmentPath.get(Department_.depId), depId);
         };
     }

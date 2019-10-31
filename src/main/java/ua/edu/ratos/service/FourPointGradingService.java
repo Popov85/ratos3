@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -13,47 +13,28 @@ import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoFourPointGradingTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.FourPointGradingDtoTransformer;
+
 import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class FourPointGradingService {
 
     private static final String ID_IS_NOT_INCLUDED = "FourId is not included, reject update!";
-
     private static final String FOUR_NOT_FOUND = "The requested FourPointGrading not found, fourId = ";
-
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default FourPointGrading cannot be modified";
 
-    private FourPointGradingRepository fourPointGradingRepository;
+    private final FourPointGradingRepository fourPointGradingRepository;
 
-    private FourPointGradingDtoTransformer fourPointGradingDtoTransformer;
+    private final FourPointGradingDtoTransformer fourPointGradingDtoTransformer;
 
-    private DtoFourPointGradingTransformer dtoFourPointGradingTransformer;
+    private final DtoFourPointGradingTransformer dtoFourPointGradingTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setFourPointGradingRepository(FourPointGradingRepository fourPointGradingRepository) {
-        this.fourPointGradingRepository = fourPointGradingRepository;
-    }
-
-    @Autowired
-    public void setFourPointGradingDtoTransformer(FourPointGradingDtoTransformer fourPointGradingDtoTransformer) {
-        this.fourPointGradingDtoTransformer = fourPointGradingDtoTransformer;
-    }
-
-    @Autowired
-    public void setDtoFourPointGradingTransformer(DtoFourPointGradingTransformer dtoFourPointGradingTransformer) {
-        this.dtoFourPointGradingTransformer = dtoFourPointGradingTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final FourPointGradingInDto dto) {
         return fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto)).getFourId();
@@ -80,15 +61,24 @@ public class FourPointGradingService {
         entity.setDeleted(true);
     }
 
-    //--------------------------------------------------One (for update)------------------------------------------------
-
+    //--------------------------------------------------One (for edit)--------------------------------------------------
     @Transactional(readOnly = true)
     public FourPointGradingOutDto findOneForEdit(@NonNull final Long fourId) {
-        return fourPointGradingDtoTransformer.toDto(fourPointGradingRepository.findOneForEdit(fourId));
+        return fourPointGradingDtoTransformer.toDto(fourPointGradingRepository.findOneForEdit(fourId)
+                .orElseThrow(()->new EntityNotFoundException(FOUR_NOT_FOUND+fourId)));
     }
 
-    //----------------------------------------------------Staff table---------------------------------------------------
+    //------------------------------------------------------Default-----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<FourPointGradingOutDto> findAllDefault() {
+        return fourPointGradingRepository.findAllDefault()
+                .stream()
+                .map(fourPointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
 
+
+    //----------------------------------------------------Staff table---------------------------------------------------
     @Transactional(readOnly = true)
     public Slice<FourPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return fourPointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(fourPointGradingDtoTransformer::toDto);

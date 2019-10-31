@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,21 +16,10 @@ import ua.edu.ratos.service.session.UserQuestionStarredService;
 @Slf4j
 @RestController
 @RequestMapping("/student")
+@AllArgsConstructor
 public class UserQuestionStarredController {
 
-    private UserQuestionStarredService userQuestionStarredService;
-
-    @Autowired
-    public void setUserQuestionStarredService(UserQuestionStarredService userQuestionStarredService) {
-        this.userQuestionStarredService = userQuestionStarredService;
-    }
-
-    @PutMapping(value = "/questions-starred/{questionId}/stars/{stars}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateStars(@PathVariable Long questionId, @PathVariable byte stars) {
-        userQuestionStarredService.updateStars(questionId, stars);
-        log.debug("Updated Stars, questionId = {}, new stars = {}", questionId, stars);
-    }
+    private final UserQuestionStarredService userQuestionStarredService;
 
     @DeleteMapping("/questions-starred/{questionId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -41,7 +30,6 @@ public class UserQuestionStarredController {
 
     //-------------------------------------------------Question details-------------------------------------------------
     // no correct answer(s)(!), only for educational purpose
-
     @GetMapping(value = "/questions-starred/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionSessionOutDto findOneStarredQuestionById(@PathVariable Long questionId) {
         return userQuestionStarredService.findOneByQuestionId(questionId);
@@ -49,10 +37,8 @@ public class UserQuestionStarredController {
 
     //----------------------------------------------------User table----------------------------------------------------
     // default limit is 100(!)
-
     @GetMapping(value = "/questions-starred", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionSessionMinOutDto> findAllStarredQuestionsByStudentId(@PageableDefault(sort = {"whenStarred"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return userQuestionStarredService.findAllByUserId(pageable);
     }
-
 }

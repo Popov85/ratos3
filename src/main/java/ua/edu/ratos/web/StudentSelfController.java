@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.StudentSelfService;
@@ -11,14 +11,10 @@ import ua.edu.ratos.service.dto.in.UserMinInDto;
 @Slf4j
 @RestController
 @RequestMapping("/student")
+@AllArgsConstructor
 public class StudentSelfController {
 
-    private StudentSelfService studentSelfService;
-
-    @Autowired
-    public void setStudentSelfService(StudentSelfService studentSelfService) {
-        this.studentSelfService = studentSelfService;
-    }
+    private final StudentSelfService studentSelfService;
 
     @PutMapping("/accounts/{studentId}/name")
     @ResponseStatus(value = HttpStatus.OK)

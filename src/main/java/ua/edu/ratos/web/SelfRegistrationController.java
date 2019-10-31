@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * Use this controller for students self-registration option;
+ * Use this web for students self-registration option;
  * This is not always the case, as organisations may want to register their students
  * in a centralized way by staff workers. In this case, prohibit self-registration option in app settings.
  * Most probably, you would want to allow self-registration from inside an LMS,
@@ -31,7 +30,14 @@ import java.util.Set;
  */
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class SelfRegistrationController {
+
+    private final SelfRegistrationService selfRegistrationService;
+
+    private final AppProperties appProperties;
+
+    private final SecurityUtils securityUtils;
 
     @Getter
     @ToString
@@ -39,27 +45,6 @@ public class SelfRegistrationController {
     private static class RegOptionsDto {
         private boolean isLms;
         private boolean isAllowed;
-    }
-
-    private SelfRegistrationService selfRegistrationService;
-
-    private AppProperties appProperties;
-
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setSelfRegistrationService(SelfRegistrationService selfRegistrationService) {
-        this.selfRegistrationService = selfRegistrationService;
-    }
-
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
     }
 
     /**
@@ -71,14 +56,13 @@ public class SelfRegistrationController {
         final boolean isLmsUser =  securityUtils.isLtiUser();
         // Get reg options for this context;
         final AppProperties.Security security = appProperties.getSecurity();
-        final boolean isAllowed = (isLmsUser) ? security.isLmsRegistration() : security.isNonLmsRegistration();
+        final boolean isAllowed = isLmsUser ? security.isLmsRegistration() : security.isNonLmsRegistration();
         RegOptionsDto regOptions = new RegOptionsDto(isLmsUser, isAllowed);
         log.debug("Requested reg. options = {}", regOptions);
         return ResponseEntity.ok(regOptions);
     }
 
     //------------------------------------------non-LTI-registration----------------------------------------------------
-
     @GetMapping(value="/self-registration/organisations", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<OrganisationMinOutDto> findAllOrganisations() {
         if (!appProperties.getSecurity().isNonLmsRegistration())
@@ -121,7 +105,6 @@ public class SelfRegistrationController {
 
     //----------------------------------------------LTI registration----------------------------------------------------
     // Use these endpoints only from LMS context
-
     @GetMapping(value="/lti/self-registration/organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> findOrganisation() {
         if (!appProperties.getSecurity().isLmsRegistration())

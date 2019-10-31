@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Organisation;
 import ua.edu.ratos.dao.entity.lms.LMS;
-import ua.edu.ratos.dao.entity.lms.LMSOrigin;
 import ua.edu.ratos.dao.entity.lms.LTICredentials;
 import ua.edu.ratos.dao.entity.lms.LTIVersion;
 import ua.edu.ratos.security.SecurityUtils;
@@ -36,11 +35,6 @@ public class DtoLMSTransformer {
         lms.setCredentials(credentials);
         lms.setLtiVersion(em.getReference(LTIVersion.class, dto.getVersionId()));
         lms.setOrganisation(em.getReference(Organisation.class, securityUtils.getAuthOrgId()));
-        dto.getOrigins().forEach(o->{
-            LMSOrigin origin = new LMSOrigin();
-            origin.setLink(o);
-            lms.addOrigin(origin);
-        });
         return lms;
     }
 }

@@ -2,6 +2,7 @@ package ua.edu.ratos.service.generator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
+@Profile({"dev", "demo"})
 public class SchemeGenerator {
 
     //private static final int MAX_THEMES_PER_SCHEME = 3;
@@ -56,8 +58,18 @@ public class SchemeGenerator {
     public List<Scheme> generate(int quantity, List<Theme> themes, List<Department> departments, List<Course> courses, int maxThemes) {
         List<Scheme> result = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
-            Department department = departments.get(rnd.rnd(0, departments.size() - 1));
-            Course course = courses.get(rnd.rnd(0, courses.size() - 1));
+            Department department;
+            if (departments.size()==1) {
+                department = departments.get(0);
+            } else {
+                department = departments.get(rnd.rnd(0, departments.size() - 1));
+            }
+            Course course;
+            if (courses.size()==1) {
+                course = courses.get(0);
+            } else {
+                course = courses.get(rnd.rnd(0, courses.size() - 1));
+            }
             Scheme scheme = createOne(themes, department, course, maxThemes);
             schemeRepository.save(scheme);
             gradingManagerService.save(scheme.getSchemeId(), scheme.getGrading().getGradingId(), 1L);
@@ -74,6 +86,7 @@ public class SchemeGenerator {
         scheme.setCourse(course);
         scheme.setGrading(em.getReference(Grading.class, rnd.rndOne(4)));
         scheme.setSettings(em.getReference(Settings.class, 1L));
+        scheme.setOptions(em.getReference(Options.class, 2L));
         scheme.setStrategy(em.getReference(Strategy.class, rnd.rndOne(4)));
         scheme.setMode(em.getReference(Mode.class, rnd.rndOne(3)));
         scheme.setAccess(em.getReference(Access.class, rnd.rndOne(3)));

@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.answer.AnswerSQRepository;
@@ -11,24 +11,14 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@AllArgsConstructor
 public class AnswerSQService {
 
     private static final String ANSWER_NOT_FOUND = "The requested Answer SQ not found, answerId = ";
 
-    private AnswerSQRepository answerRepository;
+    private final AnswerSQRepository answerRepository;
 
-    private DtoAnswerTransformer dtoAnswerTransformer;
-
-    @Autowired
-    public void setAnswerRepository(AnswerSQRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
-
-    @Autowired
-    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
-        this.dtoAnswerTransformer = dtoAnswerTransformer;
-    }
-
+    private final DtoAnswerTransformer dtoAnswerTransformer;
 
     @Transactional
     public Long save(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {

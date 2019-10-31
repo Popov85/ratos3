@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "answer_fbsq")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class AnswerFBSQ {
 
     @Id
@@ -38,7 +38,7 @@ public class AnswerFBSQ {
 
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "fbsq_phrase", joinColumns = { @JoinColumn(name = "answer_id") }, inverseJoinColumns = { @JoinColumn(name = "phrase_id") })
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Phrase> acceptedPhrases = new HashSet<>();
 
     public void addPhrase(@NonNull Phrase phrase) {

@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.service.QuestionService;
 import ua.edu.ratos.service.QuestionsFileParserService;
 import ua.edu.ratos.service.dto.in.*;
@@ -27,21 +26,12 @@ import java.net.URI;
 @Slf4j
 @RestController
 @RequestMapping(path = "/instructor")
+@AllArgsConstructor
 public class QuestionController {
 
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
-    private QuestionsFileParserService questionsFileParserService;
-
-    @Autowired
-    public void setQuestionService(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
-    @Autowired
-    public void setQuestionsFileParserService(QuestionsFileParserService questionsFileParserService) {
-        this.questionsFileParserService = questionsFileParserService;
-    }
+    private final QuestionsFileParserService questionsFileParserService;
 
     @PostMapping(value = "/questions-mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Validated @RequestBody QuestionMCQInDto dto) {
@@ -107,7 +97,6 @@ public class QuestionController {
 
     //--------------------------------------------------One for edit----------------------------------------------------
     // elsewhere out of editor
-
     @GetMapping(value = "/questions-mcq/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionMCQOutDto findOneMCQForEditById(@PathVariable Long questionId) {
         return questionService.findOneMCQForEditById(questionId);
@@ -135,7 +124,6 @@ public class QuestionController {
 
     //--------------------------------------------------Staff editor----------------------------------------------------
     // 100 questions loaded by default, options are {100, 200, 500, all}
-
     @GetMapping(value = "/questions-mcq", params = "themeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@RequestParam Long themeId, @PageableDefault(sort = {"question"}, value = 100) Pageable pageable) {
         return questionService.findAllMCQForEditByThemeId(themeId, pageable);
@@ -164,7 +152,6 @@ public class QuestionController {
     
     //--------------------------------------Staff cross-department search by questionType-------------------------------
     // 30 by default
-
     @GetMapping(value = "/questions-mcq", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<QuestionMCQOutDto> findAllMCQForSearchByDepartmentIdAndTitleContains(@RequestParam String letters, @PageableDefault(sort = {"question"}, value = 30) Pageable pageable) {
         return questionService.findAllMCQForSearchByDepartmentIdAndTitleContains(letters, pageable);

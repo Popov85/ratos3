@@ -1,17 +1,20 @@
 package ua.edu.ratos.service.domain.question;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerMQDomain;
+import ua.edu.ratos.service.dto.out.answer.CorrectAnswerMQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionMQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseMQ;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -34,8 +37,9 @@ public class QuestionMQDomain extends QuestionDomain {
      * @param response
      * @return result of evaluation
      */
-    public double evaluate(ResponseMQ response) {
+    public double evaluate(@NonNull final ResponseMQ response) {
         final Set<ResponseMQ.Triple> responses = response.getMatchedPhrases();
+        if (responses==null || responses.isEmpty()) return 0;
         // Traverse through all the answers of this question
         int matchCounter = 0;
         int totalMatches = answers.size();
@@ -57,6 +61,15 @@ public class QuestionMQDomain extends QuestionDomain {
         // Get evaluating settings
         if (!this.partialResponseAllowed && matchCounter<totalMatches) return 0;
         return matchCounter*100d/totalMatches;
+    }
+
+    @Override
+    @JsonIgnore
+    public CorrectAnswerMQOutDto getCorrectAnswer() {
+        Set<CorrectAnswerMQOutDto.Triple> correctPhrases = this.answers.stream().map(a -> new CorrectAnswerMQOutDto
+                .Triple(a.getAnswerId(), a.getLeftPhraseDomain().getPhraseId(), a.getRightPhraseDomain().getPhraseId()))
+                .collect(Collectors.toSet());
+        return new CorrectAnswerMQOutDto(correctPhrases);
     }
 
     @Override

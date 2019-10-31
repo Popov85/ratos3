@@ -24,7 +24,7 @@ public class SettingsDomain implements Serializable {
     // Specifies, whether or not to limit a single question in time, default - do not limit
     private boolean strictControlTimePerQuestion;
 
-    // Negative short is used for "all questions per sheet" option
+    // Negative short is used for "all questions per batch" option
     private short questionsPerSheet;
 
     private short daysKeepResultDetails;
@@ -32,13 +32,5 @@ public class SettingsDomain implements Serializable {
     private float level2Coefficient;
 
     private float level3Coefficient;
-
-    private boolean displayPercent;
-
-    private boolean displayMark;
-
-    private boolean displayThemeResults;
-
-    private boolean displayQuestionResults;
 
 }

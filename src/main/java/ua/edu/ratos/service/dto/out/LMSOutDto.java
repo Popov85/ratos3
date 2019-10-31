@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @ToString
@@ -20,6 +18,4 @@ public class LMSOutDto {
     private LTICredentialsOutDto credentials;
 
     private LTIVersionOutDto ltiVersion;
-
-    private Set<LMSOriginOutDto> origins;
 }

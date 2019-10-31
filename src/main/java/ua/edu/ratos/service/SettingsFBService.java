@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -13,39 +13,23 @@ import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsFBTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SettingsFBDtoTransformer;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
+@AllArgsConstructor
 public class SettingsFBService {
 
-    private SettingsFBRepository settingsFBRepository;
+    private static final String SETTINGS_FB_NOT_FOUND_ID = "Requested SettingsFB is not found, setId = ";
 
-    private DtoSettingsFBTransformer dtoSettingsFBTransformer;
+    private final SettingsFBRepository settingsFBRepository;
 
-    private SettingsFBDtoTransformer settingsFBDtoTransformer;
+    private final DtoSettingsFBTransformer dtoSettingsFBTransformer;
 
-    private SecurityUtils securityUtils;
+    private final SettingsFBDtoTransformer settingsFBDtoTransformer;
 
-    @Autowired
-    public void setSettingsFBRepository(SettingsFBRepository settingsFBRepository) {
-        this.settingsFBRepository = settingsFBRepository;
-    }
-
-    @Autowired
-    public void setDtoSettingsFBTransformer(DtoSettingsFBTransformer dtoSettingsFBTransformer) {
-        this.dtoSettingsFBTransformer = dtoSettingsFBTransformer;
-    }
-
-    @Autowired
-    public void setSettingsFBDtoTransformer(SettingsFBDtoTransformer settingsFBDtoTransformer) {
-        this.settingsFBDtoTransformer = settingsFBDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //--------------------------------------------------------CRUD------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final SettingsFBInDto dto) {
         return settingsFBRepository.save(dtoSettingsFBTransformer.toEntity(dto)).getSettingsId();
@@ -53,7 +37,7 @@ public class SettingsFBService {
 
     @Transactional
     public void update(@NonNull final SettingsFBInDto dto) {
-        if (dto.getSettingsId()==null) throw new RuntimeException("SettingsId is not found!");
+        if (dto.getSettingsId() == null) throw new RuntimeException("SettingsId is not found!");
         settingsFBRepository.save(dtoSettingsFBTransformer.toEntity(dto));
     }
 
@@ -63,14 +47,13 @@ public class SettingsFBService {
     }
 
     //---------------------------------------------------One (for update)-----------------------------------------------
-
     @Transactional(readOnly = true)
     public SettingsFBOutDto findOneForEdit(@NonNull final Long setId) {
-        return settingsFBDtoTransformer.toDto(settingsFBRepository.findOneForEdit(setId));
+        return settingsFBDtoTransformer.toDto(settingsFBRepository.findOneForEdit(setId)
+                .orElseThrow(() -> new EntityNotFoundException(SETTINGS_FB_NOT_FOUND_ID + setId)));
     }
 
     //-----------------------------------------------------Staff table--------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return settingsFBRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(settingsFBDtoTransformer::toDto);
@@ -92,7 +75,6 @@ public class SettingsFBService {
     }
 
     //-----------------------------------------------------------ADMIN--------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllAdmin(@NonNull final Pageable pageable) {
         return settingsFBRepository.findAllAdmin(pageable).map(settingsFBDtoTransformer::toDto);

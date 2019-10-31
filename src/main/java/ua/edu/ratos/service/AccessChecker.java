@@ -1,8 +1,8 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Access;
 import ua.edu.ratos.dao.entity.Staff;
@@ -18,17 +18,13 @@ import ua.edu.ratos.security.SecurityUtils;
  */
 @Slf4j
 @Component
+@AllArgsConstructor
 public class AccessChecker {
 
     private static final String DEP_PRIVATE_ACCESS_MESSAGE = "Failed to modify: element has a dep-private access";
     private static final String PRIVATE_ACCESS_MESSAGE = "Failed to modify: element has a private access";
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     public void checkModifyAccess(@NonNull final Access accessLevel, @NonNull final Staff staff) {
         String access = accessLevel.getName();

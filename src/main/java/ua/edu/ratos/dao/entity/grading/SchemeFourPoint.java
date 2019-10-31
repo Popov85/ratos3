@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "scheme_four_point")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SchemeFourPoint {
     @Id
     @Column(name = "scheme_id")

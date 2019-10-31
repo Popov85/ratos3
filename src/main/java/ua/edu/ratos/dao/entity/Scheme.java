@@ -18,11 +18,11 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString(exclude = {"strategy", "settings", "mode", "grading", "course", "staff", "department", "themes", "groups", "access"})
+@ToString(exclude = {"strategy", "settings", "mode", "options", "grading", "course", "staff", "department", "themes", "groups", "access"})
 @Entity
 @Table(name="scheme")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class Scheme {
@@ -47,6 +47,10 @@ public class Scheme {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mode_id")
     private Mode mode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "options_id")
+    private Options options;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grading_id")
@@ -84,7 +88,7 @@ public class Scheme {
 
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<SchemeTheme> themes = new ArrayList<>();
 
     public void addSchemeTheme(@NonNull SchemeTheme schemeTheme) {
@@ -98,7 +102,7 @@ public class Scheme {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "group_scheme", joinColumns = @JoinColumn(name = "scheme_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Group> groups = new HashSet<>();
 
     public void addGroup(Group group) {

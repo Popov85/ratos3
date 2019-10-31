@@ -1,34 +1,25 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.repository.SchemeThemeSettingsRepository;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeThemeSettingsTransformer;
+
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class SchemeThemeSettingsService {
 
-    private SchemeThemeSettingsRepository schemeThemeSettingsRepository;
+    private final SchemeThemeSettingsRepository schemeThemeSettingsRepository;
 
-    private DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer;
+    private final DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer;
 
-    @Autowired
-    public void setSchemeThemeSettingsRepository(SchemeThemeSettingsRepository schemeThemeSettingsRepository) {
-        this.schemeThemeSettingsRepository = schemeThemeSettingsRepository;
-    }
-
-    @Autowired
-    public void setDtoSchemeThemeSettingsTransformer(DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer) {
-        this.dtoSchemeThemeSettingsTransformer = dtoSchemeThemeSettingsTransformer;
-    }
-
-
-
+    //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
     public Long save(@NonNull final SchemeThemeSettingsInDto dto) {
         SchemeThemeSettings schemeThemeSettings = dtoSchemeThemeSettingsTransformer.toEntity(dto);

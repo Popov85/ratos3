@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "settings_fbq")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class SettingsFB {

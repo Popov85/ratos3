@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.transformer.dto_to_entity;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,22 +15,19 @@ import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.entity.question.QuestionSQ;
 import ua.edu.ratos.service.dto.in.*;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Component
+@AllArgsConstructor
 @SuppressWarnings("SpellCheckingInspection")
 public class DtoAnswerTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     //------------------------------------MCQ----------------------------------
 

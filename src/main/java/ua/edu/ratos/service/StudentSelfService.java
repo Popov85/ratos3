@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,31 +16,16 @@ import ua.edu.ratos.service.dto.in.UserMinInDto;
  * For account adjustment from within personal cabinet
  */
 @Service
+@AllArgsConstructor
 public class StudentSelfService {
 
-    private SecurityUtils securityUtils;
+    private final StudentRepository studentRepository;
 
-    private StudentRepository studentRepository;
+    private final PasswordEncoder encoder;
 
-    private PasswordEncoder encoder;
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setStudentRepository(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
-
-    @Autowired
-    public void setEncoder(PasswordEncoder encoder) {
-        this.encoder = encoder;
-    }
+    private final SecurityUtils securityUtils;
 
     //---------------------------------------------------ACCOUNT update-------------------------------------------------
-
     @Transactional
     public void updateNameAndSurname(@NonNull final UserMinInDto dto) {
         Student stud = studentRepository.findById(securityUtils.getAuthUserId()).get();

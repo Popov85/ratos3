@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,35 +15,16 @@ import ua.edu.ratos.service.domain.SessionData;
 @Slf4j
 @Service
 @SuppressWarnings("SpellCheckingInspection")
+@AllArgsConstructor
 public class AsyncFinishProcessingService {
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
-    private ResultService resultService;
+    private final ResultService resultService;
 
-    private ResultDetailsService resultDetailsService;
+    private final ResultDetailsService resultDetailsService;
 
-    private GameService gameService;
-
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setResultService(ResultService resultService) {
-        this.resultService = resultService;
-    }
-
-    @Autowired
-    public void setResultDetailsService(ResultDetailsService resultDetailsService) {
-        this.resultDetailsService = resultDetailsService;
-    }
-
-    @Autowired
-    public void setGameService(GameService gameService) {
-        this.gameService = gameService;
-    }
+    private final GameService gameService;
 
 
     @Async

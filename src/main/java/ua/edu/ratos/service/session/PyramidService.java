@@ -1,10 +1,11 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
+
 import java.util.List;
 
 /**
@@ -13,16 +14,12 @@ import java.util.List;
  * list, just like we did with skipped questions;
  */
 @Service
+@AllArgsConstructor
 public class PyramidService {
 
     private static final String WRONG_API_USAGE = "Wrong API usage! You invoke pyramid processing for a scheme with disabled pyramid mode!";
 
-    private ShiftService shiftService;
-
-    @Autowired
-    public void setShiftService(ShiftService shiftService) {
-        this.shiftService = shiftService;
-    }
+    private final ShiftService shiftService;
 
     /**
      * Process Pyramid mode: move incorrect responses to the end of the list

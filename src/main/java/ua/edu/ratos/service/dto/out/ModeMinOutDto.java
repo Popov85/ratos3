@@ -28,6 +28,8 @@ public class ModeMinOutDto {
 
     private boolean preservable;
 
+    private boolean pauseable;
+
     private boolean reportable;
 
     private boolean starrable;

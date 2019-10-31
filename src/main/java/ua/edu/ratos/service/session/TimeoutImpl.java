@@ -1,9 +1,6 @@
 package ua.edu.ratos.service.session;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -13,8 +10,6 @@ import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.web.exception.RunOutOfTimeException;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
 
 /**
@@ -32,10 +27,10 @@ import java.time.LocalDateTime;
 @Profile({"prod", "dev"})
 public class TimeoutImpl implements Timeout {
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
     @Autowired
-    public void setAppProperties(AppProperties appProperties) {
+    public TimeoutImpl(AppProperties appProperties) {
         this.appProperties = appProperties;
     }
 
@@ -51,7 +46,7 @@ public class TimeoutImpl implements Timeout {
         if (isSet) throw
                 new IllegalStateException("Timeout state is already set: state sets only once at the start of request flow");
         this.isSessionTimeout = isTimeoutedWithLeeway(sessionData.getSessionTimeout());
-        this.isBatchTimeout = isTimeoutedWithLeeway(sessionData.getCurrentBatchTimeOut());
+        this.isBatchTimeout = isTimeoutedWithLeeway(sessionData.getCurrentBatchTimeout());
         this.isSet = true;
     }
 
@@ -72,15 +67,5 @@ public class TimeoutImpl implements Timeout {
         // Add timeout leeway if any (non zero)
         long leeway = appProperties.getSession().getTimeoutLeeway();
         return LocalDateTime.now().isAfter(businessTimeout.plusSeconds(leeway));
-    }
-
-    @PostConstruct
-    public void init() {
-        log.debug("Bean Timeout constructed = {}", this);
-    }
-
-    @PreDestroy
-    public void destroy() {
-        log.debug("Bean Timeout destroyed = {}", this);
     }
 }

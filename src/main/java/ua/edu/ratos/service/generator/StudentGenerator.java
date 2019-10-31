@@ -1,6 +1,7 @@
 package ua.edu.ratos.service.generator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
@@ -12,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Component
+@Profile({"dev", "demo"})
 public class StudentGenerator {
 
     private static final int[] YEAR = {2016, 2017, 2018, 2019};

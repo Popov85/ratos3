@@ -16,14 +16,6 @@ import org.springframework.security.oauth.provider.nonce.InMemoryNonceServices;
 import org.springframework.security.oauth.provider.token.InMemoryProviderTokenServices;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ua.edu.ratos.dao.entity.lms.LMSOrigin;
-import ua.edu.ratos.dao.repository.lms.LMSOriginRepository;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * LTI v1.1.1 security config
@@ -35,24 +27,17 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String FALLBACK_LTI_PATH = "/lti/1p0/launch";
 
-    private final String profile;
-
-    private final String ltiLaunchPath;
-
     private final LTIConsumerDetailsService ltiConsumerDetailsService;
 
     private final LTIAuthenticationHandler ltiAuthenticationHandler;
 
-    private final LMSOriginRepository lmsOriginRepository;
+    private final String ltiLaunchPath;
 
 
     @Autowired
     public LTISecurityConfig(final LTIConsumerDetailsService ltiConsumerDetailsService,
                              final LTIAuthenticationHandler ltiAuthenticationHandler,
-                             final LMSOriginRepository lmsOriginRepository,
-                             @NonNull final @Value("${spring.profiles.active}") String profile,
                              @NonNull final @Value("${ratos.lti.launch_path}") String ltiLaunchPath) {
-        this.profile = profile;
         if (ltiLaunchPath==null || ltiLaunchPath.isEmpty()) {
             log.warn("LTI launch path is not set, fallback to default one");
             this.ltiLaunchPath = FALLBACK_LTI_PATH;
@@ -61,29 +46,9 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
         }
         this.ltiConsumerDetailsService = ltiConsumerDetailsService;
         this.ltiAuthenticationHandler = ltiAuthenticationHandler;
-        this.lmsOriginRepository = lmsOriginRepository;
     }
 
-    // CORS bean
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        List<String> allowedOrigins;
-        if ("dev".equals(profile) || "demo".equals(profile))  {
-            allowedOrigins = Collections.singletonList("*");
-        } else {
-            allowedOrigins = lmsOriginRepository.findAll()
-                    .stream().map(LMSOrigin::getLink).collect(Collectors.toList());
-        }
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(Collections.singletonList("POST"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/lti/**/launch", configuration);
-        return source;
-    }
-
-    // OAuth/LTI 1.0 beans
-    @Bean
+    @Bean// OAuth/LTI 1.0 beans
     public OAuthProviderTokenServices oauthProviderTokenServices() {
         return new InMemoryProviderTokenServices();
     }
@@ -112,7 +77,6 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
         registration.setEnabled(false);
         return registration;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

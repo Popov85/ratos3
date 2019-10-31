@@ -2,6 +2,7 @@ package ua.edu.ratos.service.generator.suite;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.Class;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@Profile({"dev", "demo"})
 public class SessionSuite {
 
     @Autowired
@@ -56,18 +58,18 @@ public class SessionSuite {
     public void generateMin() {
         Suite suite = getMin();
         generate(suite);
-        log.info("Generated min suite for session = {}", suite);
+        log.info("Generated min test suite = {}", suite);
     }
 
-    public void generateAvgAndStep() {
+    public void generateAvg() {
         Suite suite = getAvg();
-        generateAndStep(suite, 1000, 1000, 3, 1000);
+        generate(suite);
         log.info("Generated avg suite for session = {}", suite);
     }
 
-    public void generateMaxAndStep() {
+    public void generateMax() {
         Suite suite = getMax();
-        generateAndStep(suite, 50000, 100000, 5, 10000);
+        generate(suite);
         log.info("Generated max suite for session = {}", suite);
     }
 
@@ -75,99 +77,105 @@ public class SessionSuite {
         return new Suite()
                 .setOrganisations(1)
                 .setFaculties(1)
+                .setClasses(1)
+                .setStudents(10)
                 .setDepartments(1)
                 .setCourses(1)
-                .setSchemes(1)
-                .setThemes(10)
+                .setSchemes(20)
+                .setComplexSchemes(5)
+                .setStepSchemes(1)
+                .setThemes(20)
+                .setComplexThemes(25)
+                .setStepThemes(10)
                 .setResources(100)
                 .setHelps(100)
-                .setMcq(1000);
+                .setMcq(400)
+                .setComplexMcq(400)
+                .setStepMcq(400);
     }
 
     private Suite getAvg() {
         return new Suite()
                 .setOrganisations(1)
                 .setFaculties(5)
-                .setClasses(100)
-                .setStudents(100)
-                .setDepartments(50)
-                .setCourses(100)
-                .setResources(100)
-                .setHelps(100);
+                .setClasses(10)
+                .setStudents(50)
+                .setDepartments(10)
+                .setCourses(10)
+                .setSchemes(50)
+                .setComplexSchemes(20)
+                .setStepSchemes(3)
+                .setThemes(200)
+                .setComplexThemes(60)
+                .setStepThemes(10)
+                .setResources(200)
+                .setHelps(200)
+                .setMcq(2000)
+                .setComplexMcq(1500)
+                .setStepMcq(1500);
     }
 
     private Suite getMax() {
         return new Suite()
                 .setOrganisations(1)
                 .setFaculties(5)
-                .setClasses(200)
-                .setStudents(2000)
+                .setClasses(50)
+                .setStudents(500)
                 .setDepartments(50)
-                .setCourses(2000)
-                .setResources(2000)
-                .setHelps(2000);
+                .setCourses(100)
+                .setSchemes(100)
+                .setComplexSchemes(30)
+                .setStepSchemes(5)
+                .setThemes(500)
+                .setComplexThemes(200)
+                .setStepThemes(10)
+                .setResources(300)
+                .setHelps(300)
+                .setMcq(5000)
+                .setComplexMcq(2000)
+                .setStepMcq(2000);
     }
 
 
     private void generate(Suite suite) {
-        List<Organisation> organisations = organisationGenerator.generate(suite.getOrganisations());
-        List<Faculty> faculties = facultyGenerator.generate(suite.getFaculties(), organisations);
-        List<Department> departments = departmentGenerator.generate(suite.getDepartments(), faculties);
-        List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);
-        List<Theme> themes = themeGenerator.generate(suite.getThemes(), courses);
-        List<Scheme> schemes = schemeGeneratorStep.generate(1, themes, departments, courses);
-        List<Resource> resources = resourceGenerator.generate(suite.getResources());
-        List<Help> helps = helpGenerator.generate(suite.getHelps(), resources);
-        List<QuestionMCQ> mcqs = mcqGenerator.generate(suite.getMcq(), themes, resources, helps);
-    }
-
-
-    private void generateAndStep(Suite suite, int questionsForSmallSchemes, int questionsForMediumSchemes, int stepSchemes, int questionsForStepSchemes) {
         long start = System.nanoTime();
         List<Organisation> organisations = organisationGenerator.generate(suite.getOrganisations());
         List<Faculty> faculties = facultyGenerator.generate(suite.getFaculties(), organisations);
         List<Class> classes = classGenerator.generate(suite.getClasses(), faculties);
         List<Student> students = studentGenerator.generate(suite.getStudents(), classes);
         List<Department> departments = departmentGenerator.generate(suite.getDepartments(), faculties);
-        List<Course> courses = courseGenerator.generate(1000, departments);
-
-        // Small 500 schemes
-        List<Theme> themesSmall = themeGenerator.generate(500, courses);
-        List<Scheme> schemesSmall = schemeGenerator.generate(500, themesSmall, departments, courses, 3);
+        List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);
         List<Resource> resources = resourceGenerator.generate(suite.getResources());
         List<Help> helps = helpGenerator.generate(suite.getHelps(), resources);
-        // 50.000
-        mcqGenerator.generate(questionsForSmallSchemes, themesSmall, resources, helps);
-        List<Long> smallSchemesIds = schemesSmall.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
-        themesSmall = null;
-        schemesSmall = null;
-        log.debug("Finished generating questions for small schemes");
 
-        // Medium 50 schemes
-        List<Theme> themesMedium = themeGenerator.generate(500, courses);
-        List<Scheme> schemesMedium = schemeGenerator.generate(50, themesMedium, departments, courses, 8);
-        // 100.000
-        mcqGenerator.generate(questionsForMediumSchemes, themesMedium, resources, helps);
+        // Simple schemes
+        List<Theme> themesSmall = themeGenerator.generate(suite.getThemes(), courses);
+        List<Scheme> schemesSmall = schemeGenerator.generate(suite.getSchemes(), themesSmall, departments, courses, 1);
+        mcqGenerator.generate(suite.getMcq(), themesSmall, resources, helps);
+        List<Long> smallSchemesIds = schemesSmall.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
+        log.debug("Finished generating questions for simple schemes");
+
+        // Complex schemes
+        List<Theme> themesMedium = themeGenerator.generate(suite.getComplexThemes(), courses);
+        List<Scheme> schemesMedium = schemeGenerator.generate(suite.getComplexSchemes(), themesMedium, departments, courses, 5);
+        mcqGenerator.generate(suite.getComplexMcq(), themesMedium, resources, helps);
         List<Long> mediumSchemesIds = schemesMedium.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
-        themesMedium = null;
-        schemesMedium = null;
-        log.debug("Finished generating questions for medium schemes");
+        log.debug("Finished generating questions for complex schemes");
+
 
         // STEP - 10 schemes
         List<Scheme> schemesStep = new ArrayList<>();
-        for (int i = 0; i < stepSchemes; i++) {
-            List<Theme> themesStep = themeGenerator.generate(10, courses);
+        for (int i = 0; i < suite.getStepSchemes(); i++) {
+            List<Theme> themesStep = themeGenerator.generate(suite.getStepThemes(), courses);
             List<Scheme> scheme = schemeGeneratorStep.generate(1, themesStep, departments, courses);
             schemesStep.addAll(scheme);
-            // 10.000
-            mcqGenerator.generate(questionsForStepSchemes, themesStep, resources, helps);
+            mcqGenerator.generate(suite.getStepMcq(), themesStep, resources, helps);
             log.debug("Finished generating questions for step schemes, i = {}", i);
         }
         List<Long> stepSchemesIds = schemesStep.stream().map(s -> s.getSchemeId()).collect(Collectors.toList());
-        themesMedium = null;
-        schemesStep = null;
-        log.debug("Small schemes = {}", smallSchemesIds);
-        log.debug("Medium schemes = {}", mediumSchemesIds);
+
+        log.debug("Simple schemes = {}", smallSchemesIds);
+        log.debug("Complex schemes = {}", mediumSchemesIds);
         log.debug("STEP schemes = {}", stepSchemesIds);
 
         long finish = System.nanoTime();

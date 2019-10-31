@@ -1,43 +1,100 @@
 package ua.edu.ratos.web.session;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.config.ControlTime;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.out.HelpMinOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
+import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import ua.edu.ratos.service.dto.session.StarredInDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.session.EducationalSessionService;
-import ua.edu.ratos.service.domain.SessionData;
-import ua.edu.ratos.service.session.SessionDataMap;
+import ua.edu.ratos.service.domain.SessionDataMap;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping(value = {"/student/session", "/lms/session"})
+@AllArgsConstructor
 public class EducationalSessionController {
 
-    private EducationalSessionService educationalSessionService;
+    private final EducationalSessionService educationalSessionService;
 
-    @Autowired
-    public void setEducationalSessionService(EducationalSessionService educationalSessionService) {
-        this.educationalSessionService = educationalSessionService;
-    }
-
-    //--------------------------------------------------PRESERVE--------------------------------------------------------
-
-    @GetMapping(value = "/preserve/{schemeId}")
-    public ResponseEntity<String> preserve(@PathVariable Long schemeId,
-                                           @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+    //-----------------------------------------------PRESERVE/RETRIEVE--------------------------------------------------
+    @ControlTime
+    @GetMapping(value = "/preserve/{schemeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> preserve(@PathVariable Long schemeId,
+                                         @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap, HttpSession session) {
         SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
-        String key = educationalSessionService.preserve(sessionData);
+        String sessionId = session.getId();
+        String key = educationalSessionService.preserve(sessionId, sessionData);
+        sessionDataMap.remove(schemeId);
         log.debug("Preserved session = {}", key);
-        return ResponseEntity.ok(key);
+        return Collections.singletonMap("key", key);
     }
 
-    //---------------------------------------------------AJAX-----------------------------------------------------------
+    @GetMapping(value = "/retrieve/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BatchOutDto> retrieve(@PathVariable String key, HttpSession session) {
+        Object sessionDataAttribute = session.getAttribute("sessionDataMap");
+        SessionDataMap sessionDataMap = ((sessionDataAttribute == null)
+                ? new SessionDataMap() : (SessionDataMap) sessionDataAttribute);
+        BatchOutDto batchOutDto = educationalSessionService.retrieve(key, sessionDataMap);
+        log.debug("Restored session = {}", key);
+        return ResponseEntity.ok(batchOutDto);
+    }
 
-    @GetMapping(value = "/schemes/{schemeId}/questions/{questionId}/helped")
+    @ControlTime
+    @GetMapping(value = "/pause/{schemeId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void pause(@PathVariable Long schemeId,
+                      @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
+        educationalSessionService.pause(sessionData);
+        log.debug("Paused session = {}, schemeId = {}", sessionData, schemeId);
+        return;
+    }
+
+    @GetMapping(value = "/proceed/{schemeId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void proceed(@PathVariable Long schemeId,
+                      @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
+        educationalSessionService.proceed(sessionData);
+        log.debug("Un-paused session = {}, schemeId = {}", sessionData, schemeId);
+        return;
+    }
+
+    //---------------------------------------------------MORE-----------------------------------------------------------
+    @PostMapping(value = "/check/{schemeId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultPerQuestionOutDto> check(@PathVariable Long schemeId,
+                                                         @RequestBody Response response,
+                                                         @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
+        ResultPerQuestionOutDto result = educationalSessionService.check(response, sessionData);
+        log.debug("Checked response = {} with score = {}", response, result.getScore());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/check/{schemeId}/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultPerQuestionOutDto> check(@PathVariable Long schemeId,
+                                                         @PathVariable Long questionId,
+                                                         @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
+        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
+        ResultPerQuestionOutDto result = educationalSessionService.shows(questionId, sessionData);
+        log.debug("Provided the correct answer to the questionId = {}", questionId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/schemes/{schemeId}/questions/{questionId}/helped", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HelpMinOutDto> getHelp(@PathVariable Long schemeId,
                                                  @PathVariable Long questionId,
                                                  @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
@@ -47,30 +104,19 @@ public class EducationalSessionController {
         return ResponseEntity.ok(help);
     }
 
-    @PostMapping(value = "/schemes/{schemeId}/questions/{questionId}/starred")
-    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping(value = "/schemes/{schemeId}/questions/{questionId}/starred", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void setStarred(@PathVariable Long schemeId,
                            @PathVariable Long questionId,
-                           @RequestBody StarredInDto dto,
+                           @Valid @RequestBody StarredInDto dto,
                            @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
         SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         educationalSessionService.star(dto, sessionData);
         log.debug("Starred questionId = {}, stars = {}", questionId, dto.getStars());
     }
 
-    @PutMapping(value = "/schemes/{schemeId}/questions/{questionId}/starred")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void reStarred(@PathVariable Long schemeId,
-                          @PathVariable Long questionId,
-                          @RequestBody StarredInDto dto,
-                          @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
-        SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
-        educationalSessionService.reStar(dto, sessionData);
-        log.debug("ReStarred questionId = {}, stars = {}", questionId, dto.getStars());
-    }
-
     @DeleteMapping(value = "/schemes/{schemeId}/questions/{questionId}/starred")
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void unStarred(@PathVariable Long schemeId,
                           @PathVariable Long questionId,
                           @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
@@ -80,7 +126,7 @@ public class EducationalSessionController {
     }
 
     @PutMapping(value = "/schemes/{schemeId}/questions/{questionId}/skipped")
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void setSkipped(@PathVariable Long schemeId,
                            @PathVariable Long questionId,
                            @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
@@ -89,16 +135,14 @@ public class EducationalSessionController {
         log.debug("Skipped questionId = {}", questionId);
     }
 
-    @PostMapping(value = "/schemes/{schemeId}/questions/{questionId}/complained")
-    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping(value = "/schemes/{schemeId}/questions/{questionId}/complained", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void setComplaint(@PathVariable Long schemeId,
                              @PathVariable Long questionId,
-                             @RequestBody ComplaintInDto dto,
+                             @Valid @RequestBody ComplaintInDto dto,
                              @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
         SessionData sessionData = sessionDataMap.getOrElseThrow(schemeId);
         educationalSessionService.complain(dto, sessionData);
         log.debug("Complained about questionId = {}, complaint = {}", questionId, dto);
     }
-
-    // TODO: Paused request serving!
 }

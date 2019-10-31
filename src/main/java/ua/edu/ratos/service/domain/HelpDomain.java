@@ -24,17 +24,13 @@ public class HelpDomain implements Serializable {
 
     private String help;
 
+    @JsonProperty("resourceDomain")
     private ResourceDomain resourceDomain;
 
     // ResourceDomain may or may not be present, most often it is not present
     @JsonIgnore
     public Optional<ResourceDomain> getResourceDomain() {
         return Optional.ofNullable(resourceDomain);
-    }
-
-    @JsonProperty("resourceDomain")
-    private ResourceDomain getResourceOrNothing() {
-        return getResourceDomain().orElse(null);
     }
 
 }

@@ -1,11 +1,12 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,21 +17,12 @@ import java.util.Set;
  * Questions are randomised irrespective to type, level and themes
  */
 @Service
+@AllArgsConstructor
 public class SequenceProducerRandomImpl implements SequenceProducer {
 
-    private SubSetProducer subSetProducer;
+    private final SubSetProducer subSetProducer;
 
-    private CollectionShuffler collectionShuffler;
-
-    @Autowired
-    public void setSubSetProducer(SubSetProducer subSetProducer) {
-        this.subSetProducer = subSetProducer;
-    }
-
-    @Autowired
-    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
-        this.collectionShuffler = collectionShuffler;
-    }
+    private final CollectionShuffler collectionShuffler;
 
     @Override
     public List<Question> getSequence(@NonNull final Scheme scheme, @NonNull final QuestionLoader questionLoader) {

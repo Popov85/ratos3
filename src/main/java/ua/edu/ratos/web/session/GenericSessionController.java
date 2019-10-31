@@ -1,30 +1,27 @@
 package ua.edu.ratos.web.session;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.config.ControlTime;
+import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.SessionDataMap;
+import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.dto.session.ResultOutDto;
-import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.GenericSessionService;
-import ua.edu.ratos.service.session.SessionDataMap;
+
 import javax.servlet.http.HttpSession;
 
 @Slf4j
 @RestController
 @RequestMapping("/student/session")
+@AllArgsConstructor
 public class GenericSessionController {
 
-    private GenericSessionService sessionService;
-
-    @Autowired
-    public void setSessionService(GenericSessionService sessionService) {
-        this.sessionService = sessionService;
-    }
+    private final GenericSessionService sessionService;
 
     @GetMapping(value = "/start", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BatchOutDto> start(@RequestParam Long schemeId, HttpSession session) {
@@ -32,11 +29,10 @@ public class GenericSessionController {
         SessionDataMap sessionDataMap = ((sessionDataAttribute == null)
                 ? new SessionDataMap() : (SessionDataMap) sessionDataAttribute);
         sessionDataMap.controlAndThrow(schemeId);
-        String key = session.getId();
-        final SessionData sessionData = sessionService.start(schemeId, key);
+        final SessionData sessionData = sessionService.start(schemeId);
         sessionDataMap.add(schemeId, sessionData);
         session.setAttribute("sessionDataMap", sessionDataMap);
-        log.debug("Started non-LMS session key = {} for a user taking schemeId = {}", key,schemeId);
+        log.debug("Started non-LMS session for a user taking schemeId = {}", schemeId);
         return ResponseEntity.ok(sessionData.getCurrentBatch().orElseThrow(()->new IllegalStateException("Current batch was not found!")));
     }
 
@@ -68,7 +64,6 @@ public class GenericSessionController {
         return ResponseEntity.ok(resultOut);
     }
 
-
     @ControlTime
     @GetMapping(value = "/finish", params = "schemeId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultOutDto> finish(@RequestParam Long schemeId, @SessionAttribute("sessionDataMap") SessionDataMap sessionDataMap) {
@@ -88,5 +83,4 @@ public class GenericSessionController {
         log.debug("Cancelled learning session, {}", resultOut);
         return ResponseEntity.ok(resultOut);
     }
-
 }

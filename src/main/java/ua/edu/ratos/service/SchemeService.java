@@ -1,8 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,108 +14,54 @@ import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
-import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
+import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import ua.edu.ratos.service.grading.SchemeGradingServiceFactory;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeInfoDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeShortDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @Service
+@AllArgsConstructor
 public class SchemeService {
 
     private static final String SCHEME_NOT_FOUND_ID = "Requested scheme not found, schemeId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SchemeRepository schemeRepository;
+    private final SchemeRepository schemeRepository;
 
-    private GroupSchemeRepository groupSchemeRepository;
+    private final GroupSchemeRepository groupSchemeRepository;
 
-    private SchemeThemeService schemeThemeService;
+    private final SchemeThemeService schemeThemeService;
 
-    private DtoSchemeTransformer dtoSchemeTransformer;
+    private final DtoSchemeTransformer dtoSchemeTransformer;
 
-    private SchemeGradingManagerService gradingManagerService;
+    private final SchemeGradingManagerService gradingManagerService;
 
-    private SchemeGradingServiceFactory schemeGradingServiceFactory;
+    private final SchemeGradingServiceFactory schemeGradingServiceFactory;
 
-    private SchemeShortDtoTransformer schemeShortDtoTransformer;
+    private final SchemeShortDtoTransformer schemeShortDtoTransformer;
 
-    private SchemeDtoTransformer schemeDtoTransformer;
+    private final SchemeDtoTransformer schemeDtoTransformer;
 
-    private SchemeInfoDtoTransformer schemeInfoDtoTransformer;
+    private final SchemeInfoDtoTransformer schemeInfoDtoTransformer;
 
-    private SecurityUtils securityUtils;
+    private final AccessChecker accessChecker;
 
-    private AccessChecker accessChecker;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setSchemeRepository(SchemeRepository schemeRepository) {
-        this.schemeRepository = schemeRepository;
-    }
 
-    @Autowired
-    public void setGroupSchemeRepository(GroupSchemeRepository groupSchemeRepository) {
-        this.groupSchemeRepository = groupSchemeRepository;
-    }
-
-    @Autowired
-    public void setSchemeThemeService(SchemeThemeService schemeThemeService) {
-        this.schemeThemeService = schemeThemeService;
-    }
-
-    @Autowired
-    public void setDtoSchemeTransformer(DtoSchemeTransformer dtoSchemeTransformer) {
-        this.dtoSchemeTransformer = dtoSchemeTransformer;
-    }
-
-    @Autowired
-    public void setGradingManagerService(SchemeGradingManagerService gradingManagerService) {
-        this.gradingManagerService = gradingManagerService;
-    }
-
-    @Autowired
-    public void setSchemeGradingServiceFactory(SchemeGradingServiceFactory schemeGradingServiceFactory) {
-        this.schemeGradingServiceFactory = schemeGradingServiceFactory;
-    }
-
-    @Autowired
-    public void setSchemeShortDtoTransformer(SchemeShortDtoTransformer schemeShortDtoTransformer) {
-        this.schemeShortDtoTransformer = schemeShortDtoTransformer;
-    }
-
-    @Autowired
-    public void setSchemeDtoTransformer(SchemeDtoTransformer schemeDtoTransformer) {
-        this.schemeDtoTransformer = schemeDtoTransformer;
-    }
-
-    @Autowired
-    public void setSchemeInfoDtoTransformer(SchemeInfoDtoTransformer schemeInfoDtoTransformer) {
-        this.schemeInfoDtoTransformer = schemeInfoDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setAccessChecker(AccessChecker accessChecker) {
-        this.accessChecker = accessChecker;
-    }
-
-    //---------------------------------------------------CRUD---------------------------------------------------------
-
+    //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
     public Long save(@NonNull final SchemeInDto dto) {
         Scheme scheme = dtoSchemeTransformer.toEntity(dto);
@@ -180,8 +125,9 @@ public class SchemeService {
     @Transactional
     public void updateGrading(@NonNull final Long schemeId, @NonNull final Long gradId, @NonNull final Long gradDetailsId) {
         checkModificationPossibility(schemeId);
-        final Scheme scheme = schemeRepository.findForGradingById(schemeId);
-        if (scheme==null) throw new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId);
+        final Scheme scheme = schemeRepository.findForGradingById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId));
+        if (scheme == null) throw new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId);
         long oldGradingId = scheme.getGrading().getGradingId();
         if (oldGradingId != gradId) {
             gradingManagerService.save(schemeId, gradId, gradDetailsId);
@@ -208,7 +154,6 @@ public class SchemeService {
                 .setLmsOnly(isLmsOnly);
     }
 
-
     @Transactional
     public void deleteById(@NonNull final Long schemeId) {
         checkModificationPossibility(schemeId);
@@ -217,14 +162,13 @@ public class SchemeService {
     }
 
     private void checkModificationPossibility(@NonNull final Long schemeId) {
-        Scheme scheme = schemeRepository.findForSecurityById(schemeId);
+        Scheme scheme = schemeRepository.findForSecurityById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId));
         accessChecker.checkModifyAccess(scheme.getAccess(), scheme.getStaff());
     }
 
-
     //----------------------------------------------------THEMES--------------------------------------------------------
     // we manage it here cause it affects scheme completeness
-
     @Transactional
     public void removeTheme(@NonNull final Long schemeId, @NonNull final Long schemeThemeId) {
         if (!hasMultipleThemes(schemeId)) throw new RuntimeException("Cannot remove the last theme");
@@ -238,16 +182,15 @@ public class SchemeService {
 
     @Transactional
     public void reOrderThemes(@NonNull final Long schemeId, @NonNull final List<Long> schemeThemeIds) {
-        final Scheme scheme = schemeRepository.findForThemesManipulationById(schemeId);
-        if (scheme.getThemes().size()!=schemeThemeIds.size())
+        final Scheme scheme = schemeRepository.findForThemesManipulationById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId));
+        if (scheme.getThemes().size() != schemeThemeIds.size())
             throw new RuntimeException("Cannot re-order themes: unequal list size");
         scheme.clearSchemeTheme();
         schemeThemeIds.forEach(id -> scheme.addSchemeTheme(em.find(SchemeTheme.class, id)));
     }
 
-
     //---------------------------------------------------GROUPS---------------------------------------------------------
-
     @Transactional
     public void addGroup(@NonNull final Long schemeId, @NonNull final Long groupId) {
         GroupScheme groupScheme = new GroupScheme();
@@ -261,25 +204,25 @@ public class SchemeService {
         groupSchemeRepository.deleteById(new GroupSchemeId(groupId, schemeId));
     }
 
-
     //--------------------------------------------One (for cached session)----------------------------------------------
     @Transactional(readOnly = true)
     public Scheme findByIdForSession(@NonNull final Long schemeId) {
-        return schemeRepository.findForSessionById(schemeId);
+        return schemeRepository.findForSessionById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId));
     }
 
     //-------------------------------------------One for getting basic Info---------------------------------------------
-
     @Transactional(readOnly = true)
     public SchemeInfoOutDto findByIdForInfo(@NonNull final Long schemeId) {
-        return schemeInfoDtoTransformer.toDto(schemeRepository.findForInfoById(schemeId));
+        return schemeInfoDtoTransformer.toDto(schemeRepository.findForInfoById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId)));
     }
 
     //------------------------------------------------One (for update)--------------------------------------------------
-
     @Transactional(readOnly = true)
     public SchemeOutDto findByIdForUpdate(@NonNull final Long schemeId) {
-        SchemeOutDto schemeOutDto = schemeDtoTransformer.toDto(schemeRepository.findForEditById(schemeId));
+        SchemeOutDto schemeOutDto = schemeDtoTransformer.toDto(schemeRepository.findForEditById(schemeId)
+                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId)));
         // Work here to add grading details DTO;
         Long gradingId = schemeOutDto.getGrading().getGradingId();
         Object gradingDetails = schemeGradingServiceFactory.getInstance(gradingId).findDetails(schemeId);
@@ -309,9 +252,7 @@ public class SchemeService {
         return schemeRepository.findDepartmentSchemesForCachedSession(depId, pageable);
     }
 
-
     //-------------------------------------------------Staff tables-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return schemeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(schemeShortDtoTransformer::toDto);
@@ -323,21 +264,21 @@ public class SchemeService {
     }
 
     //-------------------------------------------------Search in table--------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAllByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return schemeRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        if (contains)
+            return schemeRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
         return schemeRepository.findAllByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAllByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        if (contains)
+            return schemeRepository.findAllByDepartmentIdAndNameContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
         return schemeRepository.findAllByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     //-------------------------------------------------Slice drop-down--------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
         return schemeRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(schemeShortDtoTransformer::toDto);
@@ -349,21 +290,21 @@ public class SchemeService {
     }
 
     //------------------------------------------------Search in drop-down-----------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return schemeRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
+        if (contains)
+            return schemeRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
         return schemeRepository.findAllForDropDownByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     @Transactional(readOnly = true)
     public Slice<SchemeShortOutDto> findAllForDropDownByCourseIdAndName(@NonNull final Long courseId, @NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return schemeRepository.findAllForDropDownByCourseIdAndNameLettersContains(courseId, letters, pageable).map(schemeShortDtoTransformer::toDto);
+        if (contains)
+            return schemeRepository.findAllForDropDownByCourseIdAndNameLettersContains(courseId, letters, pageable).map(schemeShortDtoTransformer::toDto);
         return schemeRepository.findAllForDropDownByCourseIdAndNameStarts(courseId, letters, pageable).map(schemeShortDtoTransformer::toDto);
     }
 
     //-------------------------------------------------Admin (for table)------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAll(@NonNull final Pageable pageable) {
         return schemeRepository.findAll(pageable).map(schemeShortDtoTransformer::toDto);

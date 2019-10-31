@@ -7,6 +7,13 @@ import ua.edu.ratos.service.NamedService;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Known impl:
+ * @see CachedQuestionLoaderImpl
+ * @see SimpleQuestionLoaderImpl
+ * @see ThreadLimitedCachedQuestionLoaderImpl
+ *
+ */
 public interface QuestionLoader extends NamedService<String> {
 
     Map<Affiliation, Set<Question>> loadAllQuestionsToMap(Scheme scheme);

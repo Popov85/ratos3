@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.dao.repository.ResultOfStudentRepository;
-import ua.edu.ratos.dao.repository.specs.*;
+import ua.edu.ratos.dao.repository.specs.ResultOfStudentSelfSpecs;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.criteria.results.ResultOfStudentCriteriaAdminInDto;
 import ua.edu.ratos.service.dto.in.criteria.results.ResultOfStudentCriteriaSelfInDto;
@@ -19,71 +19,35 @@ import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForAdminOutDto;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForStaffOutDto;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentSelfOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.*;
+
 import java.util.List;
+
 import static ua.edu.ratos.dao.repository.specs.ResultOfStudentSelfSpecs.byStudent;
-import static ua.edu.ratos.dao.repository.specs.ResultOfStudentStaffSpecs.*;
+import static ua.edu.ratos.dao.repository.specs.ResultOfStudentStaffSpecs.hasSpecs;
+import static ua.edu.ratos.dao.repository.specs.ResultOfStudentStaffSpecs.ofDepartment;
 
 @Service
+@AllArgsConstructor
 public class ResultOfStudentsService {
 
-    private ResultOfStudentRepository resultOfStudentRepository;
+    private final ResultOfStudentRepository resultOfStudentRepository;
 
-    private ResultOfStudentForStaffDtoTransformer resultOfStudentForStaffDtoTransformer;
+    private final ResultOfStudentForStaffDtoTransformer resultOfStudentForStaffDtoTransformer;
 
-    private ResultOfStudentForAdminDtoTransformer resultOfStudentForAdminDtoTransformer;
+    private final ResultOfStudentForAdminDtoTransformer resultOfStudentForAdminDtoTransformer;
 
-    private ResultOfStudentSelfDtoTransformer resultOfStudentSelfDtoTransformer;
+    private final ResultOfStudentSelfDtoTransformer resultOfStudentSelfDtoTransformer;
 
-    private SecurityUtils securityUtils;
+    private final DepartmentMinDtoTransformer departmentMinDtoTransformer;
 
-    private DepartmentMinDtoTransformer departmentMinDtoTransformer;
+    private final CourseMinDtoTransformer courseMinDtoTransformer;
 
-    private CourseMinDtoTransformer courseMinDtoTransformer;
+    private final SchemeMinDtoTransformer schemeMinDtoTransformer;
 
-    private SchemeMinDtoTransformer schemeMinDtoTransformer;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setResultOfStudentRepository(ResultOfStudentRepository resultOfStudentRepository) {
-        this.resultOfStudentRepository = resultOfStudentRepository;
-    }
-
-    @Autowired
-    public void setResultOfStudentForStaffDtoTransformer(ResultOfStudentForStaffDtoTransformer resultOfStudentForStaffDtoTransformer) {
-        this.resultOfStudentForStaffDtoTransformer = resultOfStudentForStaffDtoTransformer;
-    }
-
-    @Autowired
-    public void setResultOfStudentForAdminDtoTransformer(ResultOfStudentForAdminDtoTransformer resultOfStudentForAdminDtoTransformer) {
-        this.resultOfStudentForAdminDtoTransformer = resultOfStudentForAdminDtoTransformer;
-    }
-
-    @Autowired
-    public void setResultOfStudentSelfDtoTransformer(ResultOfStudentSelfDtoTransformer resultOfStudentSelfDtoTransformer) {
-        this.resultOfStudentSelfDtoTransformer = resultOfStudentSelfDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setDepartmentMinDtoTransformer(DepartmentMinDtoTransformer departmentMinDtoTransformer) {
-        this.departmentMinDtoTransformer = departmentMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setCourseMinDtoTransformer(CourseMinDtoTransformer courseMinDtoTransformer) {
-        this.courseMinDtoTransformer = courseMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setSchemeMinDtoTransformer(SchemeMinDtoTransformer schemeMinDtoTransformer) {
-        this.schemeMinDtoTransformer = schemeMinDtoTransformer;
-    }
 
     //----------------------------------------LAB/INSTRUCTOR by department & criteria-----------------------------------
-
     @Transactional(readOnly = true)
     public Page<ResultOfStudentForStaffOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
         Specification<ResultOfStudent> specs = ofDepartment(securityUtils.getAuthDepId());
@@ -105,7 +69,6 @@ public class ResultOfStudentsService {
     }
 
     //------------------------------------------------------STUDENT-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ResultOfStudentSelfOutDto> findAllByStudentId(@NonNull final Pageable pageable) {
         Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthUserId());
@@ -117,8 +80,8 @@ public class ResultOfStudentsService {
         Specification<ResultOfStudent> specs = byStudent(securityUtils.getAuthUserId()).and(ResultOfStudentSelfSpecs.hasSpecs(dto));
         return resultOfStudentRepository.findAll(specs, pageable).map(resultOfStudentSelfDtoTransformer::toDto);
     }
-    //-----------------------------------------------STUDENT search drop-down-------------------------------------------
 
+    //-----------------------------------------------STUDENT search drop-down-------------------------------------------
     // For self-results search from personal page by {dep/course/scheme}
     @Transactional(readOnly = true)
     public ResultSearchSuiteSelfOutDto findAllSearchParamsFromStudentsResult() {

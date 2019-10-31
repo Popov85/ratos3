@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -15,46 +15,26 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoFreePointGradingTransfo
 import ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class FreePointGradingService {
 
     private static final String ID_IS_NOT_INCLUDED = "FreeId is not included, reject update!";
-
     private static final String FREE_NOT_FOUND = "The requested FreePointGrading not found, freeId = ";
-
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default FreePointGrading cannot be modified";
 
-    private FreePointGradingRepository freePointGradingRepository;
+    private final FreePointGradingRepository freePointGradingRepository;
 
-    private FreePointGradingDtoTransformer freePointGradingDtoTransformer;
+    private final FreePointGradingDtoTransformer freePointGradingDtoTransformer;
 
-    private DtoFreePointGradingTransformer dtoFreePointGradingTransformer;
+    private final DtoFreePointGradingTransformer dtoFreePointGradingTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setFreePointGradingRepository(ua.edu.ratos.dao.repository.FreePointGradingRepository freePointGradingRepository) {
-        this.freePointGradingRepository = freePointGradingRepository;
-    }
-
-    @Autowired
-    public void setFreePointGradingDtoTransformer(ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer freePointGradingDtoTransformer) {
-        this.freePointGradingDtoTransformer = freePointGradingDtoTransformer;
-    }
-
-    @Autowired
-    public void setDtoFreePointGradingTransformer(DtoFreePointGradingTransformer dtoFreePointGradingTransformer) {
-        this.dtoFreePointGradingTransformer = dtoFreePointGradingTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //------------------------------------------------------CRUD--------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final FreePointGradingInDto dto) {
         return freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto)).getFreeId();
@@ -81,14 +61,22 @@ public class FreePointGradingService {
     }
 
     //--------------------------------------------------One (for update)------------------------------------------------
-
     @Transactional(readOnly = true)
     public FreePointGradingOutDto findOneForEdit(@NonNull final Long freeId) {
-        return freePointGradingDtoTransformer.toDto(freePointGradingRepository.findOneForEdit(freeId));
+        return freePointGradingDtoTransformer.toDto(freePointGradingRepository.findOneForEdit(freeId)
+                .orElseThrow(() -> new EntityNotFoundException(FREE_NOT_FOUND + freeId)));
+    }
+
+    //------------------------------------------------------Default-----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<FreePointGradingOutDto> findAllDefault() {
+        return freePointGradingRepository.findAllDefault()
+                .stream()
+                .map(freePointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //-----------------------------------------------------Staff table--------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<FreePointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return freePointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(freePointGradingDtoTransformer::toDto);

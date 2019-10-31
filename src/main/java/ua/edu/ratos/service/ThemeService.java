@@ -1,8 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,8 +16,8 @@ import ua.edu.ratos.dao.repository.ThemeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
 import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
-import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
+import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoThemeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ThemeDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ThemeExtDtoTransformer;
@@ -29,68 +28,32 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.Set;
 
-@Slf4j
 @Service
-@Transactional(readOnly = true)
+@AllArgsConstructor
 public class ThemeService {
 
-    private static final String THEME_NOT_FOUND = "Requested theme not found, themeId = ";
+    private static final String THEME_NOT_FOUND = "Requested theme is not found, themeId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    private ThemeRepository themeRepository;
+    private final ThemeRepository themeRepository;
 
-    private DtoThemeTransformer dtoThemeTransformer;
+    private final DtoThemeTransformer dtoThemeTransformer;
 
-    private ThemeDtoTransformer themeDtoTransformer;
+    private final ThemeDtoTransformer themeDtoTransformer;
 
-    private ThemeExtDtoTransformer themeExtDtoTransformer;
+    private final ThemeExtDtoTransformer themeExtDtoTransformer;
 
-    private ThemeMapDtoTransformer themeMapDtoTransformer;
+    private final ThemeMapDtoTransformer themeMapDtoTransformer;
 
-    private AccessChecker accessChecker;
+    private final AccessChecker accessChecker;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setThemeRepository(ThemeRepository themeRepository) {
-        this.themeRepository = themeRepository;
-    }
-
-    @Autowired
-    public void setDtoThemeTransformer(DtoThemeTransformer dtoThemeTransformer) {
-        this.dtoThemeTransformer = dtoThemeTransformer;
-    }
-
-    @Autowired
-    public void setThemeDtoTransformer(ThemeDtoTransformer themeDtoTransformer) {
-        this.themeDtoTransformer = themeDtoTransformer;
-    }
-
-    @Autowired
-    public void setThemeExtDtoTransformer(ThemeExtDtoTransformer themeExtDtoTransformer) {
-        this.themeExtDtoTransformer = themeExtDtoTransformer;
-    }
-
-    @Autowired
-    public void setThemeMapDtoTransformer(ThemeMapDtoTransformer themeMapDtoTransformer) {
-        this.themeMapDtoTransformer = themeMapDtoTransformer;
-    }
-
-    @Autowired
-    public void setAccessChecker(AccessChecker accessChecker) {
-        this.accessChecker = accessChecker;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
+    //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
     public Long save(@NonNull final ThemeInDto dto) {
         Theme theme = dtoThemeTransformer.toEntity(dto);
@@ -130,19 +93,19 @@ public class ThemeService {
     }
 
     private void checkModificationPossibility(@NonNull final Long themeId) {
-        Theme theme = themeRepository.findForSecurityById(themeId);
+        Theme theme = themeRepository.findForSecurityById(themeId)
+                .orElseThrow(()->new EntityNotFoundException("Theme is not found, themeId = "+themeId));
         accessChecker.checkModifyAccess(theme.getAccess(), theme.getStaff());
     }
 
     //---------------------------------------------One (for update)-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public ThemeOutDto findByIdForUpdate(@NonNull final Long themeId) {
-        return themeDtoTransformer.toDto(themeRepository.findForEditById(themeId));
+        return themeDtoTransformer.toDto(themeRepository.findForEditById(themeId)
+                .orElseThrow(()->new EntityNotFoundException("Theme is not found, themeId = "+themeId)));
     }
 
     //--------------------------------------------Staff theme table-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffId(@NonNull final Pageable pageable) {
         return themeRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(themeExtDtoTransformer::toDto);
@@ -168,7 +131,6 @@ public class ThemeService {
     }
 
     //----------------------------------------------Slice drop-down-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<ThemeExtOutDto> findAllForDropDownByStaffId(@NonNull final Pageable pageable) {
         return themeRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId(), pageable).map(themeExtDtoTransformer::toDto);
@@ -180,7 +142,6 @@ public class ThemeService {
     }
 
     //----------------------------------------------Drop-down search----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<ThemeExtOutDto> findAllForDropDownByStaffIdAndName(@NonNull final String starts, boolean contains, @NonNull final Pageable pageable) {
         if (contains) return themeRepository.findAllForDropDownByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), starts, pageable).map(themeExtDtoTransformer::toDto);
@@ -194,7 +155,6 @@ public class ThemeService {
     }
 
     //----------------------------------------------Scheme creating support---------------------------------------------
-
     @Transactional(readOnly = true)
     public ThemeMapOutDto getQuestionTypeLevelMapByThemeId(@NonNull final Long themeId) {
         Set<Question> questions = questionRepository.findAllForTypeLevelMapByThemeId(themeId);
@@ -213,7 +173,6 @@ public class ThemeService {
         if (contains) return themeRepository.findAllByDepartmentIdAndNameLettersContains(depId, letters, pageable).map(themeExtDtoTransformer::toDto);
         return themeRepository.findAllByDepartmentIdAndNameStarts(depId, letters, pageable).map(themeExtDtoTransformer::toDto);
     }
-
 
     // -----------------------------------------------Admin table-------------------------------------------------------
     @Transactional(readOnly = true)

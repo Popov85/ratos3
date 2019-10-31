@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,55 +15,32 @@ import ua.edu.ratos.service.dto.in.CourseInDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoCourseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.CourseDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class CourseService {
 
     private static final String COURSE_NOT_FOUND = "Requested Course not found, courseId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
-    private DtoCourseTransformer dtoCourseTransformer;
+    private final DtoCourseTransformer dtoCourseTransformer;
 
-    private CourseDtoTransformer courseDtoTransformer;
+    private final CourseDtoTransformer courseDtoTransformer;
 
-    private AccessChecker accessChecker;
+    private final AccessChecker accessChecker;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setCourseRepository(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
-    }
-
-    @Autowired
-    public void setDtoCourseTransformer(DtoCourseTransformer dtoCourseTransformer) {
-        this.dtoCourseTransformer = dtoCourseTransformer;
-    }
-
-    @Autowired
-    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
-        this.courseDtoTransformer = courseDtoTransformer;
-    }
-
-    @Autowired
-    public void setAccessChecker(AccessChecker accessChecker) {
-        this.accessChecker = accessChecker;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final CourseInDto dto) {
         return dtoCourseTransformer.toEntity(dto).getCourseId();
@@ -95,16 +72,13 @@ public class CourseService {
         accessChecker.checkModifyAccess(course.getAccess(), course.getStaff());
     }
 
-
     //-----------------------------------------------------One (for update)---------------------------------------------
-
     @Transactional(readOnly = true)
     public CourseOutDto findByIdForUpdate(@NonNull final Long courseId) {
         return courseDtoTransformer.toDto(courseRepository.findForEditById(courseId));
     }
 
     //-----------------------------------------------------Staff (for table)--------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return courseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(courseDtoTransformer::toDto);
@@ -116,7 +90,6 @@ public class CourseService {
     }
 
     //-----------------------------------------------------Search in table----------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
         if (contains) return courseRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);

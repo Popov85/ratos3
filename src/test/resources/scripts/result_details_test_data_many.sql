@@ -1,5 +1,5 @@
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id, options_id)
+    values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1, 1);
 
 insert into result(scheme_id, user_id, dep_id, percent, grade, is_passed, session_ended, session_lasted, is_timeouted, lms_id)
     values(1, 2, 1, 90, 5, 1, '2018-12-20 13:35:07.999999999', 400, 0, 1);

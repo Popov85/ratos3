@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "free_point")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class FreePointGrading {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

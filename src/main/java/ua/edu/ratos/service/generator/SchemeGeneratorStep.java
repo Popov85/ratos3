@@ -2,6 +2,7 @@ package ua.edu.ratos.service.generator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
@@ -20,6 +21,7 @@ import java.util.*;
  */
 @Slf4j
 @Component
+@Profile({"dev", "demo"})
 public class SchemeGeneratorStep {
 
     @Autowired
@@ -58,6 +60,7 @@ public class SchemeGeneratorStep {
         scheme.setGrading(em.getReference(Grading.class, 1L));
         scheme.setSettings(em.getReference(Settings.class, 1L));
         scheme.setStrategy(em.getReference(Strategy.class, 1L));
+        scheme.setOptions(em.getReference(Options.class, 1L));
         scheme.setMode(em.getReference(Mode.class, 1L));
         scheme.setAccess(em.getReference(Access.class, 1L));
         scheme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));

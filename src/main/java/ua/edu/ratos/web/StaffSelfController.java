@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.StaffSelfService;
@@ -11,14 +11,10 @@ import ua.edu.ratos.service.dto.in.UserMinInDto;
 @Slf4j
 @RestController
 @RequestMapping("/lab")
+@AllArgsConstructor
 public class StaffSelfController {
     
-    private StaffSelfService staffSelfService;
-
-    @Autowired
-    public void setStaffSelfService(StaffSelfService staffSelfService) {
-        this.staffSelfService = staffSelfService;
-    }
+    private final StaffSelfService staffSelfService;
     
     @PutMapping("/accounts/{staffId}/name")
     @ResponseStatus(value = HttpStatus.OK)
@@ -40,5 +36,4 @@ public class StaffSelfController {
         staffSelfService.updatePassword(oldPass, newPass);
         log.debug("Updated Staff's password, staffId = {}", staffId);
     }
-    
 }

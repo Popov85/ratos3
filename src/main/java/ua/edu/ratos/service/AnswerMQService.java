@@ -1,33 +1,24 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.answer.AnswerMQRepository;
 import ua.edu.ratos.service.dto.in.AnswerMQInDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
+
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@AllArgsConstructor
 public class AnswerMQService {
 
     private static final String ANSWER_NOT_FOUND = "The requested Answer MQ not found, answerId = ";
 
-    private AnswerMQRepository answerRepository;
+    private final AnswerMQRepository answerRepository;
 
-    private DtoAnswerTransformer dtoAnswerTransformer;
-
-    @Autowired
-    public void setAnswerRepository(AnswerMQRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
-
-    @Autowired
-    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
-        this.dtoAnswerTransformer = dtoAnswerTransformer;
-    }
-
+    private final DtoAnswerTransformer dtoAnswerTransformer;
 
     @Transactional
     public Long save(@NonNull final Long questionId, @NonNull final AnswerMQInDto dto) {

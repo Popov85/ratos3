@@ -17,6 +17,7 @@ public class ResponseEvaluated implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long questionId;
+
     private final Response response;
     /**
      *  Raw score, calculated by a corresponding question evaluator
@@ -24,11 +25,8 @@ public class ResponseEvaluated implements Serializable {
      */
     private final double score;
 
-    // Used by ProgressDataService to calculate bounty
-    private final byte level;
-
     /**
-     * Possible penalty for time limit exceeding
+     * Possible penalty for time limit exceeding for this response
      */
     private final boolean isPenalty;
 
@@ -36,12 +34,10 @@ public class ResponseEvaluated implements Serializable {
     public ResponseEvaluated(@JsonProperty("questionId") Long questionId,
                              @JsonProperty("response") Response response,
                              @JsonProperty("score") double score,
-                             @JsonProperty("level") byte level,
                              @JsonProperty("penalty") boolean isPenalty) {
         this.questionId = questionId;
         this.response = response;
         this.score = score;
-        this.level = level;
         this.isPenalty = isPenalty;
     }
 
@@ -51,6 +47,6 @@ public class ResponseEvaluated implements Serializable {
      * @return evaluated response
      */
     public static ResponseEvaluated buildEmpty(Long questionId) {
-        return new ResponseEvaluated(questionId, null, 0, (byte)1, false);
+        return new ResponseEvaluated(questionId, null, 0, false);
     }
 }

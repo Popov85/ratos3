@@ -1,6 +1,7 @@
 package ua.edu.ratos.service.generator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Profile({"dev", "demo"})
 public class MQGenerator {
 
     @PersistenceContext

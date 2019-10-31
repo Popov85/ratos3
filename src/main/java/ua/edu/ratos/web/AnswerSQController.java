@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +16,10 @@ import java.net.URI;
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class AnswerSQController {
 
-    private AnswerSQService answerService;
-
-    @Autowired
-    public void setAnswerService(AnswerSQService answerService) {
-        this.answerService = answerService;
-    }
+    private final AnswerSQService answerService;
 
     @PostMapping(value = "/questions-sq/{questionId}/answers-sq",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerSQInDto dto) {

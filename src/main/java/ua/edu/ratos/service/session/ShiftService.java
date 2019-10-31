@@ -3,11 +3,12 @@ package ua.edu.ratos.service.session;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +27,11 @@ public class ShiftService {
      * @param sessionData session data
      */
     public void doShift(@NonNull final Long idToShift, @NonNull final SessionData sessionData) {
-        final List<QuestionDomain> all = sessionData.getQuestionDomains();
+        // Unique numbers as precondition
+        final List<QuestionDomain> all = sessionData.getSequence();
         final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         final QuestionDomain toShift = questionsMap.get(idToShift);
+        if (toShift==null) return; // Do nothing is not found
         // 1. Remove the skipped question from the list
         all.remove(toShift);
         // & add it to the end
@@ -36,7 +39,7 @@ public class ShiftService {
         // 2. Update index
         final int currentIndex = sessionData.getCurrentIndex();
         sessionData.setCurrentIndex(currentIndex-1);
-        log.debug("Skipped question with ID = {}", idToShift);
+        log.debug("Shifted question with ID = {}", idToShift);
     }
 
     /**
@@ -48,12 +51,14 @@ public class ShiftService {
      * @param sessionData session data
      */
     public void doShift(@NonNull final List<Long> idsToShift, @NonNull final SessionData sessionData) {
-        final List<QuestionDomain> all = sessionData.getQuestionDomains();
+        final List<QuestionDomain> all = sessionData.getSequence();
         final Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();
         final List<QuestionDomain> toShift = idsToShift
                 .stream()
-                .map(questionsId -> questionsMap.get(questionsId))
+                .map(id -> questionsMap.get(id))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+        if (toShift.isEmpty()) return; // // Do nothing is not found
         // 1. Remove all the shifted questions from the list
         all.removeAll(toShift);
         // & add them to the end

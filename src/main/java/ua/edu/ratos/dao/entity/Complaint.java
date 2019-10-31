@@ -35,7 +35,7 @@ public class Complaint {
     @Column(name="last_complained")
     private LocalDateTime lastComplained;
 
-    // How many times they complained about this pair question+questionType
+    // How many times they complained about this pair question+complaintType
     @Column(name="times_complained")
     private int timesComplained;
 

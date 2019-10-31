@@ -1,6 +1,5 @@
 package ua.edu.ratos.dao.repository;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -11,18 +10,17 @@ import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.projections.TypeAndCount;
 
 import javax.persistence.QueryHint;
+import java.util.Optional;
 import java.util.Set;
 
 @SuppressWarnings("SpellCheckingInspection")
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     //------------------------------------------Count for deciding question provider impl-------------------------------
-
     @Query(value = "select count(q) from Question q join q.theme t where t.themeId = ?1")
     int countByThemeId(Long themeId);
 
     //-------------------------------------------------Scheme creating support------------------------------------------
-
     @Query(value = "select ty.typeId as type, ty.abbreviation as abbreviation, count(q) as count from Question q join q.theme th join q.type ty where th.themeId = ?1 group by ty")
     Set<TypeAndCount> countAllTypesByThemeId(Long themeId);
 
@@ -31,13 +29,11 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Set<Question> findAllForTypeLevelMapByThemeId(Long themeId);
 
     //------------------------------------------------Student session simple (L2C)--------------------------------------
-
     @Query(value = "SELECT q FROM Question q join q.theme t join q.type ty where t.themeId = ?1 and ty.typeId = ?2 and q.level =?3")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
     Set<Question> findAllForSimpleSessionByThemeTypeAndLevel(Long themeId, Long typeId, byte level);
 
     //--------------------------------------------Student session cached (Spring Cache)---------------------------------
-
     @Query(value = "SELECT q FROM QuestionMCQ q join fetch q.theme t join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a left join fetch a.resources where t.themeId = ?1 and ty.typeId=1 and q.level =?2")
     @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="BYPASS"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
@@ -63,38 +59,35 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @QueryHints({@QueryHint(name="javax.persistence.cache.storeMode", value="BYPASS"), @QueryHint(name="javax.persistence.cache.retrieveMode", value="BYPASS")})
     Set<QuestionSQ> findAllSQForCachedSessionWithEverythingByThemeAndLevel(Long themeId, byte level);
 
-
     //---------------------------------------------------------One for edit---------------------------------------------
-
     @Query(value = "SELECT q FROM QuestionMCQ q join fetch q.theme join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a left join fetch a.resources where q.questionId =?1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    QuestionMCQ findOneMCQForEditById(Long questionId);
+    Optional<QuestionMCQ> findOneMCQForEditById(Long questionId);
 
     @Query(value = "SELECT q FROM QuestionFBSQ q join fetch q.theme t join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answer a join fetch a.settings join fetch a.acceptedPhrases p left join fetch p.resources r where q.questionId =?1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    QuestionFBSQ findOneFBSQForEditById(Long questionId);
+    Optional<QuestionFBSQ> findOneFBSQForEditById(Long questionId);
 
     @Query(value = "SELECT q FROM QuestionFBMQ q join fetch q.theme t join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a join fetch a.settings join fetch a.acceptedPhrases p left join fetch p.resources r where q.questionId =?1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    QuestionFBMQ findOneFBMQForEditById(Long questionId);
+    Optional<QuestionFBMQ> findOneFBMQForEditById(Long questionId);
 
     @Query(value = "SELECT q FROM QuestionMQ q join fetch q.theme t join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a join fetch a.leftPhrase lp left join fetch lp.resources join fetch a.rightPhrase rp left join fetch rp.resources where q.questionId =?1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    QuestionMQ findOneMQForEditById(Long questionId);
+    Optional<QuestionMQ> findOneMQForEditById(Long questionId);
 
     @Query(value = "SELECT q FROM QuestionSQ q join fetch q.theme t join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a join fetch a.phrase p left join fetch p.resources r where q.questionId =?1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    QuestionSQ findOneSQForEditById(Long questionId);
+    Optional<QuestionSQ> findOneSQForEditById(Long questionId);
 
 
     //-------------------------------------------------------Instructor table-------------------------------------------
     // paging {50, 100, all}
-
     @Query(value = "SELECT q FROM QuestionMCQ q join fetch q.theme join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a left join fetch a.resources where q.theme.themeId =?1 and ty.typeId=1", countQuery = "SELECT count(q) FROM Question q join q.theme t join q.type ty where t.themeId=?1 and ty.typeId=1")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
@@ -123,7 +116,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     //----------------------------------Instructor (global search throughout department)--------------------------------
     // first slice of 10
-
     @Query(value = "SELECT q FROM QuestionMCQ q join fetch q.theme t join t.department d join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a left join fetch a.resources where d.depId =?1 and ty.typeId=1 and q.question like %?2%", countQuery = "SELECT count(q) FROM Question q join q.theme t join t.department d join q.type ty where d.depId=?1 and ty.typeId=1 and q.question like %?2%")
     Slice<QuestionMCQ> findAllMCQForSearchByDepartmentIdAndTitleContains(Long depId, String starts, Pageable pageable);

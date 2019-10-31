@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.service.session.SessionDataMap;
+import ua.edu.ratos.service.domain.SessionDataMap;
 import ua.edu.ratos.service.session.Timeout;
 import ua.edu.ratos.web.exception.SessionNotFoundException;
 
@@ -28,7 +28,7 @@ public class ControlTimeAspect {
      * (even for unrestricted in time schemes)
      * in request flow (usually in controllers) and only once within single request!
      * This is advantageous in borderline cases when user finishes learning session
-     * just before he runs out of time, and in controller, session is still not expired
+     * just before he runs out of time, and in web, session is still not expired
      * but during execution process it expires and we have two inconsistent states;
      * Timeout class eliminates this possibility by keeping the same result of validation throughout the request.
      * @param joinPoint

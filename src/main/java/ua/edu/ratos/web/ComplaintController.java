@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,14 +15,10 @@ import ua.edu.ratos.service.dto.out.ComplaintOutDto;
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class ComplaintController {
 
-    private ComplaintService complaintService;
-
-    @Autowired
-    public void setComplaintService(ComplaintService complaintService) {
-        this.complaintService = complaintService;
-    }
+    private final ComplaintService complaintService;
 
     @SuppressWarnings("SpellCheckingInspection")
     @DeleteMapping("/question-complaints/{questionId}/{ctypeId}")
@@ -34,7 +30,6 @@ public class ComplaintController {
 
     //---------------------------------------------------Staff table----------------------------------------------------
     // see full question to edit in QuestionController findOneForEditById set of end-points
-
     @GetMapping(value = "/question-complaints", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ComplaintOutDto> findAllByStaffId(@PageableDefault(sort = {"timesComplained"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return complaintService.findAllByDepartmentId(pageable);

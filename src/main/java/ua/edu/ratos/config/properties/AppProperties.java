@@ -11,6 +11,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.DayOfWeek;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 @Getter
 @Setter
@@ -252,7 +254,7 @@ public class AppProperties {
          * Key - number of weeks;
          * Value - corresponding title
          */
-        private Map<Integer, String> userLabel;
+        private TreeMap<Integer, String> userLabel;
 
         /**
          * If session was cancelled by user, should we anyways process gamification points?

@@ -1,11 +1,12 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,25 +15,15 @@ import java.util.stream.Collectors;
  * according to TYPE and LEVEL pattern constants, Theme's order is ignored
  */
 @Service
+@AllArgsConstructor
 public class SequenceProducerTypesThenLevelsImpl implements SequenceProducer {
 
     private static final List<Long> TYPE_PATTERN = Arrays.asList(1L, 2L, 3L, 4L, 5L);
-
     private static final List<Byte> LEVEL_PATTERN = Arrays.asList((byte) 1, (byte) 2, (byte) 3);
 
-    private SubSetProducer subSetProducer;
+    private final SubSetProducer subSetProducer;
 
-    private CollectionShuffler collectionShuffler;
-
-    @Autowired
-    public void setSubSetProducer(SubSetProducer subSetProducer) {
-        this.subSetProducer = subSetProducer;
-    }
-
-    @Autowired
-    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
-        this.collectionShuffler = collectionShuffler;
-    }
+    private final CollectionShuffler collectionShuffler;
 
     @Override
     public List<Question> getSequence(@NonNull final Scheme scheme, @NonNull final QuestionLoader questionLoader) {

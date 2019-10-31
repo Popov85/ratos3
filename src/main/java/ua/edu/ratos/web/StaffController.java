@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,20 +16,17 @@ import ua.edu.ratos.service.dto.in.RoleByDepInDto;
 import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.UserMinInDto;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/dep-admin")
+@AllArgsConstructor
 public class StaffController {
 
-    private StaffService staffService;
-
-    @Autowired
-    public void setStaffService(StaffService staffService) {
-        this.staffService = staffService;
-    }
+    private final StaffService staffService;
 
     @PostMapping(value = "/staff", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody StaffInDto dto) {
@@ -75,7 +72,6 @@ public class StaffController {
     }
 
     //-----------------------------------------------ROLE OPERATIONS----------------------------------------------------
-
     @PostMapping(value = "/staff/{staffId}/roles/{roleId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void addRole(@PathVariable Long staffId, @PathVariable Long roleId, @Valid @RequestBody RoleByDepInDto dto) {
@@ -91,7 +87,6 @@ public class StaffController {
     }
 
     //-----------------------------------------------DEP admin table----------------------------------------------------
-
     @GetMapping(value = "/staff/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<StaffOutDto> findAllByDepartmentId(@PageableDefault(sort = {"surname"}, value = 50) Pageable pageable) {
         return staffService.findAllByDepartmentId(pageable);

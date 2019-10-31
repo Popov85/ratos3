@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.utils.CollectionShuffler;
@@ -16,14 +16,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class RequiredAwareSubSetProducer {
 
-    private CollectionShuffler collectionShuffler;
-
-    @Autowired
-    public void setCollectionShuffler(CollectionShuffler collectionShuffler) {
-        this.collectionShuffler = collectionShuffler;
-    }
+    private final CollectionShuffler collectionShuffler;
 
     /**
      * Randomly reduces the amount of questions of given theme, type, level to the requested quantity

@@ -18,12 +18,12 @@ public interface StarredSessionService {
     void star(StarredInDto dto, SessionData sessionData);
 
     /**
-     * Update the value of stares for aa question.
+     * Update the value of stares for a question.
      * Can be performed from within a user's personal page.
      * @param dto pair of question and stars
      * @param sessionData sessionData object associated with the current learning session
-     */
-    void reStar(StarredInDto dto, SessionData sessionData);
+
+    void reStar(StarredInDto dto, SessionData sessionData);*/
 
     /**
      * Remove stars from a question.

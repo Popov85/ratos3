@@ -1,22 +1,24 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.edu.ratos.dao.entity.Language;
+import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
-import ua.edu.ratos.dao.entity.QuestionType;
+import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FileInDto;
-import ua.edu.ratos.service.transformer.domain_to_dto.QuestionsParsingResultDtoTransformer;
 import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.parsers.*;
+import ua.edu.ratos.service.transformer.domain_to_dto.QuestionsParsingResultDtoTransformer;
 import ua.edu.ratos.service.utils.CharsetDetector;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
@@ -25,35 +27,22 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class QuestionsFileParserService {
-    /**
-     * Currently, only MCQ (Type ID = 1) are supported to be saved via file
-     */
+
+    //Currently, only MCQ (Type ID = 1) are supported to be saved via file
     private static final long DEFAULT_QUESTION_TYPE_ID = 1L;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
-    private QuestionsParsingResultDtoTransformer transformer;
+    private final QuestionsParsingResultDtoTransformer transformer;
 
-    private CharsetDetector charsetDetector;
+    private final CharsetDetector charsetDetector;
 
-    @Autowired
-    public void setQuestionService(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
-    @Autowired
-    public void setTransformer(QuestionsParsingResultDtoTransformer transformer) {
-        this.transformer = transformer;
-    }
-
-    @Autowired
-    public void setCharsetDetector(CharsetDetector charsetDetector) {
-        this.charsetDetector = charsetDetector;
-    }
+    private final SecurityUtils securityUtils;
 
     /**
      * Parses multipart file and saves all the questions to DB
@@ -85,7 +74,7 @@ public class QuestionsFileParserService {
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Language language = em.getReference(Language.class, dto.getLangId());
-        Staff staff = em.getReference(Staff.class, dto.getStaffId());
+        Staff staff = em.getReference(Staff.class, securityUtils.getAuthStaffId());
         final List<Question> questions = new ArrayList<>();
         parsedQuestions.forEach(q->{
             q.setTheme(theme);

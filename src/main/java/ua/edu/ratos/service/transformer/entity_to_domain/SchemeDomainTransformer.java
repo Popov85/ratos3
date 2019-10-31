@@ -19,6 +19,8 @@ public class SchemeDomainTransformer {
 
     private SettingsDomainTransformer settingsDomainTransformer;
 
+    private OptionsDomainTransformer optionsDomainTransformer;
+
     @Autowired
     public void setModeDomainTransformer(ModeDomainTransformer modeDomainTransformer) {
         this.modeDomainTransformer = modeDomainTransformer;
@@ -39,6 +41,11 @@ public class SchemeDomainTransformer {
         this.settingsDomainTransformer = settingsDomainTransformer;
     }
 
+    @Autowired
+    public void setOptionsDomainTransformer(OptionsDomainTransformer optionsDomainTransformer) {
+        this.optionsDomainTransformer = optionsDomainTransformer;
+    }
+
     public SchemeDomain toDomain(@NonNull final Scheme entity) {
         return new SchemeDomain()
                 .setSchemeId(entity.getSchemeId())
@@ -46,6 +53,7 @@ public class SchemeDomainTransformer {
                 .setModeDomain(modeDomainTransformer.toDomain(entity.getMode()))
                 .setStrategyDomain(strategyDomainTransformer.toDomain(entity.getStrategy()))
                 .setGradingDomain(gradingDomainTransformer.toDomain(entity.getGrading()))
-                .setSettingsDomain(settingsDomainTransformer.toDomain(entity.getSettings()));
+                .setSettingsDomain(settingsDomainTransformer.toDomain(entity.getSettings()))
+                .setOptionsDomain(optionsDomainTransformer.toDomain(entity.getOptions()));
     }
 }

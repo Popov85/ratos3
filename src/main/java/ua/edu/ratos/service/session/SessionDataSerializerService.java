@@ -3,21 +3,18 @@ package ua.edu.ratos.service.session;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.SessionData;
+
 import java.io.IOException;
 
 @Service
+@AllArgsConstructor
 public class SessionDataSerializerService {
 
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final ObjectMapper objectMapper;
 
     /**
      * Serialize SessionData obj into JSON so that to store it in DB
@@ -46,6 +43,7 @@ public class SessionDataSerializerService {
         try {
             return new ObjectMapper().readValue(sessionData, SessionData.class);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to deserialize SessionData", e);
         }
     }

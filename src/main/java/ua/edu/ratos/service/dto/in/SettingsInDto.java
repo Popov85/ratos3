@@ -42,14 +42,4 @@ public class SettingsInDto {
     @Max(value = 2, message = "Invalid level3Coefficient, max=2")
     private float level3Coefficient;
 
-    private boolean displayPercent;
-
-    private boolean displayMark;
-
-    private boolean displayThemeResults;
-
-    private boolean displayQuestionResults;
-
-    private boolean strictControlTimePerQuestion;
-
 }

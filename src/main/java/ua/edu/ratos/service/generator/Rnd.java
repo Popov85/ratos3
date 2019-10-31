@@ -1,10 +1,12 @@
 package ua.edu.ratos.service.generator;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 @Component
+@Profile({"dev", "demo"})
 public class Rnd {
 
     public int rnd(int from, int to) {

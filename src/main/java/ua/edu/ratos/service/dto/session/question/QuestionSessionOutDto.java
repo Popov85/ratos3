@@ -27,6 +27,8 @@ public abstract class QuestionSessionOutDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected Long questionId;
+    // Number of this question in the individual sequence
+    protected int serialNumber;
 
     protected String question;
 

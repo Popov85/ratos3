@@ -6,7 +6,6 @@ import ua.edu.ratos.service.AbstractFactory;
 
 import java.util.List;
 
-
 @Component
 public class QuestionLoaderFactory extends AbstractFactory<String, QuestionLoader> {
 

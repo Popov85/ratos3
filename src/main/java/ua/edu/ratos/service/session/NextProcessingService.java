@@ -7,7 +7,7 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 /**
  * See existing implementations:
- * @see ua.edu.ratos.service.session.BasicNextProcessingService
+ * @see ua.edu.ratos.service.session.StaticNextProcessingService
  * @see ua.edu.ratos.service.session.DynamicNextProcessingService
  */
 public interface NextProcessingService extends NamedService<String> {

@@ -5,9 +5,9 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor

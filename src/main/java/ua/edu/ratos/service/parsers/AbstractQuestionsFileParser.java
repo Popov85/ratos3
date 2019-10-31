@@ -28,7 +28,7 @@ abstract class AbstractQuestionsFileParser implements QuestionsFileParser {
                 new InputStreamReader(new FileInputStream(file), charset))) {
             doParse(br);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse File",e);
+            throw new RuntimeException("Failed to parse File", e);
         }
         return new QuestionsParsingResult(charset, header, questions, questionsParsingIssues);
     }

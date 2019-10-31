@@ -8,9 +8,10 @@ import ua.edu.ratos.dao.entity.SessionPreserved;
 
 public interface SessionPreservedRepository extends JpaRepository<SessionPreserved, String> {
 
+    @Query(value = "SELECT count(s) FROM SessionPreserved s join s.user u where u.userId=?1")
+    long countByUserId(Long userId);
+
     @Query(value = "SELECT s FROM SessionPreserved s join fetch s.scheme join s.user u  where u.userId=?1")
     Slice<SessionPreserved> findAllByUserId(Long userId, Pageable pageable);
 
-    @Query(value = "SELECT count(s) FROM SessionPreserved s join s.user u where u.userId=?1")
-    long countByUserId(Long userId);
 }

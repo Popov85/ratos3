@@ -22,14 +22,16 @@ public class SchemeInfoOutDto {
 
     private String strategy;
 
+    // Quantity of questions
     private int questions;
 
-    // time limit per question in sec
+    // time limit per question in sec, negative value for unlimited
     private long timings;
 
-    private ModeMinOutDto mode;
+    // Is there time limit for batch?
+    private boolean batchTimeLimited;
 
-    private SettingsMinOutDto settings;
+    private ModeMinOutDto mode;
 
     private String course;
 

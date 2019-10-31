@@ -1,18 +1,21 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Complaint;
 import ua.edu.ratos.dao.entity.ComplaintId;
+import ua.edu.ratos.dao.entity.ComplaintType;
 import ua.edu.ratos.dao.entity.Department;
+import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.repository.ComplaintRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.out.ComplaintOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.ComplaintDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
@@ -20,34 +23,19 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class ComplaintService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ComplaintRepository complaintRepository;
+    private final ComplaintRepository complaintRepository;
 
-    private ComplaintDtoTransformer complaintDtoTransformer;
+    private final ComplaintDtoTransformer complaintDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setComplaintRepository(ComplaintRepository complaintRepository) {
-        this.complaintRepository = complaintRepository;
-    }
-
-    @Autowired
-    public void setComplaintDtoTransformer(ComplaintDtoTransformer complaintDtoTransformer) {
-        this.complaintDtoTransformer = complaintDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //------------------------------------------------CRUD--------------------------------------------------------------
-
     /**
      * A user can simultaneously send multiple types of complaints about single question.
      * All complaints of the same type and about the same question are summarized.
@@ -67,6 +55,8 @@ public class ComplaintService {
             } else {
                 Complaint c = new Complaint();
                 c.setComplaintId(complaintId);
+                c.setComplaintType(em.getReference(ComplaintType.class, complaintType));
+                c.setQuestion(em.getReference(Question.class, questionId));
                 c.setDepartment(em.getReference(Department.class, depId));
                 c.setLastComplained(LocalDateTime.now());
                 c.setTimesComplained(1);
@@ -82,7 +72,6 @@ public class ComplaintService {
     }
 
     //-------------------------------------------------Staff table------------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ComplaintOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
         return complaintRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(complaintDtoTransformer::toDto);

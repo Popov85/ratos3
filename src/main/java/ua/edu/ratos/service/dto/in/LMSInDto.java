@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -33,7 +31,4 @@ public class LMSInDto {
 
     @Positive(message = "{dto.fk.required}")
     private long versionId;
-
-    @NotEmpty(message = "{dto.collection.required}")
-    private Set<String> origins = new HashSet<>();
 }

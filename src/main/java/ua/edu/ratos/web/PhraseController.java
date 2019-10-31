@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,20 +14,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.PhraseService;
 import ua.edu.ratos.service.dto.in.PhraseInDto;
 import ua.edu.ratos.service.dto.out.PhraseOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class PhraseController {
 
-    private PhraseService phraseService;
-
-    @Autowired
-    public void setPhraseService(PhraseService phraseService) {
-        this.phraseService = phraseService;
-    }
+    private final PhraseService phraseService;
 
     @PostMapping(value = "/phrases", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody PhraseInDto dto) {
@@ -65,9 +62,7 @@ public class PhraseController {
         log.debug("Deleted Phrase, phraseId = {}", phraseId);
     }
 
-
     //------------------------------------------------------Staff table-------------------------------------------------
-
     @GetMapping(value = "/phrases/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<PhraseOutDto> findAllByStaffId(@PageableDefault(sort = {"lastUsed"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return phraseService.findAllByStaffId(pageable);

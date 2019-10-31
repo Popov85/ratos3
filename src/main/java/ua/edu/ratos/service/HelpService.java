@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,48 +14,30 @@ import ua.edu.ratos.service.dto.in.HelpInDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoHelpTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.HelpDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class HelpService {
 
     private static final String HELP_NOT_FOUND = "The requested Help not found, helpId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private HelpRepository helpRepository;
+    private final HelpRepository helpRepository;
 
-    private DtoHelpTransformer dtoHelpTransformer;
+    private final DtoHelpTransformer dtoHelpTransformer;
 
-    private HelpDtoTransformer helpDtoTransformer;
+    private final HelpDtoTransformer helpDtoTransformer;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setHelpRepository(HelpRepository helpRepository) {
-        this.helpRepository = helpRepository;
-    }
-
-    @Autowired
-    public void setDtoHelpTransformer(DtoHelpTransformer dtoHelpTransformer) {
-        this.dtoHelpTransformer = dtoHelpTransformer;
-    }
-
-    @Autowired
-    public void setHelpDtoTransformer(HelpDtoTransformer helpDtoTransformer) {
-        this.helpDtoTransformer = helpDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final HelpInDto dto) {
         Help help = dtoHelpTransformer.toEntity(dto);
@@ -90,14 +72,13 @@ public class HelpService {
     }
 
     //--------------------------------------------------One (for update)------------------------------------------------
-
     @Transactional(readOnly = true)
     public HelpOutDto findOneForUpdates(@NonNull final Long helpId) {
-        return helpDtoTransformer.toDto(helpRepository.findOneForUpdate(helpId));
+        return helpDtoTransformer.toDto(helpRepository.findOneForUpdate(helpId)
+                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId)));
     }
 
     //----------------------------------------------------Staff table---------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return helpRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(helpDtoTransformer::toDto);

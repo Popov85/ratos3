@@ -1,41 +1,24 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.ResultDomain;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
-import ua.edu.ratos.service.transformer.domain_to_dto.ResultDomainDtoTransformer;
+import ua.edu.ratos.service.transformer.domain_to_dto.CancelledResultDomainDtoTransformerImpl;
 
 @Service
+@AllArgsConstructor
 public class CancelledFinishProcessingServiceImpl implements FinishProcessingService {
 
-    @Autowired
-    private Timeout timeout;
+    private final Timeout timeout;
 
-    private ResultBuilder resultBuilder;
+    private final ResultBuilder resultBuilder;
 
-    private AsyncFinishProcessingService asyncFinishProcessingService;
+    private final AsyncFinishProcessingService asyncFinishProcessingService;
 
-    private ResultDomainDtoTransformer resultDomainDtoTransformer;
-
-    @Autowired
-    public void setResultBuilder(ResultBuilder resultBuilder) {
-        this.resultBuilder = resultBuilder;
-    }
-
-    @Autowired
-    public void setAsyncFinishProcessingService(AsyncFinishProcessingService asyncFinishProcessingService) {
-        this.asyncFinishProcessingService = asyncFinishProcessingService;
-    }
-
-    @Autowired
-    @Qualifier("cancelled")
-    public void setResultDomainDtoTransformer(ResultDomainDtoTransformer resultDomainDtoTransformer) {
-        this.resultDomainDtoTransformer = resultDomainDtoTransformer;
-    }
+    private final CancelledResultDomainDtoTransformerImpl resultDomainDtoTransformer;
 
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {

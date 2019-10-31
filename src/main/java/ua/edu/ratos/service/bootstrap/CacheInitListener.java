@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.bootstrap;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -12,21 +12,12 @@ import ua.edu.ratos.service.cache.CacheSupport;
 @Slf4j
 @Service
 @SuppressWarnings("SpellCheckingInspection")
+@AllArgsConstructor
 public class CacheInitListener {
 
-    private AppProperties prop;
+    private final AppProperties prop;
 
-    private CacheSupport cacheSupport;
-
-    @Autowired
-    public void setProp(AppProperties prop) {
-        this.prop = prop;
-    }
-
-    @Autowired
-    public void setCacheSupport(CacheSupport cacheSupport) {
-        this.cacheSupport = cacheSupport;
-    }
+    private final CacheSupport cacheSupport;
 
     @Order(2)
     @EventListener(ContextRefreshedEvent.class)

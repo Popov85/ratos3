@@ -9,11 +9,10 @@ import ua.edu.ratos.dao.entity.UserQuestionStarredId;
 
 public interface UserQuestionStarredRepository extends JpaRepository<UserQuestionStarred, UserQuestionStarredId> {
 
-    @Query(value = "SELECT s FROM UserQuestionStarred s join s.user u join fetch s.question q where u.userId =?1",
-            countQuery = "SELECT count(s) FROM UserQuestionStarred s join s.user u where u.userId=?1")
-    Page<UserQuestionStarred> findAllByUserId(Long userId, Pageable pageable);
-
     @Query(value = "SELECT count(s) FROM UserQuestionStarred s join s.user u where u.userId=?1")
     long countByUserId(Long userId);
 
+    @Query(value = "SELECT s FROM UserQuestionStarred s join s.user u join fetch s.question q where u.userId =?1",
+            countQuery = "SELECT count(s) FROM UserQuestionStarred s join s.user u where u.userId=?1")
+    Page<UserQuestionStarred> findAllByUserId(Long userId, Pageable pageable);
 }

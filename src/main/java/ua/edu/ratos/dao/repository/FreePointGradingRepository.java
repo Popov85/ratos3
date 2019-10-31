@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.grading.FreePointGrading;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface FreePointGradingRepository extends JpaRepository<FreePointGrading, Long> {
 
     @Query(value="select g from FreePointGrading g join fetch g.staff where g.freeId =?1")
-    FreePointGrading findOneForEdit(Long FreeId);
+    Optional<FreePointGrading> findOneForEdit(Long FreeId);
 
     //----------------------------------------------------DEFAULT dropdown----------------------------------------------
 

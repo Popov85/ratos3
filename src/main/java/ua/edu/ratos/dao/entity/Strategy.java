@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "strategy")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Strategy {
 
     @Id

@@ -11,12 +11,12 @@ import ua.edu.ratos.service.dto.session.ResultOutDto;
 public class CancelledResultDomainDtoTransformerImpl implements ResultDomainDtoTransformer {
 
     @Override
-    public ResultOutDto toDto(@NonNull final ResultDomain resultDomain) {
-        String name = resultDomain.getUser().getName();
-        String surname = resultDomain.getUser().getSurname();
+    public ResultOutDto toDto(@NonNull final ResultDomain r) {
+        String name = r.getUser().getName();
+        String surname = r.getUser().getSurname();
         String user = name.concat(" ").concat(surname);
-        String scheme = resultDomain.getScheme().getName();
-        ResultOutDto dto = new ResultOutDto(user, scheme, resultDomain.isPassed());
+        String scheme = r.getScheme().getName();
+        ResultOutDto dto = new ResultOutDto(user, scheme, r.isTimeOuted(), r.isPassed());
         return dto;
     }
 }

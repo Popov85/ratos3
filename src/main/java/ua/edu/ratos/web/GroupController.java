@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,14 +21,10 @@ import java.net.URI;
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class GroupController {
 
-    private GroupService groupService;
-
-    @Autowired
-    public void setGroupService(GroupService groupService) {
-        this.groupService = groupService;
-    }
+    private final GroupService groupService;
 
     @PostMapping(value = "/groups", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody GroupInDto dto) {
@@ -52,9 +48,7 @@ public class GroupController {
         log.debug("Updated Group's name, groupId = {}, new name = {}", groupId, name);
     }
 
-
     //------------------------------------------------STUDENTS OPERATIONS-----------------------------------------------
-
     @PostMapping(value = "/groups/{groupId}/students/{studentId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void addStudent(@PathVariable Long groupId, @PathVariable Long studentId) {
@@ -69,7 +63,6 @@ public class GroupController {
         log.debug("Removed Student from Group, studentId = {}, groupId = {}", studentId, groupId);
     }
 
-
     @DeleteMapping("/groups/{groupId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long groupId) {
@@ -78,7 +71,6 @@ public class GroupController {
     }
 
     //---------------------------------------------------Staff table----------------------------------------------------
-
     @GetMapping(value = "/groups/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<GroupExtendedOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return groupService.findAllByStaffId(pageable);

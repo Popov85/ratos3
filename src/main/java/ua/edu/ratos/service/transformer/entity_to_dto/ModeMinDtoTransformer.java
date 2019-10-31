@@ -11,6 +11,7 @@ import ua.edu.ratos.service.dto.out.ModeOutDto;
 @Component
 public class ModeMinDtoTransformer {
 
+    // TODO consider ObjectMapper?
     public ModeMinOutDto toDto(@NonNull final Mode entity) {
         return new ModeMinOutDto()
                 .setModeId(entity.getModeId())
@@ -19,6 +20,7 @@ public class ModeMinDtoTransformer {
                 .setPreservable(entity.isPreservable())
                 .setPyramid(entity.isPyramid())
                 .setReportable(entity.isReportable())
+                .setPauseable(entity.isPauseable())
                 .setRightAnswer(entity.isRightAnswer())
                 .setSkipable(entity.isSkipable())
                 .setStarrable(entity.isStarrable());

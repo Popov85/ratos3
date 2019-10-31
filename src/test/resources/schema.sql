@@ -747,6 +747,7 @@ CREATE TABLE IF NOT EXISTS mode (
   is_skipable TINYINT(1) NOT NULL DEFAULT 0,
   is_rightans TINYINT(1) NOT NULL DEFAULT 0,
   is_preservable TINYINT(1) NOT NULL DEFAULT 0,
+  is_pauseable TINYINT(1) NOT NULL DEFAULT 0,
   is_reportable TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Specifies if a user can report an error in a question or an answer.',
   is_starrable TINYINT(1) NOT NULL DEFAULT 0,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
@@ -780,6 +781,43 @@ CREATE TABLE IF NOT EXISTS grading  (
   ENGINE = InnoDB;
 
 -- -----------------------------------------------------
+-- Table options
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS options (
+  opt_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  display_questions_left TINYINT(1) NOT NULL DEFAULT 0,
+  display_batches_left TINYINT(1) NOT NULL DEFAULT 0,
+  display_current_score TINYINT(1) NOT NULL DEFAULT 0,
+  display_effective_score TINYINT(1) NOT NULL DEFAULT 0,
+  display_progress TINYINT(1) NOT NULL DEFAULT 0,
+  display_motivational_messages TINYINT(1) NOT NULL DEFAULT 0,
+  display_result_score TINYINT(1) NOT NULL DEFAULT 0,
+  display_result_mark TINYINT(1) NOT NULL DEFAULT 0,
+  display_time_spent TINYINT(1) NOT NULL DEFAULT 0,
+  display_result_themes TINYINT(1) NOT NULL DEFAULT 0,
+  display_result_questions TINYINT(1) NOT NULL DEFAULT 0,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  created_by INT UNSIGNED NOT NULL,
+  belongs_to INT UNSIGNED NOT NULL,
+  PRIMARY KEY (opt_id),
+  INDEX fk_options_created_by_staff_id_idx (created_by ASC),
+  INDEX fk_options_belongs_to_dep_id_idx (belongs_to ASC),
+  UNIQUE INDEX options_name_dep_UNIQUE (name ASC, belongs_to ASC),
+  CONSTRAINT fk_options_created_by_staff_id
+  FOREIGN KEY (created_by)
+  REFERENCES staff (staff_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_options_belongs_to_depId
+  FOREIGN KEY (belongs_to)
+  REFERENCES department (dep_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
 -- Table scheme
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS scheme (
@@ -793,10 +831,11 @@ CREATE TABLE IF NOT EXISTS scheme (
   grading_id INT UNSIGNED NOT NULL,
   access_id INT UNSIGNED NOT NULL,
   course_id INT UNSIGNED NOT NULL,
-  created DATETIME NOT NULL,
-  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created_by INT UNSIGNED NOT NULL,
   belongs_to INT UNSIGNED NOT NULL,
+  created DATETIME NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  options_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (scheme_id),
   INDEX fk_scheme_strategy_strategy_id_idx (strategy_id ASC),
   INDEX fk_scheme_settings_settings_id_idx (settings_id ASC),
@@ -811,6 +850,7 @@ CREATE TABLE IF NOT EXISTS scheme (
   INDEX scheme_staff_and_created_and_is_deleted_idx (created_by ASC, created DESC, is_deleted ASC),
   INDEX scheme_department_and_name_and_is_deleted_idx (belongs_to ASC, name ASC, is_deleted ASC),
   INDEX scheme_staff_and_name_and_is_deleted_idx (created_by ASC, name ASC, is_deleted ASC),
+  INDEX fk_scheme_options_opt_id_idx (options_id ASC),
   CONSTRAINT fk_scheme_strategy_strategy_id
   FOREIGN KEY (strategy_id)
   REFERENCES strategy (str_id)
@@ -846,9 +886,14 @@ CREATE TABLE IF NOT EXISTS scheme (
   REFERENCES staff (staff_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_scheme_department1
+  CONSTRAINT fk_scheme_department_depId
   FOREIGN KEY (belongs_to)
   REFERENCES department (dep_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_scheme_options_opt_id
+  FOREIGN KEY (options_id)
+  REFERENCES options (opt_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;
@@ -1124,22 +1169,6 @@ CREATE TABLE IF NOT EXISTS  lms (
   CONSTRAINT fk_lms_oauthv1p0_credentials_credentials_id
   FOREIGN KEY (credentials_id)
   REFERENCES  lti_credentials (credentials_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-  ENGINE = InnoDB;
-
--- -----------------------------------------------------
--- Table  lms_origin
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS  lms_origin (
-  origin_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  link VARCHAR(500) NOT NULL,
-  lms_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY (origin_id),
-  INDEX fk_lms_origin_lms_lms_id_idx (lms_id ASC),
-  CONSTRAINT fk_lms_origin_lms_lms_id
-  FOREIGN KEY (lms_id)
-  REFERENCES  lms (lms_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -15,46 +15,26 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoTwoPointGradingTransfor
 import ua.edu.ratos.service.transformer.entity_to_dto.TwoPointGradingDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TwoPointGradingService {
 
     private static final String ID_IS_NOT_INCLUDED = "TwoId is not included, reject update!";
-
-    private static final String TWO_NOT_FOUND = "The requested TwoPointGrading not found, twoId = ";
-
+    private static final String TWO_NOT_FOUND = "The requested TwoPointGrading is not found, twoId = ";
     private static final String DEFAULT_GRADINGS_CANNOT_BE_MODIFIED = "The default TwoPointGrading cannot be modified";
 
-    private TwoPointGradingRepository twoPointGradingRepository;
+    private final TwoPointGradingRepository twoPointGradingRepository;
 
-    private TwoPointGradingDtoTransformer twoPointGradingDtoTransformer;
+    private final TwoPointGradingDtoTransformer twoPointGradingDtoTransformer;
 
-    private DtoTwoPointGradingTransformer dtoTwoPointGradingTransformer;
+    private final DtoTwoPointGradingTransformer dtoTwoPointGradingTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setTwoPointGradingRepository(TwoPointGradingRepository twoPointGradingRepository) {
-        this.twoPointGradingRepository = twoPointGradingRepository;
-    }
-
-    @Autowired
-    public void setTwoPointGradingDtoTransformer(TwoPointGradingDtoTransformer twoPointGradingDtoTransformer) {
-        this.twoPointGradingDtoTransformer = twoPointGradingDtoTransformer;
-    }
-
-    @Autowired
-    public void setDtoTwoPointGradingTransformer(DtoTwoPointGradingTransformer dtoTwoPointGradingTransformer) {
-        this.dtoTwoPointGradingTransformer = dtoTwoPointGradingTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //-------------------------------------------------CRUD-------------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final TwoPointGradingInDto dto) {
         return twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto)).getTwoId();
@@ -63,7 +43,7 @@ public class TwoPointGradingService {
     @Transactional
     public void update(@NonNull final TwoPointGradingInDto dto) {
         Long twoId = dto.getTwoId();
-        if (twoId == null || twoId ==0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        if (twoId == null || twoId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
         TwoPointGrading entity = twoPointGradingRepository.findById(twoId)
                 .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
@@ -80,14 +60,22 @@ public class TwoPointGradingService {
     }
 
     //-------------------------------------------------ONE--------------------------------------------------------------
-
     @Transactional(readOnly = true)
     public TwoPointGradingOutDto findOneForEdit(@NonNull final Long twoId) {
-        return twoPointGradingDtoTransformer.toDto(twoPointGradingRepository.findOneForEdit(twoId));
+        return twoPointGradingDtoTransformer.toDto(twoPointGradingRepository.findOneForEdit(twoId)
+                .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId)));
+    }
+
+    //------------------------------------------------------Default-----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<TwoPointGradingOutDto> findAllDefault() {
+        return twoPointGradingRepository.findAllDefault()
+                .stream()
+                .map(twoPointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //-------------------------------------------------INSTRUCTOR search------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<TwoPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return twoPointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(twoPointGradingDtoTransformer::toDto);

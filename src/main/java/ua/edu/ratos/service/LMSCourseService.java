@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,55 +15,32 @@ import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.LMSCourseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoLMSCourseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.LMSCourseDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class LMSCourseService {
 
-    private static final String LMS_COURSE_NOT_FOUND = "Requested LMSCourse not found, courseId = ";
+    private static final String LMS_COURSE_NOT_FOUND = "Requested LMSCourse is not found, courseId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private LMSCourseRepository lmsCourseRepository;
+    private final LMSCourseRepository lmsCourseRepository;
 
-    private DtoLMSCourseTransformer dtoLMSCourseTransformer;
+    private final DtoLMSCourseTransformer dtoLMSCourseTransformer;
 
-    private LMSCourseDtoTransformer lmsCourseDtoTransformer;
+    private final LMSCourseDtoTransformer lmsCourseDtoTransformer;
 
-    private AccessChecker accessChecker;
+    private final AccessChecker accessChecker;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setLmsCourseRepository(LMSCourseRepository lmsCourseRepository) {
-        this.lmsCourseRepository = lmsCourseRepository;
-    }
-
-    @Autowired
-    public void setDtoLMSCourseTransformer(DtoLMSCourseTransformer dtoLMSCourseTransformer) {
-        this.dtoLMSCourseTransformer = dtoLMSCourseTransformer;
-    }
-
-    @Autowired
-    public void setLmsCourseDtoTransformer(LMSCourseDtoTransformer lmsCourseDtoTransformer) {
-        this.lmsCourseDtoTransformer = lmsCourseDtoTransformer;
-    }
-
-    @Autowired
-    public void setAccessChecker(AccessChecker accessChecker) {
-        this.accessChecker = accessChecker;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //------------------------------------------------------CRUD--------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final LMSCourseInDto dto) {
         return lmsCourseRepository.save(dtoLMSCourseTransformer.toEntity(dto)).getCourseId();
@@ -94,19 +71,19 @@ public class LMSCourseService {
     }
 
     private void checkModificationPossibility(@NonNull final Long courseId) {
-        LMSCourse course = lmsCourseRepository.findForSecurityById(courseId);
-        accessChecker.checkModifyAccess(course.getCourse().getAccess(), course.getCourse().getStaff());
+        Optional<LMSCourse> optional = lmsCourseRepository.findForSecurityById(courseId);
+        if (!optional.isPresent()) throw new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId);
+        accessChecker.checkModifyAccess(optional.get().getCourse().getAccess(), optional.get().getCourse().getStaff());
     }
 
     //-----------------------------------------------------One (for update)---------------------------------------------
-
     @Transactional(readOnly = true)
     public LMSCourseOutDto findByIdForUpdate(@NonNull final Long courseId) {
-        return lmsCourseDtoTransformer.toDto(lmsCourseRepository.findForEditById(courseId));
+        return lmsCourseDtoTransformer.toDto(lmsCourseRepository.findForEditById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(LMS_COURSE_NOT_FOUND + courseId)));
     }
 
     //-------------------------------------------------------Staff table------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<LMSCourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return lmsCourseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(lmsCourseDtoTransformer::toDto);

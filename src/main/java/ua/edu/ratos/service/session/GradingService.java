@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +12,10 @@ import ua.edu.ratos.service.session.grade.GradingFactory;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class GradingService {
 
-    private GradingFactory gradingFactory;
-
-    @Autowired
-    public void setGradingFactory(GradingFactory gradingFactory) {
-        this.gradingFactory = gradingFactory;
-    }
+    private final GradingFactory gradingFactory;
 
     /**
      * Grader the overall result based on grading system specified by settings

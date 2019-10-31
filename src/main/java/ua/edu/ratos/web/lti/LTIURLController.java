@@ -1,8 +1,11 @@
 package ua.edu.ratos.web.lti;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.service.lti.LTILaunchService;
 
 /**
@@ -12,14 +15,10 @@ import ua.edu.ratos.service.lti.LTILaunchService;
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class LTIURLController {
 
-    private LTILaunchService ltiLaunchService;
-
-    @Autowired
-    public void setLtiLaunchService(LTILaunchService ltiLaunchService) {
-        this.ltiLaunchService = ltiLaunchService;
-    }
+    private final LTILaunchService ltiLaunchService;
 
     @GetMapping("/schemes/{schemeId}/launch-url")
     public String getLaunchURL(@PathVariable Long schemeId) {

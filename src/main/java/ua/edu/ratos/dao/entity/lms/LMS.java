@@ -9,12 +9,10 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.Organisation;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
-@ToString(exclude = {"organisation", "credentials", "ltiVersion", "origins"})
+@ToString(exclude = {"organisation", "credentials", "ltiVersion"})
 @Entity
 @Table(name = "lms")
 @Where(clause = "is_deleted = 0")
@@ -44,17 +42,4 @@ public class LMS {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lti_version_id")
     private LTIVersion ltiVersion;
-
-    @OneToMany(mappedBy = "lms", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private Set<LMSOrigin> origins = new HashSet<>();
-
-    public void addOrigin(LMSOrigin origin) {
-        this.origins.add(origin);
-        origin.setLms(this);
-    }
-
-    public void removeOrigin(LMSOrigin origin) {
-        this.origins.remove(origin);
-        origin.setLms(null);
-    }
 }

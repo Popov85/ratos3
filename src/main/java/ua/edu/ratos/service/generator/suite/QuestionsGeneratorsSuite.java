@@ -2,6 +2,7 @@ package ua.edu.ratos.service.generator.suite;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.question.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Slf4j
 @Component
+@Profile({"dev", "demo"})
 public class QuestionsGeneratorsSuite {
 
     @Autowired

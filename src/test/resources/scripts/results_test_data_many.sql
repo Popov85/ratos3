@@ -15,23 +15,22 @@ insert into staff (staff_id, dep_id, pos_id) values(6, 2, 5);
 
 insert into course (name, created, created_by, belongs_to, access_id) values('Test course #3', CURRENT_TIMESTAMP, 6, 2, 1);
 
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #1', 1, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #2', 1, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #3', 1, 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
 
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #1', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #2', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #3', 1, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, 1, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #4', 1, 1, 1, 1, 1, 2, CURRENT_TIMESTAMP, 4, 2, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #5', 1, 1, 1, 1, 1, 2, CURRENT_TIMESTAMP, 4, 2, 0,  1, 1);
 
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #4', 1, 1, 1, 1, 2, CURRENT_TIMESTAMP, 4, 2, 0,  1, 1);
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #5', 1, 1, 1, 1, 2, CURRENT_TIMESTAMP, 4, 2, 0,  1, 1);
-
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #6', 1, 1, 1, 1, 3, CURRENT_TIMESTAMP, 6, 2, 0,  1, 1);
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
-    values('Scheme #7', 1, 1, 1, 1, 3, CURRENT_TIMESTAMP, 6, 2, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #6', 1, 1, 1, 1, 1, 3, CURRENT_TIMESTAMP, 6, 2, 0,  1, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, options_id, course_id, created, created_by, belongs_to, is_deleted,  grading_id, access_id)
+    values('Scheme #7', 1, 1, 1, 1, 1, 3, CURRENT_TIMESTAMP, 6, 2, 0,  1, 1);
 
 
 insert into result(scheme_id, user_id, dep_id, percent, grade, is_passed, session_ended, session_lasted, is_timeouted, lms_id)

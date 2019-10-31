@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "settings")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class Settings {
@@ -55,18 +55,6 @@ public class Settings {
 
     @Column(name = "level_3_coefficient")
     private float level3Coefficient;
-
-    @Column(name = "display_percent")
-    private boolean displayPercent;
-
-    @Column(name = "display_mark")
-    private boolean displayMark;
-
-    @Column(name = "display_theme_results")
-    private boolean displayThemeResults;
-
-    @Column(name=" display_question_results")
-    private boolean displayQuestionResults;
 
     @Column(name="is_default")
     private boolean isDefault;

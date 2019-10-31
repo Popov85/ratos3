@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +13,13 @@ import ua.edu.ratos.service.dto.in.AnswerFBMQInDto;
 
 import java.net.URI;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class AnswerFBMQController {
 
-    private AnswerFBMQService answerService;
-
-    @Autowired
-    public void setAnswerService(AnswerFBMQService answerService) {
-        this.answerService = answerService;
-    }
+    private final AnswerFBMQService answerService;
 
     @PostMapping(value = "/questions/{questionId}/answers-fbmq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerFBMQInDto dto) {

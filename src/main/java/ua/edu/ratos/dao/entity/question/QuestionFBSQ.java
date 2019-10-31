@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DiscriminatorValue(value = "2")
 @DynamicUpdate
 @NoArgsConstructor

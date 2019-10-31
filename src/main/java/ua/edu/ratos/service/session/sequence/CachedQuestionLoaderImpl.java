@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
@@ -14,15 +14,10 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CachedQuestionLoaderImpl extends AbstractQuestionLoader {
 
-
-    private QuestionService questionService;
-
-    @Autowired
-    public void setQuestionService(QuestionService questionService) {
-        this.questionService = questionService;
-    }
+    private final QuestionService questionService;
 
     @Override
     public Map<Affiliation, Set<Question>> loadAllQuestionsToMap(@NonNull final Scheme scheme) {

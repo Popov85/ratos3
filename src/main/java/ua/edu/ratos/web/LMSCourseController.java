@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,20 +15,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.LMSCourseService;
 import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.LMSCourseOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class LMSCourseController {
 
-    private LMSCourseService lmsCourseService;
-
-    @Autowired
-    public void setLmsCourseService(LMSCourseService lmsCourseService) {
-        this.lmsCourseService = lmsCourseService;
-    }
+    private final LMSCourseService lmsCourseService;
 
     @PostMapping(value = "/lms-courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody LMSCourseInDto dto) {
@@ -66,9 +63,7 @@ public class LMSCourseController {
         log.debug("Deleted Course, courseId = {}", courseId);
     }
 
-
     //--------------------------------------------------Staff table-----------------------------------------------------
-
     @GetMapping(value = "/lms-courses/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<LMSCourseOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
         return lmsCourseService.findAllByStaffId(pageable);
@@ -90,7 +85,6 @@ public class LMSCourseController {
     }
 
     //-----------------------------------------------Staff drop-down----------------------------------------------------
-
     @GetMapping(value = "/lms-courses/by-staff-dropdown", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<LMSCourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 100) Pageable pageable) {
         return lmsCourseService.findAllForDropDownByStaffId(pageable);

@@ -1,5 +1,6 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,21 +10,13 @@ import ua.edu.ratos.service.dto.in.AnswerFBSQInDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 
 @Service
+@AllArgsConstructor
 public class AnswerFBSQService {
 
-    private AnswerFBSQRepository answerRepository;
+    private final AnswerFBSQRepository answerRepository;
 
-    private DtoAnswerTransformer dtoAnswerTransformer;
+    private final DtoAnswerTransformer dtoAnswerTransformer;
 
-    @Autowired
-    public void setAnswerRepository(AnswerFBSQRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
-
-    @Autowired
-    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
-        this.dtoAnswerTransformer = dtoAnswerTransformer;
-    }
 
     @Transactional
     public void update(@NonNull final AnswerFBSQInDto dto) {

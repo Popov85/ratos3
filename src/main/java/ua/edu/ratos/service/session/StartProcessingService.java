@@ -5,7 +5,7 @@ import ua.edu.ratos.service.domain.SessionData;
 
 /**
  * See existing implementations:
- * @see ua.edu.ratos.service.session.BasicStartProcessingServiceImpl
+ * @see ua.edu.ratos.service.session.NonLmsStartProcessingServiceImpl
  * @see ua.edu.ratos.service.session.LmsStartProcessingServiceImpl
  */
 public interface StartProcessingService extends NamedService<String> {
@@ -15,8 +15,7 @@ public interface StartProcessingService extends NamedService<String> {
     /**
      * Start a new learning session based on start params
      * @param schemeId
-     * @param uuid
      * @return newly created session data
      */
-    SessionData start(Long schemeId, String uuid);
+    SessionData start(Long schemeId);
 }

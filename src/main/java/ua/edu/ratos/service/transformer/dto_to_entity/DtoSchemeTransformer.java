@@ -33,6 +33,7 @@ public class DtoSchemeTransformer {
         scheme.setStrategy(em.getReference(Strategy.class, dto.getStrategyId()));
         scheme.setSettings(em.getReference(Settings.class, dto.getSettingsId()));
         scheme.setMode(em.getReference(Mode.class, dto.getModeId()));
+        scheme.setOptions(em.getReference(Options.class, dto.getOptId()));
         scheme.setGrading(em.getReference(Grading.class, dto.getGradingId()));
         scheme.setCourse(em.getReference(Course.class, dto.getCourseId()));
         // SecurityUtils in action

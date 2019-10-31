@@ -1,8 +1,8 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -11,51 +11,32 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
-import ua.edu.ratos.dao.repository.*;
+import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
 
-import java.util.*;
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Set;
 
-@Slf4j
 @Service
+@AllArgsConstructor
 public class QuestionService {
 
-    private static final String QUESTION_NOT_FOUND = "The requested Question not found, questionId = ";
+    private static final String QUESTION_NOT_FOUND = "The requested Question is not found, questionId = ";
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    private DtoQuestionTransformer dtoQuestionTransformer;
+    private final DtoQuestionTransformer dtoQuestionTransformer;
 
-    private QuestionDtoTransformer questionDtoTransformer;
+    private final QuestionDtoTransformer questionDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setQuestionRepository(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
-
-    @Autowired
-    public void setDtoQuestionTransformer(DtoQuestionTransformer dtoQuestionTransformer) {
-        this.dtoQuestionTransformer = dtoQuestionTransformer;
-    }
-
-    @Autowired
-    public void setQuestionDtoTransformer(QuestionDtoTransformer questionDtoTransformer) {
-        this.questionDtoTransformer = questionDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //---------------------------------------------------CRUD-----------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final QuestionMCQInDto dto) {
         return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
@@ -83,7 +64,7 @@ public class QuestionService {
 
     /**
      * Questions obtained after parsing the .rtp- .txt-files
-     * @param questions batch of totalByType from a file
+     * @param questions batch of questions from a file
      */
     @Transactional
     public void saveAll(@NonNull final List<Question> questions) {
@@ -105,30 +86,34 @@ public class QuestionService {
     }
 
     //----------------------------------------------------One for edit--------------------------------------------------
-
     @Transactional(readOnly = true)
     public QuestionMCQOutDto findOneMCQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneMCQForEditById(questionId));
+        return questionDtoTransformer.toDto(questionRepository.findOneMCQForEditById(questionId)
+                .orElseThrow(() -> new EntityNotFoundException("QuestionMCQ is not found , questionId = " + questionId)));
     }
 
     @Transactional(readOnly = true)
     public QuestionFBSQOutDto findOneFBSQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneFBSQForEditById(questionId));
+        return questionDtoTransformer.toDto(questionRepository.findOneFBSQForEditById(questionId)
+                .orElseThrow(() -> new EntityNotFoundException("QuestionFBSQ is not found, questionId = " + questionId)));
     }
 
     @Transactional(readOnly = true)
     public QuestionFBMQOutDto findOneFBMQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneFBMQForEditById(questionId));
+        return questionDtoTransformer.toDto(questionRepository.findOneFBMQForEditById(questionId)
+                .orElseThrow(() -> new EntityNotFoundException("QuestionFBMQ is not found, questionId = " + questionId)));
     }
 
     @Transactional(readOnly = true)
     public QuestionMQOutDto findOneMQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneMQForEditById(questionId));
+        return questionDtoTransformer.toDto(questionRepository.findOneMQForEditById(questionId)
+                .orElseThrow(() -> new EntityNotFoundException("QuestionMQ is not found, questionId = " + questionId)));
     }
 
     @Transactional(readOnly = true)
     public QuestionSQOutDto findOneSQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneSQForEditById(questionId));
+        return questionDtoTransformer.toDto(questionRepository.findOneSQForEditById(questionId)
+                .orElseThrow(() -> new EntityNotFoundException("QuestionSQ is not found, questionId = " + questionId)));
     }
 
     //-------------------------------------------------------Session----------------------------------------------------
@@ -138,71 +123,95 @@ public class QuestionService {
     }
 
     //----------------------------------------------------Cached session------------------------------------------------
-
-    @Cacheable(value = "question", key="{'MCQ', #themeId, #level}")
+    @Cacheable(value = "question", key = "{'MCQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMCQ> findAllMCQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question", key="{'FBSQ', #themeId, #level}")
+    @Cacheable(value = "question", key = "{'FBSQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBSQ> findAllFBSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question", key="{'FBMQ', #themeId, #level}")
+    @Cacheable(value = "question", key = "{'FBMQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBMQ> findAllFBMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question", key="{'MQ', #themeId, #level}")
+    @Cacheable(value = "question", key = "{'MQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMQ> findAllMQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @Cacheable(value = "question", key="{'SQ', #themeId, #level}")
+    @Cacheable(value = "question", key = "{'SQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionSQ> findAllSQForCachedSessionByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
     // -----------------------------------------------Update Cache------------------------------------------------------
-
-    @CachePut(value = "question", key="{'MCQ', #themeId, #level}")
+    @CachePut(value = "question", key = "{'MCQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMCQ> findAllMCQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMCQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @CachePut(value = "question", key="{'FBSQ', #themeId, #level}")
+    @CachePut(value = "question", key = "{'FBSQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBSQ> findAllFBSQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @CachePut(value = "question", key="{'FBMQ', #themeId, #level}")
+    @CachePut(value = "question", key = "{'FBMQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionFBMQ> findAllFBMQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllFBMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @CachePut(value = "question", key="{'MQ', #themeId, #level}")
+    @CachePut(value = "question", key = "{'MQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionMQ> findAllMQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllMQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    @CachePut(value = "question", key="{'SQ', #themeId, #level}")
+    @CachePut(value = "question", key = "{'SQ', #themeId, #level}")
     @Transactional(readOnly = true)
     public Set<QuestionSQ> findAllSQForCacheUpdateByThemeId(@NonNull final Long themeId, byte level) {
         return questionRepository.findAllSQForCachedSessionWithEverythingByThemeAndLevel(themeId, level);
     }
 
-    //----------------------------------------------------Staff table---------------------------------------------------
+    //-------------------------------------------------Invalidate cache-------------------------------------------------
+    // Consider use @CachePut methods instead!
+    @CacheEvict(value = "question", key = "{'MCQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public void invalidateCacheOfAllMCQByThemeId(@NonNull final Long themeId, byte level) {
+    }
 
+    @CacheEvict(value = "question", key = "{'FBSQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public void invalidateCacheOfAllFBSQByThemeId(@NonNull final Long themeId, byte level) {
+    }
+
+    @CacheEvict(value = "question", key = "{'FBMQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public void invalidateCacheOfAllFBMQByThemeId(@NonNull final Long themeId, byte level) {
+    }
+
+    @CacheEvict(value = "question", key = "{'MQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public void invalidateCacheOfAllMQByThemeId(@NonNull final Long themeId, byte level) {
+    }
+
+    @CacheEvict(value = "question", key = "{'SQ', #themeId, #level}")
+    @Transactional(readOnly = true)
+    public void invalidateCacheOfAllSQByThemeId(@NonNull final Long themeId, byte level) {
+    }
+
+    //----------------------------------------------------Staff table---------------------------------------------------
     @Transactional(readOnly = true)
     public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
         return questionRepository.findAllMCQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
@@ -229,7 +238,6 @@ public class QuestionService {
     }
 
     //---------------------------------------Staff (global search throughout department)--------------------------------
-
     @Transactional(readOnly = true)
     public Slice<QuestionMCQOutDto> findAllMCQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
         Long depId = securityUtils.getAuthDepId();

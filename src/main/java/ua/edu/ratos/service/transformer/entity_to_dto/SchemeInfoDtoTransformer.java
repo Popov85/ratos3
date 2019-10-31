@@ -15,16 +15,9 @@ public class SchemeInfoDtoTransformer {
 
     private ModeMinDtoTransformer modeMinDtoTransformer;
 
-    private SettingsMinDtoTransformer settingsMinDtoTransformer;
-
     @Autowired
     public void setModeMinDtoTransformer(ModeMinDtoTransformer modeMinDtoTransformer) {
         this.modeMinDtoTransformer = modeMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setSettingsMinDtoTransformer(SettingsMinDtoTransformer settingsMinDtoTransformer) {
-        this.settingsMinDtoTransformer = settingsMinDtoTransformer;
     }
 
     public SchemeInfoOutDto toDto(@NonNull final Scheme entity) {
@@ -35,8 +28,8 @@ public class SchemeInfoDtoTransformer {
                 .setStrategy(entity.getStrategy().getName())
                 .setQuestions(this.getQuestions(entity.getThemes()))
                 .setTimings(entity.getSettings().getSecondsPerQuestion())
+                .setBatchTimeLimited(entity.getSettings().isStrictControlTimePerQuestion())
                 .setMode(modeMinDtoTransformer.toDto(entity.getMode()))
-                .setSettings(settingsMinDtoTransformer.toDto(entity.getSettings()))
                 .setStaff(this.getStaff(entity.getStaff()));
     }
 

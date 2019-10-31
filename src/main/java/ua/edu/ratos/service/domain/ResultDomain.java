@@ -50,7 +50,8 @@ public class ResultDomain {
     //----------------------------------------------------Optional------------------------------------------------------
 
     /**
-     * For LMS sessions only
+     * For LMS sessions only,
+     * Used by save() method to associate results with given LMS
      */
     private Long lmsId;
 

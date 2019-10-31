@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
@@ -15,7 +17,12 @@ import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
 @Slf4j
 @RestController
 @RequestMapping("/info")
+@AllArgsConstructor
 public class InfoController {
+
+    private final SchemeService schemeService;
+
+    private final SecurityUtils securityUtils;
 
     @Getter
     @ToString
@@ -24,20 +31,6 @@ public class InfoController {
         private String user;
         private String email;
         private boolean isLms;
-    }
-
-    private SchemeService schemeService;
-
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setSchemeService(SchemeService schemeService) {
-        this.schemeService = schemeService;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
     }
 
     //---------------------------------------------------Panel Info---------------------------------------------------
@@ -51,7 +44,6 @@ public class InfoController {
     }
 
     //----------------------------------------------------Scheme Info---------------------------------------------------
-
     @GetMapping(value = "/schemes/{schemeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SchemeInfoOutDto> findSchemeForInfo(@PathVariable Long schemeId){
         SchemeInfoOutDto info = schemeService.findByIdForInfo(schemeId);

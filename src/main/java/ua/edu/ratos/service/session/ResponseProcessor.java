@@ -1,36 +1,23 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
+
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ResponseProcessor {
 
-    private EvaluatingService evaluatingService;
+    private final EvaluatingService evaluatingService;
 
-    private ProgressDataService progressDataService;
+    private final ProgressDataService progressDataService;
 
-    private MetaDataService metaDataService;
-
-    @Autowired
-    public void setEvaluatingService(EvaluatingService evaluatingService) {
-        this.evaluatingService = evaluatingService;
-    }
-
-    @Autowired
-    public void setProgressDataService(ProgressDataService progressDataService) {
-        this.progressDataService = progressDataService;
-    }
-
-    @Autowired
-    public void setMetaDataService(MetaDataService metaDataService) {
-        this.metaDataService = metaDataService;
-    }
+    private final MetaDataService metaDataService;
 
     /**
      * Does basic processing of incoming BatchInDto:
@@ -41,7 +28,6 @@ public class ResponseProcessor {
      * @return evaluated batch
      */
     public BatchEvaluated doProcessResponse(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
-
         final BatchEvaluated batchEvaluated = evaluatingService.getBatchEvaluated(batchInDto, sessionData);
         // update ProgressData
         progressDataService.update(sessionData, batchEvaluated);

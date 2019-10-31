@@ -19,14 +19,6 @@ public class SettingsMinOutDto {
 
     private short questionsPerSheet;
 
-    private boolean displayPercent;
-
-    private boolean displayMark;
-
-    private boolean displayThemeResults;
-
-    private boolean displayQuestionResults;
-
     private boolean strictControlTimePerQuestion;
 
 }

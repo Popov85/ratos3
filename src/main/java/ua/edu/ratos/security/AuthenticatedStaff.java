@@ -8,7 +8,7 @@ import ua.edu.ratos.dao.entity.Staff;
 import java.util.Collection;
 
 /**
- * Inject Principal to controller method, cast it to this class and get all the perks such as staffId, depId, etc..
+ * Inject Principal to web method, cast it to this class and get all the perks such as staffId, depId, etc..
  */
 @Getter
 @ToString(callSuper = true)

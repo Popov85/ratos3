@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "two_point")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class TwoPointGrading {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

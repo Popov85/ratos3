@@ -34,6 +34,8 @@
 		<jackson.xml>2.9.7</jackson.xml>
 		<jsonassert>1.5.0</jsonassert>
 		<metamodel>5.4.1.Final</metamodel>
+		<swagger>2.9.2</swagger>
+		<swagger.ui>2.9.2</swagger.ui>
 	</properties>
 
 	<dependencies>
@@ -194,6 +196,16 @@
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.ui}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -205,14 +217,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<configuration>
-					<additionalClasspathElements>
-						<additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
-					</additionalClasspathElements>
-					<includes>
-						<include>**/*IT.java</include>
-					</includes>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>

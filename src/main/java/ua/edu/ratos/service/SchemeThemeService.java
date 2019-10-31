@@ -1,8 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.SchemeTheme;
@@ -15,40 +14,19 @@ import ua.edu.ratos.service.transformer.entity_to_dto.SchemeThemeDtoTransformer;
 
 import java.util.Set;
 
-@Slf4j
 @Service
+@AllArgsConstructor
 public class SchemeThemeService {
 
-    private SchemeThemeRepository schemeThemeRepository;
+    private final SchemeThemeRepository schemeThemeRepository;
 
-    private DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
+    private final DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
 
-    private SchemeThemeDtoTransformer schemeThemeDtoTransformer;
+    private final SchemeThemeDtoTransformer schemeThemeDtoTransformer;
 
-    private SchemeThemeSettingsService schemeThemeSettingsService;
+    private final SchemeThemeSettingsService schemeThemeSettingsService;
 
-    @Autowired
-    public void setSchemeThemeRepository(SchemeThemeRepository schemeThemeRepository) {
-        this.schemeThemeRepository = schemeThemeRepository;
-    }
-
-    @Autowired
-    public void setDtoSchemeThemeTransformer(DtoSchemeThemeTransformer dtoSchemeThemeTransformer) {
-        this.dtoSchemeThemeTransformer = dtoSchemeThemeTransformer;
-    }
-
-    @Autowired
-    public void setSchemeThemeDtoTransformer(SchemeThemeDtoTransformer schemeThemeDtoTransformer) {
-        this.schemeThemeDtoTransformer = schemeThemeDtoTransformer;
-    }
-
-    @Autowired
-    public void setSchemeThemeSettingsService(SchemeThemeSettingsService schemeThemeSettingsService) {
-        this.schemeThemeSettingsService = schemeThemeSettingsService;
-    }
-
-
-
+    //-----------------------------------------------CRUD---------------------------------------------------------------
     @Transactional
     public Long save(@NonNull final Long schemeId, @NonNull final SchemeThemeInDto dto) {
         SchemeTheme schemeTheme = dtoSchemeThemeTransformer.toEntity(schemeId, dto);

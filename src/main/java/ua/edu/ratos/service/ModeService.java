@@ -1,8 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,48 +14,28 @@ import ua.edu.ratos.service.dto.in.ModeInDto;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoModeTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ModeDtoTransformer;
-import javax.persistence.EntityNotFoundException;
 
-@Slf4j
+import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
+@AllArgsConstructor
 public class ModeService {
 
     private static final String ID_IS_NOT_INCLUDED = "ModeId is not included, reject update!";
-
-    private static final String MODE_NOT_FOUND = "The requested Mode not found, modeId = ";
-
+    private static final String MODE_NOT_FOUND = "The requested Mode is not found, modeId = ";
     private static final String DEFAULT_MODES_CANNOT_BE_MODIFIED = "Default modes cannot be modified!";
 
-    private ModeRepository modeRepository;
+    private final ModeRepository modeRepository;
 
-    private DtoModeTransformer dtoModeTransformer;
+    private final DtoModeTransformer dtoModeTransformer;
 
-    private ModeDtoTransformer modeDtoTransformer;
+    private final ModeDtoTransformer modeDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setModeRepository(ModeRepository modeRepository) {
-        this.modeRepository = modeRepository;
-    }
-
-    @Autowired
-    public void setDtoModeTransformer(DtoModeTransformer dtoModeTransformer) {
-        this.dtoModeTransformer = dtoModeTransformer;
-    }
-
-    @Autowired
-    public void setModeDtoTransformer(ModeDtoTransformer modeDtoTransformer) {
-        this.modeDtoTransformer = modeDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final ModeInDto dto) {
         return modeRepository.save(dtoModeTransformer.toEntity(dto)).getModeId();
@@ -65,9 +44,9 @@ public class ModeService {
     @Transactional
     public void update(@NonNull final ModeInDto dto) {
         Long modeId = dto.getModeId();
-        if (modeId ==null || modeId ==0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
+        if (modeId == null || modeId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
         Mode mode = modeRepository.findById(modeId)
-                .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND +modeId));
+                .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND + modeId));
         if (mode.isDefaultMode()) throw new RuntimeException(DEFAULT_MODES_CANNOT_BE_MODIFIED);
         modeRepository.save(dtoModeTransformer.toEntity(dto));
     }
@@ -80,14 +59,22 @@ public class ModeService {
     }
 
     //-------------------------------------------------One (for edit)---------------------------------------------------
-
     @Transactional(readOnly = true)
     public ModeOutDto findOneForEdit(@NonNull final Long modeId) {
-        return modeDtoTransformer.toDto(modeRepository.findOneForEdit(modeId));
+        return modeDtoTransformer.toDto(modeRepository.findOneForEdit(modeId)
+                .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND + modeId)));
+    }
+
+    //------------------------------------------------------Default-----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<ModeOutDto> findAllDefault() {
+        return modeRepository.findAllDefault()
+                .stream()
+                .map(modeDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //---------------------------------------------------Staff table----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ModeOutDto> findAllForTableByStaffId(@NonNull final Pageable pageable) {
         return modeRepository.findAllForTableByStaffId(securityUtils.getAuthStaffId(), pageable).map(modeDtoTransformer::toDto);
@@ -110,7 +97,6 @@ public class ModeService {
 
 
     //--------------------------------------------------Staff drop-down-------------------------------------------------
-
     @Transactional(readOnly = true)
     public Slice<ModeOutDto> findAllForDropDownByStaffIdAndModeNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
         return modeRepository.findAllForDropDownByStaffIdAndModeNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(modeDtoTransformer::toDto);
@@ -122,7 +108,6 @@ public class ModeService {
     }
 
     //-------------------------------------------------------ADMIN------------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ModeOutDto> findAll(@NonNull final Pageable pageable) {
         return modeRepository.findAll(pageable).map(modeDtoTransformer::toDto);

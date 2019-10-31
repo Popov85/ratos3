@@ -14,7 +14,7 @@ public interface ResultDomainDtoTransformer {
     /**
      * Transforms session results into a DTO.
      * Different implementations are expected for cancelled and regular sessions.
-     * @param resultDomain result on session
+     * @param resultDomain ResultDomain
      * @return DTO
      */
     ResultOutDto toDto(@NonNull ResultDomain resultDomain);

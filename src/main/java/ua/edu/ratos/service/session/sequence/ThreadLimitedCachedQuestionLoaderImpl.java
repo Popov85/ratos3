@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.question.Question;
+import ua.edu.ratos.service.QuestionService;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,10 @@ public class ThreadLimitedCachedQuestionLoaderImpl extends CachedQuestionLoaderI
     private static final long THREAD_AWAIT_TIMEOUT = 5;
 
     private Semaphore semaphore = new Semaphore(PERMITS, true);
+
+    public ThreadLimitedCachedQuestionLoaderImpl(QuestionService questionService) {
+        super(questionService);
+    }
 
     @Override
     public Map<Affiliation, Set<Question>> loadAllQuestionsToMap(@NonNull final Scheme scheme) {

@@ -13,7 +13,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Course findForEditById(Long courseId);
 
     // For security purposes to check "modify"-access to a course
-    @Query(value = "SELECT c FROM Course c join fetch c.access a join fetch c.staff s join fetch s.department d where c.courseId =?1")
+    @Query(value = "SELECT c FROM Course c join fetch c.access a join fetch c.staff s join fetch s.user join fetch s.department d where c.courseId =?1")
     Course findForSecurityById(Long courseId);
 
     // -----------------------------------------------Instructors (table)-----------------------------------------------

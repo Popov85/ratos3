@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.lms.LMS;
@@ -21,77 +21,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class SelfRegistrationService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-    private OrganisationRepository organisationRepository;
+    private final OrganisationRepository organisationRepository;
 
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
-    private ClassRepository classRepository;
+    private final ClassRepository classRepository;
 
-    private OrganisationMinDtoTransformer organisationDtoTransformer;
+    private final OrganisationMinDtoTransformer organisationDtoTransformer;
 
-    private ClassMinDtoTransformer classDtoTransformer;
+    private final ClassMinDtoTransformer classDtoTransformer;
 
-    private FacultyMinDtoTransformer facultyDtoTransformer;
+    private final FacultyMinDtoTransformer facultyDtoTransformer;
 
-    private DtoStudentTransformer dtoStudentTransformer;
+    private final DtoStudentTransformer dtoStudentTransformer;
 
-    private LMSRepository lmsRepository;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setOrganisationRepository(OrganisationRepository organisationRepository) {
-        this.organisationRepository = organisationRepository;
-    }
-
-    @Autowired
-    public void setOrganisationDtoTransformer(OrganisationMinDtoTransformer organisationDtoTransformer) {
-        this.organisationDtoTransformer = organisationDtoTransformer;
-    }
-
-    @Autowired
-    public void setStudentRepository(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
-
-    @Autowired
-    public void setDtoStudentTransformer(DtoStudentTransformer dtoStudentTransformer) {
-        this.dtoStudentTransformer = dtoStudentTransformer;
-    }
-
-    @Autowired
-    public void setFacultyRepository(FacultyRepository facultyRepository) {
-        this.facultyRepository = facultyRepository;
-    }
-
-    @Autowired
-    public void setClassRepository(ClassRepository classRepository) {
-        this.classRepository = classRepository;
-    }
-
-    @Autowired
-    public void setClassDtoTransformer(ClassMinDtoTransformer classDtoTransformer) {
-        this.classDtoTransformer = classDtoTransformer;
-    }
-
-    @Autowired
-    public void setFacultyDtoTransformer(FacultyMinDtoTransformer facultyDtoTransformer) {
-        this.facultyDtoTransformer = facultyDtoTransformer;
-    }
-
-    @Autowired
-    public void setLmsRepository(LMSRepository lmsRepository) {
-        this.lmsRepository = lmsRepository;
-    }
+    private final LMSRepository lmsRepository;
 
 
     //---------------------------------------------------Self-registration----------------------------------------------
@@ -105,7 +56,6 @@ public class SelfRegistrationService {
     }
 
     //--------------------------------------------------SELECT for drop-down--------------------------------------------
-
     /**
      * We are able to derive organisation from LMS currently used
      */
@@ -128,9 +78,8 @@ public class SelfRegistrationService {
     }
 
     /**
-     * Up to 20 faculties are expected per single organization
-     *
-     * @param orgId    orgId (optional param)
+     * Up to 20 faculties are expected per single organization;
+     * @param orgId orgId (optional param)
      * @return set of Faculty DTOs
      */
     @Transactional(readOnly = true)
@@ -144,8 +93,7 @@ public class SelfRegistrationService {
 
     /**
      * Up to 100-200 classes are expected per single faculty
-     *
-     * @param facId    facId
+     * @param facId facId
      * @return set of Class DTOs
      */
     @Transactional(readOnly = true)

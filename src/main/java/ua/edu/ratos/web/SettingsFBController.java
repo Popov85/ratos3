@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -14,19 +14,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.SettingsFBService;
 import ua.edu.ratos.service.dto.in.SettingsFBInDto;
 import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
+
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class SettingsFBController {
 
-    private SettingsFBService settingsFBService;
-
-    @Autowired
-    public void setSettingsFBService(SettingsFBService settingsFBService) {
-        this.settingsFBService = settingsFBService;
-    }
+    private final SettingsFBService settingsFBService;
 
     @PostMapping(value = "/settings-fb", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Validated @RequestBody SettingsFBInDto dto) {
@@ -59,7 +56,6 @@ public class SettingsFBController {
     }
 
     //-------------------------------------------GET instructor dropdown-----------------------------------------
-
     @GetMapping(value="/settings-fb/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SettingsFBOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return settingsFBService.findAllByStaffId(pageable);

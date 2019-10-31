@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,19 +14,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.StudentService;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.StudOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class StudentController {
 
-    private StudentService studentService;
-
-    @Autowired
-    public void setStudentService(StudentService studentService) {
-        this.studentService = studentService;
-    }
+    private final StudentService studentService;
 
     @PostMapping(value = "/lab/students", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody StudentInDto dto) {
@@ -51,7 +48,6 @@ public class StudentController {
     }
 
     //---------------------------------------------Staff group management table-----------------------------------------
-
     @GetMapping(value = "/lab/students/by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<StudOutDto> findAllByDepartmentId(@PageableDefault(sort = {"surname"}, value = 50) Pageable pageable) {
         return studentService.findAllByOrganisationId(pageable);

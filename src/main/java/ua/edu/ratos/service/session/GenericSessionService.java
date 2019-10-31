@@ -1,9 +1,9 @@
 package ua.edu.ratos.service.session;
 
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
-import ua.edu.ratos.service.domain.SessionData;
 
 /**
  * Generic session interface. Defines generic learning session operations all in batches;
@@ -17,10 +17,9 @@ public interface GenericSessionService {
     /**
      * Starts a new learning session: creates SessionData object to put it into http session
      * @param schemeId id of the requested scheme
-     * @param uuid http session unique identifier
      * @return the SessionData with BatchOutDto as a part
      */
-    SessionData start(Long schemeId, String uuid);
+    SessionData start(Long schemeId);
 
     /**
      * Provides a new batch of questions for user

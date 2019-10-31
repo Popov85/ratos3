@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,48 +14,29 @@ import ua.edu.ratos.service.dto.in.PhraseInDto;
 import ua.edu.ratos.service.dto.out.PhraseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoPhraseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.PhraseDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class PhraseService {
 
     private static final String PHRASE_NOT_FOUND = "The requested phrase not found, phraseId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private PhraseRepository phraseRepository;
+    private final PhraseRepository phraseRepository;
 
-    private DtoPhraseTransformer dtoPhraseTransformer;
+    private final DtoPhraseTransformer dtoPhraseTransformer;
 
-    private PhraseDtoTransformer phraseDtoTransformer;
+    private final PhraseDtoTransformer phraseDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setPhraseRepository(PhraseRepository phraseRepository) {
-        this.phraseRepository = phraseRepository;
-    }
-
-    @Autowired
-    public void setDtoPhraseTransformer(DtoPhraseTransformer dtoPhraseTransformer) {
-        this.dtoPhraseTransformer = dtoPhraseTransformer;
-    }
-
-    @Autowired
-    public void setPhraseDtoTransformer(PhraseDtoTransformer phraseDtoTransformer) {
-        this.phraseDtoTransformer = phraseDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final PhraseInDto dto) {
         Phrase phrase = dtoPhraseTransformer.toEntity(dto);
@@ -85,14 +66,13 @@ public class PhraseService {
     }
 
     //-------------------------------------------------One (for update)-------------------------------------------------
-
     @Transactional(readOnly = true)
     public PhraseOutDto findOneForUpdate(@NonNull final Long phraseId) {
-        return phraseDtoTransformer.toDto(phraseRepository.findOneForEdit(phraseId));
+        return phraseDtoTransformer.toDto(phraseRepository.findOneForEdit(phraseId)
+                .orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId)));
     }
 
     //----------------------------------------------------Staff table---------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return phraseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(phraseDtoTransformer::toDto);
@@ -113,9 +93,7 @@ public class PhraseService {
         return phraseRepository.findAllByDepartmentIdAndPhraseLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(phraseDtoTransformer::toDto);
     }
 
-
     //--------------------------------------------------------ADMIN-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAll(@NonNull final Pageable pageable) {
         return phraseRepository.findAll(pageable).map(phraseDtoTransformer::toDto);

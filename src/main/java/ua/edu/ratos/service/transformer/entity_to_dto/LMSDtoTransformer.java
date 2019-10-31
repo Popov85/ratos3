@@ -13,7 +13,6 @@ public class LMSDtoTransformer {
 
     private LTIVersionDtoTransformer ltiVersionDtoTransformer;
 
-    private LMSOriginDtoTransformer lmsOriginDtoTransformer;
 
     @Autowired
     public void setLtiCredentialsDtoTransformer(LTICredentialsDtoTransformer ltiCredentialsDtoTransformer) {
@@ -25,17 +24,12 @@ public class LMSDtoTransformer {
         this.ltiVersionDtoTransformer = ltiVersionDtoTransformer;
     }
 
-    @Autowired
-    public void setLmsOriginDtoTransformer(LMSOriginDtoTransformer lmsOriginDtoTransformer) {
-        this.lmsOriginDtoTransformer = lmsOriginDtoTransformer;
-    }
 
     public LMSOutDto toDto(@NonNull final LMS entity) {
         return new LMSOutDto()
                 .setLmsId(entity.getLmsId())
                 .setName(entity.getName())
                 .setCredentials(ltiCredentialsDtoTransformer.toDto(entity.getCredentials()))
-                .setLtiVersion(ltiVersionDtoTransformer.toDto(entity.getLtiVersion()))
-                .setOrigins(lmsOriginDtoTransformer.toDto(entity.getOrigins()));
+                .setLtiVersion(ltiVersionDtoTransformer.toDto(entity.getLtiVersion()));
     }
 }

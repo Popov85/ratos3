@@ -25,5 +25,7 @@ public class SchemeDomain implements Serializable {
 
     private ModeDomain modeDomain;
 
+    private OptionsDomain optionsDomain;
+
     private GradingDomain gradingDomain;
 }

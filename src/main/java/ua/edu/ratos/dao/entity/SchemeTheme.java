@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name="scheme_theme")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SchemeTheme {
 
     @Id
@@ -37,7 +37,7 @@ public class SchemeTheme {
     private short order;
 
     @OneToMany(mappedBy = "schemeTheme", cascade = CascadeType.ALL, orphanRemoval = true)
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<SchemeThemeSettings> settings = new HashSet<>();
 
     public void addSchemeThemeSettings(@NonNull SchemeThemeSettings schemeThemeSettings) {

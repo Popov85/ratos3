@@ -1,21 +1,22 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.service.domain.SettingsDomain;
 
+/**
+ * We add bounties and penalties only after the response is fully evaluated, "post factum",
+ * so that not to mix partial correct results and penalties/bounties
+ */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class EvaluatorPostProcessor {
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
     /**
      * Applicable to individual question results only;
      * Process level 2 and level 3 questions;
@@ -27,7 +28,7 @@ public class EvaluatorPostProcessor {
      * @param l3
      * @return score after bounty
      */
-    public double applyBounty(final double score, final byte level, float l2, float l3) {
+    public double applyBounty(double score, final byte level, float l2, float l3) {
         if (level==1) {
             return score;
         } else if (level==2) {

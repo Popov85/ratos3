@@ -1,8 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,45 +12,25 @@ import ua.edu.ratos.service.dto.in.ResourceInDto;
 import ua.edu.ratos.service.dto.out.ResourceOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoResourceTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ResourceDtoTransformer;
+
 import javax.persistence.EntityNotFoundException;
 
-@Slf4j
 @Service
+@AllArgsConstructor
 public class ResourceService {
 
-    private static final String RESOURCE_NOT_FOUND = "The requested resource not found, resId = ";
+    private static final String RESOURCE_NOT_FOUND = "The requested resource is not found, resId = ";
 
-    private ResourceRepository resourceRepository;
+    private final ResourceRepository resourceRepository;
 
-    private DtoResourceTransformer dtoResourceTransformer;
+    private final DtoResourceTransformer dtoResourceTransformer;
 
-    private ResourceDtoTransformer resourceDtoTransformer;
+    private final ResourceDtoTransformer resourceDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setResourceRepository(ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
-    }
-
-    @Autowired
-    public void setDtoResourceTransformer(DtoResourceTransformer dtoResourceTransformer) {
-        this.dtoResourceTransformer = dtoResourceTransformer;
-    }
-
-    @Autowired
-    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
-        this.resourceDtoTransformer = resourceDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
 
     //--------------------------------------------------CRUD------------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final ResourceInDto dto) {
         return resourceRepository.save(this.dtoResourceTransformer.toEntity(dto)).getResourceId();
@@ -79,14 +58,13 @@ public class ResourceService {
     }
 
     //----------------------------------------------One (for update)----------------------------------------------------
-
     @Transactional(readOnly = true)
-    public ResourceOutDto findOneById(@NonNull Long staffId) {
-        return resourceDtoTransformer.toDto(resourceRepository.findOneForUpdate(staffId));
+    public ResourceOutDto findOneById(@NonNull Long resId) {
+        return resourceDtoTransformer.toDto(resourceRepository.findOneForEdit(resId)
+                .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId)));
     }
 
     //------------------------------------------------Staff table-------------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ResourceOutDto> findByStaffId(@NonNull final Pageable pageable) {
         return resourceRepository.findByStaffId(securityUtils.getAuthStaffId(), pageable).map(resourceDtoTransformer::toDto);
@@ -107,9 +85,7 @@ public class ResourceService {
         return resourceRepository.findByDepartmentIdAndDescriptionLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(resourceDtoTransformer::toDto);
     }
 
-
     //----------------------------------------------------ADMIN---------------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<ResourceOutDto> findAll(@NonNull final Pageable pageable) {
         return resourceRepository.findAll(pageable).map(resourceDtoTransformer::toDto);

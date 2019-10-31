@@ -1,23 +1,22 @@
 package ua.edu.ratos.service.session.sequence;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.question.Question;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class SubSetProducer {
 
-    private RequiredAwareSubSetProducer requiredAwareSubSetProducer;
-
-    @Autowired
-    public void setRequiredAwareSubSetProducer(RequiredAwareSubSetProducer requiredAwareSubSetProducer) {
-        this.requiredAwareSubSetProducer = requiredAwareSubSetProducer;
-    }
+    private final RequiredAwareSubSetProducer requiredAwareSubSetProducer;
 
     /**
      * Randomly reduces the amount of questions of given theme, type and level to the requested quantity

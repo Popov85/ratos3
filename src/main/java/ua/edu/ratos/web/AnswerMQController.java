@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,19 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerMQService;
 import ua.edu.ratos.service.dto.in.AnswerMQInDto;
+
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class AnswerMQController {
 
-    private AnswerMQService answerService;
-
-    @Autowired
-    public void setAnswerService(AnswerMQService answerService) {
-        this.answerService = answerService;
-    }
+    private final AnswerMQService answerService;
 
     @PostMapping(value = "/questions-mq/{questionId}/answers-mq",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@PathVariable Long questionId, @Validated @RequestBody AnswerMQInDto dto) {
@@ -46,5 +43,4 @@ public class AnswerMQController {
         answerService.deleteById(answerId);
         log.info("Deleted Answer MQ from questionId = {}, answerId = {}", questionId, answerId);
     }
-
 }

@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "mode")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 @SuppressWarnings("SpellCheckingInspection")
@@ -41,13 +41,17 @@ public class Mode {
     private boolean skipable;
 
     /**
-     * Whether or not to show right answers to the user after each batch?
+     * Whether or not to allow to evaluate and show
+     * right answers in the course of learning session
      */
     @Column(name="is_rightans")
     private boolean rightAnswer;
 
     @Column(name="is_preservable")
     private boolean preservable;
+
+    @Column(name="is_pauseable")
+    private boolean pauseable;
 
     @Column(name="is_reportable")
     private boolean reportable;

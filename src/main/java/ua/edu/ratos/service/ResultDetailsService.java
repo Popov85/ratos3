@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Result;
@@ -9,30 +9,21 @@ import ua.edu.ratos.dao.entity.ResultDetails;
 import ua.edu.ratos.dao.repository.ResultDetailsRepository;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.session.SessionDataSerializerService;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class ResultDetailsService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ResultDetailsRepository resultDetailsRepository;
+    private final ResultDetailsRepository resultDetailsRepository;
 
-    private SessionDataSerializerService serializer;
-
-    @Autowired
-    public void setResultDetailsRepository(ResultDetailsRepository resultDetailsRepository) {
-        this.resultDetailsRepository = resultDetailsRepository;
-    }
-
-    @Autowired
-    public void setSerializer(SessionDataSerializerService serializer) {
-        this.serializer = serializer;
-    }
-
+    private final SessionDataSerializerService serializer;
 
     @Transactional
     public void save(@NonNull final SessionData sessionData, @NonNull final Long resultId) {

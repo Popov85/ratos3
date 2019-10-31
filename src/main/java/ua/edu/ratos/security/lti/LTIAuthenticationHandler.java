@@ -93,14 +93,11 @@ public class LTIAuthenticationHandler implements OAuthAuthenticationHandler {
         // Remember secret that is needed for posting outcomes back to LMS
         SignatureSecret signatureSecret = authentication.getConsumerDetails().getSignatureSecret();
 
-        // At this stage we already know that the consumer key matches the client secret
-        LMS lms = lmsRepository.findByConsumerKey(authentication.getConsumerCredentials().getConsumerKey());
-        Long lmsId;
-        if (lms!=null) {
-            lmsId = lms.getLmsId();
-        } else {
-            throw new RuntimeException("No such LMS found for the given consumer key in the LTI launch request!");
-        }
+        LMS lms = lmsRepository.findByConsumerKey(authentication.getConsumerCredentials().getConsumerKey())
+                .orElseThrow(()->new RuntimeException("No such LMS found for the given consumer key in the LTI launch request!"));
+
+        Long lmsId = lms.getLmsId();
+
         if (email!=null && !email.isEmpty()) {
             Optional<User> user = userRepository.findByEmail(email);
             if (user.isPresent()) {

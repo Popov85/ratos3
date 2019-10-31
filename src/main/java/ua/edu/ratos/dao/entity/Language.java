@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="language")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Language {
 
     @Id

@@ -1,11 +1,14 @@
 package ua.edu.ratos.service.domain.question;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerSQDomain;
+import ua.edu.ratos.service.dto.out.answer.CorrectAnswerSQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseSQ;
 import java.util.Comparator;
@@ -32,7 +35,7 @@ public class QuestionSQDomain extends QuestionDomain {
      * @param response
      * @return
      */
-    public int evaluate(ResponseSQ response) {
+    public int evaluate(@NonNull final ResponseSQ response) {
         final List<Long> responseSequence = response.getAnswerIds();
         if (responseSequence==null || responseSequence.isEmpty()) return 0;
         if (responseSequence.equals(findAll())) return 100;
@@ -44,6 +47,16 @@ public class QuestionSQDomain extends QuestionDomain {
                 .sorted(Comparator.comparingInt(AnswerSQDomain::getOrder))
                 .map(AnswerSQDomain::getAnswerId)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @JsonIgnore
+    public CorrectAnswerSQOutDto getCorrectAnswer() {
+        Set<CorrectAnswerSQOutDto.Triple> correctAnswers = this.answers
+                .stream()
+                .map(a -> new CorrectAnswerSQOutDto.Triple(a.getAnswerId(), a.getPhraseDomain().getPhraseId(), a.getOrder()))
+                .collect(Collectors.toSet());
+        return new CorrectAnswerSQOutDto(correctAnswers);
     }
 
     @Override

@@ -17,7 +17,7 @@ import javax.persistence.*;
 @ToString(callSuper = true, exclude = {"answers"})
 @Entity
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DiscriminatorValue(value = "1")
 @DynamicUpdate
 public class QuestionMCQ extends Question {
@@ -26,7 +26,7 @@ public class QuestionMCQ extends Question {
     private boolean isSingle;
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<AnswerMCQ> answers = new ArrayList<>();
 
     public void addAnswer(AnswerMCQ answer) {
@@ -51,7 +51,7 @@ public class QuestionMCQ extends Question {
      * @return true or false
      */
     public boolean isSingle() {
-        if (!isValid()) throw new RuntimeException("Invalid question");
+        if (!isValid()) throw new RuntimeException("Invalid questionId = "+this.questionId);
         int counter = 0;
         for (AnswerMCQ answer : answers) {
             if (!answer.isValid()) throw new RuntimeException("Invalid answerIds");

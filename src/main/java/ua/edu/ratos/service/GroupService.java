@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,57 +25,27 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class GroupService {
 
     private static final String GROUP_NOT_FOUND = "The requested Group not found, groupId = ";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
 
-    private DtoGroupTransformer dtoGroupTransformer;
+    private final DtoGroupTransformer dtoGroupTransformer;
 
-    private GroupExtendedDtoTransformer groupExtendedDtoTransformer;
+    private final GroupExtendedDtoTransformer groupExtendedDtoTransformer;
 
-    private GroupDtoTransformer groupDtoTransformer;
+    private final GroupDtoTransformer groupDtoTransformer;
 
-    private SecurityUtils securityUtils;
+    private final StudentGroupRepository studentGroupRepository;
 
-    private StudentGroupRepository studentGroupRepository;
-
-    @Autowired
-    public void setGroupRepository(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
-    }
-
-    @Autowired
-    public void setDtoGroupTransformer(DtoGroupTransformer dtoGroupTransformer) {
-        this.dtoGroupTransformer = dtoGroupTransformer;
-    }
-
-    @Autowired
-    public void setGroupExtendedDtoTransformer(GroupExtendedDtoTransformer groupExtendedDtoTransformer) {
-        this.groupExtendedDtoTransformer = groupExtendedDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setStudentGroupRepository(StudentGroupRepository studentGroupRepository) {
-        this.studentGroupRepository = studentGroupRepository;
-    }
-
-    @Autowired
-    public void setGroupDtoTransformer(GroupDtoTransformer groupDtoTransformer) {
-        this.groupDtoTransformer = groupDtoTransformer;
-    }
+    private final SecurityUtils securityUtils;
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final GroupInDto dto) {
         return groupRepository.save(dtoGroupTransformer.toEntity(dto)).getGroupId();
@@ -109,16 +79,14 @@ public class GroupService {
                 .setDeleted(true);
     }
 
-
     //-------------------------------------------------------One (for edit)---------------------------------------------
-
     @Transactional(readOnly = true)
     public GroupOutDto findOneForEdit(@NonNull final Long groupId) {
-       return groupDtoTransformer.toDto(groupRepository.findOneForEdit(groupId));
+        return groupDtoTransformer.toDto(groupRepository.findOneForEdit(groupId)
+                .orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId)));
     }
 
     //--------------------------------------------------------Staff table-----------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return groupRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(groupExtendedDtoTransformer::toDto);
@@ -140,7 +108,6 @@ public class GroupService {
     }
 
     //--------------------------------------------------------ADMIN table-----------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllAdmin(@NonNull final Pageable pageable) {
         return groupRepository.findAllAdmin(pageable).map(groupExtendedDtoTransformer::toDto);

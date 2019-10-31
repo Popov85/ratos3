@@ -6,9 +6,9 @@ import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor

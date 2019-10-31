@@ -48,7 +48,7 @@ public class Phrase {
     @Setter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "phrase_resource", joinColumns = @JoinColumn(name = "phrase_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Resource> resources = new HashSet<>();
 
     public Phrase(String phrase) {

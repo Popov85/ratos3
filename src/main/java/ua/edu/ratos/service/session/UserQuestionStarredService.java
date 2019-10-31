@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,66 +15,46 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionMinOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.UserQuestionStarredDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class UserQuestionStarredService {
 
     private static final String ENTITY_NOT_FOUND = "Failed to find starred question by ID";
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private UserQuestionStarredRepository userQuestionStarredRepository;
+    private final UserQuestionStarredRepository userQuestionStarredRepository;
 
-    private UserQuestionStarredDtoTransformer userQuestionStarredDtoTransformer;
+    private final UserQuestionStarredDtoTransformer userQuestionStarredDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setUserQuestionStarredRepository(UserQuestionStarredRepository userQuestionStarredRepository) {
-        this.userQuestionStarredRepository = userQuestionStarredRepository;
-    }
-
-    @Autowired
-    public void setUserQuestionStarredDtoTransformer(UserQuestionStarredDtoTransformer userQuestionStarredDtoTransformer) {
-        this.userQuestionStarredDtoTransformer = userQuestionStarredDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //--------------------------------------------------CRUD------------------------------------------------------------
 
     @Transactional
     public void save(@NonNull final Long questionId, final byte star) {
         Long userId = securityUtils.getAuthUserId();
-        UserQuestionStarredId id = new UserQuestionStarredId(questionId, userId);
+        UserQuestionStarredId id = new UserQuestionStarredId(userId, questionId);
         UserQuestionStarred userQuestionStarred = new UserQuestionStarred();
         userQuestionStarred.setUserQuestionStarredId(id);
         userQuestionStarred.setUser(em.getReference(User.class, userId));
         userQuestionStarred.setQuestion(em.getReference(Question.class, questionId));
         userQuestionStarred.setStar(star);
+        userQuestionStarred.setWhenStarred(LocalDateTime.now());
         userQuestionStarredRepository.save(userQuestionStarred);
-    }
-
-    @Transactional
-    public void updateStars(@NonNull final Long questionId, final byte star) {
-        Long userId = securityUtils.getAuthUserId();
-        UserQuestionStarredId id = new UserQuestionStarredId(questionId, userId);
-        UserQuestionStarred userQuestionStarred = userQuestionStarredRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND));
-        userQuestionStarred.setStar(star);
     }
 
     @Transactional
     public void deleteById(@NonNull final Long questionId) {
         Long userId = securityUtils.getAuthUserId();
-        userQuestionStarredRepository.deleteById(new UserQuestionStarredId(questionId, userId));
+        userQuestionStarredRepository.deleteById(new UserQuestionStarredId(userId, questionId));
     }
 
     //--------------------------------------------One to see with answers-----------------------------------------------

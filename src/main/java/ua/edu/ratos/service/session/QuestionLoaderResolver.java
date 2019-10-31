@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.SchemeTheme;
@@ -14,21 +14,12 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class QuestionLoaderResolver {
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    private QuestionLoaderFactory sequenceMapperFactory;
-
-    @Autowired
-    public void setQuestionRepository(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
-
-    @Autowired
-    public void setSequenceMapperFactory(QuestionLoaderFactory sequenceMapperFactory) {
-        this.sequenceMapperFactory = sequenceMapperFactory;
-    }
+    private final QuestionLoaderFactory sequenceMapperFactory;
 
     /**
      * Algorithm to decide which implementation to use

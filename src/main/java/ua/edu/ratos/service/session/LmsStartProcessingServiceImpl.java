@@ -1,56 +1,41 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.SchemeService;
+import ua.edu.ratos.service.domain.SchemeDomain;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+import ua.edu.ratos.service.transformer.entity_to_domain.SchemeDomainTransformer;
+
+import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class LmsStartProcessingServiceImpl implements StartProcessingService {
 
-    private SchemeService schemeService;
+    private final SchemeService schemeService;
 
-    private SessionDataBuilder sessionDataBuilder;
+    private final IndividualSequenceProducer individualSequenceProducer;
 
-    private FirstBatchBuilder firstBatchBuilder;
+    private final SchemeDomainTransformer schemeDomainTransformer;
 
-    private SessionDataService sessionDataService;
+    private final FirstBatchProducer firstBatchBuilder;
 
-    private SecurityUtils securityUtils;
+    private final SessionDataService sessionDataService;
 
-    @Autowired
-    public void setSchemeService(SchemeService schemeService) {
-        this.schemeService = schemeService;
-    }
-
-    @Autowired
-    public void setSessionDataBuilder(SessionDataBuilder sessionDataBuilder) {
-        this.sessionDataBuilder = sessionDataBuilder;
-    }
-
-    @Autowired
-    public void setFirstBatchBuilder(FirstBatchBuilder firstBatchBuilder) {
-        this.firstBatchBuilder = firstBatchBuilder;
-    }
-
-    @Autowired
-    public void setSessionDataService(SessionDataService sessionDataService) {
-        this.sessionDataService = sessionDataService;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     @Override
-    public SessionData start(@NonNull final Long schemeId, @NonNull final String uuid) {
+    @Transactional(readOnly = true)
+    public SessionData start(@NonNull final Long schemeId) {
         // Load the requested Scheme and create SessionData object
         final Scheme scheme = schemeService.findByIdForSession(schemeId);
         if (scheme==null || !scheme.isActive())
@@ -58,9 +43,14 @@ public class LmsStartProcessingServiceImpl implements StartProcessingService {
         Long lmsId = securityUtils.getLmsId();
         Long userId = securityUtils.getLmsUserId();
         log.debug("For LMS session found available schemeId = {}, lmsId = {}, userId = {}", scheme.getSchemeId(), lmsId, userId);
-        final SessionData sessionData = sessionDataBuilder.build(uuid, userId, scheme, lmsId);
+
+        // Build individual sequence
+        List<QuestionDomain> sequence = individualSequenceProducer.getIndividualSequence(scheme);
+        SchemeDomain schemeDomain = schemeDomainTransformer.toDomain(scheme);
+        // Build sessionData
+        final SessionData sessionData = SessionData.createFromLMS(lmsId, userId, schemeDomain, sequence);
         // Build first BatchOutDto
-        final BatchOutDto batchOutDto = firstBatchBuilder.build(sessionData);
+        final BatchOutDto batchOutDto = firstBatchBuilder.produce(sessionData);
         // Update SessionData
         sessionDataService.update(sessionData, batchOutDto);
         log.debug("For LMS session sessionData is built = {}", sessionData);

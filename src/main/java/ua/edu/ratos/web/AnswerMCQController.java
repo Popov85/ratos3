@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,30 +12,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.AnswerMCQService;
 import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import ua.edu.ratos.service.validator.AnswerMCQInDtoValidator;
+
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class AnswerMCQController {
 
-    private AnswerMCQInDtoValidator validator;
+    private final AnswerMCQInDtoValidator validator;
 
-    private AnswerMCQService answerService;
+    private final AnswerMCQService answerService;
 
     @InitBinder
     public void dataBinding(WebDataBinder binder) {
         binder.addValidators(validator);
-    }
-
-    @Autowired
-    public void setValidator(AnswerMCQInDtoValidator validator) {
-        this.validator = validator;
-    }
-
-    @Autowired
-    public void setAnswerService(AnswerMCQService answerService) {
-        this.answerService = answerService;
     }
 
     @PostMapping(value = "/questions/{questionId}/answer-mcq", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

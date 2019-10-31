@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -28,44 +29,56 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
 
         JsonNode root = jsonParser.getCodec().readTree(jsonParser);
 
-        String key = root.path("key").asText();
+        JsonNode lmsId = root.path("lmsId");
         long userId = root.path("userId").asLong();
         SchemeDomain schemeDomain = objectMapper.treeToValue(root.path("schemeDomain"), SchemeDomain.class);
-        List<QuestionDomain> questionDomains = objectMapper.readerFor(new TypeReference<List<QuestionDomain>>(){}).readValue(root.path("questionDomains"));
-        String sessionTimeOut = root.path("sessionTimeout").asText();
-        long perQuestionTimeLimit = root.path("perQuestionTimeLimit").asLong();
-        int questionPerBatch = root.path("questionsPerBatch").asInt();
-        SessionData sessionData = new SessionData.Builder()
-                .withKey(key)
-                .forUser(userId)
-                .takingScheme(schemeDomain)
-                .withIndividualSequence(questionDomains)
-                .withSessionTimeout(LocalDateTime.parse(sessionTimeOut))
-                .withPerQuestionTimeLimit(perQuestionTimeLimit)
-                .withQuestionsPerBatch(questionPerBatch)
-                .build();
+        List<QuestionDomain> sequence = objectMapper.readerFor(new TypeReference<List<QuestionDomain>>() {
+        }).readValue(root.path("sequence"));
+        SessionData sessionData;
+        if (!lmsId.isMissingNode()) {
+            sessionData = SessionData.createFromLMS(lmsId.longValue(), userId, schemeDomain, sequence);
+        } else {
+            sessionData = SessionData.createNoLMS(userId, schemeDomain, sequence);
+        }
 
-        // add non-final fields here
+        String sessionTimeout = root.path("sessionTimeout").asText();
+        sessionData.setSessionTimeout(LocalDateTime.parse(sessionTimeout));
+
+        JsonNode currentBatchTimeout = root.path("currentBatchTimeout");
+        if (!currentBatchTimeout.isNull() && !currentBatchTimeout.isMissingNode()) {
+            sessionData.setCurrentBatchTimeout(LocalDateTime.parse(currentBatchTimeout.asText()));
+        } else {
+            // currentBatchTimeout is erased when session is successfully completed
+            sessionData.setCurrentBatchTimeout(null);
+        }
+
         int currentIndex = root.path("currentIndex").asInt();
         sessionData.setCurrentIndex(currentIndex);
 
+        JsonNode currentBatchIssued = root.path("currentBatchIssued");
+        if (!currentBatchIssued.isNull() && !currentBatchIssued.isMissingNode()) {
+            sessionData.setCurrentBatchIssued(LocalDateTime.parse(currentBatchIssued.asText()));
+        } else {
+            // currentBatchIssued is erased when session is successfully completed
+            sessionData.setCurrentBatchIssued(null);
+        }
+
         // currentBatch is erased when session is successfully completed
         JsonNode currentBatch = root.path("currentBatch");
-        if (!currentBatch.isMissingNode()) {
-            String currentBatchTimeOut = root.path("currentBatchTimeOut").asText();
-            String currentBatchIssued = root.path("currentBatchIssued").asText();
-            // uses custom BatchOutDtoDeserializer
+        if (!currentBatch.isNull() && !currentBatch.isMissingNode()) {
             sessionData.setCurrentBatch(objectMapper.readValue(root.get("currentBatch").toString(), BatchOutDto.class));
-            sessionData.setCurrentBatchTimeOut(LocalDateTime.parse(currentBatchTimeOut));
-            sessionData.setCurrentBatchIssued(LocalDateTime.parse(currentBatchIssued));
         }
 
         ProgressData progressData = objectMapper.treeToValue(root.path("progressData"), ProgressData.class);
-
-        Map<Long, MetaData> metaData = objectMapper.convertValue(root.path("metaData"), new TypeReference<HashMap<Long,MetaData>>() {});
-
         sessionData.setProgressData(progressData);
+
+        Map<Long, MetaData> metaData = objectMapper.convertValue(root.path("metaData"), new TypeReference<HashMap<Long, MetaData>>() {
+        });
         sessionData.setMetaData(metaData);
+
+        boolean isSuspended = root.path("suspended").asBoolean();
+        sessionData.setSuspended(isSuspended);
+
         return sessionData;
     }
 

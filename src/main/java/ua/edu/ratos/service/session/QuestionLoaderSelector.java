@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.Scheme;
@@ -11,28 +11,15 @@ import ua.edu.ratos.service.session.sequence.QuestionLoaderFactory;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class QuestionLoaderSelector {
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
-    private QuestionLoaderFactory questionLoaderFactory;
+    private final QuestionLoaderFactory questionLoaderFactory;
 
-    private QuestionLoaderResolver sequenceMapperResolver;
+    private final QuestionLoaderResolver sequenceMapperResolver;
 
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setQuestionLoaderFactory(QuestionLoaderFactory questionLoaderFactory) {
-        this.questionLoaderFactory = questionLoaderFactory;
-    }
-
-    @Autowired
-    public void setSequenceMapperResolver(QuestionLoaderResolver sequenceMapperResolver) {
-        this.sequenceMapperResolver = sequenceMapperResolver;
-    }
 
     public QuestionLoader select(@NonNull final Scheme scheme) {
         AppProperties.Session.Algorithm algorithm = appProperties.getSession().getRandomAlgorithm();

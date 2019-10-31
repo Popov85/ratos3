@@ -19,7 +19,7 @@ import java.util.Set;
 @Table(name="theme")
 @Where(clause = "is_deleted = 0")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Theme {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

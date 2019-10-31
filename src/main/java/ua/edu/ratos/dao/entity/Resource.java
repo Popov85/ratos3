@@ -21,7 +21,7 @@ import java.util.Objects;
 @Table(name = "resource")
 @Where(clause = "is_deleted = 0")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DynamicUpdate
 public class Resource {
 

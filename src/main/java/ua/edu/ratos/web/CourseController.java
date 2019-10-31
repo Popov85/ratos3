@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,20 +15,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.CourseService;
 import ua.edu.ratos.service.dto.in.CourseInDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class CourseController {
 
-    private CourseService courseService;
-
-    @Autowired
-    public void setCourseService(CourseService courseService) {
-        this.courseService = courseService;
-    }
+    private final CourseService courseService;
 
     @PostMapping(value = "/courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody CourseInDto dto) {
@@ -66,9 +63,7 @@ public class CourseController {
         log.debug("Deleted Course, courseId = {}", courseId);
     }
 
-
     //-----------------------------------------------Staff tables-------------------------------------------------------
-
     @GetMapping(value = "/courses/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CourseOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return courseService.findAllByStaffId(pageable);
@@ -80,7 +75,6 @@ public class CourseController {
     }
 
     //------------------------------------------------Search in table---------------------------------------------------
-
     @GetMapping(value = "/courses/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CourseOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return courseService.findAllByStaffIdAndName(letters, contains, pageable);
@@ -92,7 +86,6 @@ public class CourseController {
     }
 
     //-----------------------------------------------Staff drop-down----------------------------------------------------
-
     @GetMapping(value = "/courses-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<CourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return courseService.findAllForDropDownByStaffId(pageable);
@@ -104,7 +97,6 @@ public class CourseController {
     }
 
     //---------------------------------------------Search in drop-down--------------------------------------------------
-
     @GetMapping(value = "/courses-dropdown/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<CourseOutDto> findAllForDropDownByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return courseService.findAllForDropDownByStaffIdAndName(letters, contains, pageable);
@@ -114,5 +106,4 @@ public class CourseController {
     public Slice<CourseOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return courseService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
     }
-
 }

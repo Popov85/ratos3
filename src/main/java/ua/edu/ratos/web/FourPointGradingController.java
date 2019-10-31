@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -13,20 +13,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.FourPointGradingService;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class FourPointGradingController {
 
-    private FourPointGradingService fourPointGradingService;
-
-    @Autowired
-    public void setFourPointGradingService(FourPointGradingService fourPointGradingService) {
-        this.fourPointGradingService = fourPointGradingService;
-    }
+    private final FourPointGradingService fourPointGradingService;
 
     @PostMapping(value = "/four-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody FourPointGradingInDto dto) {
@@ -58,8 +56,13 @@ public class FourPointGradingController {
         log.info("Deleted FourPointGrading, fourId = {}", fourId);
     }
 
-    //-------------------------------------------------Staff table------------------------------------------------------
+    //-----------------------------------------------------Default------------------------------------------------------
+    @GetMapping(value = "/four-point-gradings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<FourPointGradingOutDto> findAllDefault() {
+        return fourPointGradingService.findAllDefault();
+    }
 
+    //-------------------------------------------------Staff table------------------------------------------------------
     @GetMapping(value = "/four-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<FourPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return fourPointGradingService.findAllByStaffId(pageable);

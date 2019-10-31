@@ -2,13 +2,19 @@ package ua.edu.ratos.service.session;
 
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.domain.SessionDataMap;
+import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.out.HelpMinOutDto;
 import ua.edu.ratos.service.dto.session.ComplaintInDto;
+import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
+import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 
 /**
  * Educational session provides more possibility for students.
- * These operations only available for training sort of sessions, not for knowledge control
+ * These operations only available for training sort of sessions, not for knowledge control.<br/>
+ * Known implementations:
  * @author Andrey P.
+ * @see EducationalSessionServiceImpl
  */
 @Service
 public interface EducationalSessionService extends StarredSessionService {
@@ -16,10 +22,51 @@ public interface EducationalSessionService extends StarredSessionService {
     /**
      * Serialize SessionData state to database.
      * There is a limit of total preservation per user within a RATOS installation (5 by default).
+     * @param key session key
      * @param sessionData sessionData object associated with the current learning session
      * @return key for retrieval this session from DB
      */
-    String preserve(SessionData sessionData);
+    String preserve(String key, SessionData sessionData);
+
+    /**
+     * Retrieve preserved session from DB
+     * @param key session key
+     * @param sessionDataMap SessionDataMap
+     * @return current batch
+     */
+    BatchOutDto retrieve(String key, SessionDataMap sessionDataMap);
+
+    /**
+     * Pauses the current session;
+     * Backend should ensure to keep remaining timings for both whole session and current batch.
+     * Frontend should not allow any service API calls to backend when session is paused, except cancel() or preserve();
+     * Frontend must ensure to stop visual time flow in UI;
+     * @param sessionData SessionData
+     */
+    void pause(SessionData sessionData);
+
+    /**
+     * Proceed the current session;
+     * @param sessionData SessionData
+     * @see EducationalSessionService pause method
+     */
+    void proceed(SessionData sessionData);
+    /**
+     * Only evaluates single response of a batch,
+     * provided settings allow this operation
+     * @param response response from user
+     * @param sessionData SessionData
+     * @return ResultPerQuestionOutDto score+correct answer
+     */
+    ResultPerQuestionOutDto check(Response response, SessionData sessionData);
+
+    /**
+     * Just shows correct answer to the question with no response from user
+     * @param questionId questionId
+     * @param sessionData SessionData
+     * @return ResultPerQuestionOutDto nullable score +correct answer
+     */
+    ResultPerQuestionOutDto shows(Long questionId, SessionData sessionData);
 
     //------------------------------------------------------Ajax--------------------------------------------------------
     /**

@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,10 +18,10 @@ import ua.edu.ratos.service.SchemeThemeSettingsService;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
-import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
-import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
+import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -35,37 +35,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/instructor")
 @SuppressWarnings("MVCPathVariableInspection")
+@AllArgsConstructor
 public class SchemeController {
 
-    private SchemeService schemeService;
+    private final SchemeService schemeService;
 
-    private SchemeThemeService schemeThemeService;
+    private final SchemeThemeService schemeThemeService;
 
-    private SchemeThemeSettingsService schemeThemeSettingsService;
-
-    @Autowired
-    public void setSchemeService(SchemeService schemeService) {
-        this.schemeService = schemeService;
-    }
-
-    @Autowired
-    public void setSchemeThemeService(SchemeThemeService schemeThemeService) {
-        this.schemeThemeService = schemeThemeService;
-    }
-
-    @Autowired
-    public void setSchemeThemeSettingsService(SchemeThemeSettingsService schemeThemeSettingsService) {
-        this.schemeThemeSettingsService = schemeThemeSettingsService;
-    }
+    private final SchemeThemeSettingsService schemeThemeSettingsService;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
-
     @PostMapping(value = "/schemes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody SchemeInDto dto) {
         final Long schemeId = schemeService.save(dto);
         log.debug("Saved Scheme, schemeId = {}", schemeId);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(schemeId).toUri();
-        // returns location like http://localhost:8090/instructor/schemes/21
         return ResponseEntity.created(location).build();
     }
 
@@ -78,7 +62,6 @@ public class SchemeController {
 
     // ---------------------------------------------------UPDATE--------------------------------------------------------
     // Set of endpoints to immediately update any changes to Scheme object with AJAX
-
     @PutMapping("/schemes/{schemeId}/name")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateName(@PathVariable Long schemeId, @RequestParam String name) {
@@ -150,12 +133,9 @@ public class SchemeController {
         log.debug("Deleted Scheme, schemeId = {}", schemeId);
     }
 
-
     //--------------------------------------------------------GROUPS----------------------------------------------------
-
     // If the groups being sent in the request body are intended to be added to a collection, rather than replace,
     // I would suggest POST. If you intend to replace the existing tags, use PUT.
-
     @PostMapping(value = "/schemes/{schemeId}/groups/{groupId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void addGroup(@PathVariable Long schemeId, @PathVariable Long groupId) {
@@ -171,7 +151,6 @@ public class SchemeController {
     }
     
     // -------------------------------------------------------THEMES----------------------------------------------------
-
     @PostMapping(value = "/schemes/{schemeId}/themes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTheme(@PathVariable Long schemeId, @Valid @RequestBody SchemeThemeInDto dto) {
         final Long schemeThemeId = schemeThemeService.save(schemeId,  dto);
@@ -202,7 +181,6 @@ public class SchemeController {
     }
 
     // ------------------------------------------------------SETTINGS---------------------------------------------------
-
     @PostMapping(value = "/schemes/{schemeId}/themes/{schemeThemeId}/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addSchemeThemeSettings(@Valid @RequestBody SchemeThemeSettingsInDto dto) {
         final Long schemeThemeSettingsId = schemeThemeSettingsService.save(dto);
@@ -225,9 +203,7 @@ public class SchemeController {
         log.debug("Deleted schemeThemeSettingsId = {}", schemeThemeSettingsId);
     }
 
-
     //----------------------------------------------------Staff table---------------------------------------------------
-
     @GetMapping(value = "/schemes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<SchemeShortOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 30) Pageable pageable) {
         return schemeService.findAllByStaffId(pageable);
@@ -239,7 +215,6 @@ public class SchemeController {
     }
 
     //--------------------------------------------------Search in table-------------------------------------------------
-
     @GetMapping(value = "/schemes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<SchemeShortOutDto> findAllByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
         return schemeService.findAllByStaffIdAndName(letters, contains, pageable);
@@ -251,7 +226,6 @@ public class SchemeController {
     }
 
     //--------------------------------------------------Slice drop-down-------------------------------------------------
-
     @GetMapping(value = "/schemes-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return schemeService.findAllForDropDownByDepartmentId(pageable);
@@ -263,7 +237,6 @@ public class SchemeController {
     }
 
     //------------------------------------------------Search in drop-down-----------------------------------------------
-
     @GetMapping(value = "/schemes-dropdown/by-department",  params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return schemeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);

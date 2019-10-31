@@ -1,5 +1,6 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,23 +12,14 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@AllArgsConstructor
 public class AnswerFBMQService {
 
     private static final String ANSWER_NOT_FOUND = "The requested Answer FBMQ not found, answerId = ";
 
-    private AnswerFBMQRepository answerRepository;
+    private final AnswerFBMQRepository answerRepository;
 
-    private DtoAnswerTransformer dtoAnswerTransformer;
-
-    @Autowired
-    public void setAnswerRepository(AnswerFBMQRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
-
-    @Autowired
-    public void setDtoAnswerTransformer(DtoAnswerTransformer dtoAnswerTransformer) {
-        this.dtoAnswerTransformer = dtoAnswerTransformer;
-    }
+    private final DtoAnswerTransformer dtoAnswerTransformer;
 
 
     @Transactional

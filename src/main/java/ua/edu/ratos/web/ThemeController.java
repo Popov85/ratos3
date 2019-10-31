@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,22 +15,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.ThemeService;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
 import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
-import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
+import ua.edu.ratos.service.dto.out.ThemeOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class ThemeController {
 
-    private ThemeService themeService;
-
-    @Autowired
-    public void setThemeService(ThemeService themeService) {
-        this.themeService = themeService;
-    }
+    private final ThemeService themeService;
 
     @PostMapping(value = "/themes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody ThemeInDto dto) {
@@ -76,7 +73,6 @@ public class ThemeController {
     }
 
     //--------------------------------------------Staff theme-questions table-------------------------------------------
-
     @GetMapping(value = "/themes-questions/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return themeService.findAllForQuestionsTableByStaffId(pageable);
@@ -88,7 +84,6 @@ public class ThemeController {
     }
 
     //---------------------------------------------------Table search---------------------------------------------------
-
     @GetMapping(value = "/themes-questions/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ThemeExtOutDto> findAllForQuestionsTableByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return themeService.findAllForQuestionsTableByStaffIdAndName(letters, contains, pageable);
@@ -100,7 +95,6 @@ public class ThemeController {
     }
 
     //-------------------------------------------Dropdown scheme creating support---------------------------------------
-
     @GetMapping(value = "/themes-questions-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<ThemeExtOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return themeService.findAllForDropDownByStaffId(pageable);
@@ -112,7 +106,6 @@ public class ThemeController {
     }
 
     //----------------------------------------------------Dropdown search-----------------------------------------------
-
     @GetMapping(value = "/themes-questions-dropdown/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<ThemeExtOutDto> findAllForDropDownByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
         return themeService.findAllForDropDownByStaffIdAndName(letters, contains, pageable);
@@ -123,9 +116,7 @@ public class ThemeController {
         return themeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
     }
 
-
     //---------------------------------------------Scheme creating support with levels----------------------------------
-
     /**
      * Use this endpoint for scheme creating support to obtain all existing types and levels in this theme.
      * It works rather fast (100-500ms) with questions per theme = 200-500 pieces,

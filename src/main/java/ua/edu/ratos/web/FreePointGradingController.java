@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -16,18 +16,15 @@ import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class FreePointGradingController {
 
-    private FreePointGradingService freePointGradingService;
-
-    @Autowired
-    public void setFreePointGradingService(FreePointGradingService freePointGradingService) {
-        this.freePointGradingService = freePointGradingService;
-    }
+    private final FreePointGradingService freePointGradingService;
 
     @PostMapping(value = "/free-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody FreePointGradingInDto dto) {
@@ -59,8 +56,13 @@ public class FreePointGradingController {
         log.info("Deleted FreePointGrading, freeId = {}", freeId);
     }
 
-    //------------------------------------------------Staff table-------------------------------------------------------
+    //-----------------------------------------------------Default------------------------------------------------------
+    @GetMapping(value = "/free-point-gradings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<FreePointGradingOutDto> findAllDefault() {
+        return freePointGradingService.findAllDefault();
+    }
 
+    //------------------------------------------------Staff table-------------------------------------------------------
     @GetMapping(value = "/free-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<FreePointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return freePointGradingService.findAllByStaffId(pageable);

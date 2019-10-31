@@ -1,31 +1,29 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.*;
+import ua.edu.ratos.dao.entity.Result;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.Theme;
+import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.repository.ResultRepository;
 import ua.edu.ratos.service.domain.ResultDomain;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
-@Slf4j
 @Service
+@AllArgsConstructor
 public class ResultService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ResultRepository resultRepository;
-
-    @Autowired
-    public void setResultRepository(ResultRepository resultRepository) {
-        this.resultRepository = resultRepository;
-    }
+    private final ResultRepository resultRepository;
 
     @Transactional
     public Long save(@NonNull final ResultDomain resultDomain) {

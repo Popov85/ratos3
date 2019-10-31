@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,44 +15,25 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SettingsDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class SettingsService {
 
     private static final String ID_IS_NOT_INCLUDED = "SetId is not included, reject update!";
-
     private static final String DEFAULT_SETTINGS_CANNOT_BE_MODIFIED = "Default settings cannot be modified!";
 
-    private SettingsRepository settingsRepository;
+    private final SettingsRepository settingsRepository;
 
-    private DtoSettingsTransformer dtoSettingsTransformer;
+    private final DtoSettingsTransformer dtoSettingsTransformer;
 
-    private SettingsDtoTransformer settingsDtoTransformer;
+    private final SettingsDtoTransformer settingsDtoTransformer;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setSettingsRepository(SettingsRepository settingsRepository) {
-        this.settingsRepository = settingsRepository;
-    }
-
-    @Autowired
-    public void setDtoSettingsTransformer(DtoSettingsTransformer dtoSettingsTransformer) {
-        this.dtoSettingsTransformer = dtoSettingsTransformer;
-    }
-
-    @Autowired
-    public void setSettingsDtoTransformer(SettingsDtoTransformer settingsDtoTransformer) {
-        this.settingsDtoTransformer = settingsDtoTransformer;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
-
     @Transactional
     public Long save(@NonNull final SettingsInDto dto) {
         return settingsRepository.save(dtoSettingsTransformer.toEntity(dto)).getSetId();
@@ -82,14 +63,22 @@ public class SettingsService {
     }
 
     //-------------------------------------------------One (for update)-------------------------------------------------
-
     @Transactional(readOnly = true)
     public SettingsOutDto findOneForEdit(@NonNull final Long setId) {
-        return settingsDtoTransformer.toDto(settingsRepository.findOneForEdit(setId));
+        return settingsDtoTransformer.toDto(settingsRepository.findOneForEdit(setId)
+                .orElseThrow(()->new EntityNotFoundException("Settings is not found, setId = "+setId)));
+    }
+
+    //------------------------------------------------------Default-----------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<SettingsOutDto> findAllDefault() {
+        return settingsRepository.findAllDefault()
+                .stream()
+                .map(settingsDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //---------------------------------------------------Staff table----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<SettingsOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return settingsRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(settingsDtoTransformer::toDto);
@@ -111,7 +100,6 @@ public class SettingsService {
     }
 
     //--------------------------------------------------------ADMIN-----------------------------------------------------
-
     @Transactional(readOnly = true)
     public Page<SettingsOutDto> findAll(@NonNull Pageable pageable) {
         return settingsRepository.findAll(pageable).map(settingsDtoTransformer::toDto);

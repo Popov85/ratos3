@@ -1,5 +1,5 @@
-insert into scheme(name, is_active, strategy_id, settings_id, mode_id, grading_id, course_id, created, created_by, belongs_to, is_deleted, access_id)
-    values('Sample scheme #1', 1, 1, 1, 1, 1, 1, '2019-08-01 10:30:15.999999999', 1, 1, 0, 1);
+insert into scheme(name, is_active, strategy_id, settings_id, mode_id, grading_id, course_id, created, created_by, belongs_to, is_deleted, access_id, options_id)
+    values('Sample scheme #1', 1, 1, 1, 1, 1, 1, '2019-08-01 10:30:15.999999999', 1, 1, 0, 1, 1);
 
 insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Sample theme #1 (All MCQ)', 1, 1, 1, 1, CURRENT_TIMESTAMP);
 insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Sample theme #2 (All FBSQ)', 1, 1, 1, 1, CURRENT_TIMESTAMP);

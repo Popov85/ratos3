@@ -1,19 +1,18 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.ResponseEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
+import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class EvaluatingService {
 
     private static final String EMPTY_BATCH_OUT_EXCEPTION = "Wrong API usage: Failed to get BatchEvaluated, " +
@@ -23,12 +22,6 @@ public class EvaluatingService {
 
     private final BatchEvaluatorService batchEvaluatorService;
 
-    @Autowired
-    public EvaluatingService(@NonNull final Timeout timeout, @NonNull final BatchEvaluatorService batchEvaluatorService) {
-        this.batchEvaluatorService = batchEvaluatorService;
-        this.timeout = timeout;
-    }
-
     /**
      * Evaluates BatchInDto, make sure current batch to contain some question(s),
      * if not they all probably were skipped and deleted from the current batch (in which case there is nothing to evaluate)
@@ -37,31 +30,15 @@ public class EvaluatingService {
      * @return BatchEvaluated object
      */
     public BatchEvaluated getBatchEvaluated(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
-        if (!sessionData.getCurrentBatch().isPresent() || sessionData.getCurrentBatch().get().getBatch().isEmpty())
+        if (!sessionData.getCurrentBatch().isPresent() || sessionData.getCurrentBatch().get().getQuestions().isEmpty())
             throw new IllegalArgumentException(EMPTY_BATCH_OUT_EXCEPTION);
         // job to evaluate
-        final Map<Long, ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
-        // Find (if any) add IDs of questions of this batch with incorrect responses
-        List<Long> incorrectResponseIds = getIncorrectResponseIds(responseEvaluated);
+        final List<ResponseEvaluated> responseEvaluated = batchEvaluatorService.doEvaluate(batchInDto, sessionData);
         // Calculate time spent
         final LocalDateTime currentBatchIssued = sessionData.getCurrentBatchIssued();
         final long timeSpent = TimingService.getTimeSpent(currentBatchIssued);
         // Is this batch or the whole session time-outed?
-        return new BatchEvaluated(responseEvaluated, incorrectResponseIds, timeSpent, timeout.isTimeouted());
-    }
-
-    /**
-     * Finds a list of incorrectly answered questions in the map of evaluated responses
-     * @param responseEvaluated map of ResponseEvaluated
-     * @return list of incorrectly answered question IDs
-     */
-    private List<Long> getIncorrectResponseIds(@NonNull final Map<Long, ResponseEvaluated> responseEvaluated) {
-        return responseEvaluated
-                .values()
-                .stream()
-                .filter(q -> q.getScore() < 100)
-                .map(ResponseEvaluated::getQuestionId)
-                .collect(Collectors.toList());
+        return new BatchEvaluated(responseEvaluated, timeSpent, timeout.isTimeouted());
     }
 
 }

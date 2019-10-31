@@ -1,20 +1,15 @@
 package ua.edu.ratos.service.session;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.config.properties.AppProperties;
-
-import java.util.Map;
+import java.util.SortedMap;
 
 @Service
+@AllArgsConstructor
 public class GameLabelResolver {
 
-    private AppProperties appProperties;
-
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
+    private final AppProperties appProperties;
 
     /**
      * Calculates the current user's title (label) based on his current achievements.
@@ -22,8 +17,7 @@ public class GameLabelResolver {
      * @return user's title or label
      */
     public String getLabel(int totalWins) {
-        AppProperties.Game props = appProperties.getGame();
-        Map<Integer, String> label = props.getUserLabel();
+        SortedMap<Integer, String> label = appProperties.getGame().getUserLabel();
         if (label.get(totalWins)!=null) return label.get(totalWins);
         int previousKey = 0;
         for (Integer key : label.keySet()) {

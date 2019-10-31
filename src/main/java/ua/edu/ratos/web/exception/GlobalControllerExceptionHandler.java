@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +26,20 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ExceptionResponse unknownException(Exception ex, WebRequest request) {
         final ExceptionResponse exceptionResponse =
                 new ExceptionResponse(ex.getClass().toString(), ex.getMessage());
-        log.error("Unknown error has occurred with message = {} for request = {}", ex.getMessage(), request.toString());
+        log.error("Unknown error has occurred with message = {} with cause = {} for request = {}",
+                ex.getMessage(),
+                ex.getCause().getMessage(),
+                request.toString());
+        ex.printStackTrace();// TODO
+        return exceptionResponse;
+    }
+
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionResponse entityNotFoundException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse("EntityNotFoundException", "Entity was not found! Details: "+ex.getMessage());
+        log.error("Entity was not found! Message = {}", ex.getMessage());
         return exceptionResponse;
     }
 

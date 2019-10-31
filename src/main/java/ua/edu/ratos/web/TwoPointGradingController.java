@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -16,18 +16,15 @@ import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class TwoPointGradingController {
 
-    private TwoPointGradingService twoPointGradingService;
-
-    @Autowired
-    public void setTwoPointGradingService(TwoPointGradingService twoPointGradingService) {
-        this.twoPointGradingService = twoPointGradingService;
-    }
+    private final TwoPointGradingService twoPointGradingService;
 
     @PostMapping(value = "/two-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody TwoPointGradingInDto dto) {
@@ -59,8 +56,13 @@ public class TwoPointGradingController {
         log.info("Deleted TwoPointGrading, twoId = {}", twoId);
     }
 
-    //-----------------------------------------------------Staff table--------------------------------------------------
+    //-----------------------------------------------------Default------------------------------------------------------
+    @GetMapping(value = "/two-point-gradings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<TwoPointGradingOutDto> findAllDefault() {
+        return twoPointGradingService.findAllDefault();
+    }
 
+    //-----------------------------------------------------Staff table--------------------------------------------------
     @GetMapping(value = "/two-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<TwoPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return twoPointGradingService.findAllByStaffId(pageable);

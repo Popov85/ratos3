@@ -1,16 +1,15 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.service.domain.*;
-import ua.edu.ratos.service.domain.ResultDomain;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import ua.edu.ratos.service.transformer.entity_to_domain.UserDomainTransformer;
@@ -21,66 +20,33 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
 @Getter
+@Service
+@AllArgsConstructor
 public class ResultBuilder {
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
-    private GradingService gradingService;
+    private final GradingService gradingService;
 
-    private ProgressDataService progressDataService;
+    private final ProgressDataService progressDataService;
 
-    private GameService gameService;
+    private final GameService gameService;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserDomainTransformer userDomainTransformer;
+    private final UserDomainTransformer userDomainTransformer;
 
-    private EvaluatorPostProcessor evaluatorPostProcessor;
-
-    @Autowired
-    public void setAppProperties(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
-
-    @Autowired
-    public void setGradingService(GradingService gradingService) {
-        this.gradingService = gradingService;
-    }
-
-    @Autowired
-    public void setProgressDataService(ProgressDataService progressDataService) {
-        this.progressDataService = progressDataService;
-    }
-
-    @Autowired
-    public void setGameService(GameService gameService) {
-        this.gameService = gameService;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setUserDomainTransformer(UserDomainTransformer userDomainTransformer) {
-        this.userDomainTransformer = userDomainTransformer;
-    }
-
-    @Autowired
-    public void setEvaluatorPostProcessor(EvaluatorPostProcessor evaluatorPostProcessor) {
-        this.evaluatorPostProcessor = evaluatorPostProcessor;
-    }
-
+    private final EvaluatorPostProcessor evaluatorPostProcessor;
 
     /**
-     * Builds the result object by performing all its fields calculations.
-     * It is only launched at the valid end of a learning session.
+     * Builds the result object
+     * It is only invoked at the valid end of a learning session.
      *
      * @param sessionData sessionData
-     * @return result domain object
+     * @param timeOuted   is the learning session has been timeouted
+     * @param cancelled   is the learning session has been cancelled
+     * @return ResultDomain domain obj that represents the result on current session
      */
     @Transactional
     public ResultDomain build(@NonNull final SessionData sessionData, boolean timeOuted, boolean cancelled) {
@@ -115,17 +81,17 @@ public class ResultBuilder {
                 .setThemeResults(getResultPerTheme(questionsMap, responsesEvaluated, schemeDomain.getSettingsDomain()))
                 .setQuestionsMap(questionsMap)
                 .setResponsesEvaluated(responsesEvaluated)
-                .setLmsId(sessionData.getLMSId().orElse(null));
+                .setLmsId(sessionData.getLmsId().orElse(null));
 
         // Gamification points (if any) according to the settings.
         // It is needed for end-user after session results inside DTO object
         // without actually waiting for completion of full long DB operations.
-        if (gameService.isGameOn()) {
-            AppProperties.Game gameProps = appProperties.getGame();
+        AppProperties.Game props = appProperties.getGame();
+        if (props.isGameOn()&&sessionData.isGameableSession()) {
             if ((!cancelled && !timeOuted)
-                    || (cancelled && gameProps.isProcessCancelledResults())
-                    || (timeOuted && gameProps.isProcessTimeoutedResults())) {
-                result.setPoints(gameService.getPoints(sessionData, percent).get());
+                    || (cancelled && props.isProcessCancelledResults())
+                    || (timeOuted && props.isProcessTimeoutedResults())) {
+                result.setPoints(gameService.getPoints(sessionData, percent).orElse(null));
             }
         }
         return result;
@@ -142,7 +108,6 @@ public class ResultBuilder {
     private List<ResultPerTheme> getResultPerTheme(@NonNull final Map<Long, QuestionDomain> questionsMap,
                                                    @NonNull final List<ResponseEvaluated> responsesEvaluated,
                                                    @NonNull final SettingsDomain settingsDomain) {
-        log.debug("Calculating result per theme...");
         // 1. Grouping by theme
         final Map<ThemeDomain, List<ResponseEvaluated>> groupedByTheme = responsesEvaluated.stream()
                 .collect(Collectors.groupingBy(r -> questionsMap.get(r.getQuestionId()).getThemeDomain()));
@@ -155,14 +120,15 @@ public class ResultBuilder {
                     final int quantity = responses.size();
                     // sum scores for each theme
                     // heed level bounty and penalty!
-                    final double sum = getActualScore(responses, settingsDomain);
+                    final double sum = getActualScore(questionsMap, responses, settingsDomain);
                     double percent = (sum / quantity) * 100d;
                     return new ResultPerTheme(e.getKey(), quantity, percent);
                 })
                 .collect(Collectors.toList());
     }
 
-    public double getActualScore(@NonNull final List<ResponseEvaluated> responses,
+    public double getActualScore(@NonNull final Map<Long, QuestionDomain> questionsMap,
+                                 @NonNull final List<ResponseEvaluated> responses,
                                  @NonNull final SettingsDomain settingsDomain) {
         float l2 = settingsDomain.getLevel2Coefficient();
         float l3 = settingsDomain.getLevel3Coefficient();
@@ -170,9 +136,11 @@ public class ResultBuilder {
                 .stream()
                 .mapToDouble(r -> {
                     if (r.isPenalty()) {
-                        return evaluatorPostProcessor.applyPenalty(evaluatorPostProcessor.applyBounty(r.getScore(), r.getLevel(), l2, l3)) / 100d;
+                        return evaluatorPostProcessor
+                                .applyPenalty(evaluatorPostProcessor
+                                        .applyBounty(r.getScore(), questionsMap.get(r.getQuestionId()).getLevel(), l2, l3)) / 100d;
                     }
-                    return evaluatorPostProcessor.applyBounty(r.getScore(), r.getLevel(), l2, l3) / 100d;
+                    return evaluatorPostProcessor.applyBounty(r.getScore(), questionsMap.get(r.getQuestionId()).getLevel(), l2, l3) / 100d;
                 })
                 .sum();
     }

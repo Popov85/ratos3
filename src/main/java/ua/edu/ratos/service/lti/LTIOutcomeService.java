@@ -59,7 +59,7 @@ public class LTIOutcomeService {
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      */
     @Async
-    public void sendOutcome(final Long schemeId, final Double percent, final String protocol) {
+    public void sendOutcome(final Long schemeId, final String percent, final String protocol) {
         LTIUserConsumerCredentials principal = securityUtils.getLmsUserAuthentication();
         String email = principal.getEmail().orElse("unknown e-mail");
         Optional<LTIOutcomeParams> outcome = principal.getOutcome();
@@ -75,8 +75,9 @@ public class LTIOutcomeService {
         // Just to keep things simple, create a value of milliseconds since 1970
         String messageIdentifier = Long.toString(new Date().getTime());
         // Convert to score between 0-1 as per LTI v1.1.1 specification
+        Float aFloat = Float.valueOf(percent);
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        String textScore = decimalFormat.format(percent / 100);
+        String textScore = decimalFormat.format(aFloat / 100);
         log.debug("Calculated textScore to be sent to LMS = {}", textScore);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);

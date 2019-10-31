@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,20 +13,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.HelpService;
 import ua.edu.ratos.service.dto.in.HelpInDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class HelpController {
 
-    private HelpService helpService;
-
-    @Autowired
-    public void setHelpService(HelpService helpService) {
-        this.helpService = helpService;
-    }
+    private final HelpService helpService;
 
     @PostMapping(value = "/helps", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody HelpInDto dto) {
@@ -72,7 +69,6 @@ public class HelpController {
     }
 
     //-----------------------------------------------------Staff--------------------------------------------------------
-
     @GetMapping(value = "/helps/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<HelpOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return helpService.findAllByStaffId(pageable);

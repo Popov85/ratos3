@@ -1,7 +1,7 @@
 package ua.edu.ratos.service;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,31 +13,16 @@ import ua.edu.ratos.service.dto.in.EmailInDto;
 import ua.edu.ratos.service.dto.in.UserMinInDto;
 
 @Service
+@AllArgsConstructor
 public class StaffSelfService {
 
-    private SecurityUtils securityUtils;
+    private final StaffRepository staffRepository;
 
-    private StaffRepository staffRepository;
+    private final PasswordEncoder encoder;
 
-    private PasswordEncoder encoder;
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setStaffRepository(StaffRepository staffRepository) {
-        this.staffRepository = staffRepository;
-    }
-
-    @Autowired
-    public void setEncoder(PasswordEncoder encoder) {
-        this.encoder = encoder;
-    }
+    private final SecurityUtils securityUtils;
 
     //---------------------------------------------------ACCOUNT update-------------------------------------------------
-
     @Transactional
     public void updateNameAndSurname(@NonNull final UserMinInDto dto) {
         Staff staff = staffRepository.findById(securityUtils.getAuthStaffId()).get();

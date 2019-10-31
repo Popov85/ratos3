@@ -1,75 +1,53 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.domain.*;
+import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.batch.BatchInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
+
+import java.util.Optional;
 
 /**
  * Universal implementation of the interface for typical learning session.
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class GenericSessionServiceImpl implements GenericSessionService {
 
-    @Autowired
-    private Timeout timeout;
+    private final Timeout timeout;
 
-    private StartProcessingFactory startProcessingFactory;
+    private final StartProcessingFactory startProcessingFactory;
 
-    private NextProcessingFactory nextProcessingFactory;
+    private final NextProcessingFactory nextProcessingFactory;
 
-    private FinishProcessingFactory finishProcessingFactory;
+    private final FinishProcessingFactory finishProcessingFactory;
 
-    private ResponseProcessor responseProcessor;
+    private final ResponseProcessor responseProcessor;
 
-    private SecurityUtils securityUtils;
-
-    @Autowired
-    public void setStartProcessingFactory(StartProcessingFactory startProcessingFactory) {
-        this.startProcessingFactory = startProcessingFactory;
-    }
-
-    @Autowired
-    public void setNextProcessingFactory(NextProcessingFactory nextProcessingFactory) {
-        this.nextProcessingFactory = nextProcessingFactory;
-    }
-
-    @Autowired
-    public void setFinishProcessingFactory(FinishProcessingFactory finishProcessingFactory) {
-        this.finishProcessingFactory = finishProcessingFactory;
-    }
-
-    @Autowired
-    public void setResponseProcessor(ResponseProcessor responseProcessor) {
-        this.responseProcessor = responseProcessor;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final SecurityUtils securityUtils;
 
     @Override
-    public SessionData start(@NonNull final Long schemeId, @NonNull final String uuid) {
+    public SessionData start(@NonNull final Long schemeId) {
         StartProcessingService startProcessingService ;
         if (securityUtils.isLmsUser()) {
             startProcessingService = startProcessingFactory.getInstance("lms");
             log.debug("LMS session start processing");
         } else {
-            startProcessingService = startProcessingFactory.getInstance("basic");
+            startProcessingService = startProcessingFactory.getInstance("non-lms");
             log.debug("Non-LMS session start processing");
         }
-        return startProcessingService.start(schemeId, uuid);
+        return startProcessingService.start(schemeId);
     }
 
     @Override
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
+        this.forceCancelSuspended(sessionData);
         NextProcessingService nextProcessingService;
         if (sessionData.isDynamicSession()) {
             nextProcessingService = nextProcessingFactory.getInstance("dynamic");
@@ -78,15 +56,21 @@ public class GenericSessionServiceImpl implements GenericSessionService {
             nextProcessingService = nextProcessingFactory.getInstance("basic");
             log.debug("Basic (static) session next processing");
         }
-        // Control session time-out
+        BatchOutDto next = nextProcessingService.next(batchInDto, sessionData);
+        // Control session time-out at the end,
+        // so that to be able to apply penalties for overdue questions
         timeout.controlSessionTimeout();
-        return nextProcessingService.next(batchInDto, sessionData);
+        return next;
     }
 
     @Override
     public BatchOutDto current(@NonNull final SessionData sessionData) {
         timeout.controlSessionTimeout();
-        return sessionData.getCurrentBatch().orElseThrow(()->new RuntimeException("Current batch not found!"));
+        this.forceCancelSuspended(sessionData);
+        TimingService.synchronizeBatchOutDtoTimings(sessionData);
+        BatchOutDto batchOutDto = sessionData.getCurrentBatch()
+                .orElseThrow(() -> new RuntimeException("Current batch not found!"));
+        return batchOutDto;
     }
 
     /**
@@ -101,6 +85,7 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      */
     @Override
     public ResultOutDto finish(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
+        this.forceCancelSuspended(sessionData);
         responseProcessor.doProcessResponse(batchInDto, sessionData);
         FinishProcessingService finishProcessingService = finishProcessingFactory.getInstance("regular");
         log.debug("Regular finish with last batch evaluating");
@@ -119,6 +104,12 @@ public class GenericSessionServiceImpl implements GenericSessionService {
      */
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
+        this.forceCancelSuspended(sessionData);
+        Optional<BatchOutDto> currentBatch = sessionData.getCurrentBatch();
+        // Accidental finish when timeouted without batch sending to server for evaluation
+        if (currentBatch.isPresent() && !currentBatch.get().getQuestions().isEmpty()) {
+            TimingService.updateTimeSpent(sessionData);
+        }
         FinishProcessingService finishProcessingService = finishProcessingFactory.getInstance("regular");
         log.debug("Regular finish without last batch evaluating");
         return finishProcessingService.finish(sessionData);
@@ -136,4 +127,17 @@ public class GenericSessionServiceImpl implements GenericSessionService {
         return finishProcessingService.finish(sessionData);
     }
 
+    /**
+     * For any request for new data, cancel suspended state of the session.
+     * Front-end must ensure not to allow any API calls while session is suspended (paused or preserved),
+     * by hiding the corresponding controls or making them disabled!
+     * Otherwise it can go out of sync with the front-end state!
+     * @param sessionData SessionData
+     */
+    private void forceCancelSuspended(SessionData sessionData) {
+        if (sessionData.isSuspended()) {
+            // Force to un-pause when requesting data
+            TimingService.updateTimingsWhenContinued(sessionData);
+        }
+    }
 }

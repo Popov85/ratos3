@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -16,46 +16,22 @@ import ua.edu.ratos.service.dto.out.*;
 @Slf4j
 @RestController
 @RequestMapping("/global-admin")
+@AllArgsConstructor
 public class AdminController {
 
-    @Autowired
-    private SchemeService schemeService;
-
-    @Autowired
-    private ThemeService themeService;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private LMSCourseService lmsCourseService;
-
-    @Autowired
-    private ResourceService resourceService;
-
-    @Autowired
-    private PhraseService phraseService;
-
-    @Autowired
-    private HelpService helpService;
-
-    @Autowired
-    private ModeService modeService;
-
-    @Autowired
-    private SettingsService settingsService;
-
-    @Autowired
-    private SettingsFBService settingsFBService;
-
-    @Autowired
-    private LMSService lmsService;
-
-    @Autowired
-    private StaffService staffService;
-
-    @Autowired
-    private StudentService studentService;
+    private final SchemeService schemeService;
+    private final ThemeService themeService;
+    private final CourseService courseService;
+    private final LMSCourseService lmsCourseService;
+    private final ResourceService resourceService;
+    private final PhraseService phraseService;
+    private final HelpService helpService;
+    private final ModeService modeService;
+    private final SettingsService settingsService;
+    private final SettingsFBService settingsFBService;
+    private final LMSService lmsService;
+    private final StaffService staffService;
+    private final StudentService studentService;
 
     @GetMapping(value = "/schemes", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<SchemeShortOutDto> findAllSchemes(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {

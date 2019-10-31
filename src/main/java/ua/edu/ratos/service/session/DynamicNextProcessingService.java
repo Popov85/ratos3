@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.session;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.BatchEvaluated;
 import ua.edu.ratos.service.domain.SessionData;
@@ -20,35 +20,16 @@ import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class DynamicNextProcessingService implements NextProcessingService {
 
-    private ResponseProcessor responseProcessor;
+    private final ResponseProcessor responseProcessor;
 
-    private PyramidService pyramidService;
+    private final PyramidService pyramidService;
 
-    private DynamicNextBatchBuilder batchBuilder;
+    private final DynamicNextBatchProducer batchBuilder;
 
-    private SessionDataService sessionDataService;
-
-    @Autowired
-    public void setResponseProcessor(ResponseProcessor responseProcessor) {
-        this.responseProcessor = responseProcessor;
-    }
-
-    @Autowired
-    public void setPyramidService(PyramidService pyramidService) {
-        this.pyramidService = pyramidService;
-    }
-
-    @Autowired
-    public void setBatchBuilder(DynamicNextBatchBuilder batchBuilder) {
-        this.batchBuilder = batchBuilder;
-    }
-
-    @Autowired
-    public void setSessionDataService(SessionDataService sessionDataService) {
-        this.sessionDataService = sessionDataService;
-    }
+    private final SessionDataService sessionDataService;
 
     @Override
     public BatchOutDto next(@NonNull final BatchInDto batchInDto, @NonNull final SessionData sessionData) {
@@ -66,16 +47,16 @@ public class DynamicNextProcessingService implements NextProcessingService {
             }
 
             if (!sessionData.hasMoreQuestions()) {
-                batchOutDto = BatchOutDto.buildEmpty();
+                batchOutDto = BatchOutDto.createEmpty();
             } else {
-                batchOutDto = batchBuilder.build(sessionData, batchEvaluated);
+                batchOutDto = batchBuilder.produce(sessionData);
             }
         } else {// All questions were skipped: nothing to evaluate
             if (!sessionData.hasMoreQuestions()) {
-                batchOutDto = BatchOutDto.buildEmpty();
+                batchOutDto = BatchOutDto.createEmpty();
             } else {
                 // Build BatchOutDto with no batchEvaluated
-                batchOutDto = batchBuilder.build(sessionData);
+                batchOutDto = batchBuilder.produce(sessionData);
             }
         }
         // update SessionData

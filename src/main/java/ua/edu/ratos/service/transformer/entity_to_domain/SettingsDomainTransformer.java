@@ -19,10 +19,6 @@ public class SettingsDomainTransformer {
                 .setLevel2Coefficient(entity.getLevel2Coefficient())
                 .setLevel3Coefficient(entity.getLevel3Coefficient())
                 .setSecondsPerQuestion(entity.getSecondsPerQuestion())
-                .setDisplayMark(entity.isDisplayMark())
-                .setDisplayPercent(entity.isDisplayPercent())
-                .setDisplayThemeResults(entity.isDisplayThemeResults())
-                .setDisplayQuestionResults(entity.isDisplayQuestionResults())
                 .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion());
     }
 

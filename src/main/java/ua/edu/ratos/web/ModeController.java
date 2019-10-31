@@ -1,7 +1,7 @@
 package ua.edu.ratos.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,20 +14,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.ModeService;
 import ua.edu.ratos.service.dto.in.ModeInDto;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
+
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/instructor")
+@AllArgsConstructor
 public class ModeController {
 
-    private ModeService modeService;
-
-    @Autowired
-    public void setModeService(ModeService modeService) {
-        this.modeService = modeService;
-    }
+    private final ModeService modeService;
 
     @PostMapping(value = "/modes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Valid @RequestBody ModeInDto dto) {
@@ -59,9 +57,13 @@ public class ModeController {
         log.info("Delete Mode, modeId = {}", modeId);
     }
 
+    //-----------------------------------------------------Default------------------------------------------------------
+    @GetMapping(value = "/modes/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<ModeOutDto> findAllDefault() {
+        return modeService.findAllDefault();
+    }
+
     //---------------------------------------------------Staff table----------------------------------------------------
-
-
     @GetMapping(value = "/modes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ModeOutDto> findAllForTableByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return modeService.findAllForTableByStaffId(pageable);
@@ -83,7 +85,6 @@ public class ModeController {
     }
 
     //--------------------------------------------------Staff dropdown list---------------------------------------------
-
     @GetMapping(value = "/modes/by-staff-dropdown", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<ModeOutDto> findAllForDropDownByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return modeService.findAllForDropDownByStaffIdAndModeNameLettersContains(letters, pageable);

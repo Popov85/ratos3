@@ -2,6 +2,7 @@ package ua.edu.ratos.service.generator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
+@Profile({"dev", "demo"})
 public class MCQGenerator {
 
     private static final int MAX_LEVEL = 1;
@@ -49,6 +51,7 @@ public class MCQGenerator {
                 log.debug("Flushed another patch of MCQ, i = {}", i);
             }
         }
+        questionRepository.saveAll(result);
         return result;
     }
 
@@ -69,8 +72,16 @@ public class MCQGenerator {
 
         Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
         questionMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
-
-        List<AnswerMCQ> answers = createAnswers(questionId, rnd.rnd(3, 6), resources);
+        // Multi- or single?
+        int type = rnd.rnd(0, 2);
+        List<AnswerMCQ> answers;
+        if (type ==0) {
+            // single MCQ
+            answers = createAnswers(questionId, rnd.rnd(3, 7), resources);
+        } else {
+           // multi MCQ
+            answers = createMultiAnswers(questionId, rnd.rnd(3, 7), resources);
+        }
         answers.forEach(a->questionMCQ.addAnswer(a));
         return questionMCQ;
     }
@@ -83,6 +94,38 @@ public class MCQGenerator {
         }
         // At the end add the correct answer
         result.add(createCorrectAnswer(questionId, quantity, resources));
+        return result;
+    }
+
+    private List<AnswerMCQ> createMultiAnswers(int questionId, int quantity, List<Resource> resources) {
+        List<AnswerMCQ> result = new ArrayList<>();
+        int multi = rnd.rnd(2, quantity> 5 ? 5 : quantity); // how many partially correct will be, no more than 5!
+
+        // generate partially correct
+        for (int i = 1; i <= multi ; i++) {
+            switch (multi) {
+                case 2: result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)50));
+                break;
+                case 3: {
+                    if (i!=multi) {
+                        result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)33));
+                    } else {
+                        result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)34));
+                    }
+                }
+                break;
+                case 4: result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)25));
+                    break;
+                case 5: result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)20));
+                    break;
+                default: result.add(createPartiallyCorrectAnswer(questionId, i, resources, (short)50));
+            }
+        }
+        int incorrect = quantity - multi; // how many of incorrect will be
+        for (int i = multi+1; i <= (multi+incorrect); i++) {
+            // Add some incorrect answers
+            result.add(createInCorrectAnswer(questionId, i, resources));
+        }
         return result;
     }
 
@@ -102,6 +145,17 @@ public class MCQGenerator {
         String text = stringGenerator.createText(10, 50, 1, 15, false);
         answerMCQ.setAnswer("Answer (correct) #"+answer+" to question #"+questionId+" answer: "+text);
         answerMCQ.setPercent((short)100);
+        answerMCQ.setRequired(true);
+        Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
+        answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        return answerMCQ;
+    }
+
+    private AnswerMCQ createPartiallyCorrectAnswer(int questionId, int answer, List<Resource> resources, short percent) {
+        AnswerMCQ answerMCQ = new AnswerMCQ();
+        String text = stringGenerator.createText(10, 50, 1, 15, false);
+        answerMCQ.setAnswer("Answer (partially correct) #"+answer+" to question #"+questionId+" answer: "+text);
+        answerMCQ.setPercent(percent);
         answerMCQ.setRequired(true);
         Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
         answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
