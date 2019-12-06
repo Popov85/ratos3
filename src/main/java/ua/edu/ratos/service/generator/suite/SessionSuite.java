@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.Class;
-import ua.edu.ratos.dao.entity.question.*;
+import ua.edu.ratos.dao.entity.Clazz;
 import ua.edu.ratos.service.generator.*;
 
 import java.util.ArrayList;
@@ -141,7 +140,7 @@ public class SessionSuite {
         long start = System.nanoTime();
         List<Organisation> organisations = organisationGenerator.generate(suite.getOrganisations());
         List<Faculty> faculties = facultyGenerator.generate(suite.getFaculties(), organisations);
-        List<Class> classes = classGenerator.generate(suite.getClasses(), faculties);
+        List<Clazz> classes = classGenerator.generate(suite.getClasses(), faculties);
         List<Student> students = studentGenerator.generate(suite.getStudents(), classes);
         List<Department> departments = departmentGenerator.generate(suite.getDepartments(), faculties);
         List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);

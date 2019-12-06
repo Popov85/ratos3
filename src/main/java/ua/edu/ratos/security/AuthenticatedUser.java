@@ -17,16 +17,26 @@ public class AuthenticatedUser extends User {
 
     private Long userId;
 
-    protected AuthenticatedUser(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    private String name;
+
+    private String surname;
+
+    protected AuthenticatedUser(Long userId, String name, String surname, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.userId = userId;
+        this.name = name;
+        this.surname = surname;
     }
 
     public static AuthenticatedUser create(@NonNull final Student student) {
-        return new AuthenticatedUser(student.getStudId(),
+        return new AuthenticatedUser(
+                student.getStudId(),
+                student.getUser().getName(),
+                student.getUser().getSurname(),
                 student.getUser().getEmail(),
                 new String(student.getUser().getPassword()),
-                getAuthorities(student.getUser()));
+                getAuthorities(student.getUser())
+        );
     }
 
     static Set<GrantedAuthority> getAuthorities(ua.edu.ratos.dao.entity.User user){

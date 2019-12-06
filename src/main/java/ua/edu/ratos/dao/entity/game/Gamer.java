@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.Class;
+import ua.edu.ratos.dao.entity.Clazz;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class Gamer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    private Class studentClass;
+    private Clazz studentClass;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fac_id")

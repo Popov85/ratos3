@@ -9,17 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class SecurityController {
 
+    // Custom login form
     @GetMapping(value = "/login")
     public String login(@RequestParam(name = "error", required = false) String error,
                         @RequestParam(name= "logout", required = false) String logout) {
-        //log.debug("Error = {} Logout = {}", error, logout);
         return "login";
     }
 
-   // 1. Custom sign-in form
-   // 2. Custom sign-up form
-   // 3. Custom sign-up processing
-   // 4. Custom access denied form
+   // Custom access denied form
     @GetMapping("/access-denied")
     public String denied() {
         return "access-denied";

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.*;
-import ua.edu.ratos.dao.entity.Class;
+import ua.edu.ratos.dao.entity.Clazz;
 import ua.edu.ratos.dao.repository.StudentRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,11 +29,11 @@ public class StudentGenerator {
 
     @TrackTime
     @Transactional
-    public List<Student> generate(int quantity, List<Class> list) {
+    public List<Student> generate(int quantity, List<Clazz> list) {
         List<Role> roles =  Arrays.asList(em.getReference(Role.class, 2L));
         List<Student> results = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
-            Class cl;
+            Clazz cl;
             if (list.size() == 1) {
                 cl = list.get(0);
             } else {
@@ -46,7 +46,7 @@ public class StudentGenerator {
         return results;
     }
 
-    private Student createOne(int i, Class cl, List<Role> roles) {
+    private Student createOne(int i, Clazz cl, List<Role> roles) {
         Student stud = new Student();
         User user = new User();
         user.setName("name"+i);

@@ -16,6 +16,8 @@ import ua.edu.ratos.dao.entity.Course;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 
+import java.util.Set;
+
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -120,6 +122,24 @@ public class CourseRepositoryTestIT {
                 hasProperty("totalElements", equalTo(3L))));
     }
 
+    //--------------------------------------------------DROPDOWN min----------------------------------------------------
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllMinForDropDownByStaffIdTest() {
+        Set<Course> all = courseRepository.findAllForDropDownByStaffId(1L);
+        assertThat("Set of Courses is not of right size", all, hasSize(8));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllMinForDropDownByDepartmentIdTest() {
+        Set<Course> all = courseRepository.findAllForDropDownByDepartmentId(3L);
+        assertThat("Set of Courses is not of right size", all, hasSize(8));
+    }
+
     //------------------------------------------------DROPDOWN slice----------------------------------------------------
 
     @Test(timeout = 5000)
@@ -132,11 +152,8 @@ public class CourseRepositoryTestIT {
                 hasProperty("size", equalTo(50)),
                 hasProperty("numberOfElements", equalTo(8)),
                 hasProperty("content", hasSize(8)),
-                //hasProperty("hasContent", equalTo(true)),
                 hasProperty("first", equalTo(true)),
                 hasProperty("last", equalTo(true))
-                //hasProperty("hasNext", equalTo(false)),
-                //hasProperty("hasPrevious", equalTo(false))
         ));
     }
 

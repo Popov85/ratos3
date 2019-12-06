@@ -1,9 +1,6 @@
 package ua.edu.ratos.dao.entity;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -25,7 +22,14 @@ import java.util.Set;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
+@NoArgsConstructor
 public class Scheme {
+
+    // Used for JPa repositories for projections
+    public Scheme(Long schemeId, String name) {
+        this.schemeId = schemeId;
+        this.name = name;
+    }
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

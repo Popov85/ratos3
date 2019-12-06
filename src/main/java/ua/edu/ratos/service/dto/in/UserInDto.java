@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.in;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,9 @@ import javax.validation.constraints.*;
 @Setter
 @ToString
 public class UserInDto {
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long userId;
 
     @NotBlank(message = "{dto.string.required}")
     @Size(min = 2, max = 200, message = "{dto.string.invalid}")

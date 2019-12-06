@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Class;
+import ua.edu.ratos.dao.entity.Clazz;
 import ua.edu.ratos.dao.entity.Faculty;
-import ua.edu.ratos.dao.repository.ClassRepository;
+import ua.edu.ratos.dao.repository.ClazzRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,11 @@ public class ClassGenerator {
     private Rnd rnd;
 
     @Autowired
-    private ClassRepository classRepository;
+    private ClazzRepository classRepository;
 
     @Transactional
-    public List<Class> generate(int quantity, List<Faculty> list) {
-        List<Class> results = new ArrayList<>();
+    public List<Clazz> generate(int quantity, List<Faculty> list) {
+        List<Clazz> results = new ArrayList<>();
         for (int i = 1; i <= quantity; i++) {
             Faculty fac;
             if (list.size() == 1) {
@@ -31,15 +31,15 @@ public class ClassGenerator {
             } else {
                 fac = list.get(rnd.rnd(0, list.size() - 1));
             }
-            Class cl = createOne(i, fac);
+            Clazz cl = createOne(i, fac);
             results.add(cl);
         }
         classRepository.saveAll(results);
         return results;
     }
 
-    private Class createOne(int i, Faculty faculty) {
-        Class cl = new Class();
+    private Clazz createOne(int i, Faculty faculty) {
+        Clazz cl = new Clazz();
         cl.setName("Class #"+i);
         cl.setFaculty(faculty);
         return cl;

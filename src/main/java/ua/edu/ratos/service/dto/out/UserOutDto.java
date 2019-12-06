@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,5 +19,5 @@ public class UserOutDto {
 
     private boolean active;
 
-    private Set<RoleOutDto> roles = new HashSet<>();
+    private String role;
 }

@@ -1,8 +1,6 @@
 package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ratos.security.SecurityUtils;
+import ua.edu.ratos.service.InfoService;
 import ua.edu.ratos.service.SchemeService;
 import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
+import ua.edu.ratos.service.dto.out.UserInfoOutDto;
 
 @Slf4j
 @RestController
@@ -22,24 +21,14 @@ public class InfoController {
 
     private final SchemeService schemeService;
 
-    private final SecurityUtils securityUtils;
+    private final InfoService infoService;
 
-    @Getter
-    @ToString
-    @AllArgsConstructor
-    private static class PanelInfoDto {
-        private String user;
-        private String email;
-        private boolean isLms;
-    }
 
-    //---------------------------------------------------Panel Info---------------------------------------------------
-    @GetMapping(value = "/panel", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PanelInfoDto> findOutContext(){
-        boolean isLtiUser = securityUtils.isLtiUser();
-        String email = securityUtils.getAuthUsername();
-        PanelInfoDto dto = new PanelInfoDto(email.split("@")[0], email, isLtiUser);
-        log.debug("Panel info = {}", dto);
+    //-----------------------------------------------------User Info----------------------------------------------------
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserInfoOutDto> findUserForInfo(){
+        UserInfoOutDto dto = infoService.getUserInfo();
+        log.debug("UserInfo = {}", dto);
         return ResponseEntity.ok(dto);
     }
 

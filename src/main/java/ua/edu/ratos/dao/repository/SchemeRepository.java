@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 import ua.edu.ratos.dao.entity.Scheme;
 import javax.persistence.QueryHint;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
@@ -77,6 +78,25 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     @Query(value = "SELECT s FROM Scheme s join fetch s.strategy join fetch s.settings join fetch s.options join fetch s.mode join fetch s.grading join fetch s.course join fetch s.staff st join fetch st.user join fetch st.position join s.department d join fetch s.access left join fetch s.themes left join fetch s.groups where d.depId =?1 and s.name like %?2%",
             countQuery = "SELECT count(s) FROM Scheme s join s.department d where d.depId=?1 and s.name like %?2%")
     Page<Scheme> findAllByDepartmentIdAndNameContains(Long depId, String letters, Pageable pageable);
+
+
+    //----------------------------------------------Set (min for drop-down)---------------------------------------------
+    // TODO: select only id and name!!!
+
+    @Query(value = "SELECT new Scheme(s.schemeId, s.name) FROM Scheme s join s.staff st where st.staffId =?1")
+    Set<Scheme> findAllForDropDownByStaffId(Long staffId);
+
+    @Query(value = "SELECT new Scheme(s.schemeId, s.name) FROM Scheme s join s.department d where d.depId =?1")
+    Set<Scheme> findAllForDropDownByDepartmentId(Long depId);
+
+    @Query(value = "SELECT new Scheme(s.schemeId, s.name) FROM Scheme s join s.course c where c.courseId =?1")
+    Set<Scheme> findAllForDropDownByCourseId(Long courseId);
+
+    @Query(value = "SELECT new Scheme(s.schemeId, s.name) FROM Scheme s join s.department d join d.faculty f where f.facId =?1")
+    Set<Scheme> findAllForDropDownByFacultyId(Long facId);
+
+    @Query(value = "SELECT new Scheme(s.schemeId, s.name) FROM Scheme s join s.department d join d.faculty f join f.organisation o where o.orgId =?1")
+    Set<Scheme> findAllForDropDownByOrganisationId(Long orgId);
 
     //----------------------------------------------Slice (for drop-down)-----------------------------------------------
     // Quickest and simplest (recommended: 50 per slice)

@@ -1,6 +1,7 @@
 package ua.edu.ratos.dao.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -11,7 +12,13 @@ import javax.persistence.*;
 @ToString(exclude = {"faculty"})
 @Entity
 @Table(name = "department")
+@NoArgsConstructor
 public class Department {
+
+    public Department(Long depId, String name) {
+        this.depId = depId;
+        this.name = name;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

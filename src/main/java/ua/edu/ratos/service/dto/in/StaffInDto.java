@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -18,6 +19,15 @@ public class StaffInDto{
 
     private @Valid UserInDto user;
 
+    @NotBlank(message = "{dto.string.required}")
+    @Size(min = 5, max = 30, message = "{dto.string.invalid}")
+    private String role;
+
+    @NotNull(message = "dto.fk.required")
     @Positive(message = "{dto.fk.required}")
-    private long positionId;
+    private Long positionId;
+
+    public Optional<@Positive(message = "{dto.fk.required}") Long> depId = Optional.empty();
+
+    private boolean active;
 }

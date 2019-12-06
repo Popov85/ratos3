@@ -19,7 +19,7 @@ public class SwaggerConfig {
     public Docket swaggerConfiguration() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .paths(PathSelectors.ant("/lab/**"))
+                .paths(PathSelectors.ant("/**"))
                 .apis(RequestHandlerSelectors.basePackage("ua.edu.ratos"))
                 .build()
                 .apiInfo(apiDetails());

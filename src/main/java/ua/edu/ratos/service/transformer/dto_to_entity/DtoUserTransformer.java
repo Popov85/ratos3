@@ -22,6 +22,7 @@ public class DtoUserTransformer {
     @Transactional(propagation = Propagation.MANDATORY)
     public User toEntity(@NonNull final UserInDto dto) {
         User user = new User();
+        user.setUserId(dto.getUserId());
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
         user.setEmail(dto.getEmail());

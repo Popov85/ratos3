@@ -35,6 +35,16 @@ public class StaffRepositoryTestIT {
         assertTrue("Staff is not found", staffRepository.findOneForEdit(1L).isPresent());
     }
 
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/staff_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdSetTest() {
+        assertThat("Page of Staff is not of size = 4",
+                staffRepository.findAllByDepartmentId(1L), hasSize(4));
+    }
+
+
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/staff_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)

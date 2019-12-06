@@ -1,40 +1,26 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentSelfOutDto;
+import ua.edu.ratos.service.session.GameService;
 
 @Component
+@AllArgsConstructor
 public class ResultOfStudentSelfDtoTransformer {
 
-    private DepartmentMinDtoTransformer departmentMinDtoTransformer;
+    private final DepartmentMinDtoTransformer departmentMinDtoTransformer;
 
-    private SchemeMinDtoTransformer schemeMinDtoTransformer;
+    private final SchemeWithCourseMinDtoTransformer schemeMinDtoTransformer;
 
-    private CourseMinDtoTransformer courseMinDtoTransformer;
-
-    @Autowired
-    public void setDepartmentMinDtoTransformer(DepartmentMinDtoTransformer departmentMinDtoTransformer) {
-        this.departmentMinDtoTransformer = departmentMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setSchemeMinDtoTransformer(SchemeMinDtoTransformer schemeMinDtoTransformer) {
-        this.schemeMinDtoTransformer = schemeMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setCourseMinDtoTransformer(CourseMinDtoTransformer courseMinDtoTransformer) {
-        this.courseMinDtoTransformer = courseMinDtoTransformer;
-    }
+    private final GameService gameService;
 
     public ResultOfStudentSelfOutDto toDto(@NonNull final ResultOfStudent entity) {
         return new ResultOfStudentSelfOutDto()
                 .setResultId(entity.getResultId())
                 .setDepartment(departmentMinDtoTransformer.toDto(entity.getDepartment()))
-                .setCourse(courseMinDtoTransformer.toDto(entity.getScheme().getCourse()))
                 .setScheme(schemeMinDtoTransformer.toDto(entity.getScheme()))
                 .setGrade(entity.getGrade())
                 .setPassed(entity.isPassed())
@@ -42,6 +28,7 @@ public class ResultOfStudentSelfDtoTransformer {
                 .setSessionEnded(entity.getSessionEnded())
                 .setSessionLasted(entity.getSessionLasted())
                 .setTimeOuted(entity.isTimeOuted())
+                .setPoints(entity.isPoints() ? gameService.getPoints(entity.getPercent()): null)
                 .setLMS(entity.getLms().isPresent());
     }
 }

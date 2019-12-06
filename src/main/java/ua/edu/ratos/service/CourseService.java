@@ -12,13 +12,17 @@ import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.dao.repository.CourseRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.CourseInDto;
+import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoCourseTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.CourseDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.CourseMinDtoTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +38,8 @@ public class CourseService {
     private final DtoCourseTransformer dtoCourseTransformer;
 
     private final CourseDtoTransformer courseDtoTransformer;
+
+    private final CourseMinDtoTransformer courseMinDtoTransformer;
 
     private final AccessChecker accessChecker;
 
@@ -78,7 +84,34 @@ public class CourseService {
         return courseDtoTransformer.toDto(courseRepository.findForEditById(courseId));
     }
 
+    //-------------------------------------------------Staff (min for drop down)----------------------------------------
+    @Transactional(readOnly = true)
+    public Set<CourseMinOutDto> findAllForDropdownByStaffId() {
+        return courseRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId())
+                .stream()
+                .map(courseMinDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    public Set<CourseMinOutDto> findAllForDropdownByDepartmentId() {
+        return courseRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(courseMinDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+
+    @Transactional(readOnly = true)
+    public Set<CourseMinOutDto> findAllForDropdownByDepartmentId(@NonNull final Long depId) {
+        return courseRepository.findAllForDropDownByDepartmentId(depId)
+                .stream()
+                .map(courseMinDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
     //-----------------------------------------------------Staff (for table)--------------------------------------------
+
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return courseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(courseDtoTransformer::toDto);

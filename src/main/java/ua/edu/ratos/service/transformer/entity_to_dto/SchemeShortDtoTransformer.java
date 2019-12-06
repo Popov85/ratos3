@@ -1,62 +1,31 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class SchemeShortDtoTransformer {
 
-    private StrategyDtoTransformer strategyDtoTransformer;
+    private final StrategyDtoTransformer strategyDtoTransformer;
 
-    private SettingsDtoTransformer settingsDtoTransformer;
+    private final SettingsDtoTransformer settingsDtoTransformer;
 
-    private ModeDtoTransformer modeDtoTransformer;
+    private final ModeDtoTransformer modeDtoTransformer;
 
-    private GradingDtoTransformer gradingDtoTransformer;
+    private final GradingDtoTransformer gradingDtoTransformer;
 
-    private CourseDtoTransformer courseDtoTransformer;
+    private final CourseDtoTransformer courseDtoTransformer;
 
-    private StaffMinDtoTransformer staffDtoTransformer;
+    private final StaffMinDtoTransformer staffDtoTransformer;
 
-    private AccessDtoTransformer accessDtoTransformer;
+    private final AccessDtoTransformer accessDtoTransformer;
 
-    @Autowired
-    public void setStrategyDtoTransformer(StrategyDtoTransformer strategyDtoTransformer) {
-        this.strategyDtoTransformer = strategyDtoTransformer;
-    }
-
-    @Autowired
-    public void setSettingsDtoTransformer(SettingsDtoTransformer settingsDtoTransformer) {
-        this.settingsDtoTransformer = settingsDtoTransformer;
-    }
-
-    @Autowired
-    public void setModeDtoTransformer(ModeDtoTransformer modeDtoTransformer) {
-        this.modeDtoTransformer = modeDtoTransformer;
-    }
-
-    @Autowired
-    public void setGradingDtoTransformer(GradingDtoTransformer gradingDtoTransformer) {
-        this.gradingDtoTransformer = gradingDtoTransformer;
-    }
-    @Autowired
-    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
-        this.courseDtoTransformer = courseDtoTransformer;
-    }
-    @Autowired
-    public void setStaffDtoTransformer(StaffMinDtoTransformer staffDtoTransformer) {
-        this.staffDtoTransformer = staffDtoTransformer;
-    }
-
-    @Autowired
-    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
-        this.accessDtoTransformer = accessDtoTransformer;
-    }
 
     public SchemeShortOutDto toDto(@NonNull final Scheme entity) {
         return new SchemeShortOutDto()

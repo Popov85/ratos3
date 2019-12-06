@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Course;
 
+import java.util.Set;
+
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query(value = "SELECT c FROM Course c join fetch c.staff s join fetch s.user join fetch s.position join fetch c.access a where c.courseId =?1")
@@ -16,8 +18,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query(value = "SELECT c FROM Course c join fetch c.access a join fetch c.staff s join fetch s.user join fetch s.department d where c.courseId =?1")
     Course findForSecurityById(Long courseId);
 
-    // -----------------------------------------------Instructors (table)-----------------------------------------------
+    // -----------------------------------------------------Staff (drop down)-------------------------------------------
+    @Query(value = "SELECT new Course(c.courseId, c.name) FROM Course c join c.staff s where s.staffId =?1")
+    Set<Course> findAllForDropDownByStaffId(Long staffId);
 
+    @Query(value = "SELECT new Course(c.courseId, c.name) FROM Course c join c.department d where d.depId =?1")
+    Set<Course> findAllForDropDownByDepartmentId(Long depId);
+
+    // -----------------------------------------------------Staff (table)-----------------------------------------------
     @Query(value = "SELECT c FROM Course c join fetch c.staff s join fetch s.user join fetch s.position join fetch c.access a where s.staffId =?1",
             countQuery = "SELECT count(c) FROM Course c join c.staff s where s.staffId=?1")
     Page<Course> findAllByStaffId(Long staffId, Pageable pageable);
@@ -27,7 +35,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Page<Course> findAllByDepartmentId(Long depId, Pageable pageable);
 
     //-------------------------------------------------Search (in table)------------------------------------------------
-
     @Query(value = "SELECT c FROM Course c join fetch c.staff s join fetch s.user join fetch s.position join fetch c.access a where s.staffId =?1 and c.name like ?2%",
             countQuery = "SELECT count(c) FROM Course c join c.staff s where s.staffId=?1 and c.name like ?2%")
     Page<Course> findAllByStaffIdAndNameStarts(Long staffId, String starts, Pageable pageable);

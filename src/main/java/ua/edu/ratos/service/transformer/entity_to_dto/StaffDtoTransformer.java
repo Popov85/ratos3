@@ -1,34 +1,20 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
 
 @Component
+@AllArgsConstructor
 public class StaffDtoTransformer {
 
-    private PositionDtoTransformer positionDtoTransformer;
+    private final PositionDtoTransformer positionDtoTransformer;
 
-    private DepartmentMinDtoTransformer departmentMinDtoTransformer;
+    private final DepartmentMinDtoTransformer departmentMinDtoTransformer;
 
-    private UserDtoTransformer userDtoTransformer;
-
-    @Autowired
-    public void setPositionDtoTransformer(PositionDtoTransformer positionDtoTransformer) {
-        this.positionDtoTransformer = positionDtoTransformer;
-    }
-
-    @Autowired
-    public void setDepartmentMinDtoTransformer(DepartmentMinDtoTransformer departmentMinDtoTransformer) {
-        this.departmentMinDtoTransformer = departmentMinDtoTransformer;
-    }
-
-    @Autowired
-    public void setUserDtoTransformer(UserDtoTransformer userDtoTransformer) {
-        this.userDtoTransformer = userDtoTransformer;
-    }
+    private final UserDtoTransformer userDtoTransformer;
 
     public StaffOutDto toDto(@NonNull final Staff entity) {
         return new StaffOutDto()

@@ -25,7 +25,7 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    private Class studentClass;
+    private Clazz studentClass;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fac_id")

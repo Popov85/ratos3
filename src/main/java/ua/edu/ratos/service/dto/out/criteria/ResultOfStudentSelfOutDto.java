@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.DepartmentMinOutDto;
-import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
+import ua.edu.ratos.service.dto.out.SchemeWithCourseMinOutDto;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,9 +19,7 @@ public class ResultOfStudentSelfOutDto {
 
     private DepartmentMinOutDto department;
 
-    private CourseMinOutDto course;
-
-    private SchemeMinOutDto scheme;
+    private SchemeWithCourseMinOutDto scheme; // Course included
 
     private double percent;
 
@@ -38,6 +34,8 @@ public class ResultOfStudentSelfOutDto {
     private boolean timeOuted;
 
     private boolean cancelled;
+
+    private Integer points; // Nullable
 
     private boolean isLMS;
 

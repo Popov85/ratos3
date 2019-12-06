@@ -12,25 +12,27 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class PagesController {
 
-    @GetMapping("/student/start")
-    public String getSessionPage(@RequestParam Long schemeId) {
-        return "session";
+
+    @GetMapping({"/", "/index"})
+    public String getIndexPage() {
+        return "index";
     }
 
-
-    @GetMapping("/admin")
-    public String getAdminPage() {
-        return "admin";
-    }
-
-    @GetMapping("/staff")
+    @GetMapping("/department/**")
     public String getStaffPage() {
+        log.debug("Requested staff page");
         return "staff";
     }
 
-    @GetMapping("/student")
+    @GetMapping("/student/**")
     public String getStudentPage() {
         return "student";
+    }
+
+
+    @GetMapping("/session/start")
+    public String getSessionPage(@RequestParam Long schemeId) {
+        return "session";
     }
 
 }

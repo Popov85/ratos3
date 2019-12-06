@@ -1,6 +1,7 @@
 package ua.edu.ratos.dao.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
@@ -16,7 +17,14 @@ import java.time.LocalDateTime;
 @Table(name = "course")
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
+@NoArgsConstructor
 public class Course {
+
+    public Course(Long courseId, String name) {
+        this.courseId = courseId;
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

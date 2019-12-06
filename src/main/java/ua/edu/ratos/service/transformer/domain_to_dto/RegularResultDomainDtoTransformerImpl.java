@@ -11,9 +11,8 @@ import ua.edu.ratos.service.dto.session.ResultOutDto;
 import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import ua.edu.ratos.service.dto.session.ResultPerThemeOutDto;
 import ua.edu.ratos.service.session.EvaluatorPostProcessor;
+import ua.edu.ratos.service.utils.DataFormatter;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +50,8 @@ public class RegularResultDomainDtoTransformerImpl implements ResultDomainDtoTra
         ResultOutDto dto = new ResultOutDto(user, scheme, r.isTimeOuted(), r.isPassed());
         // add optional elements depending on settings
         final OptionsDomain o = r.getScheme().getOptionsDomain();
-        if (o.isDisplayResultMark()) dto.setGrade(round(r.getGrade()));
-        if (o.isDisplayResultScore()) dto.setPercent(round(r.getPercent()));
+        if (o.isDisplayResultMark()) dto.setGrade(DataFormatter.getPrettyDouble(r.getGrade()));
+        if (o.isDisplayResultScore()) dto.setPercent(DataFormatter.getPrettyDouble(r.getPercent()));
         if (o.isDisplayTimeSpent()) dto.setTimeSpent(toTimestamp(r.getTimeSpent()));
         if (o.isDisplayResultOnThemes()) dto.setThemeResults(toResultsPerThemeDto(r));
         if (o.isDisplayResultOnQuestions()) dto.setQuestionResults(toResultsPerQuestionDto(r));
@@ -97,16 +96,6 @@ public class RegularResultDomainDtoTransformerImpl implements ResultDomainDtoTra
                 .setResponse(re.getResponse());
         // Include right answer only if the current mode allows it
         if (m.isRightAnswer()) result.setCorrectAnswer(q.getCorrectAnswer());
-        return result;
-    }
-
-    private String round(Double value) {
-        DecimalFormat df = new DecimalFormat("#.#");
-        df.setRoundingMode(RoundingMode.CEILING);
-        String result = df.format(value);
-        // If fraction is 0, let's omit it in the resulting value
-        String[] split = result.split(".");
-        if (split.length>1 && split[1] == "0") return split[0];
         return result;
     }
 

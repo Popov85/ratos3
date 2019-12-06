@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.security.lti.LTIToolConsumerCredentials;
 import ua.edu.ratos.security.lti.LTIUserConsumerCredentials;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Convenience security methods for usage throughout the app
  * @see "https://stackoverflow.com/questions/25713315/spring-security-get-login-user-within-controllers-good-manners"
@@ -18,7 +21,12 @@ public class SecurityUtils {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    //-------------------------------------Staff-------------------------------------
+    //----------------------------------------------------Staff---------------------------------------------------------
+
+    public AuthenticatedStaff getAuthStaff() {
+        Authentication auth = getStaffAuthentication();
+        return (AuthenticatedStaff) auth.getPrincipal();
+    }
 
     /**
      * Obtain ID of the current authenticated staff
@@ -71,7 +79,14 @@ public class SecurityUtils {
     }
 
 
-    //----------------------------------------User------------------------------------
+    //----------------------------------------------------User----------------------------------------------------------
+
+    public AuthenticatedUser getAuthUser() {
+        Authentication auth = getAuthentication();
+        if (!(auth.getPrincipal() instanceof AuthenticatedUser))
+            throw new SecurityException("Lack of authority");
+        return (AuthenticatedUser) auth.getPrincipal();
+    }
 
     /**
      * Obtain ID of any currently authenticated  user (whether staff or student)
@@ -96,7 +111,25 @@ public class SecurityUtils {
         return ((AuthenticatedUser) auth.getPrincipal()).getUsername();
     }
 
-    //----------------------------------------LMS--------------------------------------
+    /**
+     * In e-RATOS a user can have ONLY a single role!
+     * (Technically DB allows a set or roles for future improvements!)
+     * Each higher role has all the advantages as all lower roles.
+     * @return role name
+     */
+    public String getAuthRole() {
+        Authentication authentication = getAuthentication();
+        return authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toList()).get(0);
+    }
+
+    public boolean isCurrentUserStudent() {
+        String role = "ROLE_STUDENT";
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals(role));
+    }
+
+    //------------------------------------------------------LMS---------------------------------------------------------
 
     /**
      * Checks if the current user comes from within some known LMS and fully authenticated.
@@ -187,7 +220,7 @@ public class SecurityUtils {
         return (SignatureSecret) credentials;
     }
 
-    //----------------------------------Private------------------------------
+    //--------------------------------------------------------Private---------------------------------------------------
 
     private Authentication getAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Staff;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 
@@ -19,6 +20,9 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findOneForEdit(Long staffId);
 
     //-------------------------------------------------DEPARTMENT ADMIN table-------------------------------------------
+    @Query(value="select s from Staff s join fetch s.user u left join fetch u.roles join fetch s.position join fetch s.department d where d.depId = ?1")
+    Set<Staff> findAllByDepartmentId(Long depId);
+
     @Query(value="select s from Staff s join fetch s.user u join s.department d where d.depId = ?1",
             countQuery = "select count(s) from Staff s join s.user u join s.department d where d.depId=?1")
     Page<Staff> findAllByDepartmentId(Long depId, Pageable pageable);

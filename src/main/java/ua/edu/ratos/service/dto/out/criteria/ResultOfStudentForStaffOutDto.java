@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
+import ua.edu.ratos.service.dto.out.SchemeWithCourseMinOutDto;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
 import java.time.LocalDateTime;
 
@@ -17,15 +18,13 @@ public class ResultOfStudentForStaffOutDto {
 
     private Long resultId;
 
-    private CourseMinOutDto course;
-
-    private SchemeMinOutDto scheme;
+    private SchemeWithCourseMinOutDto scheme; // Course included
 
     private StudMinOutDto student;
 
-    private double percent;
+    private String percent;
 
-    private double grade;
+    private String grade;
 
     private boolean passed;
 
@@ -33,9 +32,11 @@ public class ResultOfStudentForStaffOutDto {
 
     private long sessionLasted;
 
-    private boolean timeOuted;
+    private boolean timeouted;
 
     private boolean cancelled;
+
+    private Integer points; // Nullable
 
     private boolean isLMS;
 

@@ -4,21 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Student;
 import ua.edu.ratos.dao.entity.lms.LMS;
-import ua.edu.ratos.dao.repository.*;
+import ua.edu.ratos.dao.repository.StudentRepository;
+import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.dao.repository.lms.LMSRepository;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.ClassMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoStudentTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ClassMinDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FacultyMinDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.OrganisationMinDtoTransformer;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,17 +26,11 @@ public class SelfRegistrationService {
 
     private final StudentRepository studentRepository;
 
-    private final OrganisationRepository organisationRepository;
+    private final OrganisationService organisationService;
 
-    private final FacultyRepository facultyRepository;
+    private final FacultyService facultyService;
 
-    private final ClassRepository classRepository;
-
-    private final OrganisationMinDtoTransformer organisationDtoTransformer;
-
-    private final ClassMinDtoTransformer classDtoTransformer;
-
-    private final FacultyMinDtoTransformer facultyDtoTransformer;
+    private final ClazzService classService;
 
     private final DtoStudentTransformer dtoStudentTransformer;
 
@@ -49,10 +41,11 @@ public class SelfRegistrationService {
     @Transactional
     // TODO: Here comes logic to send email to provided address with information about password and link to RATOS
     public Long save(@NonNull final StudentInDto dto) {
-        if (userRepository.findByEmail(dto.getUser().getEmail()).isPresent()) {
-            throw new RuntimeException("Such email is already present in e-RATOS");
-        }
-        return studentRepository.save(dtoStudentTransformer.toEntity(dto)).getStudId();
+        String email = dto.getUser().getEmail();
+        if (userRepository.findByEmail(email).isPresent())
+                throw new RuntimeException("Such email is already present in e-RATOS");
+        Student entity = dtoStudentTransformer.toEntity(dto);
+        return studentRepository.save(entity).getStudId();
     }
 
     //--------------------------------------------------SELECT for drop-down--------------------------------------------
@@ -70,11 +63,7 @@ public class SelfRegistrationService {
      */
     @Transactional(readOnly = true)
     public Set<OrganisationMinOutDto> findAllOrganisations() {
-        return organisationRepository
-                .findAllForRegistration()
-                .stream()
-                .map(organisationDtoTransformer::toDto)
-                .collect(Collectors.toSet());
+        return organisationService.findAllOrganisationsForDropDown();
     }
 
     /**
@@ -84,11 +73,7 @@ public class SelfRegistrationService {
      */
     @Transactional(readOnly = true)
     public Set<FacultyMinOutDto> findAllFacultiesByOrgId(@NonNull final Long orgId) {
-        return facultyRepository
-                .findAllByOrgId(orgId)
-                .stream()
-                .map(facultyDtoTransformer::toDto)
-                .collect(Collectors.toSet());
+        return facultyService.findAllByOrgIdForDropDown(orgId);
     }
 
     /**
@@ -98,10 +83,6 @@ public class SelfRegistrationService {
      */
     @Transactional(readOnly = true)
     public Set<ClassMinOutDto> findAllClassesByFacId(@NonNull final Long facId) {
-        return classRepository
-                .findAllByFacultyId(facId)
-                .stream()
-                .map(classDtoTransformer::toDto)
-                .collect(Collectors.toSet());
+        return classService.findAllClassesByFacIdForDropDown(facId);
     }
 }

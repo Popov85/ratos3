@@ -14,13 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.ActiveProfile;
 import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.dao.repository.specs.ResultOfStudentStaffSpecs;
-import ua.edu.ratos.service.dto.in.criteria.results.ResultOfStudentCriteriaStaffInDto;
+import ua.edu.ratos.dao.repository.specs.SpecsFilter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
+import static ua.edu.ratos.dao.repository.specs.ResultPredicatesUtils.hasSpecs;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -70,25 +71,15 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdAndSpecsByCourseIdTest() {
+        // Given: depId = 1L, courseId = 1L
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("1");
+        specsMap.put("scheme.course", specsFilter);
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setCourseId(1L)));
+                .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
-        assertThat("Page of Students Results is not as expected", page, allOf(
-                hasProperty("content", hasSize(6)),
-                hasProperty("totalPages", equalTo(1)),
-                hasProperty("totalElements", equalTo(6L))));
-    }
-
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsByOnlyLMSTest() {
-        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setLms(true)));
-        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("percent"))));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(6)),
                 hasProperty("totalPages", equalTo(1)),
@@ -99,8 +90,13 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdAndSpecsBySchemeIdTest() {
+        // Given: depId = 1L, schemeId = 1L
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("1");
+        specsMap.put("scheme", specsFilter);
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setSchemeId(1L)));
+                .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
         assertThat("Page of Students Results is not as expected", page, allOf(
@@ -112,93 +108,336 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsByDateFromTest() {
-        String from = "2018-12-26 23:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateFrom = LocalDateTime.parse(from, formatter);
-        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setResultsFrom(dateFrom)));
-        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
-        assertThat("Page of Students Results is not as expected", page, allOf(
-                hasProperty("content", hasSize(3)),
-                hasProperty("totalPages", equalTo(1)),
-                hasProperty("totalElements", equalTo(3L))));
-    }
-
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsByDateToTest() {
-        String to = "2018-12-31 23:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTo = LocalDateTime.parse(to, formatter);
-        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setResultsTo(dateTo)));
-        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
-        assertThat("Page of Students Results is not as expected", page, allOf(
-                hasProperty("content", hasSize(5)),
-                hasProperty("totalPages", equalTo(1)),
-                hasProperty("totalElements", equalTo(5L))));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsByDateBetweenTest() {
-        String from = "2018-12-26 23:00";
-        String to = "2018-12-31 23:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateFrom = LocalDateTime.parse(from, formatter);
-        LocalDateTime dateTo = LocalDateTime.parse(to, formatter);
-        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setResultsFrom(dateFrom).setResultsTo(dateTo)));
-        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
-        assertThat("Page of Students Results is not as expected", page, allOf(
-                hasProperty("content", hasSize(2)),
-                hasProperty("totalPages", equalTo(1)),
-                hasProperty("totalElements", equalTo(2L))));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsBySurnameNameTest() {
+    public void findAllByDepartmentIdAndSpecsByNameTest() {
+        // Given: depId = 2L, name = "Den"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("Den");
+        specsMap.put("student.user.name", specsFilter);
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(new ResultOfStudentCriteriaStaffInDto().setSurname("ska").setContains(true)));
+                .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
         assertThat("Page of Students Results is not as expected", page, allOf(
-                hasProperty("content", hasSize(2)),
+                hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
-                hasProperty("totalElements", equalTo(2L))));
+                hasProperty("totalElements", equalTo(1L))));
     }
-
-    //-------------------------------------------COMPLEX criteria---------------------------------------------------
 
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndSpecsManyTest() {
-        String from = "2018-12-25 08:00";
-        String to = "2019-01-30 23:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateFrom = LocalDateTime.parse(from, formatter);
-        LocalDateTime dateTo = LocalDateTime.parse(to, formatter);
-        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
-                .and(ResultOfStudentStaffSpecs.hasSpecs(
-                        new ResultOfStudentCriteriaStaffInDto()
-                                .setCourseId(1L)
-                                .setSchemeId(2L)
-                                .setResultsFrom(dateFrom)
-                                .setResultsTo(dateTo)
-                                .setSurname("eva")
-                                .setContains(true)));
+    public void findAllByDepartmentIdAndSpecsBySurnameTest() {
+        // Given: depId = 2L, surname = "Abram"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("Abram");
+        specsMap.put("student.user.surname", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByEmailTest() {
+        // Given: depId = 2L, email = "den.abramov@"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("den.abramov@");
+        specsMap.put("student.user.email", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByStudentFacIdTest() {
+        // Given: depId = 2L, facId = 1
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("1");
+        specsMap.put("student.faculty", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(7)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(7L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByStudentClassTest() {
+        // Given: depId = 2L, studentClass = "Class"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("Class");
+        specsMap.put("student.studentClass", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(7)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(7L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByStudentYearOfEntranceTest() {
+        // Given: depId = 2L, YearOfEntrance = "2020"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("2020");
+        specsMap.put("student.entranceYear", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsBySessionEndedTest() {
+        // Given: depId = 2L, sessionEnded > = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        String from = "2019-09-01T00:00:00.000Z";
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        Map<String, String> date = new HashMap<>();
+        date.put("date", from);
+        date.put("comparator", ">");
+        specsFilter.setFilterVal(date);
+        specsMap.put("sessionEnded", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsBySessionLastedTest() {
+        // Given: depId = 2L, sessionLasted =51
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        Map<String, String> lasted = new HashMap<>();
+        lasted.put("number", "51");
+        lasted.put("comparator", "=");
+        specsFilter.setFilterVal(lasted);
+        specsMap.put("sessionLasted", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByGradeTest() {
+        // Given: depId = 2L, grade = "5"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        Map<String, String> lasted = new HashMap<>();
+        lasted.put("number", "5");
+        lasted.put("comparator", "=");
+        specsFilter.setFilterVal(lasted);
+        specsMap.put("grade", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(4)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(4L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByPercentTest() {
+        // Given: depId = 2L, percent > "80"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        Map<String, String> lasted = new HashMap<>();
+        lasted.put("number", "80");
+        lasted.put("comparator", ">");
+        specsFilter.setFilterVal(lasted);
+        specsMap.put("percent", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(4)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(4L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByPassedTest() {
+        // Given: depId = 2L, passed = "true"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("true");
+        specsMap.put("passed", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(7)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(7L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByNotPassedTest() {
+        // Given: depId = 2L, passed = "false"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("false");
+        specsMap.put("passed", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(0)),
+                hasProperty("totalPages", equalTo(0)),
+                hasProperty("totalElements", equalTo(0L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByTimeoutedTest() {
+        // Given: depId = 2L, timeouted = "false"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("false");
+        specsMap.put("timeouted", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(7)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(7L))));
+    }
+
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByNotCancelledTest() {
+        // Given: depId = 2L, cancelled = "false"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("false");
+        specsMap.put("cancelled", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(6)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(6L))));
+    }
+
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByLMSTest() {
+        // Given: depId = 2L, lms = "true"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("true");
+        specsMap.put("lms", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(1)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(1L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByNotLMSTest() {
+        // Given: depId = 2L, lms = "false"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("false");
+        specsMap.put("lms", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(6)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(6L))));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentIdAndSpecsByPointsTest() {
+        // Given: depId = 2L, points = "true"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("true");
+        specsMap.put("points", specsFilter);
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
+                .and(hasSpecs(specsMap));
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),

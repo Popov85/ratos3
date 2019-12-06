@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "position")
+@Where(clause = "is_deleted = 0")
 public class Position {
 
     @Id
@@ -22,4 +24,7 @@ public class Position {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
 }

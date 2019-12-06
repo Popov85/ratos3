@@ -81,7 +81,7 @@ public class GameService {
     public Optional<Integer> getPoints(@NonNull final SessionData sessionData, double percent) {
         Long userId = sessionData.getUserId();
         Long schemeId = sessionData.getSchemeDomain().getSchemeId();
-        if (!isGameOn()) return Optional.ofNullable(null);
+        if (!isGameOn()) return Optional.empty();
         if (sessionData.isGameableSession() && isEnoughPercents(percent) && isFromFirstAttempt(userId, schemeId)) {
             return Optional.of(getPoints(percent));
         }
@@ -172,7 +172,7 @@ public class GameService {
         return false;
     }
 
-    private int getPoints(double percent) {
+    public int getPoints(double percent) {
         AppProperties.Game props = appProperties.getGame();
         if (percent >= props.getLowBoundaryFrom() && percent < props.getLowBoundaryTo())
             return props.getLowBoundaryPoints();
