@@ -5,12 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.edu.ratos.security.AuthenticatedStaff;
 import ua.edu.ratos.security.AuthenticatedUser;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.dto.out.DepartmentMinOutDto;
-import ua.edu.ratos.service.dto.out.PositionOutDto;
-import ua.edu.ratos.service.dto.out.StaffInfoOutDto;
-import ua.edu.ratos.service.dto.out.UserInfoOutDto;
-
-import java.util.Set;
+import ua.edu.ratos.service.dto.out.*;
 
 @Service
 @AllArgsConstructor
@@ -46,9 +41,15 @@ public class InfoService {
                     .setPosition(new PositionOutDto()
                             .setPosId(staff.getPosId())
                             .setName(staff.getPos()))
-                    .setDepartment(new DepartmentMinOutDto()
+                    .setDepartment(new DepartmentOutDto()
                             .setDepId(staff.getDepId())
-                            .setName(staff.getDep())));
+                            .setName(staff.getDep())
+                            .setFaculty(new FacultyOutDto()
+                                    .setFacId(staff.getFacId())
+                                    .setName(staff.getFac())
+                                    .setOrganisation(new OrganisationOutDto()
+                                            .setOrgId(staff.getOrgId())
+                                            .setName(staff.getOrg())))));
         }
         return dto;
     }

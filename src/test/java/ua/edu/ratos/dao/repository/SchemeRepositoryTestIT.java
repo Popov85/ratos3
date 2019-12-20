@@ -1,5 +1,6 @@
 package ua.edu.ratos.dao.repository;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +14,12 @@ import ua.edu.ratos.dao.entity.Scheme;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.Tuple;
 import java.util.Optional;
+import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -205,5 +210,57 @@ public class SchemeRepositoryTestIT {
     public void findAllTest() {
         assertThat("Page of Scheme is not of size = 20",
                 schemeRepository.findAll(PageRequest.of(0, 100)).getContent(), hasSize(20));
+    }
+
+    //---------------------------------------------REPORT on content----------------------------------------------------
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfDepId() {
+        Tuple schemesByDep = schemeRepository.countSchemesByDepOfDepId(1L);
+        MatcherAssert.assertThat("Org. name is not as expected", schemesByDep.get("org"), equalTo("University"));
+        MatcherAssert.assertThat("Fac. name is not as expected", schemesByDep.get("fac"), equalTo("Faculty"));
+        MatcherAssert.assertThat("Dep. name is not as expected", schemesByDep.get("dep"), equalTo("Department"));
+        MatcherAssert.assertThat("Count of schemes is not as expected", schemesByDep.get("count"), equalTo(10L));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfFacId() {
+        Set<Tuple> schemesByDep = schemeRepository.countSchemesByDepOfFacId(1L);
+        MatcherAssert.assertThat("Count tuple of schemes by dep is not of right size", schemesByDep, hasSize(3));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfFacIdNegative() {
+        Set<Tuple> schemesByDep = schemeRepository.countSchemesByDepOfFacId(2L);
+        MatcherAssert.assertThat("Count tuple of schemes by dep is not empty", schemesByDep, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfOrgId() {
+        Set<Tuple> schemesByDep = schemeRepository.countSchemesByDepOfOrgId(1L);
+        MatcherAssert.assertThat("Count tuple of schemes by dep is not of right size", schemesByDep, hasSize(3));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfOrgIdNegative() {
+        Set<Tuple> schemesByDep = schemeRepository.countSchemesByDepOfOrgId(2L);
+        MatcherAssert.assertThat("Count tuple of schemes by dep is not empty", schemesByDep, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countSchemesByDepOfRatos() {
+        Set<Tuple> schemesByDep = schemeRepository.countSchemesByDepOfRatos();
+        MatcherAssert.assertThat("Count tuple of schemes by dep is not of right size", schemesByDep, hasSize(3));
     }
 }

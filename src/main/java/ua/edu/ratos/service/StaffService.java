@@ -17,16 +17,16 @@ import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.StaffUpdInDto;
+import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoStaffTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.StaffDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.StaffMinDtoTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +52,9 @@ public class StaffService {
     private final DtoStaffTransformer dtoStaffTransformer;
 
     private final StaffDtoTransformer staffDtoTransformer;
+
+    private final StaffMinDtoTransformer staffMinDtoTransformer;
+
 
     private final SecurityUtils securityUtils;
 
@@ -85,7 +88,12 @@ public class StaffService {
     @Transactional
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public void updateRole(@NonNull final Long staffId, @NonNull final String role) {
+        // Check role change possibility!
+        String authRole = securityUtils.getAuthRole();
+        if (!securityUtils.isRoleGreater(authRole, role))
+            throw new SecurityException("Role to be set is greater then your current role!");
         User user = userRepository.findById(staffId).orElseThrow(() -> new EntityNotFoundException(STAFF_NOT_FOUND));
+        // TODO: Check if you can change role of this user?
         user.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByName(role).orElseThrow(()->
                 new EntityNotFoundException("ROLE is not found")))));
     }
@@ -106,7 +114,15 @@ public class StaffService {
         return staffDtoTransformer.toDto(staff);
     }
 
-    //-----------------------------------------------------DEP ADMIN----------------------------------------------------
+    //---------------------------------------------------One (min for DTOs)---------------------------------------------
+    @Transactional(readOnly = true)
+    public StaffMinOutDto findOneForDto(@NonNull final Long staffId) {
+        Staff staff = staffRepository.findOneForEdit(staffId)
+                .orElseThrow(() -> new EntityNotFoundException("Staff is not found, staffId = " + staffId));
+        return staffMinDtoTransformer.toDto(staff);
+    }
+
+    //---------------------------------------------------ALL for ADMIN-s------------------------------------------------
     @Transactional(readOnly = true)
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public Set<StaffOutDto> findAllByDepartmentId() {
@@ -116,6 +132,36 @@ public class StaffService {
                 .collect(Collectors.toSet());
     }
 
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_FAC-ADMIN","ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
+    public Set<StaffOutDto> findAllByFacultyId() {
+        return staffRepository.findAllByFacultyId(securityUtils.getAuthFacId())
+                .stream()
+                .map(staffDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
+    public Set<StaffOutDto> findAllByOrganisationId() {
+        return staffRepository.findAllByOrganisationId(securityUtils.getAuthOrgId())
+                .stream()
+                .map(staffDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_GLOBAL-ADMIN"})
+    public Set<StaffOutDto> findAllByRatos() {
+        return staffRepository.findAllByRatos()
+                .stream()
+                .map(staffDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+
+    //---------------------------------------------SOLELY for future references-----------------------------------------
 
     @Transactional(readOnly = true)
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
@@ -135,4 +181,5 @@ public class StaffService {
     public Page<StaffOutDto> findAllAdmin(@NonNull final Pageable pageable) {
         return staffRepository.findAllAdmin(pageable).map(staffDtoTransformer::toDto);
     }
+
 }

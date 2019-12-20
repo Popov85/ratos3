@@ -12,7 +12,7 @@ public class StaffDtoTransformer {
 
     private final PositionDtoTransformer positionDtoTransformer;
 
-    private final DepartmentMinDtoTransformer departmentMinDtoTransformer;
+    private final DepartmentDtoTransformer departmentDtoTransformer;
 
     private final UserDtoTransformer userDtoTransformer;
 
@@ -21,6 +21,6 @@ public class StaffDtoTransformer {
                 .setStaffId(entity.getStaffId())
                 .setUser(userDtoTransformer.toDto(entity.getUser()))
                 .setPosition(positionDtoTransformer.toDto(entity.getPosition()))
-                .setDepartment(departmentMinDtoTransformer.toDto(entity.getDepartment()));
+                .setDepartment(departmentDtoTransformer.toDto(entity.getDepartment()));
     }
 }

@@ -21,13 +21,13 @@ public class FacultyController {
 
 
     // FOR DEP staff, all faculties of an organisation to which the staff belongs.
-    @GetMapping(value="/department/faculties-dropdown/all-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/department/faculties-dropdown/all-fac-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown() {
         return facultyService.findAllByOrgIdForDropDown();
     }
 
     // For GLOBAL-ADMIN
-    @GetMapping(value="/global-admin/faculties-dropdown/all-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/global-admin/faculties-dropdown/all-fac-by-organisation", params = "orgId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown(@RequestParam final Long orgId) {
         return facultyService.findAllByOrgIdForDropDown(orgId);
     }

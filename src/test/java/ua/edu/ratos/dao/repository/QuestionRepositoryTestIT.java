@@ -1,5 +1,6 @@
 package ua.edu.ratos.dao.repository;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ua.edu.ratos.ActiveProfile;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 
+import javax.persistence.Tuple;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertTrue;
@@ -227,5 +231,58 @@ public class QuestionRepositoryTestIT {
     public void findAllSQForEditByThemeIdAndQuestionLettersContainsTest() {
         assertThat("Slice of QuestionSQ is not of size = 2",
                 questionRepository.findAllSQForSearchByDepartmentIdAndTitleContains(1L, "SQ", PageRequest.of(0, 50)).getContent(), hasSize(2));
+    }
+
+
+    //---------------------------------------------REPORT on content----------------------------------------------------
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfDepId() {
+        Tuple questionsByDep = questionRepository.countQuestionsByDepOfDepId(1L);
+        assertThat("Org. name is not as expected", questionsByDep.get("org"), CoreMatchers.equalTo("University"));
+        assertThat("Fac. name is not as expected", questionsByDep.get("fac"), CoreMatchers.equalTo("Faculty"));
+        assertThat("Dep. name is not as expected", questionsByDep.get("dep"), CoreMatchers.equalTo("Department"));
+        assertThat("Count of themes is not as expected", questionsByDep.get("count"), CoreMatchers.equalTo(5L));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfFacId() {
+        Set<Tuple> questionsByDeps = questionRepository.countQuestionsByDepOfFacId(1L);
+        assertThat("Count tuple of themes by dep is not of right size", questionsByDeps, hasSize(1));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfFacIdNegative() {
+        Set<Tuple> questionsByDeps = questionRepository.countQuestionsByDepOfFacId(2L);
+        assertThat("Count tuple of themes by dep is not empty", questionsByDeps, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfOrgId() {
+        Set<Tuple> questionsByDeps = questionRepository.countQuestionsByDepOfOrgId(1L);
+        assertThat("Count tuple of themes by dep is not of right size", questionsByDeps, hasSize(1));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfOrgIdNegative() {
+        Set<Tuple> questionsByDeps = questionRepository.countQuestionsByDepOfOrgId(2L);
+        assertThat("Count tuple of themes by dep is not empty", questionsByDeps, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/question_mcq_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countQuestionsByDepOfRatos() {
+        Set<Tuple> questionsByDeps = questionRepository.countQuestionsByDepOfRatos();
+        assertThat("Count tuple of themes by dep is not of right size", questionsByDeps, hasSize(1));
     }
 }

@@ -21,10 +21,9 @@ public class OrganisationController {
 
     //--------------------------------------------------Drop-downs------------------------------------------------------
 
-    @GetMapping(value="/global-admin/organisations-dropdown/all-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/global-admin/organisations-dropdown/all-org-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<OrganisationMinOutDto> findAllOrganisationsForDropDown() {
         Set<OrganisationMinOutDto> result = organisationService.findAllOrganisationsForDropDown();
-        log.debug("Organisations = {}", result);
         return result;
     }
 }

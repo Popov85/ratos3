@@ -10,6 +10,7 @@ import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.projections.TypeAndCount;
 
 import javax.persistence.QueryHint;
+import javax.persistence.Tuple;
 import java.util.Optional;
 import java.util.Set;
 
@@ -135,4 +136,18 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query(value = "SELECT q FROM QuestionSQ q join fetch q.theme t join t.department d join fetch q.type ty join fetch q.lang left join fetch q.helps h left join fetch h.resources left join fetch q.resources" +
             " join fetch q.answers a join fetch a.phrase p left join fetch p.resources r where d.depId = ?1 and ty.typeId=5 and q.question like %?2%", countQuery = "SELECT count(q) FROM Question q join q.type ty join q.theme t join t.department d where d.depId=?1 and ty.typeId=5 and q.question like %?2%")
     Slice<QuestionSQ> findAllSQForSearchByDepartmentIdAndTitleContains(Long depId, String starts, Pageable pageable);
+
+
+    //-------------------------------------------------REPORT on content------------------------------------------------
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(q) as count FROM Question q join q.theme t join t.department d join d.faculty f join f.organisation o where d.depId=?1 group by d.depId")
+    Tuple countQuestionsByDepOfDepId(Long depId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(q) as count FROM Question q join q.theme t join t.department d join d.faculty f join f.organisation o where f.facId=?1 group by d.depId")
+    Set<Tuple> countQuestionsByDepOfFacId(Long facId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(q) as count FROM Question q join q.theme t join t.department d join d.faculty f join f.organisation o where o.orgId=?1 group by d.depId")
+    Set<Tuple> countQuestionsByDepOfOrgId(Long orgId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(q) as count FROM Question q join q.theme t join t.department d join d.faculty f join f.organisation o group by d.depId")
+    Set<Tuple> countQuestionsByDepOfRatos();
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Course;
 
+import javax.persistence.Tuple;
 import java.util.Set;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -82,5 +83,20 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query(value = "SELECT c FROM Course c join fetch c.staff s join fetch s.user join fetch s.position join fetch c.access", countQuery = "SELECT count(c) FROM Course c")
     Page<Course> findAll(Pageable pageable);
+
+
+
+    //-------------------------------------------------REPORT on content------------------------------------------------
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(c) as count FROM Course c left join c.department d join d.faculty f join f.organisation o where d.depId=?1 group by d.depId")
+    Tuple countCoursesByDepOfDepId(Long depId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(c) as count FROM Course c left join c.department d join d.faculty f join f.organisation o where f.facId=?1 group by d.depId")
+    Set<Tuple> countCoursesByDepOfFacId(Long facId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(c) as count FROM Course c left join c.department d join d.faculty f join f.organisation o where o.orgId=?1 group by d.depId")
+    Set<Tuple> countCoursesByDepOfOrgId(Long orgId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(c) as count FROM Course c left join c.department d join d.faculty f join f.organisation o group by d.depId")
+    Set<Tuple> countCoursesByDepOfRatos();
 
 }

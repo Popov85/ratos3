@@ -20,13 +20,13 @@ public class DepartmentController {
 
 
     // FOR FAC-ADMIN, all departments of a faculty to which the admin belongs.
-    @GetMapping(value="/fac-admin/departments-dropdown/all-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/fac-admin/departments-dropdown/all-dep-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<DepartmentMinOutDto> findAllByFacIdForDropDown() {
         return departmentService.findAllByFacIdForDropDown();
     }
 
     // For ORG-ADMIN
-    @GetMapping(value="/org-admin/departments-dropdown/all-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/org-admin/departments-dropdown/all-dep-by-faculty", params = "facId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<DepartmentMinOutDto> findAllByFacIdForDropDown(@RequestParam final Long facId) {
         return departmentService.findAllByFacIdForDropDown(facId);
     }

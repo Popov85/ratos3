@@ -16,8 +16,8 @@ public class ResultOfStudentStaffSpecs {
             if (Long.class != query.getResultType()) {
                 root.fetch(ResultOfStudent_.scheme.getName(), JoinType.LEFT)
                         .fetch(Scheme_.course.getName(), JoinType.LEFT);
-                Fetch<Object, Object> fs = root.fetch(ResultOfStudent_.student.getName(), JoinType.LEFT);
-                        fs.fetch(Student_.user.getName(), JoinType.LEFT);
+                Fetch<Object, Object> fs = root.fetch(ResultOfStudent_.student.getName(), JoinType.INNER);
+                        fs.fetch(Student_.user.getName(), JoinType.INNER);
                         fs.fetch(Student_.studentClass.getName(), JoinType.LEFT);
                         fs.fetch(Student_.faculty.getName(), JoinType.LEFT);
                         fs.fetch(Student_.organisation.getName(), JoinType.LEFT);

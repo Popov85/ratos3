@@ -46,7 +46,7 @@ public class PositionController {
 
 
     // For DEP-ADMIN/ORG-ADMIN, etc. to support creating department/org. staff
-    @GetMapping(value = "/dep-admin/positions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/dep-admin/positions-dropdown/all-pos-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<PositionOutDto> findAll() {
         return positionService.findAll();
     }

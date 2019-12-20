@@ -1,5 +1,6 @@
 package ua.edu.ratos.dao.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import ua.edu.ratos.dao.entity.Course;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.Tuple;
 
 import java.util.Set;
 
@@ -23,12 +25,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@Slf4j
 public class CourseRepositoryTestIT {
 
     @Autowired
@@ -169,4 +173,60 @@ public class CourseRepositoryTestIT {
                 hasProperty("totalPages", equalTo(1)),
                 hasProperty("totalElements", equalTo(21L))));
     }
+
+    //---------------------------------------------REPORT on content----------------------------------------------------
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfDepId() {
+        Tuple coursesByDep = courseRepository.countCoursesByDepOfDepId(1L);
+        assertThat("Org. name is not as expected", coursesByDep.get("org"), equalTo("University"));
+        assertThat("Fac. name is not as expected", coursesByDep.get("fac"), equalTo("Faculty"));
+        assertThat("Dep. name is not as expected", coursesByDep.get("dep"), equalTo("Department"));
+        assertThat("Count of courses is not as expected", coursesByDep.get("count"), equalTo(8L));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfFacId() {
+        Set<Tuple> coursesByDeps = courseRepository.countCoursesByDepOfFacId(1L);
+        assertThat("Count tuple of courses by dep is not of right size", coursesByDeps, hasSize(3));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfFacIdNegative() {
+        Set<Tuple> coursesByDeps = courseRepository.countCoursesByDepOfFacId(2L);
+        assertThat("Count tuple of courses by dep is not empty", coursesByDeps, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfOrgId() {
+        Set<Tuple> coursesByDeps = courseRepository.countCoursesByDepOfOrgId(1L);
+        assertThat("Count tuple of courses by dep is not of right size", coursesByDeps, hasSize(3));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfOrgIdNegative() {
+        Set<Tuple> coursesByDeps = courseRepository.countCoursesByDepOfOrgId(2L);
+        assertThat("Count tuple of courses by dep is not empty", coursesByDeps, empty());
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void countCoursesByDepOfRatos() {
+        Set<Tuple> coursesByDeps = courseRepository.countCoursesByDepOfRatos();
+        /*for (Tuple coursesByDep : coursesByDeps) {
+            log.debug("Org = {}, Fac = {}, Dep = {}, count = {}", coursesByDep.get("org"), coursesByDep.get("fac"), coursesByDep.get("dep"), coursesByDep.get("count"));
+        }*/
+        assertThat("Count tuple of courses by dep is not of right size", coursesByDeps, hasSize(3));
+    }
+
 }

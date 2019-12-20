@@ -67,22 +67,27 @@ public class CourseController {
 
     //-------------------------------------------Staff min drop-down----------------------------------------------------
 
-    @GetMapping(value="/department/courses-dropdown/all-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/department/courses-dropdown/all-courses-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<CourseMinOutDto> findAllForDropDownByStaffId() {
         return courseService.findAllForDropdownByStaffId();
     }
 
-    @GetMapping(value="/department/courses-dropdown/all-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/department/courses-dropdown/all-courses-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<CourseMinOutDto> findAllForDropDownByDepartmentId() {
         return courseService.findAllForDropdownByDepartmentId();
     }
 
-    @GetMapping(value="/fac-admin/courses-dropdown/all-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/fac-admin/courses-dropdown/all-courses-by-department", params = "depId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<CourseMinOutDto> findAllForDropDownByDepartmentId(@RequestParam final Long depId) {
         return courseService.findAllForDropdownByDepartmentId(depId);
     }
 
-    //-----------------------------------------------Staff drop-down----------------------------------------------------
+
+
+
+
+    //-----------------------------------------------For future references----------------------------------------------
+    //---------------------------------------------------Staff drop-down------------------------------------------------
 
     @GetMapping(value = "/courses-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<CourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {

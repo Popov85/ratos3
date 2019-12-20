@@ -13,5 +13,5 @@ public class StaffInfoOutDto {
 
     private PositionOutDto position;
 
-    private DepartmentMinOutDto department;
+    private DepartmentOutDto department;
 }

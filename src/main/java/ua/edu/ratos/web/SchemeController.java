@@ -224,58 +224,59 @@ public class SchemeController {
 
     //-------------------------------------------Staff min drop-down----------------------------------------------------
 
-    @GetMapping(value="/department/schemes-dropdown/all-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByStaffId() {
         return schemeService.findAllForDropdownByStaffId();
     }
 
-    @GetMapping(value="/department/schemes-dropdown/all-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId() { return schemeService.findAllForDropdownByDepartmentId(); }
 
-    @GetMapping(value="/department/schemes-dropdown/all-by-course", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByCourseId(@RequestParam final Long courseId) { return schemeService.findAllForDropdownByCourseId(courseId); }
-
-    @GetMapping(value="/fac-admin/schemes-dropdown/all-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByFacultyId() { return schemeService.findAllForDropdownByFacultyId(); }
-
-    @GetMapping(value="/fac-admin/schemes-dropdown/all-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/fac-admin/schemes-dropdown/all-schemes-by-department", params = "depId", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId(@RequestParam final Long depId) { return schemeService.findAllForDropdownByDepartmentId(depId); }
 
+    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-course", params = "courseId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeMinOutDto> findAllForDropDownByCourseId(@RequestParam final Long courseId) { return schemeService.findAllForDropdownByCourseId(courseId); }
 
 
 
 
-    @GetMapping(value="/org-admin/schemes-dropdown/all-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    //--------------------------------------------------For future references-------------------------------------------
+
+    @GetMapping(value="/fac-admin/schemes-dropdown/all-schemes-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeMinOutDto> findAllForDropDownByFacultyId() { return schemeService.findAllForDropdownByFacultyId(); }
+
+    @GetMapping(value="/org-admin/schemes-dropdown/all-schemes-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByOrganisationId() { return schemeService.findAllForDropdownByOrganisationId(); }
 
-    @GetMapping(value="/org-admin/schemes-dropdown/all-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/org-admin/schemes-dropdown/all-schemes-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByFacultyId(@RequestParam final Long facId) { return schemeService.findAllForDropdownByFacultyId(facId); }
 
-    @GetMapping(value="/global-admin/schemes-dropdown/all-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/global-admin/schemes-dropdown/all-schemes-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByRatosInstance() { return schemeService.findAllForDropdown(); }
 
-    @GetMapping(value="/global-admin/schemes-dropdown/all-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/global-admin/schemes-dropdown/all-schemes-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SchemeMinOutDto> findAllForDropDownByOrganisationId(@RequestParam final Long orgId) { return schemeService.findAllForDropdownByOrganisationId(orgId); }
 
-
     //--------------------------------------------------Slice drop-down-------------------------------------------------
-    @GetMapping(value = "/schemes-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return schemeService.findAllForDropDownByDepartmentId(pageable);
     }
 
-    @GetMapping(value = "/schemes-dropdown/by-course", params = {"courseId"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-course", params = {"courseId"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByCourseId(@RequestParam Long courseId, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
         return schemeService.findAllForDropDownByCourseId(courseId, pageable);
     }
 
     //------------------------------------------------Search in drop-down-----------------------------------------------
-    @GetMapping(value = "/schemes-dropdown/by-department",  params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-department",  params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return schemeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
     }
 
-    @GetMapping(value = "/schemes-dropdown/by-course", params = {"courseId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-course", params = {"courseId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<SchemeShortOutDto> findAllForDropDownByCourseIdAndName(@RequestParam Long courseId, @RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
         return schemeService.findAllForDropDownByCourseIdAndName(courseId, letters, contains, pageable);
     }

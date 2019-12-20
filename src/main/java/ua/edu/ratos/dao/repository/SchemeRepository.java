@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import ua.edu.ratos.dao.entity.Scheme;
 import javax.persistence.QueryHint;
+import javax.persistence.Tuple;
 import java.util.Optional;
 import java.util.Set;
 
@@ -124,5 +125,18 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     // (for simple table: no organisation, no faculty, no department data)
     @Query(value = "SELECT s FROM Scheme s join fetch s.strategy join fetch s.settings join fetch s.options join fetch s.mode join fetch s.grading join fetch s.course join fetch s.staff st join fetch st.user join fetch st.position join fetch s.access left join fetch s.themes left join fetch s.groups", countQuery = "SELECT count(s) FROM Scheme s")
     Page<Scheme> findAll(Pageable pageable);
+
+    //-------------------------------------------------REPORT on content------------------------------------------------
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(s) as count FROM Scheme s left join s.department d join d.faculty f join f.organisation o where d.depId=?1 group by d.depId")
+    Tuple countSchemesByDepOfDepId(Long depId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(s) as count FROM Scheme s left join s.department d join d.faculty f join f.organisation o where f.facId=?1 group by d.depId")
+    Set<Tuple> countSchemesByDepOfFacId(Long facId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(s) as count FROM Scheme s left join s.department d join d.faculty f join f.organisation o where o.orgId=?1 group by d.depId")
+    Set<Tuple> countSchemesByDepOfOrgId(Long orgId);
+
+    @Query(value = "SELECT o.name as org, f.name as fac, d.name as dep, count(s) as count FROM Scheme s left join s.department d join d.faculty f join f.organisation o group by d.depId")
+    Set<Tuple> countSchemesByDepOfRatos();
 
 }
