@@ -28,6 +28,7 @@ public class ResultOfStudentSelfDtoTransformer {
                 .setSessionEnded(entity.getSessionEnded())
                 .setSessionLasted(entity.getSessionLasted())
                 .setTimeOuted(entity.isTimeOuted())
+                .setCancelled(entity.isCancelled())
                 .setPoints(entity.isPoints() ? gameService.getPoints(entity.getPercent()): null)
                 .setLMS(entity.getLms().isPresent());
     }

@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @UtilityClass
 public class ResultPredicatesUtils {
+    private static DateTimeFormatter SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -37,8 +39,7 @@ public class ResultPredicatesUtils {
 
     static Optional<Predicate> getSpec(String key, SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
         switch (key) {
-            case "department.faculty":  return getSpecFac(value, root, builder);
-            case "department":  return getSpecDepartment(value, root, builder);
+            case "course": // Alias used to build a report
             case "scheme.course":  return getSpecCourse(value, root, builder);
             case "scheme":  return getSpecScheme(value, root, builder);
             case "student.user.name":  return getSpecName(value, root, builder);
@@ -47,7 +48,9 @@ public class ResultPredicatesUtils {
             case "student.faculty":  return getSpecFaculty(value, root, builder);
             case "student.studentClass":  return getSpecClass(value, root, builder);
             case "student.entranceYear":  return getSpecYear(value, root, builder);
-            case "sessionEnded":  return getSpecEnded(value, root, builder);
+            case "sessionEnded":  return getSpecEnded(value, root, builder); // Used in table filter
+            case "sessionEndedFrom":  return getSpecEndedFrom(value, root, builder); // Used to build a report
+            case "sessionEndedTo":  return getSpecEndedTo(value, root, builder); // Used to build a report
             case "sessionLasted":  return getSpecLasted(value, root, builder);
             case "grade": return getSpecGrade(value, root, builder);
             case "percent": return getSpecPercent(value, root, builder);
@@ -59,48 +62,6 @@ public class ResultPredicatesUtils {
             default: return Optional.empty();
         }
     }
-
-
-    static Optional<Predicate> getSpecOrg(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
-        // 1. FK
-        // 2. Entity = Results->Department->Faculty->Organisation
-        // 3. Comparator always =
-        Object object = value.getFilterVal();
-        if (object != null ) {
-            Long orgId = Long.parseLong((String)object);
-            Predicate orgPredicate = builder.equal(root.get(ResultOfStudent_.department).get(Department_.faculty).get(Faculty_.organisation).get(Organisation_.orgId), orgId);
-            return Optional.of(orgPredicate);
-        }
-        return Optional.empty();
-    }
-
-    static Optional<Predicate> getSpecFac(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
-        // 1. FK
-        // 2. Entity = Results->Department->Faculty
-        // 3. Comparator always =
-        Object object = value.getFilterVal();
-        if (object != null ) {
-            Long facId = Long.parseLong((String)object);
-            Predicate facPredicate = builder.equal(root.get(ResultOfStudent_.department).get(Department_.faculty).get(Faculty_.facId), facId);
-            return Optional.of(facPredicate);
-        }
-        return Optional.empty();
-    }
-
-
-    static Optional<Predicate> getSpecDepartment(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
-        // 1. FK
-        // 2. Entity = Results->Department
-        // 3. Comparator always =
-        Object object = value.getFilterVal();
-        if (object != null ) {
-            Long depId = Long.parseLong((String)object);
-            Predicate departmentPredicate = builder.equal(root.get(ResultOfStudent_.department).get(Department_.depId), depId);
-            return Optional.of(departmentPredicate);
-        }
-        return Optional.empty();
-    }
-
 
     static Optional<Predicate> getSpecCourse(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
         // 1. FK
@@ -236,6 +197,40 @@ public class ResultPredicatesUtils {
                         builder.lessThan(root.get(ResultOfStudent_.sessionEnded), to)
                 );
             }
+            return Optional.ofNullable(datePredicate);
+        }
+        return Optional.empty();
+    }
+
+    static Optional<Predicate> getSpecEndedFrom(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
+        // 1. Date
+        // 2. Entity = Result
+        Object object = value.getFilterVal();
+        if (object != null ) {
+            Map<String, String> map = (Map<String, String>) object;
+            String string = map.get("date");
+            if (string ==null || "".equals(string)) return Optional.empty();
+
+            LocalDate date = LocalDate.parse(string, SIMPLE_FORMATTER);
+            LocalDateTime from = date.atStartOfDay();
+
+            Predicate datePredicate = builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), from);
+            return Optional.ofNullable(datePredicate);
+        }
+        return Optional.empty();
+    }
+
+    static Optional<Predicate> getSpecEndedTo(SpecsFilter value, Root<ResultOfStudent> root, CriteriaBuilder builder) {
+        // 1. Date
+        // 2. Entity = Result
+        Object object = value.getFilterVal();
+        if (object != null ) {
+            Map<String, String> map = (Map<String, String>) object;
+            String string = map.get("date");
+            if (string ==null || "".equals(string)) return Optional.empty();
+            LocalDate date = LocalDate.parse(string, SIMPLE_FORMATTER);
+            LocalDateTime to = date.atStartOfDay();
+            Predicate datePredicate = builder.lessThan(root.get(ResultOfStudent_.sessionEnded), to);
             return Optional.ofNullable(datePredicate);
         }
         return Optional.empty();

@@ -27,7 +27,7 @@ public class FacultyService {
     //-------------------------------------------------Staff (min for drop down)----------------------------------------
     @Transactional(readOnly = true)
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown() {
-        return facultyRepository.findAllByOrgIdForDropDown(securityUtils.getAuthUserId())
+        return facultyRepository.findAllByOrgIdForDropDown(securityUtils.getAuthOrgId())
                 .stream()
                 .map(facultyMinDtoTransformer::toDto)
                 .collect(Collectors.toSet());

@@ -30,6 +30,7 @@ public class ResultOfStudentForStaffDtoTransformer {
                 .setSessionEnded(entity.getSessionEnded())
                 .setSessionLasted(entity.getSessionLasted())
                 .setTimeouted(entity.isTimeOuted())
+                .setCancelled(entity.isCancelled())
                 .setPoints(entity.isPoints() ? gameService.getPoints(entity.getPercent()): null)
                 .setLMS(entity.getLms().isPresent());
     }

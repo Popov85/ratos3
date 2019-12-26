@@ -61,4 +61,6 @@ public class ResultOfStudentController {
     public Page<ResultOfStudentForStaffOutDto> findAllByDepartmentIdAndSpec(@RequestParam final Long depId, @RequestBody  Map<String, SpecsFilter> specs, @PageableDefault(sort = {"sessionEnded"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return resultOfStudentsService.findAllByDepartmentIdAndSpecsAdmin(depId, specs, pageable);
     }
+    //-----------------------------------------------------Report on results--------------------------------------------
+
 }

@@ -27,7 +27,7 @@ public class DepartmentService {
     //-----------------------------------------------Fac. admin (min for drop down)-------------------------------------
     @Transactional(readOnly = true)
     public Set<DepartmentMinOutDto> findAllByFacIdForDropDown() {
-        return departmentRepository.findAllByFacIdForDropDown(securityUtils.getAuthStaffId())
+        return departmentRepository.findAllByFacIdForDropDown(securityUtils.getAuthFacId())
                 .stream()
                 .map(departmentMinDtoTransformer::toDto)
                 .collect(Collectors.toSet());

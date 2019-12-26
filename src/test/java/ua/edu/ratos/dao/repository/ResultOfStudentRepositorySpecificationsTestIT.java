@@ -20,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -62,7 +63,6 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
                 .forEach(r ->{
                     assertTrue("Scheme was not loaded", persistenceUnitUtil.isLoaded(r, "scheme"));
                     assertTrue("Student was not loaded", persistenceUnitUtil.isLoaded(r, "student"));
-                    assertTrue("Department was not loaded", persistenceUnitUtil.isLoaded(r, "department"));
                     assertTrue("User of Staff was not loaded", persistenceUnitUtil.isLoaded(r.getStudent(), "user"));
                 });
     }
@@ -442,6 +442,178 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
                 hasProperty("totalElements", equalTo(1L))));
+    }
+
+    //-----------------------------------------------------Report on results--------------------------------------------
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfRatosForReportBetweenDatesTest() {
+        // Given: all ratos results, between dates "2018-12-20" and "2018-12-31"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        String from = "2018-12-20";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2018-12-31";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofRatosForReport().and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(5));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfOrganisationForReportBetweenDatesTest() {
+        // Given: all orgId=1 results, between dates "2019-01-20" and "2019-01-30"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        String from = "2019-01-20";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2019-01-30";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofOrganisationForReport(1L).and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(4));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfFacultyForReportBetweenDatesTest() {
+        // Given: all facId=1 results, between dates "2019-01-01" and "2019-01-30"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        String from = "2019-01-01";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2019-01-30";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofFacultyForReport(1L).and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(5));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfDepartmentForReportBetweenDatesTest() {
+        // Given: all depId=2 results, between dates "2019-01-01" and "2020-01-01"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        String from = "2019-01-01";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2020-01-01";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartmentForReport(2L).and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(7));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfDepartmentAndCourseForReportBetweenDatesTest() {
+        // Given: all depId=2 results, courseId = 1, between dates "2019-01-01" and "2020-01-01"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("2");
+        specsMap.put("course", specsFilter);
+
+        String from = "2019-01-01";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2020-01-01";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartmentForReport(2L).and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(4));
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllOfDepartmentAndSchemeForReportBetweenDatesTest() {
+        // Given: all depId=2 results, schemeId = 4, between dates "2019-01-01" and "2020-01-01"
+        Map<String, SpecsFilter> specsMap = new HashMap<>();
+
+        SpecsFilter specsFilter = new SpecsFilter();
+        specsFilter.setFilterVal("4");
+        specsMap.put("scheme", specsFilter);
+
+        String from = "2019-01-01";
+        SpecsFilter specsFilterFrom = new SpecsFilter();
+        Map<String, String> dateFrom = new HashMap<>();
+        dateFrom.put("date", from);
+        specsFilterFrom.setFilterVal(dateFrom);
+
+        String to = "2020-01-01";
+        SpecsFilter specsFilterTo = new SpecsFilter();
+        Map<String, String> dateTo = new HashMap<>();
+        dateTo.put("date", to);
+        specsFilterTo.setFilterVal(dateTo);
+
+        specsMap.put("sessionEndedFrom", specsFilterFrom);
+        specsMap.put("sessionEndedTo", specsFilterTo);
+
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartmentForReport(2L).and(hasSpecs(specsMap));
+        List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
+        assertThat("Set of Students Results is not of right size", results, hasSize(2));
     }
 
 }

@@ -64,9 +64,7 @@ public class ReportOnContentService {
     }
 
 
-    @Transactional(readOnly = true)
-    @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public ReportOnContent getReportOnContentByDep(@NonNull final ReportOnContentInDto dto) {
+    private ReportOnContent getReportOnContentByDep(@NonNull final ReportOnContentInDto dto) {
         Long depId = securityUtils.getAuthDepId();
         Map<OrgFacDep, QuantityOfMaterials> map = new HashMap<>();
         if (dto.isCourses()) {
@@ -92,9 +90,7 @@ public class ReportOnContentService {
         return mapToReportConverter(map);
     }
 
-    @Transactional(readOnly = true)
-    @Secured({"ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public ReportOnContent getReportOnContentByFac(@NonNull final ReportOnContentInDto dto) {
+    private ReportOnContent getReportOnContentByFac(@NonNull final ReportOnContentInDto dto) {
         Long facId = securityUtils.getAuthFacId();
         Map<OrgFacDep, QuantityOfMaterials> map = initMapForFac();
 
@@ -121,9 +117,8 @@ public class ReportOnContentService {
         return mapToReportConverter(map);
     }
 
-    @Secured({"ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    @Transactional(readOnly = true)
-    public ReportOnContent getReportOnContentByOrg(@NonNull final ReportOnContentInDto dto) {
+
+    private ReportOnContent getReportOnContentByOrg(@NonNull final ReportOnContentInDto dto) {
         Long orgId = securityUtils.getAuthOrgId();
         Map<OrgFacDep, QuantityOfMaterials> map = initMapForOrg();
         if (dto.isCourses()) {
@@ -149,9 +144,7 @@ public class ReportOnContentService {
         return mapToReportConverter(map);
     }
 
-    @Secured({"ROLE_GLOBAL-ADMIN"})
-    @Transactional(readOnly = true)
-    public ReportOnContent getReportOnContentByRatos(@NonNull final ReportOnContentInDto dto) {
+    private ReportOnContent getReportOnContentByRatos(@NonNull final ReportOnContentInDto dto) {
         Map<OrgFacDep, QuantityOfMaterials> map = initMapForRatos();
         if (dto.isCourses()) {
             Set<Tuple> tuplesOfCourses = courseRepository.countCoursesByDepOfRatos();
