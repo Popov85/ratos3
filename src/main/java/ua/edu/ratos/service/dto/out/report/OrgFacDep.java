@@ -25,7 +25,6 @@ public class OrgFacDep {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(org, fac, dep);
     }
 }

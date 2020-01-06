@@ -12,4 +12,10 @@ public interface FacultyRepository extends JpaRepository<Faculty, Long> {
 
     @Query(value="select new Faculty(f.facId, f.name) from Faculty f join f.organisation o where o.orgId = ?1")
     Set<Faculty> findAllByOrgIdForDropDown(Long orgId);
+
+    @Query(value="select f from Faculty f join fetch f.organisation o where o.orgId = ?1")
+    Set<Faculty> findAllByOrgIdForTable(Long orgId);
+
+    @Query(value="select f from Faculty f join fetch f.organisation o")
+    Set<Faculty> findAllByRatosForTable();
 }

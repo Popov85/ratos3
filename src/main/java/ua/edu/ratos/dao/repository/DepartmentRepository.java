@@ -14,6 +14,15 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query(value = "SELECT new Department(d.depId, d.name) FROM Department d join d.faculty f where f.facId =?1")
     Set<Department> findAllByFacIdForDropDown(Long facId);
 
+    //-----------------------------------------------------For table----------------------------------------------------
+    @Query(value = "SELECT d FROM Department d join fetch d.faculty f join fetch f.organisation o where f.facId =?1")
+    Set<Department> findAllByFacIdForTable(Long facId);
+
+    @Query(value = "SELECT d FROM Department d join fetch d.faculty f join fetch f.organisation o where o.orgId =?1")
+    Set<Department> findAllByOrgIdForTable(Long orgId);
+
+    @Query(value = "SELECT d FROM Department d join fetch d.faculty f join fetch f.organisation o")
+    Set<Department> findAllByRatosForTable();
 
     //-----------------------------------------------------Reports------------------------------------------------------
 

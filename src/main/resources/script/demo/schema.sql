@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS faculty ;
 CREATE TABLE IF NOT EXISTS faculty (
   fac_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   org_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (fac_id),
   INDEX fk_faculty_organisation1_idx (org_id ASC),
@@ -44,6 +45,7 @@ DROP TABLE IF EXISTS department ;
 CREATE TABLE IF NOT EXISTS department (
   dep_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   fac_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (dep_id),
   INDEX fk_department_faculty_fac_id_idx (fac_id ASC),

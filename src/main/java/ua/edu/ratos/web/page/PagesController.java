@@ -20,7 +20,7 @@ public class PagesController {
 
     @GetMapping("/department/**")
     public String getStaffPage() {
-        log.debug("Requested staff page");
+        //log.debug("Requested staff page");
         return "staff";
     }
 

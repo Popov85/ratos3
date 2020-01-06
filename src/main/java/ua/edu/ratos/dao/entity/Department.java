@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Getter
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @ToString(exclude = {"faculty"})
 @Entity
 @Table(name = "department")
+@Where(clause = "is_deleted = 0")
 @NoArgsConstructor
 public class Department {
 
@@ -32,4 +35,7 @@ public class Department {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fac_id")
     protected Faculty faculty;
+
+    @Column(name = "is_deleted")
+    private boolean deleted;
 }

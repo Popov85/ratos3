@@ -73,7 +73,7 @@ public class QuestionController {
         return ResponseEntity.created(location).build();
     }
 
-    // For bulk doGameProcessing via file (as for now only applicable to MCQ)
+    // For bulk question processing via file (as for now only applicable to MCQ)
     @PostMapping(value = "/questions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public QuestionsParsingResultOutDto saveAll(@RequestParam("file") MultipartFile multipartFile,
                                                 @RequestParam Long themeId, @RequestParam Long langId,
