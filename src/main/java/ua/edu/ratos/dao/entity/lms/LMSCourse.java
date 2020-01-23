@@ -18,7 +18,7 @@ public class LMSCourse {
     private Long courseId;
 
     @MapsId
-    @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne
     @JoinColumn(name = "course_id")
     private Course course;
 

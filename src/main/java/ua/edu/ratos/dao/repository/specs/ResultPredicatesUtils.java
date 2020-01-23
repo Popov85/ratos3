@@ -9,8 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,11 @@ import java.util.Optional;
 
 @UtilityClass
 public class ResultPredicatesUtils {
+
+    // This is how exactly react-datepicker component sends dates to server
     private static DateTimeFormatter SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    // This format is exactly how react-bootstrap-tables2 component sends date from its Date filter in remote mode!
     private static DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 
@@ -180,18 +182,24 @@ public class ResultPredicatesUtils {
             Map<String, String> map = (Map<String, String>) object;
             String string = map.get("date");
             if (string ==null || "".equals(string)) return Optional.empty();
-            LocalDateTime date = LocalDateTime.parse(string, DEFAULT_FORMATTER);
+
+            LocalDateTime dateTime= LocalDateTime.parse(string, DEFAULT_FORMATTER);
+
+            final ZoneId zone = ZoneId.systemDefault();
+            ZoneOffset zoneOffSet = zone.getRules().getOffset(dateTime);
+            OffsetDateTime offsetDateTime = dateTime.atOffset(zoneOffSet);
+
             // Decide which comparator to use:
             String type = map.get("comparator");
             Predicate datePredicate;
             if ("<".equals(type)) {
-                datePredicate = builder.lessThan(root.get(ResultOfStudent_.sessionEnded), date);
+                datePredicate = builder.lessThan(root.get(ResultOfStudent_.sessionEnded), offsetDateTime);
             } else if (">".equals(type)) {
-                datePredicate = builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), date);
+                datePredicate = builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), offsetDateTime);
             } else { // =
                 // From 00:00 to 23:59 this day
-                LocalDateTime from = date;
-                LocalDateTime to = date.plusHours(24);
+                OffsetDateTime from = offsetDateTime;
+                OffsetDateTime to = offsetDateTime.plusHours(24);
                 datePredicate = builder.and(
                         builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), from),
                         builder.lessThan(root.get(ResultOfStudent_.sessionEnded), to)
@@ -214,7 +222,11 @@ public class ResultPredicatesUtils {
             LocalDate date = LocalDate.parse(string, SIMPLE_FORMATTER);
             LocalDateTime from = date.atStartOfDay();
 
-            Predicate datePredicate = builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), from);
+            final ZoneId zone = ZoneId.systemDefault();
+            ZoneOffset zoneOffSet = zone.getRules().getOffset(from);
+            OffsetDateTime offsetFrom = from.atOffset(zoneOffSet);
+
+            Predicate datePredicate = builder.greaterThan(root.get(ResultOfStudent_.sessionEnded), offsetFrom);
             return Optional.ofNullable(datePredicate);
         }
         return Optional.empty();
@@ -230,7 +242,12 @@ public class ResultPredicatesUtils {
             if (string ==null || "".equals(string)) return Optional.empty();
             LocalDate date = LocalDate.parse(string, SIMPLE_FORMATTER);
             LocalDateTime to = date.atStartOfDay();
-            Predicate datePredicate = builder.lessThan(root.get(ResultOfStudent_.sessionEnded), to);
+
+            final ZoneId zone = ZoneId.systemDefault();
+            ZoneOffset zoneOffSet = zone.getRules().getOffset(to);
+            OffsetDateTime offsetTo = to.atOffset(zoneOffSet);
+
+            Predicate datePredicate = builder.lessThan(root.get(ResultOfStudent_.sessionEnded), offsetTo);
             return Optional.ofNullable(datePredicate);
         }
         return Optional.empty();

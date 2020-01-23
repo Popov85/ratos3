@@ -157,6 +157,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        page.getContent().forEach(System.out::println);
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),

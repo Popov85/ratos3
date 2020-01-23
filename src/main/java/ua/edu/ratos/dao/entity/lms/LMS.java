@@ -1,6 +1,7 @@
 package ua.edu.ratos.dao.entity.lms;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,7 +18,13 @@ import javax.persistence.*;
 @Table(name = "lms")
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
+@NoArgsConstructor
 public class LMS {
+
+    public LMS(Long lmsId, String name) {
+        this.lmsId = lmsId;
+        this.name = name;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

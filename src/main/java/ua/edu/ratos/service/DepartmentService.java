@@ -38,19 +38,21 @@ public class DepartmentService {
 
 
     @Transactional
-    public Long save(@NonNull final DepartmentInDto dto) {
+    public DepartmentOutDto save(@NonNull final DepartmentInDto dto) {
         Department department = dtoDepartmentTransformer.toEntity(dto);
         checkModificationPossibility(department);
-        return departmentRepository.save(department).getDepId();
+        department = departmentRepository.save(department);
+        return departmentDtoTransformer.toDto(department);
     }
 
     @Transactional
-    public Long update(@NonNull final DepartmentInDto dto) {
+    public DepartmentOutDto update(@NonNull final DepartmentInDto dto) {
         if (dto.getDepId()==null)
             throw new RuntimeException("Failed to update, nullable depId field");
         Department department = dtoDepartmentTransformer.toEntity(dto);
         checkModificationPossibility(department);
-        return departmentRepository.save(department).getDepId();
+        department = departmentRepository.save(department);
+        return departmentDtoTransformer.toDto(department);
     }
 
     @Transactional
@@ -61,7 +63,6 @@ public class DepartmentService {
         department.setName(name);
     }
 
-
     @Transactional
     public void deleteById(@NonNull final Long depId) {
         Department department = departmentRepository.findById(depId)
@@ -70,7 +71,6 @@ public class DepartmentService {
         departmentRepository.delete(department);
         log.warn("Department is to be removed, depId= {}", depId);
     }
-
 
     /**
      * Only Global admin, org. admin and fac. admin have access to these CRUD operations.

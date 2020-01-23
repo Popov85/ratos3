@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.out.criteria;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeWithCourseMinOutDto;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -28,7 +30,8 @@ public class ResultOfStudentForStaffOutDto {
 
     private boolean passed;
 
-    private LocalDateTime sessionEnded;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
+    private OffsetDateTime sessionEnded;
 
     private long sessionLasted;
 

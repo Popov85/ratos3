@@ -26,7 +26,7 @@ import ua.edu.ratos.service.transformer.entity_to_dto.StaffMinDtoTransformer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -55,21 +55,21 @@ public class StaffService {
 
     private final StaffMinDtoTransformer staffMinDtoTransformer;
 
-
     private final SecurityUtils securityUtils;
 
 
     // Here comes logic to send email to provided address with password
     @Transactional
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public Long save(@NonNull final StaffInDto dto) {
+    public StaffOutDto save(@NonNull final StaffInDto dto) {
         Staff staff = dtoStaffTransformer.toEntity(dto);
-        return staffRepository.save(staff).getStaffId();
+        Staff result = staffRepository.save(staff);
+        return staffDtoTransformer.toDto(result);
     }
 
     @Transactional
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public void update(@NonNull final StaffUpdInDto dto) {
+    public StaffOutDto update(@NonNull final StaffUpdInDto dto) {
         Long staffId = dto.getStaffId();
         if (staffId == null) throw new RuntimeException("Failed to update staff, staffId is required");
         Staff staff = staffRepository.findById(staffId).orElseThrow(() ->
@@ -83,35 +83,14 @@ public class StaffService {
         user.replaceRole(role);
         user.setActive(dto.isActive());
         staff.setPosition(em.getReference(Position.class, dto.getPositionId()));
-    }
-
-    @Transactional
-    @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public void updateRole(@NonNull final Long staffId, @NonNull final String role) {
-        // Check role change possibility!
-        String authRole = securityUtils.getAuthRole();
-        if (!securityUtils.isRoleGreater(authRole, role))
-            throw new SecurityException("Role to be set is greater then your current role!");
-        User user = userRepository.findById(staffId).orElseThrow(() -> new EntityNotFoundException(STAFF_NOT_FOUND));
-        // TODO: Check if you can change role of this user?
-        user.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByName(role).orElseThrow(()->
-                new EntityNotFoundException("ROLE is not found")))));
-    }
-
-    @Transactional
-    @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public void updatePosition(@NonNull final Long staffId, @NonNull final Long positionId) {
-        staffRepository.findById(staffId).orElseThrow(()->new EntityNotFoundException(STAFF_NOT_FOUND))
-                .setPosition(em.getReference(Position.class, positionId));
-    }
-
-    //---------------------------------------------------One (for edit)-------------------------------------------------
-    @Transactional(readOnly = true)
-    @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
-    public StaffOutDto findOneForEdit(@NonNull final Long staffId) {
-        Staff staff = staffRepository.findOneForEdit(staffId)
-                .orElseThrow(() -> new EntityNotFoundException("Staff is not found, staffId = " + staffId));
         return staffDtoTransformer.toDto(staff);
+    }
+
+    @Transactional
+    @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
+    public void delete(@NonNull final Long staffId) {
+        staffRepository.deleteById(staffId);
+        userRepository.deleteById(staffId);
     }
 
     //---------------------------------------------------One (min for DTOs)---------------------------------------------

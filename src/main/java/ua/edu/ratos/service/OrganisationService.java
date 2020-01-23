@@ -23,7 +23,6 @@ public class OrganisationService {
 
     private static final String ORG_NOT_FOUND = "Requested organisation is not found, orgId = ";
 
-
     private final OrganisationRepository organisationRepository;
 
     private final DtoOrganisationTransformer dtoOrganisationTransformer;
@@ -32,18 +31,19 @@ public class OrganisationService {
 
 
     @Transactional
-    public Long save(@NonNull final OrganisationInDto dto) {
+    public OrganisationMinOutDto save(@NonNull final OrganisationInDto dto) {
         Organisation organisation = dtoOrganisationTransformer.toEntity(dto);
-        return organisationRepository.save(organisation).getOrgId();
+        organisation = organisationRepository.save(organisation);
+        return organisationMinDtoTransformer.toDto(organisation);
     }
 
     @Transactional
-    public void update(@NonNull final OrganisationInDto dto) {
+    public OrganisationMinOutDto update(@NonNull final OrganisationInDto dto) {
         if (dto.getOrgId()==null)
             throw new RuntimeException("Failed to update, nullable orgId field");
         Organisation organisation = dtoOrganisationTransformer.toEntity(dto);
-        organisationRepository.save(organisation);
-        return;
+        organisation = organisationRepository.save(organisation);
+        return organisationMinDtoTransformer.toDto(organisation);
     }
 
     @Transactional
@@ -58,6 +58,8 @@ public class OrganisationService {
         log.warn("Organisation is to be removed, orgId= {}", orgId);
         organisationRepository.deleteById(orgId);
     }
+
+    //---------------------------------------------------Sets-----------------------------------------------------------
 
     @Transactional(readOnly = true)
     public Set<OrganisationMinOutDto> findAllOrganisationsForDropDown() {

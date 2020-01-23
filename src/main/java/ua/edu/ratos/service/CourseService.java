@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Access;
 import ua.edu.ratos.dao.entity.Course;
+import ua.edu.ratos.dao.entity.lms.LMS;
+import ua.edu.ratos.dao.entity.lms.LMSCourse;
 import ua.edu.ratos.dao.repository.CourseRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.CourseInDto;
+import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoCourseTransformer;
@@ -46,11 +48,41 @@ public class CourseService {
     private final SecurityUtils securityUtils;
 
 
-    //-----------------------------------------------------CRUD---------------------------------------------------------
+
     @Transactional
-    public Long save(@NonNull final CourseInDto dto) {
-        return dtoCourseTransformer.toEntity(dto).getCourseId();
+    public CourseOutDto save(@NonNull final CourseInDto dto) {
+        Course course = dtoCourseTransformer.toEntity(dto);
+        Course result = courseRepository.save(course);
+        return courseDtoTransformer.toDto(result);
     }
+
+    @Transactional
+    public CourseOutDto save(@NonNull final LMSCourseInDto dto) {
+        Course course = dtoCourseTransformer.toLMSEntity(dto);
+        Course result = courseRepository.save(course);
+        return courseDtoTransformer.toDto(result);
+    }
+
+    @Transactional
+    public CourseOutDto update(@NonNull final CourseInDto dto) {
+        if (dto.getCourseId()==null)
+            throw new RuntimeException("Failed to update, courseId is nullable!");
+        Course course = checkModificationPossibility(dto.getCourseId());
+        course = dtoCourseTransformer.toEntity(course, dto);
+        Course result = courseRepository.save(course);
+        return courseDtoTransformer.toDto(result);
+    }
+
+    @Transactional
+    public CourseOutDto update(@NonNull final LMSCourseInDto dto) {
+        if (dto.getCourseId()==null)
+            throw new RuntimeException("Failed to update LMS course, courseId is nullable!");
+        Course course = checkModificationPossibility(dto.getCourseId());
+        course = dtoCourseTransformer.toLMSEntity(course, dto);
+        Course result = courseRepository.save(course);
+        return courseDtoTransformer.toDto(result);
+    }
+
 
     @Transactional
     public void updateName(@NonNull final Long courseId, @NonNull final String name) {
@@ -67,21 +99,52 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteById(@NonNull final Long courseId) {
+    public void activateById(@NonNull final Long courseId) {
+        checkModificationPossibility(courseId);
+        courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
+                .setDeleted(false);
+    }
+
+    @Transactional
+    public void deactivateById(@NonNull final Long courseId) {
         checkModificationPossibility(courseId);
         courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
                 .setDeleted(true);
     }
 
-    private void checkModificationPossibility(@NonNull final Long courseId) {
-        Course course = courseRepository.findForSecurityById(courseId);
-        accessChecker.checkModifyAccess(course.getAccess(), course.getStaff());
+    @Transactional
+    public void associateWithLMS(@NonNull final Long courseId, @NonNull final Long lmsId) {
+        checkModificationPossibility(courseId);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException(COURSE_NOT_FOUND));
+        LMSCourse lmsCourse = new LMSCourse();
+        lmsCourse.setCourseId(courseId);
+        lmsCourse.setCourse(course);
+        lmsCourse.setLms(em.getReference(LMS.class, lmsId));
+        course.setLmsCourse(lmsCourse);
     }
 
-    //-----------------------------------------------------One (for update)---------------------------------------------
-    @Transactional(readOnly = true)
-    public CourseOutDto findByIdForUpdate(@NonNull final Long courseId) {
-        return courseDtoTransformer.toDto(courseRepository.findForEditById(courseId));
+    @Transactional
+    public void disassociateWithLMS(@NonNull final Long courseId) {
+        checkModificationPossibility(courseId);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException(COURSE_NOT_FOUND));
+        LMSCourse lmsCourse = course.getLmsCourse();
+        lmsCourse.setCourse(null);
+        course.setLmsCourse(null);
+    }
+
+    @Transactional
+    public void deleteById(@NonNull final Long courseId) {
+        checkModificationPossibility(courseId);
+        courseRepository.deleteById(courseId);
+    }
+
+    private Course checkModificationPossibility(@NonNull final Long courseId) {
+        Course course= courseRepository.findForSecurityById(courseId)
+                .orElseThrow(()->new EntityNotFoundException(COURSE_NOT_FOUND + courseId));
+        accessChecker.checkModifyAccess(course.getAccess(), course.getStaff());
+        return course;
     }
 
     //-------------------------------------------------Staff (min for drop down)----------------------------------------
@@ -110,54 +173,23 @@ public class CourseService {
                 .collect(Collectors.toSet());
     }
 
-    //-----------------------------------------------------Staff (for table)--------------------------------------------
-
+    //---------------------------------------------------Staff (table)--------------------------------------------------
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return courseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(courseDtoTransformer::toDto);
+    public Set<CourseOutDto> findAllForTableByDepartment() {
+        return courseRepository.findAllForTableByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(courseDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return courseRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(courseDtoTransformer::toDto);
+    public Set<CourseOutDto> findAllForTableByDepartmentId(@NonNull Long depId) {
+        return courseRepository.findAllForTableByDepartmentId(depId)
+                .stream()
+                .map(courseDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
-    //-----------------------------------------------------Search in table----------------------------------------------
-    @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return courseRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
-        return courseRepository.findAllByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<CourseOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return courseRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
-        return courseRepository.findAllByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
-    }
-
-    //---------------------------------------------------SLICE drop-down------------------------------------------------
-    @Transactional(readOnly = true)
-    public Slice<CourseOutDto> findAllForDropDownByStaffId(@NonNull final Pageable pageable) {
-        return courseRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId(), pageable).map(courseDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<CourseOutDto> findAllForDropDownByDepartmentId(@NonNull final Pageable pageable) {
-        return courseRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId(), pageable).map(courseDtoTransformer::toDto);
-    }
-
-    //-------------------------------------------------Search in drop-down----------------------------------------------
-    @Transactional(readOnly = true)
-    public Slice<CourseOutDto> findAllForDropDownByStaffIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return courseRepository.findAllForDropDownByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
-        return courseRepository.findAllForDropDownByStaffIdAndNameStarts(securityUtils.getAuthStaffId(), letters, pageable).map(courseDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<CourseOutDto> findAllForDropDownByDepartmentIdAndName(@NonNull final String letters, boolean contains, @NonNull final Pageable pageable) {
-        if (contains) return courseRepository.findAllForDropDownByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
-        return courseRepository.findAllForDropDownByDepartmentIdAndNameStarts(securityUtils.getAuthDepId(), letters, pageable).map(courseDtoTransformer::toDto);
-    }
 
     //-----------------------------------------------Admin (for simple table)-------------------------------------------
     @Transactional(readOnly = true)

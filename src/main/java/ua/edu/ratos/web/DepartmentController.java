@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.DepartmentService;
 import ua.edu.ratos.service.dto.in.DepartmentInDto;
+import ua.edu.ratos.service.dto.in.patch.StringInDto;
 import ua.edu.ratos.service.dto.out.DepartmentMinOutDto;
 import ua.edu.ratos.service.dto.out.DepartmentOutDto;
 
@@ -21,24 +23,23 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @PostMapping(value = "/fac-admin/departments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Long save(@Valid @RequestBody DepartmentInDto dto) {
-        final Long depId = departmentService.save(dto);
-        log.debug("Saved Department, depId = {}", depId);
-        return depId;
+    public ResponseEntity<DepartmentOutDto> save(@Valid @RequestBody DepartmentInDto dto) {
+        DepartmentOutDto departmentOutDto = departmentService.save(dto);
+        log.debug("Saved Department, depId = {}", departmentOutDto.getDepId());
+        return ResponseEntity.ok().body(departmentOutDto);
     }
 
     @PutMapping(value = "/fac-admin/departments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Long update(@Valid @RequestBody DepartmentInDto dto) {
-        final Long depId = departmentService.update(dto);
-        log.debug("Updated Department, depId = {}", depId);
-        return depId;
+    public ResponseEntity<DepartmentOutDto> update(@Valid @RequestBody DepartmentInDto dto) {
+        DepartmentOutDto departmentOutDto = departmentService.update(dto);
+        log.debug("Updated Department, depId = {}", departmentOutDto.getDepId());
+        return ResponseEntity.ok().body(departmentOutDto);
     }
 
     @PatchMapping(value = "/fac-admin/departments/{depId}/name")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateName(@PathVariable Long depId, @RequestParam String name) {
+    public void updateName(@PathVariable Long depId, @Valid @RequestBody StringInDto dto) {
+        String name = dto.getValue();
         departmentService.updateName(depId, name);
         log.debug("Updated Department's name depId = {}, new name = {}", depId, name);
     }

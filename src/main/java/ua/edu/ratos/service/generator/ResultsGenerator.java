@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.Student;
 import ua.edu.ratos.dao.repository.ResultRepository;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ResultsGenerator {
         result.setGrade(5);
         result.setPassed(true);
         result.setPercent(rnd.rnd(80, 100));
-        result.setSessionEnded(LocalDateTime.now().minusMinutes(rnd.rnd(1000, 10000)));
+        result.setSessionEnded(OffsetDateTime.now().minusMinutes(rnd.rnd(1000, 10000)));
         result.setTimeOuted(false);
         result.setCancelled(false);
         result.setSessionLasted(rnd.rnd(100, 1500));

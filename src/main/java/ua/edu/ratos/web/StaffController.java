@@ -9,14 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.StaffService;
 import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.StaffUpdInDto;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Set;
 
 @Slf4j
@@ -27,39 +25,24 @@ public class StaffController {
     private final StaffService staffService;
 
     @PostMapping(value = "/dep-admin/staff", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody StaffInDto dto) {
-        final Long staffForTableId = staffService.save(dto);
-        log.debug("Saved Staff, staffId = {}", staffForTableId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(staffForTableId).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<StaffOutDto> save(@Valid @RequestBody StaffInDto dto) {
+        StaffOutDto staffOutDto = staffService.save(dto);
+        log.debug("Saved Staff, staffId = {}", staffOutDto.getStaffId());
+        return ResponseEntity.ok().body(staffOutDto);
     }
 
     @PutMapping(value = "/dep-admin/staff", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody StaffUpdInDto dto) {
-        staffService.update(dto);
-        log.debug("Updated Staff, staffId = {}", dto.getStaffId());
+    public ResponseEntity<StaffOutDto> update(@Valid @RequestBody StaffUpdInDto dto) {
+        StaffOutDto staffOutDto = staffService.update(dto);
+        log.debug("Updated Staff, staffId = {}", staffOutDto.getStaffId());
+        return ResponseEntity.ok().body(staffOutDto);
     }
 
-    @PutMapping(value = "/dep-admin/staff/{staffId}/update-position")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updatePosition(@PathVariable Long staffId, @RequestParam Long positionId) {
-        staffService.updatePosition(staffId, positionId);
-        log.debug("Updated Staff's position, staffId = {}, new positionId = {}", staffId, positionId);
-    }
-
-    @PutMapping(value = "/dep-admin/staff/{staffId}/update-role")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateRole(@PathVariable Long staffId, @RequestParam String role) {
-        staffService.updateRole(staffId, role);
-        log.debug("Updated Staff's role, staffId = {}, new role = {}", staffId, role);
-    }
-
-    //-------------------------------------------------ONE--------------------------------------------------------------
-    @GetMapping(value = "/dep-admin/staff/{staffId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StaffOutDto> findOne(@PathVariable Long staffId) {
-        StaffOutDto dto = staffService.findOneForEdit(staffId);
-        log.debug("Retrieved Staff = {}", dto);
-        return ResponseEntity.ok(dto);
+    @DeleteMapping("/dep-admin/staff/{staffId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long staffId) {
+        staffService.delete(staffId);
+        log.debug("Deleted Staff, staffId = {}", staffId);
     }
 
     //-----------------------------------------------Admin table--------------------------------------------------------
@@ -73,7 +56,6 @@ public class StaffController {
         return staffService.findAllByFacultyId();
     }
 
-
     @GetMapping(value = "/org-admin/staff-table/all-staff-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<StaffOutDto> findAllByOrganisationId() {
         return staffService.findAllByOrganisationId();
@@ -83,14 +65,6 @@ public class StaffController {
     public Set<StaffOutDto> findAllByRatosId() {
         return staffService.findAllByRatos();
     }
-
-
-
-
-
-
-
-
 
 
 

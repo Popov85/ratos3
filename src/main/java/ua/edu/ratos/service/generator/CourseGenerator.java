@@ -11,6 +11,7 @@ import ua.edu.ratos.dao.repository.CourseRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class CourseGenerator {
     private Course createOne(int i, Department department) {
         Course course = new Course();
         course.setName("Course_#"+i);
-        course.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
+        course.setCreated(OffsetDateTime.now().minusDays(rnd.rnd(1, 1000)));
         course.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
         course.setStaff(em.getReference(Staff.class, 1L));
         course.setDepartment(department);

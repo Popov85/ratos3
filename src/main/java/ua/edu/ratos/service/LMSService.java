@@ -12,13 +12,18 @@ import ua.edu.ratos.dao.entity.lms.LTIVersion;
 import ua.edu.ratos.dao.repository.lms.LMSRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.LMSInDto;
+import ua.edu.ratos.service.dto.out.CourseMinOutDto;
+import ua.edu.ratos.service.dto.out.LMSMinOutDto;
 import ua.edu.ratos.service.dto.out.LMSOutDto;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoLMSTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.LMSDtoTransformer;
+import ua.edu.ratos.service.transformer.entity_to_dto.LMSMinDtoTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,12 +40,23 @@ public class LMSService {
 
     private final LMSDtoTransformer lmsDtoTransformer;
 
+    private final LMSMinDtoTransformer lmsMinDtoTransformer;
+
+
     private final SecurityUtils securityUtils;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
     public Long save(@NonNull final LMSInDto dto) {
         return lmsRepository.save(dtoLMSTransformer.toEntity(dto)).getLmsId();
+    }
+
+    @Transactional
+    public void update (@NonNull final LMSInDto dto) {
+        if (dto.getLmsId()==null)
+            throw new RuntimeException("Failed to update, lmsId is nullable");
+        lmsRepository.save(dtoLMSTransformer.toEntity(dto));
+        return;
     }
 
     @Transactional
@@ -73,22 +89,32 @@ public class LMSService {
                 .setDeleted(true);
     }
 
-    //-----------------------------------------------------One (for edit)-----------------------------------------------
+    //-----------------------------------------------------Staff drop-down----------------------------------------------
+
     @Transactional(readOnly = true)
-    public LMSOutDto findOneForEdit(@NonNull final Long lmsId) {
-        return lmsDtoTransformer.toDto(lmsRepository.findOneForEditById(lmsId)
-                .orElseThrow(() -> new EntityNotFoundException(LMS_NOT_FOUND + lmsId)));
+    public Set<LMSMinOutDto> findAllForDropdownByOrganisation() {
+        return lmsRepository.findAllForDropdownByOrgId(securityUtils.getAuthOrgId())
+                .stream()
+                .map(lmsMinDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //-----------------------------------------------------ORG admin table----------------------------------------------
+
     @Transactional(readOnly = true)
-    public Slice<LMSOutDto> findAllByOrgId(@NonNull final Pageable pageable) {
-        return lmsRepository.findAllByOrgId(securityUtils.getAuthOrgId(), pageable).map(lmsDtoTransformer::toDto);
+    public Set<LMSOutDto> findAllForTableByOrganisation() {
+        return lmsRepository.findAllForTableByOrgId(securityUtils.getAuthOrgId())
+                .stream()
+                .map(lmsDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)
-    public Slice<LMSOutDto> findAllByOrgIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return lmsRepository.findAllByOrgIdAndNameLettersContains(securityUtils.getAuthOrgId(), letters, pageable).map(lmsDtoTransformer::toDto);
+    public Set<LMSOutDto> findAllForTableByOrganisationId(@NonNull final Long orgId) {
+        return lmsRepository.findAllForDropdownByOrgId(orgId)
+                .stream()
+                .map(lmsDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     //--------------------------------------------------------ADMIN table-----------------------------------------------

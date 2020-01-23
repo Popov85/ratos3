@@ -20,7 +20,7 @@ public class FacultyInDto {
     private Long facId;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 3, max = 100, message = "{dto.string.invalid}")
+    @Size(min = 5, max = 300, message = "{dto.string.invalid}")
     private String name;
 
     @Positive(message = "{dto.fk.required}")

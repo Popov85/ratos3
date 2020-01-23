@@ -33,58 +33,9 @@ public class LMSCourseRepositoryTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findOneForEditTest() {
-        Optional<LMSCourse> optional = lmsCourseRepository.findForEditById(1L);
-        assertTrue("Course was not found with courseId = 1L", optional.isPresent());
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findForSecurityByIdTest() {
         Optional<LMSCourse> optional = lmsCourseRepository.findForSecurityById(1L);
         assertTrue("Course was not found with courseId = 1L", optional.isPresent());
-    }
-
-    @Test(timeout = 10000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdTest() {
-        assertThat("Page of LMSCourse is not of size = 5",
-                lmsCourseRepository.findAllByStaffId(1L, PageRequest.of(0, 100)).getContent(), hasSize(5));
-    }
-
-    @Test(timeout = 10000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdTest() {
-        assertThat("Page of LMSCourse is not of size = 5",
-                lmsCourseRepository.findAllByDepartmentId(2L, PageRequest.of(0, 100)).getContent(), hasSize(5));
-    }
-
-    @Test(timeout = 10000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameContainsTest() {
-        assertThat("Page of LMSCourse is not of size = 1",
-                lmsCourseRepository.findAllByStaffIdAndNameLettersContains(1L, "edX", PageRequest.of(0, 100)).getContent(), hasSize(1));
-    }
-
-    @Test(timeout = 10000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameContainsTest() {
-        assertThat("Page of LMSCourse is not of size = 1",
-                lmsCourseRepository.findAllByDepartmentIdAndNameLettersContains(2L, "lti", PageRequest.of(0, 100)).getContent(), hasSize(1));
-    }
-
-    //----------------------------------------------------ADMIN---------------------------------------------------------
-    @Test(timeout = 10000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllAdminTest() {
-        assertThat("Page of LMSCourse is not of size = 10",
-                lmsCourseRepository.findAll(PageRequest.of(0, 50)).getContent(), hasSize(10));
     }
 
     //---------------------------------------------REPORT on content----------------------------------------------------
@@ -136,9 +87,15 @@ public class LMSCourseRepositoryTestIT {
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void countLMSCoursesByDepOfRatos() {
         Set<Tuple> coursesByDeps = lmsCourseRepository.countLMSCoursesByDepOfRatos();
-        /*for (Tuple coursesByDep : coursesByDeps) {
-            log.debug("Org = {}, Fac = {}, Dep = {}, count = {}", coursesByDep.get("org"), coursesByDep.get("fac"), coursesByDep.get("dep"), coursesByDep.get("count"));
-        }*/
         assertThat("Count tuple of courses by dep is not of right size", coursesByDeps, hasSize(2));
+    }
+
+    //----------------------------------------------------ADMIN---------------------------------------------------------
+    @Test(timeout = 10000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/course_lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllAdminTest() {
+        assertThat("Page of LMSCourse is not of size = 10",
+                lmsCourseRepository.findAll(PageRequest.of(0, 50)).getContent(), hasSize(10));
     }
 }

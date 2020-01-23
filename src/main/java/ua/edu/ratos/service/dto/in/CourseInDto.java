@@ -1,7 +1,10 @@
 package ua.edu.ratos.service.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -15,9 +18,11 @@ public class CourseInDto {
     private Long courseId;
 
     @NotBlank( message = "{dto.string.required}")
-    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    @Size(min = 5, max = 300, message = "{dto.string.invalid}")
     private String name;
 
     @Positive(message = "{dto.fk.required}")
     private long accessId;
+
+    private boolean active;
 }

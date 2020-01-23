@@ -14,7 +14,7 @@ import ua.edu.ratos.service.domain.ResultDomain;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class ResultService {
         r.setGrade(resultDomain.getGrade());
         r.setPercent(resultDomain.getPercent());
         r.setSessionLasted(resultDomain.getTimeSpent());
-        r.setSessionEnded(LocalDateTime.now());
+        r.setSessionEnded(OffsetDateTime.now());
         r.setTimeOuted(resultDomain.isTimeOuted());
         r.setCancelled(resultDomain.isCancelled());
         resultDomain.getThemeResults().forEach(t -> {

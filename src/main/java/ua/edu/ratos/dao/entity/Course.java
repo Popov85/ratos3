@@ -6,16 +6,16 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Where;
+import ua.edu.ratos.dao.entity.lms.LMSCourse;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
 @ToString(exclude = {"staff", "department", "access"})
 @Entity
 @Table(name = "course")
-@Where(clause = "is_deleted = 0")
 @DynamicUpdate
 @NoArgsConstructor
 public class Course {
@@ -34,8 +34,8 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "created")
-    private LocalDateTime created;
+    @Column(name = "created", updatable = false)
+    private OffsetDateTime created;
 
     @Column(name="is_deleted")
     private boolean deleted;
@@ -53,4 +53,7 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_id")
     private Access access;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+    private LMSCourse lmsCourse;
 }

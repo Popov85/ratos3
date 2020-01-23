@@ -38,19 +38,21 @@ public class FacultyService {
 
 
     @Transactional
-    public Long save(@NonNull final FacultyInDto dto) {
+    public FacultyOutDto save(@NonNull final FacultyInDto dto) {
         checkModificationPossibility(dto.getOrgId());
         Faculty faculty = dtoFacultyTransformer.toEntity(dto);
-        return facultyRepository.save(faculty).getFacId();
+        faculty = facultyRepository.save(faculty);
+        return facultyDtoTransformer.toDto(faculty);
     }
 
     @Transactional
-    public Long update(@NonNull final FacultyInDto dto) {
+    public FacultyOutDto update(@NonNull final FacultyInDto dto) {
         if (dto.getFacId()==null)
             throw new RuntimeException("Failed to update, nullable facId field");
         checkModificationPossibility(dto.getOrgId());
         Faculty faculty = dtoFacultyTransformer.toEntity(dto);
-        return facultyRepository.save(faculty).getFacId();
+        faculty = facultyRepository.save(faculty);
+        return facultyDtoTransformer.toDto(faculty);
     }
 
     @Transactional

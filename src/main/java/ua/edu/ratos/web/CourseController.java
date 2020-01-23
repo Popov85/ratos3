@@ -2,23 +2,19 @@ package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.CourseService;
 import ua.edu.ratos.service.dto.in.CourseInDto;
+import ua.edu.ratos.service.dto.in.LMSCourseInDto;
+import ua.edu.ratos.service.dto.in.patch.LongInDto;
+import ua.edu.ratos.service.dto.in.patch.StringInDto;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Set;
 
 @Slf4j
@@ -28,42 +24,95 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping(value = "/department/courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody CourseInDto dto) {
-        final Long courseId = courseService.save(dto);
-        log.debug("Saved Course, courseId = {}", courseId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(courseId).toUri();
-        return ResponseEntity.created(location).build();
+    @PostMapping(value = "/instructor/courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CourseOutDto> save(@Valid @RequestBody CourseInDto dto) {
+        CourseOutDto courseOutDto = courseService.save(dto);
+        log.debug("Saved Course, courseId = {}", courseOutDto.getCourseId());
+        return ResponseEntity.ok().body(courseOutDto);
     }
 
-    @GetMapping(value = "/department/courses/{courseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CourseOutDto> findOne(@PathVariable Long courseId) {
-        CourseOutDto dto = courseService.findByIdForUpdate(courseId);
-        log.debug("Retrieved Course = {}", dto);
-        return ResponseEntity.ok(dto);
+    @PostMapping(value = "/instructor/lms-courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CourseOutDto> save(@Valid @RequestBody LMSCourseInDto dto) {
+        CourseOutDto courseOutDto = courseService.save(dto);
+        log.debug("Saved LMS Course, courseId = {}", courseOutDto.getCourseId());
+        return ResponseEntity.ok().body(courseOutDto);
     }
 
-    @PutMapping(value = "/department/courses/{courseId}/name")
+    @PutMapping(value = "/instructor/courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateName(@PathVariable Long courseId, @RequestParam String name) {
+    public ResponseEntity<CourseOutDto> update(@Valid @RequestBody CourseInDto dto) {
+        CourseOutDto courseOutDto = courseService.update(dto);
+        log.debug("Updated Course, courseId = {}", courseOutDto.getCourseId());
+        return ResponseEntity.ok().body(courseOutDto);
+    }
+
+    @PutMapping(value = "/instructor/lms-courses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<CourseOutDto> update(@Valid @RequestBody LMSCourseInDto dto) {
+        CourseOutDto courseOutDto = courseService.update(dto);
+        log.debug("Updated LMS Course, courseId = {}", courseOutDto.getCourseId());
+        return ResponseEntity.ok().body(courseOutDto);
+    }
+
+
+
+    @PatchMapping(value = "/instructor/courses/{courseId}/name", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateName(@PathVariable Long courseId, @Valid @RequestBody StringInDto dto) {
+        String name = dto.getValue();
         courseService.updateName(courseId, name);
         log.debug("Updated Course's name, courseId = {}, new name = {}", courseId, name);
     }
 
-    @PutMapping(value = "/department/courses/{courseId}/access")
+    @PatchMapping(value = "/instructor/courses/{courseId}/access")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateAccess(@PathVariable Long courseId, @RequestParam Long accessId) {
+    public void updateAccess(@PathVariable Long courseId, @Valid @RequestBody LongInDto dto) {
+        Long accessId = dto.getValue();
         courseService.updateAccess(courseId, accessId);
         log.debug("Updated Course's access, courseId = {}, new accessId = {}", courseId, accessId);
     }
 
-    @DeleteMapping("/department/courses/{courseId}")
+    @PatchMapping(value = "/instructor/courses/{courseId}/access/{accessId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateAccessVar(@PathVariable Long courseId, @PathVariable Long accessId) {
+        courseService.updateAccess(courseId, accessId);
+        log.debug("Updated Course's access, courseId = {}, new accessId = {}", courseId, accessId);
+    }
+
+    @PatchMapping("/instructor/courses/{courseId}/activate")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void activate(@PathVariable Long courseId) {
+        courseService.deactivateById(courseId);
+        log.debug("Activated Course, courseId = {}", courseId);
+    }
+
+    @PatchMapping("/instructor/courses/{courseId}/deactivate")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deactivate(@PathVariable Long courseId) {
+        courseService.deactivateById(courseId);
+        log.debug("Deactivated Course, courseId = {}", courseId);
+    }
+
+    @PatchMapping("/instructor/courses/{courseId}/associate/{lmsId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void associateWithLMS(@PathVariable Long courseId, @PathVariable Long lmsId) {
+        courseService.associateWithLMS(courseId, lmsId);
+        log.debug("Associated Course with LMS, courseId = {}, lmsId = {}", courseId, lmsId);
+    }
+
+    @PatchMapping("/instructor/lms-courses/{courseId}/disassociate")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void disassociateWithLMS(@PathVariable Long courseId) {
+        courseService.disassociateWithLMS(courseId);
+        log.debug("Disassociated Course with LMS, courseId = {}", courseId);
+    }
+
+    @DeleteMapping("/instructor/courses/{courseId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long courseId) {
         courseService.deleteById(courseId);
         log.debug("Deleted Course, courseId = {}", courseId);
     }
-
 
     //-------------------------------------------Staff min drop-down----------------------------------------------------
 
@@ -82,31 +131,16 @@ public class CourseController {
         return courseService.findAllForDropdownByDepartmentId(depId);
     }
 
+    //----------------------------------------------Staff table---------------------------------------------------------
 
-
-
-
-    //-----------------------------------------------For future references----------------------------------------------
-    //---------------------------------------------------Staff drop-down------------------------------------------------
-
-    @GetMapping(value = "/courses-dropdown/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<CourseOutDto> findAllForDropDownByStaffId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
-        return courseService.findAllForDropDownByStaffId(pageable);
+    @GetMapping(value="/department/courses-table/all-courses-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<CourseOutDto> findAllForTableByDepartment() {
+        log.debug("Inside controller method...");
+        return courseService.findAllForTableByDepartment();
     }
 
-    @GetMapping(value = "/courses-dropdown/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<CourseOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
-        return courseService.findAllForDropDownByDepartmentId(pageable);
-    }
-
-    //---------------------------------------------Search in drop-down--------------------------------------------------
-    @GetMapping(value = "/courses-dropdown/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<CourseOutDto> findAllForDropDownByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
-        return courseService.findAllForDropDownByStaffIdAndName(letters, contains, pageable);
-    }
-
-    @GetMapping(value = "/courses-dropdown/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<CourseOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 20) Pageable pageable) {
-        return courseService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
+    @GetMapping(value="/fac-admin/courses-table/all-courses-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<CourseOutDto> findAllForTableByDepartmentId(@RequestParam Long depId) {
+        return courseService.findAllForTableByDepartmentId(depId);
     }
 }

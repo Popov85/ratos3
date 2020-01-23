@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.FacultyService;
 import ua.edu.ratos.service.dto.in.FacultyInDto;
+import ua.edu.ratos.service.dto.in.patch.StringInDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyOutDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Slf4j
@@ -24,24 +24,23 @@ public class FacultyController {
     private final FacultyService facultyService;
 
     @PostMapping(value = "/org-admin/faculties", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Long save(@Valid @RequestBody FacultyInDto dto) {
-        final Long facId = facultyService.save(dto);
-        log.debug("Saved Faculty, facId = {}", facId);
-        return facId;
+    public ResponseEntity<FacultyOutDto> save(@Valid @RequestBody FacultyInDto dto) {
+        FacultyOutDto facultyOutDto = facultyService.save(dto);
+        log.debug("Saved Faculty, facId = {}", facultyOutDto.getFacId());
+        return ResponseEntity.ok().body(facultyOutDto);
     }
 
     @PutMapping(value = "/org-admin/faculties", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Long update(@Valid @RequestBody FacultyInDto dto) {
-        final Long facId = facultyService.update(dto);
-        log.debug("Updated Faculty, facId = {}", facId);
-        return facId;
+    public ResponseEntity<FacultyOutDto> update(@Valid @RequestBody FacultyInDto dto) {
+        FacultyOutDto facultyOutDto = facultyService.update(dto);
+        log.debug("Updated Faculty, facId = {}", facultyOutDto.getFacId());
+        return ResponseEntity.ok().body(facultyOutDto);
     }
 
     @PatchMapping(value = "/org-admin/faculties/{facId}/name")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateName(@PathVariable @Min(1) Long facId, @RequestParam @NotBlank @Size(min = 3)  String name) {
+    public void updateName(@PathVariable @Min(1) Long facId, @Valid @RequestBody StringInDto dto) {
+        String name = dto.getValue();
         facultyService.updateName(facId, name);
         log.debug("Updated Faculty's name facId = {}, new name = {}", facId, name);
     }

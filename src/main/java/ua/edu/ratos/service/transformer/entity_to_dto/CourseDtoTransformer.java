@@ -1,29 +1,23 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class CourseDtoTransformer{
 
-    private AccessDtoTransformer accessDtoTransformer;
+    private final AccessDtoTransformer accessDtoTransformer;
 
-    private StaffMinDtoTransformer staffMinDtoTransformer;
+    private final StaffMinDtoTransformer staffMinDtoTransformer;
 
-    @Autowired
-    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
-        this.accessDtoTransformer = accessDtoTransformer;
-    }
+    private final LMSMinDtoTransformer lmsMinDtoTransformer;
 
-    @Autowired
-    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
-        this.staffMinDtoTransformer = staffMinDtoTransformer;
-    }
 
     public CourseOutDto toDto(@NonNull final Course entity) {
         return new CourseOutDto()
@@ -31,6 +25,10 @@ public class CourseDtoTransformer{
                 .setName(entity.getName())
                 .setCreated(entity.getCreated())
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()))
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
+                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()))
+                .setActive(!entity.isDeleted())
+                .setLms(entity.getLmsCourse()!=null
+                        ? lmsMinDtoTransformer.toDto(entity.getLmsCourse().getLms())
+                        : null);
     }
 }

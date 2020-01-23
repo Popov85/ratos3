@@ -22,7 +22,6 @@ public class AdminController {
     private final SchemeService schemeService;
     private final ThemeService themeService;
     private final CourseService courseService;
-    private final LMSCourseService lmsCourseService;
     private final ResourceService resourceService;
     private final PhraseService phraseService;
     private final HelpService helpService;
@@ -46,11 +45,6 @@ public class AdminController {
     @GetMapping(value = "/courses", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CourseOutDto> findAllCourses(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
         return courseService.findAll(pageable);
-    }
-
-    @GetMapping(value = "/lms-courses", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<LMSCourseOutDto> findAllLMSCourses(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return lmsCourseService.findAll(pageable);
     }
 
     @GetMapping(value = "/resources", produces = MediaType.APPLICATION_JSON_VALUE)

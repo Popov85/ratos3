@@ -59,8 +59,8 @@ public class ResultOfStudentStaffSpecs {
 
     private static void fetchDetails(Root<ResultOfStudent> root, CriteriaQuery<?> query) {
         if (Long.class != query.getResultType()) {
-            root.fetch(ResultOfStudent_.scheme.getName(), JoinType.INNER)
-                    .fetch(Scheme_.course.getName(), JoinType.INNER);
+            root.fetch(ResultOfStudent_.scheme, JoinType.INNER)
+                    .fetch(Scheme_.course, JoinType.INNER).fetch(Course_.lmsCourse, JoinType.LEFT);
             Fetch<ResultOfStudent, Student> fs = root.fetch(ResultOfStudent_.student, JoinType.INNER);
             fs.fetch(Student_.user, JoinType.INNER);
             fs.fetch(Student_.studentClass, JoinType.INNER);

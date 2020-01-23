@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class Result {
     private boolean points;
 
     @Column(name = "session_ended")
-    private LocalDateTime sessionEnded;
+    private OffsetDateTime sessionEnded;
 
     @Column(name = "session_lasted")
     private long sessionLasted;

@@ -12,6 +12,7 @@ import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.repository.lms.LMSRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -35,25 +36,17 @@ public class LMSRepositoryTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findOneForEditTest() {
-        Optional<LMS> optional = lmsRepository.findOneForEditById(6L);
-        assertTrue("LMS was not found with lmsId = 6L", optional.isPresent());
+    public void findAllForDropdownByOrgIdTest() {
+        Set<LMS> result = lmsRepository.findAllForDropdownByOrgId(1L);
+        assertThat("Set of LMS is not of size = 3", result, hasSize(3));
     }
 
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByOrgIdTest() {
-        assertThat("Slice of LMS is not of size = 3",
-                lmsRepository.findAllByOrgId(1L, PageRequest.of(0, 50)).getContent(), hasSize(3));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/lms_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByOrgIdAndNameLettersContainsTest() {
-        assertThat("Slice of LMS is not of size = 2",
-                lmsRepository.findAllByOrgIdAndNameLettersContains(2L, "local", PageRequest.of(0, 50)).getContent(), hasSize(2));
+    public void findAllForTableByOrgIdTest() {
+        Set<LMS> result = lmsRepository.findAllForDropdownByOrgId(2L);
+        assertThat("Set of LMS is not of size = 3", result, hasSize(3));
     }
 
     @Test(timeout = 5000)
