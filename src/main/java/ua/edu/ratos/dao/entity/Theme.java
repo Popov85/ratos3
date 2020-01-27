@@ -1,14 +1,16 @@
 package ua.edu.ratos.dao.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.question.Question;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +22,14 @@ import java.util.Set;
 @Where(clause = "is_deleted = 0")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@NoArgsConstructor
 public class Theme {
+
+    public Theme(Long themeId, String name) {
+        this.themeId = themeId;
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -34,24 +43,24 @@ public class Theme {
     private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to")
-    private Department department;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="course_id")
     private Course course;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
-    private Staff staff;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_id")
     private Access access;
 
-    @Column(name = "created")
-    private LocalDateTime created;
+    @Column(name = "created", updatable = false)
+    private OffsetDateTime created;
 
-    @OneToMany(mappedBy = "theme", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "belongs_to", updatable = false)
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", updatable = false)
+    private Staff staff;
+
+    @OneToMany(mappedBy = "theme")
     private Set<Question> questions = new HashSet<>();
 }

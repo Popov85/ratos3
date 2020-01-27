@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.repository.QuestionRepository;
@@ -15,35 +15,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class ThemeExtDtoTransformer {
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    private CourseDtoTransformer courseDtoTransformer;
+    private final CourseMinLMSDtoTransformer courseMinLMSDtoTransformer;
 
-    private StaffMinDtoTransformer staffDtoTransformer;
+    private final StaffMinDtoTransformer staffDtoTransformer;
 
-    private AccessDtoTransformer accessDtoTransformer;
+    private final AccessDtoTransformer accessDtoTransformer;
 
-    @Autowired
-    public void setQuestionRepository(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
-
-    @Autowired
-    public void setCourseDtoTransformer(CourseDtoTransformer courseDtoTransformer) {
-        this.courseDtoTransformer = courseDtoTransformer;
-    }
-
-    @Autowired
-    public void setStaffDtoTransformer(StaffMinDtoTransformer staffDtoTransformer) {
-        this.staffDtoTransformer = staffDtoTransformer;
-    }
-
-    @Autowired
-    public void setAccessDtoTransformer(AccessDtoTransformer accessDtoTransformer) {
-        this.accessDtoTransformer = accessDtoTransformer;
-    }
 
     public ThemeExtOutDto toDto(@NonNull final Theme entity) {
         Set<TypeAndCount> typesAndCount = questionRepository.countAllTypesByThemeId(entity.getThemeId());
@@ -51,7 +33,7 @@ public class ThemeExtDtoTransformer {
                 .setThemeId(entity.getThemeId())
                 .setName(entity.getName())
                 .setCreated(entity.getCreated())
-                .setCourse(courseDtoTransformer.toDto(entity.getCourse()))
+                .setCourse(courseMinLMSDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess())))
                 .setTotal(typesAndCount.stream().mapToInt(TypeAndCount::getCount).sum())

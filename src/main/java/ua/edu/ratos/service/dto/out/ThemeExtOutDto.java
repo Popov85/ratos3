@@ -14,7 +14,7 @@ import java.util.Set;
 @Accessors(chain = true)
 public class ThemeExtOutDto extends ThemeOutDto {
 
-    // Total totalByType by questionType
+    // Total questions by questionType
     private Set<TypeMinOutDto> totalByType = new HashSet<>();
 
     // total question of all types

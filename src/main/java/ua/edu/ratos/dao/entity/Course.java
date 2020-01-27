@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.lms.LMSCourse;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import java.time.OffsetDateTime;
 @Table(name = "course")
 @DynamicUpdate
 @NoArgsConstructor
+@Where(clause = "is_deleted = 0")
 public class Course {
 
     public Course(Long courseId, String name) {
@@ -34,25 +36,25 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "created", updatable = false)
-    private OffsetDateTime created;
-
-    @Column(name="is_deleted")
-    private boolean deleted;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "created_by", updatable = false)
     private Staff staff;
 
     // Course remains to belong to the department
     // even if staff changes department
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to")
+    @JoinColumn(name = "belongs_to", updatable = false)
     private Department department;
+
+    @Column(name = "created", updatable = false)
+    private OffsetDateTime created;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_id")
     private Access access;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
     private LMSCourse lmsCourse;

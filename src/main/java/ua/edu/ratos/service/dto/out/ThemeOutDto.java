@@ -1,11 +1,12 @@
 package ua.edu.ratos.service.dto.out;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -17,11 +18,13 @@ public class ThemeOutDto {
 
     private String name;
 
-    private LocalDateTime created;
-
-    private CourseOutDto course;
+    private AccessOutDto access;
 
     private StaffMinOutDto staff;
 
-    private AccessOutDto access;
+    private CourseMinLMSOutDto course;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
+    private OffsetDateTime created;
+
 }

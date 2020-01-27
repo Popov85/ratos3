@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.CourseService;
 import ua.edu.ratos.service.dto.in.CourseInDto;
 import ua.edu.ratos.service.dto.in.LMSCourseInDto;
-import ua.edu.ratos.service.dto.in.patch.LongInDto;
 import ua.edu.ratos.service.dto.in.patch.StringInDto;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
@@ -54,43 +53,12 @@ public class CourseController {
         return ResponseEntity.ok().body(courseOutDto);
     }
 
-
-
     @PatchMapping(value = "/instructor/courses/{courseId}/name", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void updateName(@PathVariable Long courseId, @Valid @RequestBody StringInDto dto) {
         String name = dto.getValue();
         courseService.updateName(courseId, name);
         log.debug("Updated Course's name, courseId = {}, new name = {}", courseId, name);
-    }
-
-    @PatchMapping(value = "/instructor/courses/{courseId}/access")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateAccess(@PathVariable Long courseId, @Valid @RequestBody LongInDto dto) {
-        Long accessId = dto.getValue();
-        courseService.updateAccess(courseId, accessId);
-        log.debug("Updated Course's access, courseId = {}, new accessId = {}", courseId, accessId);
-    }
-
-    @PatchMapping(value = "/instructor/courses/{courseId}/access/{accessId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateAccessVar(@PathVariable Long courseId, @PathVariable Long accessId) {
-        courseService.updateAccess(courseId, accessId);
-        log.debug("Updated Course's access, courseId = {}, new accessId = {}", courseId, accessId);
-    }
-
-    @PatchMapping("/instructor/courses/{courseId}/activate")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void activate(@PathVariable Long courseId) {
-        courseService.deactivateById(courseId);
-        log.debug("Activated Course, courseId = {}", courseId);
-    }
-
-    @PatchMapping("/instructor/courses/{courseId}/deactivate")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void deactivate(@PathVariable Long courseId) {
-        courseService.deactivateById(courseId);
-        log.debug("Deactivated Course, courseId = {}", courseId);
     }
 
     @PatchMapping("/instructor/courses/{courseId}/associate/{lmsId}")
@@ -110,8 +78,13 @@ public class CourseController {
     @DeleteMapping("/instructor/courses/{courseId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long courseId) {
-        courseService.deleteById(courseId);
-        log.debug("Deleted Course, courseId = {}", courseId);
+        try {
+            courseService.deleteById(courseId);
+            log.debug("Deleted Course, courseId = {}", courseId);
+        } catch (Exception e) {
+            courseService.deleteByIdSoft(courseId);
+            log.debug("Soft deleted Course, courseId = {}", courseId);
+        }
     }
 
     //-------------------------------------------Staff min drop-down----------------------------------------------------
@@ -135,7 +108,6 @@ public class CourseController {
 
     @GetMapping(value="/department/courses-table/all-courses-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<CourseOutDto> findAllForTableByDepartment() {
-        log.debug("Inside controller method...");
         return courseService.findAllForTableByDepartment();
     }
 

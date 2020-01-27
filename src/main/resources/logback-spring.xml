@@ -58,11 +58,11 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.SQL" additivity="false" level="INFO">
+        <logger name="org.hibernate.SQL" additivity="false" level="WARN">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="INFO">
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="WARN">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
@@ -107,15 +107,15 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.SQL" additivity="false" level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-
         <logger name="org.hibernate.validator" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="INFO">
+        <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
             <appender-ref ref="CONSOLE"/>
         </logger>
 

@@ -7,9 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.repository.ThemeRepository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +54,7 @@ public class ThemeGenerator {
         theme.setStaff(em.getReference(Staff.class, 1L));
         theme.setCourse(course);
         theme.setDepartment(em.getReference(Department.class, course.getDepartment().getDepId()));
-        theme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
+        theme.setCreated(OffsetDateTime.now().minusDays(rnd.rnd(1, 1000)));
         return theme;
     }
 }

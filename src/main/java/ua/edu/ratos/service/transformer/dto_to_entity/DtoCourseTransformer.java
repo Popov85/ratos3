@@ -40,7 +40,6 @@ public class DtoCourseTransformer {
         course.setAccess(em.getReference(Access.class, dto.getAccessId()));
         course.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
         course.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
-        course.setDeleted(!dto.isActive());
         return course;
     }
 
@@ -55,7 +54,6 @@ public class DtoCourseTransformer {
         course.setAccess(em.getReference(Access.class, dto.getAccessId()));
         course.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
         course.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
-        course.setDeleted(!dto.isActive());
         // Add LMS
         LMSCourse lmsCourse = new LMSCourse();
         lmsCourse.setCourseId(dto.getCourseId());
@@ -74,9 +72,6 @@ public class DtoCourseTransformer {
         if (dto.getCourseId() == null)
             course.setCreated(OffsetDateTime.now());
         course.setAccess(em.getReference(Access.class, dto.getAccessId()));
-        course.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
-        course.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
-        course.setDeleted(!dto.isActive());
         return course;
     }
 
@@ -88,9 +83,6 @@ public class DtoCourseTransformer {
         if (dto.getCourseId() == null)
             course.setCreated(OffsetDateTime.now());
         course.setAccess(em.getReference(Access.class, dto.getAccessId()));
-        course.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
-        course.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
-        course.setDeleted(!dto.isActive());
         // Add LMS
         LMSCourse lmsCourse = new LMSCourse();
         lmsCourse.setCourseId(dto.getCourseId());

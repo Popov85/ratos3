@@ -22,4 +22,7 @@ public class ThemeInDto {
 
     @Positive(message = "{dto.fk.required}")
     private long courseId;
+
+    @Positive(message = "{dto.fk.required}")
+    private long accessId;
 }

@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -20,14 +18,15 @@ public class CourseOutDto {
 
     private String name;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
-    private OffsetDateTime created;
-
     private AccessOutDto access;
 
     private StaffMinOutDto staff;
 
+    // Nullable, if null - non-LMS course
+    private LMSMinOutDto lms;
+
     private boolean active;
 
-    private LMSMinOutDto lms; // Nullable, if null - non-LMS course
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
+    private OffsetDateTime created;
 }

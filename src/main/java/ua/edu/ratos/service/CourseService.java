@@ -83,40 +83,15 @@ public class CourseService {
         return courseDtoTransformer.toDto(result);
     }
 
-
     @Transactional
     public void updateName(@NonNull final Long courseId, @NonNull final String name) {
-        checkModificationPossibility(courseId);
-        courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
-                .setName(name);
-    }
-
-    @Transactional
-    public void updateAccess(@NonNull final Long courseId, @NonNull final Long accessId) {
-        checkModificationPossibility(courseId);
-        courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
-                .setAccess(em.getReference(Access.class, accessId));
-    }
-
-    @Transactional
-    public void activateById(@NonNull final Long courseId) {
-        checkModificationPossibility(courseId);
-        courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
-                .setDeleted(false);
-    }
-
-    @Transactional
-    public void deactivateById(@NonNull final Long courseId) {
-        checkModificationPossibility(courseId);
-        courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(COURSE_NOT_FOUND + courseId))
-                .setDeleted(true);
+        Course course = checkModificationPossibility(courseId);
+        course.setName(name);
     }
 
     @Transactional
     public void associateWithLMS(@NonNull final Long courseId, @NonNull final Long lmsId) {
-        checkModificationPossibility(courseId);
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException(COURSE_NOT_FOUND));
+        Course course = checkModificationPossibility(courseId);
         LMSCourse lmsCourse = new LMSCourse();
         lmsCourse.setCourseId(courseId);
         lmsCourse.setCourse(course);
@@ -126,9 +101,7 @@ public class CourseService {
 
     @Transactional
     public void disassociateWithLMS(@NonNull final Long courseId) {
-        checkModificationPossibility(courseId);
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException(COURSE_NOT_FOUND));
+        Course course = checkModificationPossibility(courseId);
         LMSCourse lmsCourse = course.getLmsCourse();
         lmsCourse.setCourse(null);
         course.setLmsCourse(null);
@@ -136,8 +109,14 @@ public class CourseService {
 
     @Transactional
     public void deleteById(@NonNull final Long courseId) {
-        checkModificationPossibility(courseId);
-        courseRepository.deleteById(courseId);
+        Course course = checkModificationPossibility(courseId);
+        courseRepository.delete(course);
+    }
+
+    @Transactional
+    public void deleteByIdSoft(@NonNull final Long courseId) {
+        Course course = checkModificationPossibility(courseId);
+        course.setDeleted(true);
     }
 
     private Course checkModificationPossibility(@NonNull final Long courseId) {
