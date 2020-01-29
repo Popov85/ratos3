@@ -27,4 +27,6 @@ public class UserUpdInDto {
 
     @Email(message = "{dto.email}")
     private String email;
+
+    private boolean active;
 }

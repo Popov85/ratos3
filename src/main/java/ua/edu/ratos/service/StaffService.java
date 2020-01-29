@@ -2,16 +2,13 @@ package ua.edu.ratos.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Position;
-import ua.edu.ratos.dao.entity.Role;
 import ua.edu.ratos.dao.entity.Staff;
-import ua.edu.ratos.dao.entity.User;
-import ua.edu.ratos.dao.repository.RoleRepository;
 import ua.edu.ratos.dao.repository.StaffRepository;
 import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.security.SecurityUtils;
@@ -23,9 +20,7 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoStaffTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.StaffDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.StaffMinDtoTransformer;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,20 +29,16 @@ import java.util.stream.Collectors;
  * but for the sake of simplicity we omit implementing this functionality, and thus we trust front-end
  * to deal with possible contentions!
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class StaffService {
 
     private static final String STAFF_NOT_FOUND = "The requested Staff is not found, staffId = ";
 
-    @PersistenceContext
-    private final EntityManager em;
-
     private final UserRepository userRepository;
 
     private final StaffRepository staffRepository;
-
-    private final RoleRepository roleRepository;
 
     private final DtoStaffTransformer dtoStaffTransformer;
 
@@ -74,15 +65,7 @@ public class StaffService {
         if (staffId == null) throw new RuntimeException("Failed to update staff, staffId is required");
         Staff staff = staffRepository.findById(staffId).orElseThrow(() ->
                 new EntityNotFoundException(STAFF_NOT_FOUND));
-        User user = staff.getUser();
-        user.setName(dto.getUser().getName());
-        user.setSurname(dto.getUser().getSurname());
-        user.setEmail(dto.getUser().getEmail());
-        Role role = roleRepository.findByName(dto.getRole()).orElseThrow(()->
-                new EntityNotFoundException("Role is not found, role = "+dto.getRole()));
-        user.replaceRole(role);
-        user.setActive(dto.isActive());
-        staff.setPosition(em.getReference(Position.class, dto.getPositionId()));
+        dtoStaffTransformer.toEntity(staff, dto);
         return staffDtoTransformer.toDto(staff);
     }
 

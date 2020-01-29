@@ -1,28 +1,18 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.service.dto.out.LMSOutDto;
 
 @Component
+@AllArgsConstructor
 public class LMSDtoTransformer {
 
-    private LTICredentialsDtoTransformer ltiCredentialsDtoTransformer;
+    private final LTICredentialsDtoTransformer ltiCredentialsDtoTransformer;
 
-    private LTIVersionDtoTransformer ltiVersionDtoTransformer;
-
-
-    @Autowired
-    public void setLtiCredentialsDtoTransformer(LTICredentialsDtoTransformer ltiCredentialsDtoTransformer) {
-        this.ltiCredentialsDtoTransformer = ltiCredentialsDtoTransformer;
-    }
-
-    @Autowired
-    public void setLtiVersionDtoTransformer(LTIVersionDtoTransformer ltiVersionDtoTransformer) {
-        this.ltiVersionDtoTransformer = ltiVersionDtoTransformer;
-    }
+    private final LTIVersionDtoTransformer ltiVersionDtoTransformer;
 
 
     public LMSOutDto toDto(@NonNull final LMS entity) {

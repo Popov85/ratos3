@@ -9,7 +9,8 @@ import ua.edu.ratos.service.dto.out.LTIVersionOutDto;
 public class LTIVersionDtoTransformer {
 
     public LTIVersionOutDto toDto(@NonNull final LTIVersion entity) {
-        return new LTIVersionOutDto().setVersionId(entity.getVersionId())
+        return new LTIVersionOutDto()
+                .setVersionId(entity.getVersionId())
                 .setVersion(entity.getVersion());
     }
 }

@@ -35,18 +35,18 @@ public class LMS {
     @Column(name = "name")
     private String name;
 
-    @Column(name="is_deleted")
-    private boolean deleted;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_id")
+    @JoinColumn(name = "org_id", updatable = false)
     private Organisation organisation;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "credentials_id")
-    private LTICredentials credentials;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lti_version_id")
     private LTIVersion ltiVersion;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "lms_id")
+    private LTICredentials credentials;
+
+    @Column(name="is_deleted")
+    private boolean deleted;
 }

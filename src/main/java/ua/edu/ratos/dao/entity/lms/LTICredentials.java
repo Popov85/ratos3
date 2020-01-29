@@ -3,8 +3,11 @@ package ua.edu.ratos.dao.entity.lms;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
 @Setter
@@ -12,9 +15,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "lti_credentials")
 public class LTICredentials {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "credentials_id")
     private Long credId;
 

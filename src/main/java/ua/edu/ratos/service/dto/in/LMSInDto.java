@@ -18,11 +18,11 @@ public class LMSInDto {
     private Long lmsId;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    @Size(min = 2, max = 100, message = "{dto.string.invalid}")
     private String name;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 20, max = 1000, message = "{dto.string.invalid}")
+    @Size(min = 8, max = 1000, message = "{dto.string.invalid}")
     private String key;
 
     @NotBlank(message = "{dto.string.required}")
