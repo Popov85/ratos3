@@ -45,7 +45,6 @@ public class MQGenerator {
         QuestionMQ questionMQ = new QuestionMQ();
         questionMQ.setQuestion("Question MQ #"+questionId);
         questionMQ.setType(em.getReference(QuestionType.class, 4L));
-        questionMQ.setLang(em.getReference(Language.class, 1L));
         questionMQ.setLevel((byte) rnd.rnd(1, 4));
         questionMQ.setTheme(theme);
 

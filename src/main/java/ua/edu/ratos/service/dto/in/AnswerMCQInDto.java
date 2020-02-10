@@ -1,11 +1,11 @@
 package ua.edu.ratos.service.dto.in;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.*;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -13,7 +13,6 @@ import java.util.Objects;
 @Accessors(chain = true)
 public class AnswerMCQInDto {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long answerId;
 
     @NotBlank( message = "{dto.string.required}")
@@ -23,15 +22,9 @@ public class AnswerMCQInDto {
     @Range(min = 0, max=100, message = "{dto.range.invalid}")
     private short percent;
 
-    /**
-     * 0 percent cannot be required! See custom validator for details
-     * @see ua.edu.ratos.service.validator.AnswerMCQInDtoValidator
-     */
-    private boolean isRequired;
+    public Optional<@Positive(message = "{dto.fk.optional}") Long> resourceId = Optional.empty();
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero( message = " {dto.fk.optional}")
-    private long resourceId;
+    private boolean required;
 
 
     @Override

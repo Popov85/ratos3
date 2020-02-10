@@ -48,7 +48,6 @@ public class FBMQGenerator {
         QuestionFBMQ questionFBMQ = new QuestionFBMQ();
         questionFBMQ.setQuestion("Question FBMQ, text: {phrase0, phrase1, phrase2} #"+questionId);
         questionFBMQ.setType(em.getReference(QuestionType.class, 3L));
-        questionFBMQ.setLang(em.getReference(Language.class, 1L));
         questionFBMQ.setLevel((byte) rnd.rnd(1, 4));
         questionFBMQ.setTheme(theme);
 

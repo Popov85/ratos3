@@ -61,7 +61,6 @@ public class MCQGenerator {
         String question = stringGenerator.createText(50, 150, 5, 15, true);
         questionMCQ.setQuestion(stringGenerator.createPrefix()+"_question MCQ #"+questionId+" question: "+question);
         questionMCQ.setType(em.getReference(QuestionType.class, 1L));
-        questionMCQ.setLang(em.getReference(Language.class, 1L));
         questionMCQ.setLevel((byte) rnd.rnd(1, MAX_LEVEL+1));
         questionMCQ.setTheme(theme);
 
@@ -183,7 +182,6 @@ public class MCQGenerator {
         QuestionMCQ questionMCQ = new QuestionMCQ();
         questionMCQ.setQuestion("Question MCQ #"+questionId);
         questionMCQ.setType(em.getReference(QuestionType.class, 1L));
-        questionMCQ.setLang(em.getReference(Language.class, 1L));
         questionMCQ.setLevel((byte) rnd.rnd(1, 3));
         questionMCQ.setTheme(theme);
 

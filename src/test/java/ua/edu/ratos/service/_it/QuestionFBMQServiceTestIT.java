@@ -48,12 +48,12 @@ public class QuestionFBMQServiceTestIT {
         // Actual test begins
         questionService.save(dto);
         final QuestionFBMQ question = (QuestionFBMQ) em.createQuery(FIND).setParameter("questionId", 1L).getSingleResult();
-        assertThat("Found Question object is not as expected", question, allOf(
+        assertThat("Found Question FBMQ object is not as expected", question, allOf(
                 hasProperty("questionId", equalTo(1L)),
                 hasProperty("question", equalTo("Question #1")),
-                hasProperty("answers", hasSize(3)),
-                hasProperty("resources", hasSize(2)),
-                hasProperty("help", hasProperty("present", equalTo(true)))
+                hasProperty("resources", hasSize(1)),
+                hasProperty("helps", hasSize(1)),
+                hasProperty("answers", hasSize(3))
         ));
     }
 }

@@ -299,14 +299,15 @@ CREATE TABLE IF NOT EXISTS   language  (
 
 
 -- -----------------------------------------------------
--- Table  question
+-- Table question
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS question ;
+
 CREATE TABLE IF NOT EXISTS question (
   question_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(2500) NOT NULL,
   level TINYINT(1) NOT NULL DEFAULT 1,
   type_id INT UNSIGNED NOT NULL,
-  lang_id INT UNSIGNED NOT NULL,
   theme_id INT UNSIGNED NOT NULL,
   is_partial TINYINT(1) NOT NULL DEFAULT 0,
   is_required TINYINT(1) NOT NULL DEFAULT 0,
@@ -314,7 +315,6 @@ CREATE TABLE IF NOT EXISTS question (
   PRIMARY KEY (question_id),
   INDEX fk_question_theme_theme_id_idx (theme_id ASC),
   INDEX fk_question_question_type_type_id_idx (type_id ASC),
-  INDEX fk_question_language_lang_id_idx (lang_id ASC),
   INDEX theme_and_type_and_is_deleted_idx (theme_id ASC, type_id ASC, is_deleted ASC),
   CONSTRAINT fk_question_theme_theme_id
   FOREIGN KEY (theme_id)
@@ -324,11 +324,6 @@ CREATE TABLE IF NOT EXISTS question (
   CONSTRAINT fk_question_question_type_type_id
   FOREIGN KEY (type_id)
   REFERENCES question_type (type_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_question_language_lang_id
-  FOREIGN KEY (lang_id)
-  REFERENCES language (lang_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

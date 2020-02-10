@@ -27,11 +27,11 @@ insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('MQ question #1', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #20', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('MQ question #21', 2, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #4', 3, 4, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('MQ question #5', 3, 4, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('MQ question #1', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #20', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('MQ question #21', 2, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #4', 3, 4, 2);
+insert into question (title, level, type_id, theme_id) values ('MQ question #5', 3, 4, 3);
 
 
 insert into question_resource(question_id, resource_id) values(1, 1);

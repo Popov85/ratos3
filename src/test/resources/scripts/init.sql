@@ -40,8 +40,9 @@ INSERT INTO user_role (user_id, role_id) VALUES (3, 2);
 INSERT INTO student (stud_id, class_id, fac_id, org_id, entrance_year) VALUES (3, 1, 1, 1, 2018);
 
 INSERT INTO language (name, eng_abbreviation) VALUES ('English', 'en');
-INSERT INTO language (name, eng_abbreviation) VALUES ('français', 'fr');
 INSERT INTO language (name, eng_abbreviation) VALUES ('Deutsch', 'de');
+INSERT INTO language (name, eng_abbreviation) VALUES ('français', 'fr');
+INSERT INTO language (name, eng_abbreviation) VALUES ('español', 'es');
 INSERT INTO language (name, eng_abbreviation) VALUES ('polski', 'pl');
 INSERT INTO language (name, eng_abbreviation) VALUES ('українська', 'ua');
 INSERT INTO language (name, eng_abbreviation) VALUES ('русский', 'ru');

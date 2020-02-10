@@ -48,7 +48,6 @@ public class FBSQGenerator {
         QuestionFBSQ questionFBSQ = new QuestionFBSQ();
         questionFBSQ.setQuestion("Question FBSQ #"+questionId);
         questionFBSQ.setType(em.getReference(QuestionType.class, 2L));
-        questionFBSQ.setLang(em.getReference(Language.class, 1L));
         questionFBSQ.setLevel((byte) rnd.rnd(1, 4));
         questionFBSQ.setTheme(theme);
 

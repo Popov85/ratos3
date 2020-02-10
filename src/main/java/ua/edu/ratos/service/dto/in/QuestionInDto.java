@@ -1,11 +1,15 @@
 package ua.edu.ratos.service.dto.in;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
-import javax.validation.constraints.*;
-import java.util.Set;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -13,7 +17,6 @@ import java.util.Set;
 @Accessors(chain = true)
 public class QuestionInDto {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long questionId;
 
     @NotBlank(message = "{dto.string.required}")
@@ -26,21 +29,11 @@ public class QuestionInDto {
     @Positive( message = "{dto.fk.required}")
     private long themeId;
 
-    @Positive(message = "{dto.fk.required}")
-    @Range(min=1, max=5, message = "{dto.range.invalid}")
-    private long questionTypeId;
-
-    @Positive(message = "{dto.fk.required}")
-    private long langId;
-
     // Currently only one Help can be associated with a question
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @PositiveOrZero(message = "{dto.fk.optional}")
-    private long helpId;
+    public Optional<@Positive(message = "{dto.fk.optional}") Long> helpId = Optional.empty();
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Size(min = 1, max = 3, message = "{dto.collection.invalid}")
-    private Set<Long> resourcesIds;
+    // Currently only one Resource can be associated with a question
+    public Optional<@Positive(message = "{dto.fk.optional}") Long> resourceId = Optional.empty();
 
     // Mark the flag as true to guarantee that the question will
     // appear in each learning session!

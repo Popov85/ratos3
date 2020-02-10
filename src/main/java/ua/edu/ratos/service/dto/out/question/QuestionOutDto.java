@@ -1,14 +1,13 @@
 package ua.edu.ratos.service.dto.out.question;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import ua.edu.ratos.service.dto.out.*;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -24,15 +23,13 @@ public abstract class QuestionOutDto {
 
     protected boolean required;
 
-    protected ThemeMinOutDto theme;
-
     protected QuestionTypeOutDto type;
 
-    protected LanguageOutDto lang;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected HelpMinOutDto help;
 
-    protected HelpOutDto help;
-
-    protected Set<ResourceOutDto> resources = new HashSet<>();
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected ResourceMinOutDto resource;
 
     @Override
     public boolean equals(Object o) {

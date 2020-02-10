@@ -24,16 +24,16 @@ insert into type_level(scheme_theme_id, type_id, level_1, level_2, level_3) valu
 
 /*Questions Theme #1 (All MCQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #3 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #4 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #5 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #6 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #7 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #8 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #9 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #10 T#1', 1, 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #1 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #2 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #3 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #4 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #5 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #6 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #7 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #8 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #9 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #10 T#1', 1, 1, 1);
 
 insert into help(name, text, staff_id) values('Help #1 MCQ#1 T#1', 'Please, refer to section #1 MCQ#1 T#1', 1);
 insert into question_help(question_id, help_id) values(1,1);
@@ -220,16 +220,16 @@ insert into answer_mcq_resource(answer_id, resource_id) values(40, 50);
 
 /*Questions Theme #2 (All FBSQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #1 T#2 (phrase = wolf)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #2 T#2 (phrase = bear)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #3 T#2 (phrase = duck)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #4 T#2 (phrase = cow)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #5 T#2 (phrase = dog)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #6 T#2 (phrase = lion)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #7 T#2 (phrase = hypo)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #8 T#2 (phrase = tiger)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #9 T#2 (phrase = cat)', 1, 2, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #10 T#2 (phrase = fox)', 1, 2, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #1 T#2 (phrase = wolf)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #2 T#2 (phrase = bear)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #3 T#2 (phrase = duck)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #4 T#2 (phrase = cow)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #5 T#2 (phrase = dog)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #6 T#2 (phrase = lion)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #7 T#2 (phrase = hypo)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #8 T#2 (phrase = tiger)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #9 T#2 (phrase = cat)', 1, 2, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #10 T#2 (phrase = fox)', 1, 2, 2);
 
 insert into help(name, text, staff_id) values('Help #11 FBSQ#1 T#2', 'Please, refer to section #1 FBSQ#1 T#2', 1);
 insert into question_help(question_id, help_id) values(11,11);
@@ -357,16 +357,16 @@ insert into fbsq_phrase(phrase_id, answer_id) values(30, 20);
 
 /*Questions Theme #3 (All FBMQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #1 T#3 (phrases = {tree, grass, bush})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #2 T#3 (phrases = {sky, wind, rain})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #3 T#3 (phrases = {water, sun, sand})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #4 T#3 (phrases = {train, bus, plane})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #5 T#3 (phrases = {gas, fire, ice})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #6 T#3 (phrases = {fish, meat, lard})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #7 T#3 (phrases = {chair, table, stool})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #8 T#3 (phrases = {candy, sweets, chocolate})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #9 T#3 (phrases = {bottle, glass, jar})', 1, 3, 3, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #10 T#3 (phrases = {heart, soul, love})', 1, 3, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #1 T#3 (phrases = {tree, grass, bush})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #2 T#3 (phrases = {sky, wind, rain})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #3 T#3 (phrases = {water, sun, sand})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #4 T#3 (phrases = {train, bus, plane})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #5 T#3 (phrases = {gas, fire, ice})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #6 T#3 (phrases = {fish, meat, lard})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #7 T#3 (phrases = {chair, table, stool})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #8 T#3 (phrases = {candy, sweets, chocolate})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #9 T#3 (phrases = {bottle, glass, jar})', 1, 3, 3);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #10 T#3 (phrases = {heart, soul, love})', 1, 3, 3);
 
 insert into help(name, text, staff_id) values('Help #21 FBMQ#1 T#3', 'Please, refer to section #1 FBMQ#1 T#3', 1);
 insert into question_help(question_id, help_id) values(21,21);
@@ -613,16 +613,16 @@ insert into fbmq_phrase(phrase_id, answer_id) values(90, 30);
 
 /*Questions Theme #4 (All MQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #1 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #2 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #3 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #4 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #5 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #6 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #7 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #8 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #9 T#4', 1, 4, 4, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #10 T#4', 1, 4, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #1 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #2 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #3 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #4 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #5 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #6 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #7 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #8 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #9 T#4', 1, 4, 4);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #10 T#4', 1, 4, 4);
 
 insert into help(name, text, staff_id) values('Help #31 MQ#1 T#4', 'Please, refer to section #1 MQ#1 T#4', 1);
 insert into question_help(question_id, help_id) values(31,31);
@@ -947,16 +947,16 @@ insert into answer_mq(left_phrase_id, right_phrase_id, question_id) values(169, 
 
 /*Questions Theme #5 (All SQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #1 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #2 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #3 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #4 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #5 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #6 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #7 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #8 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #9 T#5', 1, 5, 5, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #10 T#5', 1, 5, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #1 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #2 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #3 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #4 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #5 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #6 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #7 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #8 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #9 T#5', 1, 5, 5);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #10 T#5', 1, 5, 5);
 
 insert into help(name, text, staff_id) values('Help #41 SQ#1 T#5', 'Please, refer to section #1 SQ#1 T#5', 1);
 insert into question_help(question_id, help_id) values(41,41);

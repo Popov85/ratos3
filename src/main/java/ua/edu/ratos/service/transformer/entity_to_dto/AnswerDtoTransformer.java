@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.answer.*;
 import ua.edu.ratos.service.dto.out.answer.*;
@@ -11,28 +11,15 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class AnswerDtoTransformer {
 
-    private SettingsFBDtoTransformer settingsFBDtoTransformer;
+    private final SettingsFBDtoTransformer settingsFBDtoTransformer;
 
-    private ResourceDtoTransformer resourceDtoTransformer;
+    private final ResourceMinDtoTransformer resourceMinDtoTransformer;
 
-    private PhraseDtoTransformer phraseDtoTransformer;
+    private final PhraseDtoTransformer phraseDtoTransformer;
 
-    @Autowired
-    public void setSettingsFBDtoTransformer(SettingsFBDtoTransformer settingsFBDtoTransformer) {
-        this.settingsFBDtoTransformer = settingsFBDtoTransformer;
-    }
-
-    @Autowired
-    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
-        this.resourceDtoTransformer = resourceDtoTransformer;
-    }
-
-    @Autowired
-    public void setPhraseDtoTransformer(PhraseDtoTransformer phraseDtoTransformer) {
-        this.phraseDtoTransformer = phraseDtoTransformer;
-    }
 
     public AnswerFBMQOutDto toDto(@NonNull final AnswerFBMQ entity) {
         return new AnswerFBMQOutDto()
@@ -62,7 +49,7 @@ public class AnswerDtoTransformer {
                 .setAnswer(entity.getAnswer())
                 .setPercent(entity.getPercent())
                 .setRequired(entity.isRequired())
-                .setResource((entity.getResource().isPresent()) ? resourceDtoTransformer.toDto(entity.getResource().get()) : null);
+                .setResource((entity.getResource().isPresent()) ? resourceMinDtoTransformer.toDto(entity.getResource().get()) : null);
     }
 
     public AnswerMQOutDto toDto(@NonNull final AnswerMQ entity) {

@@ -1,42 +1,29 @@
 package ua.edu.ratos.service.transformer.entity_to_domain;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.domain.question.*;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class QuestionDomainTransformer {
 
-    private AnswerDomainTransformer answerDomainTransformer;
+    private final AnswerDomainTransformer answerDomainTransformer;
 
-    private HelpDomainTransformer helpDomainTransformer;
+    private final HelpDomainTransformer helpDomainTransformer;
 
-    private ResourceDomainTransformer resourceDomainTransformer;
-
-    @Autowired
-    public void setAnswerDomainTransformer(AnswerDomainTransformer answerDomainTransformer) {
-        this.answerDomainTransformer = answerDomainTransformer;
-    }
-
-    @Autowired
-    public void setHelpDomainTransformer(HelpDomainTransformer helpDomainTransformer) {
-        this.helpDomainTransformer = helpDomainTransformer;
-    }
-
-    @Autowired
-    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
-        this.resourceDomainTransformer = resourceDomainTransformer;
-    }
+    private final ResourceDomainTransformer resourceDomainTransformer;
 
     // Here opened earlier transaction comes into play
     @Transactional(propagation = Propagation.MANDATORY)
@@ -103,8 +90,6 @@ public class QuestionDomainTransformer {
         themeDomain.setThemeId(entity.getTheme().getThemeId());
         themeDomain.setName(entity.getTheme().getName());
         domain.setThemeDomain(themeDomain);
-
-        domain.setLang(entity.getLang().getAbbreviation());
         domain.setType(entity.getType().getTypeId());
 
         domain.setHelpDomain((entity.getHelp().isPresent())

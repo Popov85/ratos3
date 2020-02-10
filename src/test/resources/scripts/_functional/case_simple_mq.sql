@@ -1,15 +1,15 @@
 /*Questions Theme #1 (All MQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #1 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #2 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #3 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #4 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #5 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #6 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #7 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #8 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #9 T#4', 1, 4, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Matcher question #10 T#4', 1, 4, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #1 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #2 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #3 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #4 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #5 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #6 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #7 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #8 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #9 T#4', 1, 4, 1);
+insert into question (title, level, type_id, theme_id) values ('Matcher question #10 T#4', 1, 4, 1);
 
 insert into help(name, text, staff_id) values('Help #31 MQ#1 T#4', 'Please, refer to section #1 MQ#1 T#4', 1);
 insert into question_help(question_id, help_id) values(1,1);

@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -74,14 +76,24 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        final List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        BindingResult bindingResult = ex.getBindingResult();
         Set<FieldValidationResponse> fieldValidationResponses = new HashSet<>();
-        fieldErrors.forEach(e ->
-            fieldValidationResponses
-                    .add(new FieldValidationResponse(e.getField(), e.getRejectedValue(), e.getDefaultMessage())));
+        List<ObjectError> allErrors = bindingResult.getAllErrors();
+        if (!allErrors.isEmpty()) {
+            allErrors.forEach(e->{
+                if (e instanceof FieldError) {
+                    FieldError f = (FieldError) e;
+                    fieldValidationResponses
+                            .add(new FieldValidationResponse(f.getField(), f.getRejectedValue(), e.getDefaultMessage()));
+                } else {
+                    fieldValidationResponses
+                            .add(new FieldValidationResponse("Whole object", "Combination of fields", e.getDefaultMessage()));
+                }
+            });
+        }
         final ValidationExceptionResponse exceptionResponse =
                 new ValidationExceptionResponse("Validation error", fieldValidationResponses);
-        log.error("Validation error has occurred = {}", fieldValidationResponses);
+        log.error("Validation error has occurred = {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

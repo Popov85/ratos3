@@ -48,7 +48,6 @@ public class CourseService {
     private final SecurityUtils securityUtils;
 
 
-
     @Transactional
     public CourseOutDto save(@NonNull final CourseInDto dto) {
         Course course = dtoCourseTransformer.toEntity(dto);

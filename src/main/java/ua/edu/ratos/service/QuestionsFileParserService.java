@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.edu.ratos.dao.entity.Language;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.dao.entity.Theme;
@@ -73,13 +72,11 @@ public class QuestionsFileParserService {
         // First, Enrich question with Theme, Language and Type, secondly for each non-null Help, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
-        Language language = em.getReference(Language.class, dto.getLangId());
         Staff staff = em.getReference(Staff.class, securityUtils.getAuthStaffId());
         final List<Question> questions = new ArrayList<>();
         parsedQuestions.forEach(q->{
             q.setTheme(theme);
             q.setType(type);
-            q.setLang(language);
             if (q.getHelp().isPresent()) q.getHelp().get().setStaff(staff);
             questions.add(q);
         });

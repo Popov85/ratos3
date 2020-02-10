@@ -56,10 +56,6 @@ public class Question {
     @JoinColumn(name = "type_id", insertable = false, updatable = false)
     protected QuestionType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lang_id")
-    protected Language lang;
-
     /**
      * Only applicable to FBMQ & MQ (in MCQ's partiality is managed by isRequired flag);
      * Specifies whether partial correct response is allowed or not;
@@ -71,7 +67,6 @@ public class Question {
 
     // Technically many Helps can be associated with a Question, but we go for only one for now
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "question_help", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "help_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -89,9 +84,9 @@ public class Question {
         this.level = level;
     }
 
+    // Currently only one help is allowed!
     public void addHelp(Help help) {
-        if (!this.helps.isEmpty())
-            throw new IllegalStateException("Currently, only one help can be associated with a question");
+        this.helps.clear();
         this.helps.add(help);
     }
 
@@ -107,7 +102,9 @@ public class Question {
         return Optional.ofNullable(help);
     }
 
+    // Currently only one resource is allowed!
     public void addResource(Resource resource) {
+        this.resources.clear();
         this.resources.add(resource);
     }
 
@@ -117,6 +114,14 @@ public class Question {
 
     public Set<Resource> getResources() {
         return this.resources;
+    }
+
+    public Optional<Resource> getResource() {
+        Resource resource = null;
+        if (this.resources!=null && !this.resources.isEmpty()) {
+            resource = this.resources.iterator().next();
+        }
+        return Optional.ofNullable(resource);
     }
 
     public boolean isValid() {

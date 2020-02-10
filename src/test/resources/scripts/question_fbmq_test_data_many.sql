@@ -27,11 +27,11 @@ insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #1 required', 2, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('FBMQ question #2', 2, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #3', 2, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #4', 2, 3, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #5', 2, 3, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #1 required', 2, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('FBMQ question #2', 2, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #3', 2, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #4', 2, 3, 2);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #5', 2, 3, 2);
 
 
 insert into question_resource(question_id, resource_id) values(1, 1);

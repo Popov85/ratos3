@@ -17,7 +17,6 @@ public class QuestionGeneratorHelper {
         questionMCQ.setQuestionId(questionId);
         questionMCQ.setQuestion(question);
         questionMCQ.setType(1L);
-        questionMCQ.setLang("EN");
         questionMCQ.setLevel((byte) 1);
         questionMCQ.setSingle(true);
         questionMCQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
@@ -44,7 +43,6 @@ public class QuestionGeneratorHelper {
         questionFBSQ.setQuestionId(questionId);
         questionFBSQ.setQuestion(question);
         questionFBSQ.setType(2L);
-        questionFBSQ.setLang("EN");
         questionFBSQ.setLevel((byte) 1);
         questionFBSQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionFBSQ.setHelpDomain(new HelpDomain().setHelpId(2L).setName("HelpDomain FBSQ #1").setHelp("See HelpDomain FBSQ #1")
@@ -81,7 +79,6 @@ public class QuestionGeneratorHelper {
         questionFBMQ.setQuestionId(questionId);
         questionFBMQ.setQuestion(question);
         questionFBMQ.setType(3L);
-        questionFBMQ.setLang("EN");
         questionFBMQ.setLevel((byte) 1);
         questionFBMQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionFBMQ.setHelpDomain(new HelpDomain().setHelpId(3L).setName("HelpDomain FBMQ #3").setHelp("See HelpDomain FBMQ #3")
@@ -135,7 +132,6 @@ public class QuestionGeneratorHelper {
         questionMQ.setQuestionId(questionId);
         questionMQ.setQuestion(question);
         questionMQ.setType(4L);
-        questionMQ.setLang("EN");
         questionMQ.setLevel((byte) 1);
         questionMQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionMQ.setHelpDomain(new HelpDomain().setHelpId(4L).setName("HelpDomain MQ#4").setHelp("See HelpDomain MQ#4")
@@ -176,7 +172,6 @@ public class QuestionGeneratorHelper {
         questionSQ.setQuestionId(questionId);
         questionSQ.setQuestion(question);
         questionSQ.setType(5L);
-        questionSQ.setLang("EN");
         questionSQ.setLevel((byte) 1);
         questionSQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionSQ.setHelpDomain(new HelpDomain().setHelpId(5L).setName("HelpDomain SQ#5").setHelp("See HelpDomain SQ#5")

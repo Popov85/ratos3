@@ -34,7 +34,12 @@ INSERT INTO user_role (user_id, role_id) VALUES (2, 2);
 INSERT INTO student (stud_id, class_id, fac_id, org_id, entrance_year) VALUES (2, 1, 1, 1, 2018);
 
 INSERT INTO language (name, eng_abbreviation) VALUES ('English', 'en');
+INSERT INTO language (name, eng_abbreviation) VALUES ('Deutsch', 'de');
 INSERT INTO language (name, eng_abbreviation) VALUES ('français', 'fr');
+INSERT INTO language (name, eng_abbreviation) VALUES ('español', 'es');
+INSERT INTO language (name, eng_abbreviation) VALUES ('polski', 'pl');
+INSERT INTO language (name, eng_abbreviation) VALUES ('українська', 'ua');
+INSERT INTO language (name, eng_abbreviation) VALUES ('русский', 'ru');
 
 INSERT INTO question_type (type_id, eng_abbreviation, description) VALUES (1, 'MCQ', 'Question à choix multiples');
 INSERT INTO question_type (type_id, eng_abbreviation, description) VALUES (2, 'FBSQ', 'Remplir à blanc seule question');

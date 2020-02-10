@@ -1,15 +1,15 @@
 /*Questions Theme #1 (All MCQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #3 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #4 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #5 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #6 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #7 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #8 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #9 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #10 T#1', 1, 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #1 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #2 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #3 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #4 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #5 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #6 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #7 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #8 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #9 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #10 T#1', 1, 1, 1);
 
 insert into help(name, text, staff_id) values('Help #1 MCQ#1 T#1', 'Please, refer to section #1 MCQ#1 T#1', 1);
 insert into question_help(question_id, help_id) values(1,1);

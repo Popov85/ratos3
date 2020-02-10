@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.domain.ThemeDomain;
-import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 
 import java.io.Serializable;
@@ -42,8 +41,6 @@ public abstract class QuestionDomain implements Serializable {
     protected byte level;
 
     protected long type;
-
-    protected String lang;
 
     protected ThemeDomain themeDomain;
 

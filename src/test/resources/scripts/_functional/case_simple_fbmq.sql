@@ -1,15 +1,15 @@
 /*Questions Theme #1 (All FBMQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #1 T#3 (phrases = {tree, grass, bush})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #2 T#3 (phrases = {sky, wind, rain})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #3 T#3 (phrases = {water, sun, sand})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #4 T#3 (phrases = {train, bus, plane})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #5 T#3 (phrases = {gas, fire, ice})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #6 T#3 (phrases = {fish, meat, lard})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #7 T#3 (phrases = {chair, table, stool})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #8 T#3 (phrases = {candy, sweets, chocolate})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #9 T#3 (phrases = {bottle, glass, jar})', 1, 3, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank multiple question #10 T#3 (phrases = {heart, soul, love})', 1, 3, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #1 T#3 (phrases = {tree, grass, bush})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #2 T#3 (phrases = {sky, wind, rain})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #3 T#3 (phrases = {water, sun, sand})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #4 T#3 (phrases = {train, bus, plane})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #5 T#3 (phrases = {gas, fire, ice})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #6 T#3 (phrases = {fish, meat, lard})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #7 T#3 (phrases = {chair, table, stool})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #8 T#3 (phrases = {candy, sweets, chocolate})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #9 T#3 (phrases = {bottle, glass, jar})', 1, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank multiple question #10 T#3 (phrases = {heart, soul, love})', 1, 3, 1);
 
 insert into help(name, text, staff_id) values('Help #21 FBMQ#1 T#3', 'Please, refer to section #1 FBMQ#1 T#3', 1);
 insert into question_help(question_id, help_id) values(1,1);

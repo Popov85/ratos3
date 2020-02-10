@@ -18,6 +18,7 @@ import javax.persistence.PersistenceContext;
 import java.io.File;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -52,7 +53,8 @@ public class QuestionFBSQServiceTestIT {
                 hasProperty("questionId", equalTo(1L)),
                 hasProperty("question", equalTo("Question #1")),
                 hasProperty("resources", hasSize(1)),
-                hasProperty("help", hasProperty("present", equalTo(true)))
+                hasProperty("helps", hasSize(1)),
+                hasProperty("answer", notNullValue())
         ));
     }
 }

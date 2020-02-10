@@ -1,59 +1,25 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.dto.out.question.*;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class QuestionDtoTransformer {
 
-    private AnswerDtoTransformer answerDtoTransformer;
+    private final AnswerDtoTransformer answerDtoTransformer;
 
-    private HelpDtoTransformer helpDtoTransformer;
+    private final HelpMinDtoTransformer helpDtoTransformer;
 
-    private ResourceDtoTransformer resourceDtoTransformer;
+    private final ResourceMinDtoTransformer resourceDtoTransformer;
 
-    private LanguageDtoTransformer languageDtoTransformer;
+    private final QuestionTypeDtoTransformer questionTypeDtoTransformer;
 
-    private QuestionTypeDtoTransformer questionTypeDtoTransformer;
-
-    private ThemeMinDtoTransformer themeMinDtoTransformer;
-
-    @Autowired
-    public void setAnswerDtoTransformer(AnswerDtoTransformer answerDtoTransformer) {
-        this.answerDtoTransformer = answerDtoTransformer;
-    }
-
-    @Autowired
-    public void setHelpDtoTransformer(HelpDtoTransformer helpDtoTransformer) {
-        this.helpDtoTransformer = helpDtoTransformer;
-    }
-
-    @Autowired
-    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
-        this.resourceDtoTransformer = resourceDtoTransformer;
-    }
-
-    @Autowired
-    public void setLanguageDtoTransformer(LanguageDtoTransformer languageDtoTransformer) {
-        this.languageDtoTransformer = languageDtoTransformer;
-    }
-
-    @Autowired
-    public void setQuestionTypeDtoTransformer(QuestionTypeDtoTransformer questionTypeDtoTransformer) {
-        this.questionTypeDtoTransformer = questionTypeDtoTransformer;
-    }
-
-    @Autowired
-    public void setThemeMinDtoTransformer(ThemeMinDtoTransformer themeMinDtoTransformer) {
-        this.themeMinDtoTransformer = themeMinDtoTransformer;
-    }
 
     public QuestionFBMQOutDto toDto(@NonNull final QuestionFBMQ entity) {
         QuestionFBMQOutDto dto = new QuestionFBMQOutDto();
@@ -96,21 +62,14 @@ public class QuestionDtoTransformer {
         return dto;
     }
 
-
     private void mapDto(@NonNull final Question entity, @NonNull final QuestionOutDto dto) {
         dto.setQuestionId(entity.getQuestionId());
         dto.setQuestion(entity.getQuestion());
         dto.setLevel(entity.getLevel());
         dto.setRequired(entity.isRequired());
-        dto.setLang(languageDtoTransformer.toDto(entity.getLang()));
         dto.setType(questionTypeDtoTransformer.toDto(entity.getType()));
-        dto.setTheme(themeMinDtoTransformer.toDto(entity.getTheme()));
-        dto.setHelp((entity.getHelp().isPresent()) ? helpDtoTransformer.toDto(entity.getHelp().get()) : null);
-        if (entity.getResources()!=null) {
-            dto.setResources(entity.getResources().stream().map(resourceDtoTransformer::toDto).collect(Collectors.toSet()));
-        } else {
-            dto.setResources(Collections.emptySet());
-        }
+        dto.setHelp(entity.getHelp().isPresent() ? helpDtoTransformer.toDto(entity.getHelp().get()) : null);
+        dto.setResource(entity.getResource().isPresent() ? resourceDtoTransformer.toDto(entity.getResource().get()): null);
     }
     
 }

@@ -1,15 +1,15 @@
 /*Questions Theme #1 (All SQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #1 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #2 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #3 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #4 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #5 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #6 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #7 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #8 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #9 T#1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #10 T#1', 1, 5, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #1 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #2 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #3 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #4 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #5 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #6 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #7 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #8 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #9 T#1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #10 T#1', 1, 5, 1);
 
 insert into help(name, text, staff_id) values('Help #41 SQ#1 T#5', 'Please, refer to section #1 SQ#1 T#5', 1);
 insert into question_help(question_id, help_id) values(1,1);

@@ -51,9 +51,9 @@ public class QuestionSQServiceTestIT {
         assertThat("Found Question object is not as expected", question, allOf(
                 hasProperty("questionId", equalTo(1L)),
                 hasProperty("question", equalTo("Question #1")),
-                hasProperty("answers", hasSize(4)),
                 hasProperty("resources", hasSize(1)),
-                hasProperty("help", hasProperty("present", equalTo(true)))
+                hasProperty("helps", hasSize(1)),
+                hasProperty("answers", hasSize(4))
         ));
     }
 }

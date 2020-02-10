@@ -1,15 +1,15 @@
 /*Questions Theme #1 (All FBSQ) 10 pieces, full equipment*/
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #1 T#1 (phrase = wolf)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #2 T#1 (phrase = bear)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #3 T#1 (phrase = duck)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #4 T#1 (phrase = cow)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #5 T#1 (phrase = dog)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #6 T#1 (phrase = lion)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #7 T#1 (phrase = hypo)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #8 T#1 (phrase = tiger)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #9 T#1 (phrase = cat)', 1, 2, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Fill blank single question #10 T#1 (phrase = fox)', 1, 2, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #1 T#1 (phrase = wolf)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #2 T#1 (phrase = bear)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #3 T#1 (phrase = duck)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #4 T#1 (phrase = cow)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #5 T#1 (phrase = dog)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #6 T#1 (phrase = lion)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #7 T#1 (phrase = hypo)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #8 T#1 (phrase = tiger)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #9 T#1 (phrase = cat)', 1, 2, 1);
+insert into question (title, level, type_id, theme_id) values ('Fill blank single question #10 T#1 (phrase = fox)', 1, 2, 1);
 
 insert into help(name, text, staff_id) values('Help #11 FBSQ#1 T#2', 'Please, refer to section #1 FBSQ#1 T#2', 1);
 insert into question_help(question_id, help_id) values(1,1);

@@ -20,6 +20,6 @@ public class QuestionsParsingResultOutDto {
     private int mediumIssues;
     private int minorIssues;
     private List<QuestionsParsingIssue> allIssues = new ArrayList<>();
-    // Specifies if the totalByType were saved to DB
+    // Specifies if the questions were saved to DB
     private boolean saved;
 }

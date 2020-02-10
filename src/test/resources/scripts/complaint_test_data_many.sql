@@ -2,16 +2,16 @@ insert into department (name, fac_id) values('Department #2', 1);
 
 insert into theme (name, course_id, created_by, access_id, belongs_to, created) values('Test theme #1', 1, 1, 1, 1, CURRENT_TIMESTAMP);
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #1 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #2 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #3 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #4 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #5 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #6 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #7 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #8 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #9 T#1', 1, 1, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Multiple choice question #10 T#1', 1, 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #1 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #2 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #3 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #4 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #5 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #6 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #7 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #8 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #9 T#1', 1, 1, 1);
+insert into question (title, level, type_id, theme_id) values ('Multiple choice question #10 T#1', 1, 1, 1);
 
 insert into complaint(question_id, dep_id, ctype_id, last_complained, times_complained) values(1, 1, 1, CURRENT_TIMESTAMP, 14);
 insert into complaint(question_id, dep_id, ctype_id, last_complained, times_complained) values(1, 1, 2, CURRENT_TIMESTAMP, 71);

@@ -27,11 +27,11 @@ insert into help_resource(help_id, resource_id) values(4, 9);
 insert into help_resource(help_id, resource_id) values(5, 10);
 
 
-insert into question (title, level, type_id, theme_id, lang_id) values ('SQ #1', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #2', 1, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #3 advanced', 2, 5, 1, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('Sequence question #4', 3, 5, 2, 1);
-insert into question (title, level, type_id, theme_id, lang_id) values ('SQ #5', 3, 5, 3, 1);
+insert into question (title, level, type_id, theme_id) values ('SQ #1', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #2', 1, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #3 advanced', 2, 5, 1);
+insert into question (title, level, type_id, theme_id) values ('Sequence question #4', 3, 5, 2);
+insert into question (title, level, type_id, theme_id) values ('SQ #5', 3, 5, 3);
 
 
 insert into question_resource(question_id, resource_id) values(1, 1);

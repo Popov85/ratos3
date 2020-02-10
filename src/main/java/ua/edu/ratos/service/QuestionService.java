@@ -5,22 +5,22 @@ import lombok.NonNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Help;
+import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.QuestionRepository;
-import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
 
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,38 +28,52 @@ public class QuestionService {
 
     private static final String QUESTION_NOT_FOUND = "The requested Question is not found, questionId = ";
 
+    @PersistenceContext
+    private final EntityManager em;
+
     private final QuestionRepository questionRepository;
 
     private final DtoQuestionTransformer dtoQuestionTransformer;
 
     private final QuestionDtoTransformer questionDtoTransformer;
 
-    private final SecurityUtils securityUtils;
-
     //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final QuestionMCQInDto dto) {
-        return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
+    public QuestionMCQOutDto save(@NonNull final QuestionMCQInDto dto) {
+        QuestionMCQ questionMCQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionMCQ);
     }
 
     @Transactional
-    public Long save(@NonNull final QuestionFBSQInDto dto) {
-        return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
+    public QuestionMCQOutDto update(@NonNull final QuestionMCQInDto dto) {
+        if (dto.getQuestionId()==null)
+            throw new RuntimeException("Failed to update question MCQ, questionId is not present!");
+        QuestionMCQ questionMCQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionMCQ);
     }
 
     @Transactional
-    public Long save(@NonNull final QuestionFBMQInDto dto) {
-        return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
+    public QuestionFBSQOutDto save(@NonNull final QuestionFBSQInDto dto) {
+        QuestionFBSQ questionFBSQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionFBSQ);
     }
 
     @Transactional
-    public Long save(@NonNull final QuestionMQInDto dto) {
-        return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
+    public QuestionFBMQOutDto save(@NonNull final QuestionFBMQInDto dto) {
+        QuestionFBMQ questionFBMQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionFBMQ);
     }
 
     @Transactional
-    public Long save(@NonNull final QuestionSQInDto dto) {
-        return questionRepository.save(dtoQuestionTransformer.toEntity(dto)).getQuestionId();
+    public QuestionMQOutDto save(@NonNull final QuestionMQInDto dto) {
+        QuestionMQ questionMQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionMQ);
+    }
+
+    @Transactional
+    public QuestionSQOutDto save(@NonNull final QuestionSQInDto dto) {
+        QuestionSQ questionSQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
+        return questionDtoTransformer.toDto(questionSQ);
     }
 
     /**
@@ -72,10 +86,52 @@ public class QuestionService {
     }
 
     @Transactional
-    public void update(@NonNull final Long questionId, @NonNull final QuestionInDto dto) {
+    public void updateName(@NonNull final Long questionId, @NonNull final String name) {
         final Question entity = questionRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
-        dtoQuestionTransformer.mapDto(dto, entity);
+        entity.setQuestion(name);
+    }
+
+    @Transactional
+    public void updateLevel(@NonNull final Long questionId, @NonNull final Byte level) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.setLevel(level);
+    }
+
+    @Transactional
+    public void updateRequired(@NonNull final Long questionId, @NonNull final Boolean required) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.setRequired(required);
+    }
+
+    @Transactional
+    public void associateWithHelp(@NonNull final Long questionId, @NonNull final Long helpId) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.addHelp(em.getReference(Help.class, helpId));
+    }
+
+    @Transactional
+    public void disassociateWithHelp(@NonNull final Long questionId) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.clearHelps();
+    }
+
+    @Transactional
+    public void associateWithResource(@NonNull final Long questionId, @NonNull final Long resourceId) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.addResource(em.getReference(Resource.class, resourceId));
+    }
+
+    @Transactional
+    public void disassociateWithResource(@NonNull final Long questionId) {
+        final Question entity = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId));
+        entity.clearResources();
     }
 
     @Transactional
@@ -83,37 +139,6 @@ public class QuestionService {
         questionRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException(QUESTION_NOT_FOUND + questionId))
                 .setDeleted(true);
-    }
-
-    //----------------------------------------------------One for edit--------------------------------------------------
-    @Transactional(readOnly = true)
-    public QuestionMCQOutDto findOneMCQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneMCQForEditById(questionId)
-                .orElseThrow(() -> new EntityNotFoundException("QuestionMCQ is not found , questionId = " + questionId)));
-    }
-
-    @Transactional(readOnly = true)
-    public QuestionFBSQOutDto findOneFBSQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneFBSQForEditById(questionId)
-                .orElseThrow(() -> new EntityNotFoundException("QuestionFBSQ is not found, questionId = " + questionId)));
-    }
-
-    @Transactional(readOnly = true)
-    public QuestionFBMQOutDto findOneFBMQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneFBMQForEditById(questionId)
-                .orElseThrow(() -> new EntityNotFoundException("QuestionFBMQ is not found, questionId = " + questionId)));
-    }
-
-    @Transactional(readOnly = true)
-    public QuestionMQOutDto findOneMQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneMQForEditById(questionId)
-                .orElseThrow(() -> new EntityNotFoundException("QuestionMQ is not found, questionId = " + questionId)));
-    }
-
-    @Transactional(readOnly = true)
-    public QuestionSQOutDto findOneSQForEditById(@NonNull final Long questionId) {
-        return questionDtoTransformer.toDto(questionRepository.findOneSQForEditById(questionId)
-                .orElseThrow(() -> new EntityNotFoundException("QuestionSQ is not found, questionId = " + questionId)));
     }
 
     //-------------------------------------------------------Session----------------------------------------------------
@@ -212,59 +237,13 @@ public class QuestionService {
     }
 
     //----------------------------------------------------Staff table---------------------------------------------------
-    @Transactional(readOnly = true)
-    public Page<QuestionMCQOutDto> findAllMCQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
-        return questionRepository.findAllMCQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
-    }
 
     @Transactional(readOnly = true)
-    public Page<QuestionFBSQOutDto> findAllFBSQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
-        return questionRepository.findAllFBSQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<QuestionFBMQOutDto> findAllFBMQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
-        return questionRepository.findAllFBMQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<QuestionMQOutDto> findAllMQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
-        return questionRepository.findAllMQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<QuestionSQOutDto> findAllSQForEditByThemeId(@NonNull final Long themeId, @NonNull final Pageable pageable) {
-        return questionRepository.findAllSQForEditByThemeId(themeId, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    //---------------------------------------Staff (global search throughout department)--------------------------------
-    @Transactional(readOnly = true)
-    public Slice<QuestionMCQOutDto> findAllMCQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
-        Long depId = securityUtils.getAuthDepId();
-        return questionRepository.findAllMCQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<QuestionFBSQOutDto> findAllFBSQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
-        Long depId = securityUtils.getAuthDepId();
-        return questionRepository.findAllFBSQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<QuestionFBMQOutDto> findAllFBMQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
-        Long depId = securityUtils.getAuthDepId();
-        return questionRepository.findAllFBMQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<QuestionMQOutDto> findAllMQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
-        Long depId = securityUtils.getAuthDepId();
-        return questionRepository.findAllMQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<QuestionSQOutDto> findAllSQForSearchByDepartmentIdAndTitleContains(@NonNull final String starts, @NonNull final Pageable pageable) {
-        Long depId = securityUtils.getAuthDepId();
-        return questionRepository.findAllSQForSearchByDepartmentIdAndTitleContains(depId, starts, pageable).map(questionDtoTransformer::toDto);
+    public Set<QuestionMCQOutDto> findAllMCQForEditByThemeId(@NonNull final Long themeId) {
+        return questionRepository
+                .findAllMCQForEditByThemeId(themeId)
+                .stream()
+                .map(questionDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 }

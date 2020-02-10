@@ -39,13 +39,12 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-    // Used to cascaded doGameProcessing all answers with a new question
     @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMCQ toEntity(@NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = modelMapper.map(dto, AnswerMCQ.class);
-        if (dto.getResourceId()!=0) {
+        if (dto.getResourceId().isPresent()) {
             // No need to clear() first
-            answer.addResource(em.find(Resource.class, dto.getResourceId()));
+            answer.addResource(em.find(Resource.class, dto.getResourceId().get()));
         } else {
             answer.clearResources();
         }

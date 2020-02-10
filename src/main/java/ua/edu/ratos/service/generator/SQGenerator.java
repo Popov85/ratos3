@@ -45,7 +45,6 @@ public class SQGenerator {
         QuestionSQ questionSQ = new QuestionSQ();
         questionSQ.setQuestion("Question SQ #"+questionId);
         questionSQ.setType(em.getReference(QuestionType.class, 5L));
-        questionSQ.setLang(em.getReference(Language.class, 1L));
         questionSQ.setLevel((byte) rnd.rnd(1, 4));
         questionSQ.setTheme(theme);
 

@@ -14,7 +14,6 @@
       "question": "QuestionMultiple Choice #1",
       "level": 1,
       "type": 1,
-      "lang": "EN",
       "themeDomain": {
         "themeId": 1,
         "name": "ThemeDomain#1"
@@ -71,7 +70,6 @@
       "question": "Question Fill Blank Single #2",
       "level": 1,
       "type": 2,
-      "lang": "EN",
       "themeDomain": {
         "themeId": 1,
         "name": "ThemeDomain#1"
@@ -106,7 +104,6 @@
       "question": "Question Fill Blank Multiple #3",
       "level": 1,
       "type": 3,
-      "lang": "EN",
       "themeDomain": {
         "themeId": 1,
         "name": "ThemeDomain#1"
@@ -186,7 +183,6 @@
       "question": "Matcher Question #4",
       "level": 1,
       "type": 4,
-      "lang": "EN",
       "themeDomain": {
         "themeId": 1,
         "name": "ThemeDomain#1"
@@ -267,7 +263,6 @@
         "question": "Sequence Question #5",
         "level": 1,
         "type": 5,
-        "lang": "EN",
         "themeDomain": {
           "themeId": 1,
           "name": "ThemeDomain#1"

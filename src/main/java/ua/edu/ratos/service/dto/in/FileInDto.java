@@ -15,9 +15,6 @@ public class FileInDto {
     @Positive(message = "Invalid themeId, {dto.fk.required}")
     private long themeId;
 
-    @Positive(message = "Invalid langId, {dto.fk.required}")
-    private long langId;
-
     @Positive(message = "Invalid staffId, {dto.fk.required}")
     private long staffId;
     /**
