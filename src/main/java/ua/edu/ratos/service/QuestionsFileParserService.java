@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.Staff;
@@ -41,6 +42,8 @@ public class QuestionsFileParserService {
 
     private final CharsetDetector charsetDetector;
 
+    private final ParserFactory parserFactory;
+
     private final SecurityUtils securityUtils;
 
     /**
@@ -49,9 +52,10 @@ public class QuestionsFileParserService {
      * @param dto metadata of the file
      * @return result on parsing and saving
      */
+    @Transactional
     public QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile, @NonNull final FileInDto dto) throws IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-        QuestionsFileParser parser = getParser(extension);
+        QuestionsFileParser parser = parserFactory.getParser(extension);
         final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
         final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
         if (dto.isConfirmed()) {
@@ -69,7 +73,7 @@ public class QuestionsFileParserService {
     }
 
     private void save(@NonNull final List<QuestionMCQ> parsedQuestions, final @NonNull FileInDto dto) {
-        // First, Enrich question with Theme, Language and Type, secondly for each non-null Help, enrich it with Staff
+        // First, Enrich question with Theme and Type, secondly for each non-null Help, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
         Theme theme = em.getReference(Theme.class, dto.getThemeId());
         Staff staff = em.getReference(Staff.class, securityUtils.getAuthStaffId());
@@ -81,11 +85,5 @@ public class QuestionsFileParserService {
             questions.add(q);
         });
         questionService.saveAll(questions);
-    }
-
-    private QuestionsFileParser getParser(@NonNull final String extension) {
-        if ("txt".equals(extension)) return new QuestionsFileParserTXT();
-        if ("rtp".equals(extension) || "xtt".equals(extension)) return new QuestionsFileParserRTP();
-        throw new UnsupportedOperationException("Unsupported file extension: only .txt/.rtp/.xtt files are supported");
     }
 }

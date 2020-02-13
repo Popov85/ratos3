@@ -2,10 +2,12 @@ package ua.edu.ratos.service.parsers;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.dao.entity.Help;
-import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
+import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 
 import java.util.List;
+import java.util.Optional;
+
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Part.*;
 import static ua.edu.ratos.service.parsers.QuestionsParsingIssue.Severity.*;
 
@@ -50,7 +52,11 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, QUESTION, currentRow, currentLine));
         }
 
+        // Check if Help of previous question is not empty
+        removeHelpIfEmpty();
+
         currentQuestion = QuestionMCQ.createEmpty();
+        currentQuestion.setLevel(getLevel(line));
 
         questions.add(currentQuestion);
 
@@ -65,9 +71,20 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         this.helpLine = "";
     }
 
+    // if help happens to be an empty string - just remove it
+    private void removeHelpIfEmpty() {
+        if (currentQuestion != null) {
+            Optional<Help> help = currentQuestion.getHelp();
+            if (help.isPresent()) {
+                Help h = help.get();
+                if (h.getHelp() == null || h.getHelp().isEmpty()) currentQuestion.clearHelps();
+            }
+        }
+    }
+
     private byte getLevel(String line) {
         final String s = line.replaceAll("\\s+", "");
-        int number = 0;
+        int number;
         try {
             number = Integer.parseInt(s.substring(1));
             if (number < 1 || number > 3) throw new RuntimeException();
@@ -107,11 +124,12 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
             questionsParsingIssues.add(new QuestionsParsingIssue(description, MAJOR, HINT, currentRow, currentLine));
         }
 
-        Help help = new Help();
-        help.setName("automatic");
-        help.setHelp(line);
+        this.helpLine = extractHintStart(line);
 
-        currentQuestion.clearHelps();
+        Help help = new Help();
+        help.setName("automatic #" + System.nanoTime());
+        help.setHelp(this.helpLine);
+
         currentQuestion.addHelp(help);
 
         questionStartExpected = true;
@@ -123,9 +141,15 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         hintContinuationPossible = true;
     }
 
+    // "@ Some hint starts here" - like string
+    private String extractHintStart(String line) {
+        String result = line.substring(1, line.length());
+        return result.trim();
+    }
+
     private void readString(String line) {
         if (questionContinuationPossible) {
-            currentQuestion.setQuestion(currentQuestion.getQuestion() + line);
+            currentQuestion.setQuestion(currentQuestion.getQuestion() +" "+line);
 
             questionStartExpected = false;
             answerStartExpected = true;
@@ -134,7 +158,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         if (answerContinuationPossible) {
             final List<AnswerMCQ> answers = currentQuestion.getAnswers();
             String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
-            (answers.get(answers.size() - 1)).setAnswer(currentAnswer + line);
+            (answers.get(answers.size() - 1)).setAnswer(currentAnswer +" "+ line);
 
             questionStartExpected = true;
             answerStartExpected = true;
@@ -142,11 +166,10 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
         }
         if (hintContinuationPossible) {
 
-            String updatedHelp = this.helpLine+line;
+            String updatedHelp = this.helpLine +" "+ line;
             Help help = new Help();
-            help.setName("automatic");
+            help.setName("automatic #" + System.nanoTime());
             help.setHelp(updatedHelp);
-            currentQuestion.clearHelps();
             currentQuestion.addHelp(help);
 
             questionStartExpected = true;
@@ -157,7 +180,7 @@ public final class QuestionsFileParserRTP extends AbstractQuestionsFileParser im
 
     // Parses %!100%-like answerIds String and creates Answer object
     private AnswerMCQ createAnswer(String line) {
-        // Try to findDetails the second closing %-sign - the end of answerIds prefix
+        // Try to find the second closing %-sign - the end of answerIds prefix
         int stop = line.indexOf('%', 1);
         if (stop == -1) throw new RuntimeException("Incorrect answerIds prefix!");
         String value = line.substring(1, stop).replaceAll("\\s+", "");

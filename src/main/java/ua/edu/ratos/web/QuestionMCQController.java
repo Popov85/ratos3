@@ -56,5 +56,4 @@ public class QuestionMCQController {
                 questionsFileParserService.parseAndSave(multipartFile, new FileInDto(themeId, 1L, confirmed));
         return ResponseEntity.ok(parsingResultOutDto);
     }
-
 }

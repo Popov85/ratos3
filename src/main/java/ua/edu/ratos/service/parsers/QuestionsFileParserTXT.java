@@ -74,7 +74,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
     private void readString(String line) {
         if (questionContinuationPossible) {
             String question = currentQuestion.getQuestion();
-            currentQuestion.setQuestion((question.isEmpty()) ? line : question + "\n"+ line);
+            currentQuestion.setQuestion((question.isEmpty()) ? line : question + " "+ line);
 
             questionStartExpected = false;
             answerStartExpected = true;
@@ -82,7 +82,7 @@ public final class QuestionsFileParserTXT extends AbstractQuestionsFileParser im
         if (answerContinuationPossible) {
             final List<AnswerMCQ> answers = currentQuestion.getAnswers();
             String currentAnswer = (answers.get(answers.size() - 1)).getAnswer();
-            (answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +"\n"+ line);
+            (answers.get(answers.size() - 1)).setAnswer((currentAnswer.isEmpty()) ? line : currentAnswer +" "+ line);
 
             questionStartExpected = true;
             answerStartExpected = true;

@@ -1,5 +1,7 @@
 package ua.edu.ratos.service.parsers;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -14,6 +16,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
+@Slf4j
 @RunWith(JUnit4.class)
 public class QuestionsFileParserTXTTest {
 
@@ -28,6 +31,9 @@ public class QuestionsFileParserTXTTest {
     private static final String EMPTY_CASE = "classpath:files/txt/empty_case.txt";
 
     private static final String HEADER_CASE = "classpath:files/txt/header_case.txt";
+
+    private static final String REAL_CASE = "classpath:files/txt/medbio.txt";
+
 
 
     @Test(timeout = 1000L)
@@ -84,6 +90,19 @@ public class QuestionsFileParserTXTTest {
                 hasProperty("issues", hasSize(equalTo(5))),
                 hasProperty("invalid", equalTo(3))
         ));
+    }
+
+    @Ignore(value = "For visually testing the output")
+    @Test(timeout = 1000L)
+    public void parseFileOfTXTFormatTypicalCaseTest() throws Exception {
+        QuestionsFileParser parser = new QuestionsFileParserTXT();
+        File file = ResourceUtils.getFile(REAL_CASE);
+        QuestionsParsingResult result = parser.parseFile(file, "windows-1251");
+        log.debug("Questions = {}", result.getQuestions().size());
+        log.debug("Issues = {}", result.getIssues().size());
+        log.debug("Invalid = {}", result.getInvalid());
+        result.getInvalids().forEach(i->log.debug("Invalid = {}, answers = {}", i.getQuestion(), i.getAnswers()));
+        result.getIssues().forEach(i->log.debug("Issue = {}", i));
     }
 
     @Test(timeout = 1000L, expected = RuntimeException.class)
