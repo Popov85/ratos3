@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.repository.ResourceRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ResourceInDto;
@@ -14,6 +15,8 @@ import ua.edu.ratos.service.transformer.dto_to_entity.DtoResourceTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.ResourceDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,8 +35,17 @@ public class ResourceService {
 
     //--------------------------------------------------CRUD------------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final ResourceInDto dto) {
-        return resourceRepository.save(this.dtoResourceTransformer.toEntity(dto)).getResourceId();
+    public ResourceOutDto save(@NonNull final ResourceInDto dto) {
+        Resource resource = resourceRepository.save(this.dtoResourceTransformer.toEntity(dto));
+        return resourceDtoTransformer.toDto(resource);
+    }
+
+    @Transactional
+    public ResourceOutDto update(@NonNull final ResourceInDto dto) {
+        if (dto.getResourceId()==null)
+            throw new RuntimeException("Failed to update, resourceId is nullable!");
+        Resource resource = resourceRepository.save(this.dtoResourceTransformer.toEntity(dto));
+        return resourceDtoTransformer.toDto(resource);
     }
 
     @Transactional
@@ -51,20 +63,25 @@ public class ResourceService {
     }
 
     @Transactional
-    public void deleteById(@NonNull final Long resId) {
+    public void deleteByIdSoft(@NonNull final Long resId) {
         resourceRepository.findById(resId)
                 .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId))
                 .setDeleted(true);
     }
 
-    //----------------------------------------------One (for update)----------------------------------------------------
-    @Transactional(readOnly = true)
-    public ResourceOutDto findOneById(@NonNull Long resId) {
-        return resourceDtoTransformer.toDto(resourceRepository.findOneForEdit(resId)
-                .orElseThrow(() -> new EntityNotFoundException(RESOURCE_NOT_FOUND + resId)));
+    @Transactional
+    public void deleteById(@NonNull final Long resId) {
+        resourceRepository.deleteById(resId);
     }
 
     //------------------------------------------------Staff table-------------------------------------------------------
+
+    @Transactional(readOnly = true)
+    public Set<ResourceOutDto> findAllByDepartment() {
+        return resourceRepository.findByDepartmentId(securityUtils.getAuthDepId()).stream().map(resourceDtoTransformer::toDto).collect(Collectors.toSet());
+    }
+
+    //--------------------------------------------For future references-------------------------------------------------
     @Transactional(readOnly = true)
     public Page<ResourceOutDto> findByStaffId(@NonNull final Pageable pageable) {
         return resourceRepository.findByStaffId(securityUtils.getAuthStaffId(), pageable).map(resourceDtoTransformer::toDto);

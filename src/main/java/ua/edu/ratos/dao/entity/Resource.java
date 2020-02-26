@@ -10,7 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Setter
@@ -37,12 +37,21 @@ public class Resource {
     @Column(name="description")
     private String description;
 
+    @Column(name="type")
+    private String type;
+
+    @Column(name="width")
+    private short width;
+
+    @Column(name="height")
+    private short height;
+
     @Column(name="last_used", nullable = false)
-    private LocalDateTime lastUsed = LocalDateTime.now();
+    private OffsetDateTime lastUsed = OffsetDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
-    protected Staff staff;
+    private Staff staff;
 
     @Column(name="is_deleted")
     private boolean deleted;

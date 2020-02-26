@@ -1,10 +1,12 @@
 package ua.edu.ratos.service.dto.in;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @ToString(callSuper = true)
 @Getter
@@ -14,14 +16,24 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ResourceInDto {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long resourceId;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 5, max = 1000, message = "{dto.string.invalid}")
+    @URL(protocol = "https", message = "{dto.string.url}")
+    @Size(min = 8, max = 1000, message = "{dto.string.invalid}")
     private String link;
 
     @NotBlank(message = "{dto.string.required}")
     @Size(min = 1, max = 200, message = "{dto.string.invalid}")
     private String description;
+
+    @NotBlank(message = "{dto.string.required}")
+    @Size(min = 3, max = 20, message = "{dto.string.invalid}")
+    private String type;
+
+    @Range(min = 1, max = 640, message = "{dto.range.invalid}")
+    private short width;
+
+    @Range(min = 1, max = 480, message = "{dto.range.invalid}")
+    private short height;
 }

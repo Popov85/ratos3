@@ -515,19 +515,22 @@ CREATE TABLE IF NOT EXISTS question_help (
 -- -----------------------------------------------------
 -- Table  phraseResource
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS   resource  (
-  resource_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  hyperlink  VARCHAR(200) NOT NULL,
-  description  VARCHAR(200) NOT NULL,
-  staff_id  INT UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS resource (
+  resource_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  hyperlink VARCHAR(200) NOT NULL,
+  description VARCHAR(200) NOT NULL,
+  type VARCHAR(20) NOT NULL DEFAULT 'misc.',
+  width INT NOT NULL,
+  height INT NOT NULL,
   last_used DATETIME NOT NULL,
-  is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY ( resource_id ),
-  UNIQUE INDEX  resource_link_UNIQUE  ( hyperlink  ASC),
-  INDEX  fk_resource_staff_staff_id_idx  ( staff_id  ASC),
-  CONSTRAINT  fk_resource_staff_staff_id
-  FOREIGN KEY ( staff_id )
-  REFERENCES   staff  ( staff_id )
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  staff_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (resource_id),
+  INDEX fk_resource_staff_staff_id_idx (staff_id ASC),
+  UNIQUE INDEX hyperlink_staff_id_idx (hyperlink ASC, staff_id ASC),
+  CONSTRAINT fk_resource_staff_staff_id
+  FOREIGN KEY (staff_id)
+  REFERENCES staff (staff_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
   ENGINE = InnoDB;

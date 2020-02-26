@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Resource;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
@@ -15,6 +16,12 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     Optional<Resource> findOneForEdit(Long resId);
 
     //------------------------------------------------Instructor table--------------------------------------------------
+    @Query(value = "SELECT r FROM Resource r join fetch r.staff s join s.department d where d.depId=?1")
+    Set<Resource> findByDepartmentId(Long depId);
+
+
+    //-----------------------------------------------For future references----------------------------------------------
+
     @Query(value = "SELECT r FROM Resource r join fetch r.staff s where s.staffId=?1",
             countQuery = "SELECT count(r) FROM Resource r join r.staff s where s.staffId=?1")
     Page<Resource> findByStaffId(Long staffId, Pageable pageable);
@@ -23,7 +30,8 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
             countQuery = "SELECT count(r) FROM Resource r join r.staff s join s.department d where d.depId=?1")
     Page<Resource> findByDepartmentId(Long depId, Pageable pageable);
 
-    //----------------------------------------------------Table search--------------------------------------------------
+
+    //----------------------------------------------Table search for future---------------------------------------------
     @Query(value = "SELECT r FROM Resource r join fetch r.staff s where s.staffId=?1 and r.description like ?2%",
             countQuery = "SELECT count(r) FROM Resource r join r.staff s where s.staffId=?1 and r.description like ?2%")
     Page<Resource> findByStaffIdAndDescriptionStarts(Long staffId, String starts, Pageable pageable);
