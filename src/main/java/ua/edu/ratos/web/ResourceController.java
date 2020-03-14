@@ -40,7 +40,7 @@ public class ResourceController {
         return ResponseEntity.ok(resourceOutDto);
     }
 
-    @PutMapping(value = "/instructor/resources/{resId}/link", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/instructor/resources/{resId}/link", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void updateLink(@PathVariable Long resId, @Valid @RequestBody UrlInDto dto) {
         String link = dto.getValue();
@@ -48,7 +48,7 @@ public class ResourceController {
         log.debug("Updated Resource's link, resId = {}, new link = {}", resId, link);
     }
 
-    @PutMapping(value = "/instructor/resources/{resId}/description", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/instructor/resources/{resId}/description", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void updateDescription(@PathVariable Long resId, @Valid @RequestBody StringInDto dto) {
         String description = dto.getValue();

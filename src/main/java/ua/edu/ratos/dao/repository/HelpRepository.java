@@ -7,16 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import ua.edu.ratos.dao.entity.Help;
 
 import java.util.Optional;
+import java.util.Set;
 
-/**
- * @link https://stackoverflow.com/totalByType/21549480/spring-data-fetch-join-with-paging-is-not-working
- * @link https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/Query.html
- */
 public interface HelpRepository extends JpaRepository<Help, Long> {
 
     //-------------------------------------------------------ONE for update---------------------------------------------
     @Query(value = "SELECT h FROM Help h join fetch h.staff s join fetch s.user left join fetch h.resources where h.helpId=?1")
     Optional<Help> findOneForUpdate(Long helpId);
+
+    //------------------------------------------------INSTRUCTOR all table----------------------------------------------
+    @Query(value = "SELECT h FROM Help h join fetch h.staff s join s.department d join fetch s.user left join fetch h.resources where d.depId=?1")
+    Set<Help> findAllByDepartment(Long depId);
 
     //------------------------------------------------INSTRUCTOR table & dropdown---------------------------------------
     @Query(value = "SELECT h FROM Help h join fetch h.staff s join fetch s.user left join fetch h.resources where s.staffId=?1",

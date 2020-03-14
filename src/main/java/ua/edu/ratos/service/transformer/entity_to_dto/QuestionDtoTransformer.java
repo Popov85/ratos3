@@ -16,7 +16,7 @@ public class QuestionDtoTransformer {
 
     private final HelpMinDtoTransformer helpDtoTransformer;
 
-    private final ResourceMinDtoTransformer resourceDtoTransformer;
+    private final ResourceDtoTransformer resourceDtoTransformer;
 
     private final QuestionTypeDtoTransformer questionTypeDtoTransformer;
 

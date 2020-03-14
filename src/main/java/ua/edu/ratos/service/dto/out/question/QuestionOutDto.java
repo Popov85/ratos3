@@ -29,7 +29,7 @@ public abstract class QuestionOutDto {
     protected HelpMinOutDto help;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected ResourceMinOutDto resource;
+    protected ResourceOutDto resource;
 
     @Override
     public boolean equals(Object o) {

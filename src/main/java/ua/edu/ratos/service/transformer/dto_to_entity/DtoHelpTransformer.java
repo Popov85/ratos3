@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.transformer.dto_to_entity;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +14,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Component
+@AllArgsConstructor
 public class DtoHelpTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    @Autowired
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Help toEntity(@NonNull final HelpInDto dto) {
         Help help = new Help();
+        help.setHelpId(dto.getHelpId());
         help.setName(dto.getName());
         help.setHelp(dto.getHelp());
         help.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));

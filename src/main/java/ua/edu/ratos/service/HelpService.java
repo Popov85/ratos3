@@ -2,6 +2,7 @@ package ua.edu.ratos.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,10 @@ import ua.edu.ratos.service.transformer.entity_to_dto.HelpDtoTransformer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class HelpService {
@@ -39,9 +43,17 @@ public class HelpService {
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final HelpInDto dto) {
+    public HelpOutDto save(@NonNull final HelpInDto dto) {
         Help help = dtoHelpTransformer.toEntity(dto);
-        return helpRepository.save(help).getHelpId();
+        return helpDtoTransformer.toDto(helpRepository.save(help));
+    }
+
+    @Transactional
+    public HelpOutDto update(@NonNull final HelpInDto dto) {
+        if (dto.getHelpId()==null)
+            throw new RuntimeException("Failed to update a help, nullable helpId");
+        Help help = dtoHelpTransformer.toEntity(dto);
+        return helpDtoTransformer.toDto(helpRepository.save(help));
     }
 
     @Transactional
@@ -60,25 +72,36 @@ public class HelpService {
 
     @Transactional
     public void updateResource(@NonNull final Long helpId, @NonNull final Long resId) {
-        Help help = helpRepository.findById(helpId).orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId));
+        Help help = helpRepository.findById(helpId)
+                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId));
         help.clearResources();
         help.addResource(em.getReference(Resource.class, resId));
     }
 
+    @Transactional
+    public void deleteByIdSoft(@NonNull final Long helpId) {
+        helpRepository.findById(helpId)
+                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId))
+                .setDeleted(true);
+    }
 
     @Transactional
     public void deleteById(@NonNull final Long helpId) {
-        helpRepository.findById(helpId).get().setDeleted(true);
+        helpRepository.deleteById(helpId);
     }
 
-    //--------------------------------------------------One (for update)------------------------------------------------
-    @Transactional(readOnly = true)
-    public HelpOutDto findOneForUpdates(@NonNull final Long helpId) {
-        return helpDtoTransformer.toDto(helpRepository.findOneForUpdate(helpId)
-                .orElseThrow(() -> new EntityNotFoundException(HELP_NOT_FOUND + helpId)));
-    }
 
     //----------------------------------------------------Staff table---------------------------------------------------
+    @Transactional(readOnly = true)
+    public Set<HelpOutDto> findAllByDepartment() {
+        log.debug("Service got job, depId = {}", securityUtils.getAuthDepId());
+        return helpRepository.findAllByDepartment(securityUtils.getAuthDepId())
+                .stream()
+                .map(helpDtoTransformer::toDto)
+                .collect(Collectors.toSet());
+    }
+
+    //-----------------------------------------Staff table for future references----------------------------------------
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
         return helpRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(helpDtoTransformer::toDto);
