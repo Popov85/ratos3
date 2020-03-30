@@ -56,7 +56,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -99,7 +99,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -143,7 +143,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -187,7 +187,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -231,7 +231,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -284,7 +284,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 
@@ -338,7 +338,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response),0.01);
         }
     }
 
@@ -400,7 +400,7 @@ public class QuestionMCQDomainParameterizedTest {
 
         @Test(timeout = 1000L)
         public void evaluateTest() throws Exception {
-            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+            Assert.assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
         }
     }
 

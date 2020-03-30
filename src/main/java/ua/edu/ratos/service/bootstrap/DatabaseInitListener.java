@@ -49,8 +49,8 @@ public class DatabaseInitListener {
         // Before switching to the profile, make sure the ratos3 DB exists and empty!
         if ("dev".equals(profile))  {
             if (init) {
-                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/prod/clear.sql"));
-                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/prod/init.sql"));
+                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/stage/clear.sql"));
+                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/stage/init.sql"));
                 log.info("Data initialized for MySql dev profile at start-up");
             } else {
                 log.info("Data will not be initialized for MySql dev profile at start-up");
@@ -58,14 +58,14 @@ public class DatabaseInitListener {
         }
 
         // Before switching to the profile, make sure the ratos3 DB is deployed and empty!
-        if ("prod".equals(profile)) {
+        if ("stage".equals(profile)) {
             if (init) {
-                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/prod/clear.sql"));
+                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/stage/clear.sql"));
                 String init = "init_en";// fallback locale
                 if (AppProperties.Init.Language.EN.equals(locale)) init = "init_en";
                 if (AppProperties.Init.Language.FR.equals(locale)) init = "init_fr";
                 if (AppProperties.Init.Language.RU.equals(locale)) init = "init_ru";
-                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/prod/" + init + ".sql"));
+                ScriptUtils.executeSqlScript(jdbc.getDataSource().getConnection(), new ClassPathResource("script/stage/" + init + ".sql"));
                 log.info("Production data initialized for MySql prod profile at start-up");
             } else {
                 log.info("Production data will not be initialized for MySql prod profile at start-up");

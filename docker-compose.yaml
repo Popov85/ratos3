@@ -1,0 +1,40 @@
+# 1. Install docker and docker-compose on a staging server;
+# 2. On the staging server, create a folder ratos3 and copy there docker-compose.yaml and create folders database and sql inside it;
+# 3. Being inside folder ratos3 invoke the following command:
+#     docker-compose up -d
+# 4. App is up. Done.
+
+version: '3.1'
+
+services:
+
+  ratos_db:
+    container_name: ratos_db
+    image: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ratos3
+      - MYSQL_USER=spring
+      - MYSQL_PASSWORD=spring
+    volumes:
+      - ./database:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+
+
+  ratos_app:
+    container_name: ratos_app
+    depends_on:
+      - ratos_db
+    image: gelever85/ratos3
+    restart: always
+    ports:
+      - "80:8080"
+    environment:
+      - DATABASE_HOST=ratos_db
+      - DATABASE_USER=spring
+      - DATABASE_PASSWORD=spring
+      - DATABASE_NAME=ratos3
+      - DATABASE_PORT=3306

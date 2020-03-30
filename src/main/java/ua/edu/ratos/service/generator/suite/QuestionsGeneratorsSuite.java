@@ -137,7 +137,7 @@ public class QuestionsGeneratorsSuite {
         suite.setThemes(themes.size());
         List<Resource> resources = resourceGenerator.generate(suite.getResources());
         suite.setResources(resources.size());
-        List<Help> helps = helpGenerator.generate(suite.getHelps(), resources);
+        List<Help> helps = helpGenerator.generate(suite.getHelps());
         suite.setHelps(helps.size());
         List<Phrase> phrases = phraseGenerator.generate(suite.getPhrases(), resources);
         suite.setPhrases(phrases.size());

@@ -45,7 +45,7 @@ public class SessionSuite {
     private ThemeGenerator themeGenerator;
 
     @Autowired
-    private ResourceGenerator resourceGenerator;
+    private RealResourceGenerator resourceGenerator;
 
     @Autowired
     private HelpGenerator helpGenerator;
@@ -86,7 +86,7 @@ public class SessionSuite {
                 .setThemes(20)
                 .setComplexThemes(25)
                 .setStepThemes(10)
-                .setResources(100)
+                .setResources(20)
                 .setHelps(100)
                 .setMcq(400)
                 .setComplexMcq(400)
@@ -144,8 +144,8 @@ public class SessionSuite {
         List<Student> students = studentGenerator.generate(suite.getStudents(), classes);
         List<Department> departments = departmentGenerator.generate(suite.getDepartments(), faculties);
         List<Course> courses = courseGenerator.generate(suite.getCourses(), departments);
-        List<Resource> resources = resourceGenerator.generate(suite.getResources());
-        List<Help> helps = helpGenerator.generate(suite.getHelps(), resources);
+        List<Resource> resources = resourceGenerator.generate();
+        List<Help> helps = helpGenerator.generate(suite.getHelps());
 
         // Simple schemes
         List<Theme> themesSmall = themeGenerator.generate(suite.getThemes(), courses);

@@ -36,6 +36,9 @@ public class SchemeGeneratorStep {
     @Autowired
     private SchemeGradingManagerService gradingManagerService;
 
+    @Autowired
+    private RealWordGenerator realWordGenerator;
+
     @TrackTime
     @Transactional
     public List<Scheme> generate(int quantity, List<Theme> themes, List<Department> departments, List<Course> courses) {
@@ -53,7 +56,8 @@ public class SchemeGeneratorStep {
 
     private Scheme createOne(List<Theme> themes, Department department, Course course) {
         Scheme scheme = new Scheme();
-        scheme.setName("Scheme_#"+ UUID.randomUUID());
+        String name = realWordGenerator.createSentence(10, 30, false);
+        scheme.setName("Scheme for STEP: "+ name);
         scheme.setStaff(em.getReference(Staff.class, 1L));
         scheme.setDepartment(department);
         scheme.setCourse(course);

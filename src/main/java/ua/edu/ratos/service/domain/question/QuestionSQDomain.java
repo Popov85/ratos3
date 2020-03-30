@@ -8,9 +8,11 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerSQDomain;
+import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.domain.response.ResponseSQ;
 import ua.edu.ratos.service.dto.out.answer.CorrectAnswerSQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSQSessionOutDto;
-import ua.edu.ratos.service.domain.response.ResponseSQ;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -35,8 +37,10 @@ public class QuestionSQDomain extends QuestionDomain {
      * @param response
      * @return
      */
-    public int evaluate(@NonNull final ResponseSQ response) {
-        final List<Long> responseSequence = response.getAnswerIds();
+    public double evaluate(@NonNull final Response response) {
+        if (!(response instanceof ResponseSQ))
+            throw new RuntimeException("Invalid Response type: ResponseSQ was expected!");
+        final List<Long> responseSequence = ((ResponseSQ) response).getAnswerIds();
         if (responseSequence==null || responseSequence.isEmpty()) return 0;
         if (responseSequence.equals(findAll())) return 100;
         return 0;
@@ -65,7 +69,7 @@ public class QuestionSQDomain extends QuestionDomain {
         QuestionSQSessionOutDto dto = modelMapper.map(this, QuestionSQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
-        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        dto.setResource((getResourceDomain().isPresent()) ? getResourceDomain().get() : null);
         answers.forEach(a->dto.addAnswer(a.toDto()));
         return dto;
     }

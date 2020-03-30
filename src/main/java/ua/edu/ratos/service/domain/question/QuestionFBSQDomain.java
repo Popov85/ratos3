@@ -10,9 +10,10 @@ import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 import ua.edu.ratos.service.domain.answer.AnswerFBSQDomain;
 import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.domain.response.ResponseFBSQ;
 import ua.edu.ratos.service.dto.out.answer.CorrectAnswerFBSQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionFBSQSessionOutDto;
-import ua.edu.ratos.service.domain.response.ResponseFBSQ;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,8 +32,11 @@ public class QuestionFBSQDomain extends QuestionDomain {
      * @param response
      * @return result of evaluation 0 or 100
      */
-    public int evaluate(@NonNull final ResponseFBSQ response) {
-        String enteredPhrase = response.getEnteredPhrase();
+    @Override
+    public double evaluate(@NonNull final Response response) {
+        if (!(response instanceof ResponseFBSQ))
+            throw new RuntimeException("Invalid Response type: ResponseFBSQ was expected!");
+        String enteredPhrase = ((ResponseFBSQ) response).getEnteredPhrase();
         if (enteredPhrase==null || enteredPhrase.isEmpty()) return 0;
         final String enteredPhraseTrimmed = enteredPhrase.trim();
         List<String> acceptedPhrases = answer.getAcceptedPhraseDomains()
@@ -68,7 +72,7 @@ public class QuestionFBSQDomain extends QuestionDomain {
         ModelMapper modelMapper = new ModelMapper();
         QuestionFBSQSessionOutDto dto = modelMapper.map(this, QuestionFBSQSessionOutDto.class);
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
-        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        dto.setResource((getResourceDomain().isPresent()) ? getResourceDomain().get() : null);
         dto.setAnswer(answer.toDto());
         return dto;
     }

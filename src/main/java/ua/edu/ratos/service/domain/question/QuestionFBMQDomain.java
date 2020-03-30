@@ -9,9 +9,10 @@ import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 import ua.edu.ratos.service.domain.answer.AnswerFBMQDomain;
+import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.domain.response.ResponseFBMQ;
 import ua.edu.ratos.service.dto.out.answer.CorrectAnswerFBMQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionFBMQSessionOutDto;
-import ua.edu.ratos.service.domain.response.ResponseFBMQ;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,9 +36,12 @@ public class QuestionFBMQDomain extends QuestionDomain {
         this.answers.remove(answer);
     }
 
-    public double evaluate(@NonNull final ResponseFBMQ response) {
+    @Override
+    public double evaluate(@NonNull final Response response) {
         int matchCounter = 0;
-        final Set<ResponseFBMQ.Pair> pairs = response.getEnteredPhrases();
+        if (!(response instanceof ResponseFBMQ))
+            throw new RuntimeException("Invalid Response type: ResponseFBMQ was expected!");
+        final Set<ResponseFBMQ.Pair> pairs = ((ResponseFBMQ) response).getEnteredPhrases();
         if (pairs==null || pairs.isEmpty()) return 0;
         for (AnswerFBMQDomain answer : answers) {
             Long answerId = answer.getAnswerId();
@@ -101,7 +105,7 @@ public class QuestionFBMQDomain extends QuestionDomain {
         QuestionFBMQSessionOutDto dto = modelMapper.map(this, QuestionFBMQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
-        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        dto.setResource((getResourceDomain().isPresent()) ? getResourceDomain().get() : null);
         answers.forEach(a -> dto.addAnswer(a.toDto()));
         return dto;
     }

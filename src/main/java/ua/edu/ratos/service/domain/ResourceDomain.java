@@ -20,4 +20,10 @@ public class ResourceDomain implements Serializable {
     private String link;
 
     private String description;
+
+    private String type;
+
+    private int width;
+
+    private int height;
 }

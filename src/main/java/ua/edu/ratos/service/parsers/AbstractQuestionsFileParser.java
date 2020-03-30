@@ -3,6 +3,9 @@ package ua.edu.ratos.service.parsers;
 import lombok.extern.slf4j.Slf4j;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +25,23 @@ abstract class AbstractQuestionsFileParser implements QuestionsFileParser {
 
     String header = "";
 
-    @Override
+/*    @Override
     public QuestionsParsingResult parseFile(File file, String charset) {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), charset))) {
             doParse(br);
         } catch (Exception e) {
+            throw new RuntimeException("Failed to parse File", e);
+        }
+        return new QuestionsParsingResult(charset, header, questions, questionsParsingIssues);
+    }*/
+
+    @Override
+    public QuestionsParsingResult parseFile(File file, String charset) {
+        Path path = file.toPath();
+        try (BufferedReader br = Files.newBufferedReader(path, Charset.forName(charset))) {
+            doParse(br);
+        } catch (IOException e) {
             throw new RuntimeException("Failed to parse File", e);
         }
         return new QuestionsParsingResult(charset, header, questions, questionsParsingIssues);

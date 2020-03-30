@@ -22,7 +22,10 @@ public class QuestionGeneratorHelper {
         questionMCQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionMCQ.setHelpDomain(new HelpDomain().setHelpId(1L).setName("HelpDomain MCQ#1").setHelp("See HelpDomain MCQ#1")
                 .setResourceDomain(new ResourceDomain().setResourceId(1L).setDescription("ResourceDomain helpDomain MCQ").setLink("https://resourceDomains.com/#1")));
-        ResourceDomain resourceDomain = new ResourceDomain().setResourceId(2L).setDescription("ResourceDomain question #2").setLink("https://resourceDomains.com/#2");
+        ResourceDomain resourceDomain = new ResourceDomain()
+                .setResourceId(2L)
+                .setDescription("ResourceDomain question #2")
+                .setLink("https://resourceDomains.com/#2").setType("image").setWidth(360).setHeight(240);
         questionMCQ.setResourceDomains(new HashSet<>(Arrays.asList(resourceDomain)));
         // ---answers---
         AnswerMCQDomain answer0 = new AnswerMCQDomain().setAnswerId(1L).setAnswer("Answer#1").setPercent((short)100).setRequired(true)
@@ -47,7 +50,10 @@ public class QuestionGeneratorHelper {
         questionFBSQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionFBSQ.setHelpDomain(new HelpDomain().setHelpId(2L).setName("HelpDomain FBSQ #1").setHelp("See HelpDomain FBSQ #1")
                 .setResourceDomain(new ResourceDomain().setResourceId(7L).setDescription("ResourceDomain helpDomain FBSQ").setLink("https://resourceDomains.com/#7")));
-        ResourceDomain resourceDomain = new ResourceDomain().setResourceId(8L).setDescription("ResourceDomain question #2").setLink("https://resourceDomains.com/#8");
+        ResourceDomain resourceDomain = new ResourceDomain()
+                .setResourceId(8L)
+                .setDescription("ResourceDomain question #8")
+                .setLink("https://resourceDomains.com/#8").setType("image").setWidth(360).setHeight(240);
         questionFBSQ.setResourceDomains(new HashSet<>(Arrays.asList(resourceDomain)));
 
         // -----answer-----// phrases with no resourceDomains here
@@ -83,7 +89,10 @@ public class QuestionGeneratorHelper {
         questionFBMQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionFBMQ.setHelpDomain(new HelpDomain().setHelpId(3L).setName("HelpDomain FBMQ #3").setHelp("See HelpDomain FBMQ #3")
                 .setResourceDomain(new ResourceDomain().setResourceId(9L).setDescription("ResourceDomain helpDomain FBMQ").setLink("https://resourceDomains.com/#9")));
-        ResourceDomain resourceDomain = new ResourceDomain().setResourceId(10L).setDescription("ResourceDomain question #3").setLink("https://resourceDomains.com/#10");
+        ResourceDomain resourceDomain = new ResourceDomain()
+                .setResourceId(10L)
+                .setDescription("ResourceDomain question #10")
+                .setLink("https://resourceDomains.com/#10").setType("image").setWidth(360).setHeight(240);
         questionFBMQ.setResourceDomains(new HashSet<>(Arrays.asList(resourceDomain)));
 
         // -----answers----- //phrases with no resourceDomains here too
@@ -136,7 +145,10 @@ public class QuestionGeneratorHelper {
         questionMQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionMQ.setHelpDomain(new HelpDomain().setHelpId(4L).setName("HelpDomain MQ#4").setHelp("See HelpDomain MQ#4")
                 .setResourceDomain(new ResourceDomain().setResourceId(11L).setDescription("ResourceDomain helpDomain MQ").setLink("https://resourceDomains.com/#11")));
-        ResourceDomain resourceDomain = new ResourceDomain().setResourceId(12L).setDescription("ResourceDomain question #4").setLink("https://resourceDomains.com/#12");
+        ResourceDomain resourceDomain = new ResourceDomain()
+                .setResourceId(12L)
+                .setDescription("ResourceDomain question #12")
+                .setLink("https://resourceDomains.com/#12").setType("image").setWidth(360).setHeight(240);
         questionMQ.setResourceDomains(new HashSet<>(Arrays.asList(resourceDomain)));
 
         // ---answers---
@@ -176,7 +188,11 @@ public class QuestionGeneratorHelper {
         questionSQ.setThemeDomain(new ThemeDomain().setThemeId(1L).setName("ThemeDomain#1"));
         questionSQ.setHelpDomain(new HelpDomain().setHelpId(5L).setName("HelpDomain SQ#5").setHelp("See HelpDomain SQ#5")
                 .setResourceDomain(new ResourceDomain().setResourceId(17L).setDescription("ResourceDomain helpDomain SQ").setLink("https://resourceDomains.com/#17")));
-        ResourceDomain resourceDomain = new ResourceDomain().setResourceId(18L).setDescription("ResourceDomain question #4").setLink("https://resourceDomains.com/#18");
+
+        ResourceDomain resourceDomain = new ResourceDomain()
+                .setResourceId(18L)
+                .setDescription("ResourceDomain question #18")
+                .setLink("https://resourceDomains.com/#18").setType("image").setWidth(360).setHeight(240);
         questionSQ.setResourceDomains(new HashSet<>(Arrays.asList(resourceDomain)));
 
         // ---answers---

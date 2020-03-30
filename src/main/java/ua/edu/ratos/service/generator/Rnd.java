@@ -18,4 +18,9 @@ public class Rnd {
         Random r = new Random();
         return r.ints(1, bound).findFirst().getAsInt();
     }
+
+    public long rndOneZero(int bound) {
+        Random r = new Random();
+        return r.ints(0, bound).findFirst().getAsInt();
+    }
 }

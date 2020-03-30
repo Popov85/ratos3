@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.ToString;
-import ua.edu.ratos.service.session.Evaluator;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -49,11 +48,6 @@ public class ResponseFBMQ implements Response, Serializable {
     @JsonIgnore
     public boolean isNullable() {
         return (enteredPhrases==null || enteredPhrases.isEmpty());
-    }
-
-    @Override
-    public Double evaluateWith(Evaluator evaluator) {
-        return evaluator.evaluate(this);
     }
 
     @Override

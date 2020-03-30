@@ -26,13 +26,16 @@ public class MCQGenerator {
     private EntityManager em;
 
     @Autowired
-    private QuestionRepository questionRepository;
-
-    @Autowired
     private Rnd rnd;
 
     @Autowired
-    private StringGenerator stringGenerator;
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private RealWordGenerator realWordGenerator;
+
+    @Autowired
+    private RealSentenceGenerator realSentenceGenerator;
 
 
     @TrackTime
@@ -58,8 +61,8 @@ public class MCQGenerator {
     private QuestionMCQ createOne(int questionId, Theme theme, Help help, List<Resource> resources) {
         QuestionMCQ questionMCQ = new QuestionMCQ();
         // 50-150 words, 5-15 symbols per word
-        String question = stringGenerator.createText(50, 150, 5, 15, true);
-        questionMCQ.setQuestion(stringGenerator.createPrefix()+"_question MCQ #"+questionId+" question: "+question);
+        String question = realSentenceGenerator.createText(4, 15,  true);
+        questionMCQ.setQuestion(question);
         questionMCQ.setType(em.getReference(QuestionType.class, 1L));
         questionMCQ.setLevel((byte) rnd.rnd(1, MAX_LEVEL+1));
         questionMCQ.setTheme(theme);
@@ -69,8 +72,13 @@ public class MCQGenerator {
 
         questionMCQ.addHelp(em.getReference(Help.class, help.getHelpId()));
 
-        Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
-        questionMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        // Resource for every 5th question...
+        int random = rnd.rnd(0, 4);
+        if (random==2) {
+            Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
+            questionMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        }
+
         // Multi- or single?
         int type = rnd.rnd(0, 2);
         List<AnswerMCQ> answers;
@@ -130,37 +138,36 @@ public class MCQGenerator {
 
     private AnswerMCQ createInCorrectAnswer(int questionId, int answer, List<Resource> resources) {
         AnswerMCQ answerMCQ = new AnswerMCQ();
-        String text = stringGenerator.createText(10, 50, 1, 15, false);
-        answerMCQ.setAnswer("Answer (incorrect) #"+answer+" to question #"+questionId+" answer: "+text);
+        String text = realWordGenerator.createSentence(15, 30,  false);
+        answerMCQ.setAnswer("(Incorrect) "+text);
         answerMCQ.setPercent((short)0);
         answerMCQ.setRequired(false);
-        Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
-        answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        //Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
+        //answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
         return answerMCQ;
     }
 
     private AnswerMCQ createCorrectAnswer(int questionId, int answer, List<Resource> resources) {
         AnswerMCQ answerMCQ = new AnswerMCQ();
-        String text = stringGenerator.createText(10, 50, 1, 15, false);
-        answerMCQ.setAnswer("Answer (correct) #"+answer+" to question #"+questionId+" answer: "+text);
+        String text = realWordGenerator.createSentence(15, 30,  false);
+        answerMCQ.setAnswer("(Correct) "+text);
         answerMCQ.setPercent((short)100);
         answerMCQ.setRequired(true);
-        Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
-        answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        //Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
+        //answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
         return answerMCQ;
     }
 
     private AnswerMCQ createPartiallyCorrectAnswer(int questionId, int answer, List<Resource> resources, short percent) {
         AnswerMCQ answerMCQ = new AnswerMCQ();
-        String text = stringGenerator.createText(10, 50, 1, 15, false);
-        answerMCQ.setAnswer("Answer (partially correct) #"+answer+" to question #"+questionId+" answer: "+text);
+        String text = realWordGenerator.createSentence(15, 30,  false);
+        answerMCQ.setAnswer("(Partially correct) "+text);
         answerMCQ.setPercent(percent);
         answerMCQ.setRequired(true);
-        Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
-        answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
+        //Resource resource = resources.get(rnd.rnd(0, resources.size() - 1));
+        //answerMCQ.addResource(em.getReference(Resource.class, resource.getResourceId()));
         return answerMCQ;
     }
-
 
 
     //------------------------------Extended version (new resource and help for each question)--------------------------

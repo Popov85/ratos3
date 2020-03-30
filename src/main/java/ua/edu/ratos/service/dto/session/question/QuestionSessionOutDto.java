@@ -50,8 +50,7 @@ public abstract class QuestionSessionOutDto implements Serializable {
      */
     protected boolean helpAvailable;
 
-    // Nullable (empty-able)
-    protected Set<ResourceDomain> resourceDomains = new HashSet<>();
+    protected ResourceDomain resource;
 
     @JsonIgnore
     public abstract boolean isShufflingSupported();

@@ -14,6 +14,9 @@ public class ResourceDomainTransformer {
         return new ResourceDomain()
                 .setResourceId(entity.getResourceId())
                 .setDescription(entity.getDescription())
-                .setLink(entity.getLink());
+                .setLink(entity.getLink())
+                .setType(entity.getType())
+                .setWidth(entity.getWidth())
+                .setHeight(entity.getHeight());
     }
 }

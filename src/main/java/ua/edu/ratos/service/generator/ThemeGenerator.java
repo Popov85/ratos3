@@ -28,6 +28,9 @@ public class ThemeGenerator {
     @Autowired
     private ThemeRepository themeRepository;
 
+    @Autowired
+    private RealWordGenerator realWordGenerator;
+
     @TrackTime
     @Transactional
     public List<Theme> generate(int quantity, List<Course> list) {
@@ -49,7 +52,8 @@ public class ThemeGenerator {
 
     private Theme createOne(int i, Course course) {
         Theme theme = new Theme();
-        theme.setName("Theme_#"+ UUID.randomUUID());
+        String name = realWordGenerator.createSentence(5, 10, false);
+        theme.setName("Theme: "+ name);
         theme.setAccess(em.getReference(Access.class, rnd.rndOne(2)));
         theme.setStaff(em.getReference(Staff.class, 1L));
         theme.setCourse(course);

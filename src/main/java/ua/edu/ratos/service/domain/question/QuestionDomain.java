@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.domain.ThemeDomain;
+import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 
 import java.io.Serializable;
@@ -60,8 +61,11 @@ public abstract class QuestionDomain implements Serializable {
     }
 
     @JsonIgnore
-    public Optional<Set<ResourceDomain>> getResourceDomains() {
-        return Optional.ofNullable(resourceDomains);
+    public Optional<ResourceDomain> getResourceDomain() {
+        return Optional.ofNullable(
+                (resourceDomains != null && !resourceDomains.isEmpty())
+                        ? resourceDomains.iterator().next()
+                        : null);
     }
 
     /**
@@ -76,6 +80,14 @@ public abstract class QuestionDomain implements Serializable {
      * @return DTO question object for learning session
      */
     public abstract QuestionSessionOutDto toDto();
+
+
+    /**
+     * Evaluates this question based on the Response object provided
+     * @param response a corresponding Response object
+     * @return value from [0; 100]
+     */
+    public abstract double evaluate(Response response);
 
     @Override
     public boolean equals(Object o) {

@@ -22,6 +22,7 @@ import ua.edu.ratos.service.dto.session.StarredInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import ua.edu.ratos.service.transformer.domain_to_dto.HelpDomainDtoTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -112,7 +113,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
         if (!modeDomain.isRightAnswer()) throw new UnsupportedOperationException(OPERATION_NOT_ALLOWED);
         if (sessionData.isSuspended()) throw new IllegalStateException("Session is suspended!");
         QuestionDomain questionDomain = sessionData.getQuestionsMap().get(questionId);
-        double score = (!response.isNullable() ? response.evaluateWith(new EvaluatorImpl(questionDomain)) : 0);
+        double score = (!response.isNullable() ? questionDomain.evaluate(response) : 0);
         return new ResultPerQuestionOutDto()
                 .setQuestion(questionDomain.toDto())
                 .setScore(score)

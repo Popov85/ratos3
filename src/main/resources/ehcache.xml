@@ -82,7 +82,7 @@
     <cache alias="ua.edu.ratos.dao.entity.question.Question">
         <resources>
             <heap>500000</heap>
-            <offheap unit="MB">500</offheap>
+            <offheap unit="MB">10</offheap>
         </resources>
     </cache>
 
@@ -117,7 +117,7 @@
     <cache alias="ua.edu.ratos.dao.entity.answer.AnswerMCQ">
         <resources>
             <heap>2000000</heap>
-            <offheap unit="MB">400</offheap>
+            <offheap unit="MB">10</offheap>
         </resources>
     </cache>
 

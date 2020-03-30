@@ -21,12 +21,14 @@
       "required": false,
       "partialResponseAllowed": false,
       "helpAvailable": true,
-      "resourceDomains": [{
+      "resource": {
         "resourceId": 2,
         "link": "https://resourceDomains.com/#2",
-        "description": "ResourceDomain question #2"
-      }
-      ],
+        "description": "ResourceDomain question #2",
+        "type": "image",
+        "width": 360,
+        "height": 240
+      },
       "answers": [{
         "answerId": 1,
         "answer": "Answer#1",
@@ -77,12 +79,14 @@
       "required": false,
       "partialResponseAllowed": false,
       "helpAvailable": true,
-      "resourceDomains": [{
+      "resource": {
         "resourceId": 8,
         "link": "https://resourceDomains.com/#8",
-        "description": "ResourceDomain question #2"
-      }
-      ],
+        "description": "ResourceDomain question #8",
+        "type": "image",
+        "width": 360,
+        "height": 240
+      },
       "answer": {
         "answerId": 1,
         "settings": {
@@ -111,12 +115,14 @@
       "required": false,
       "partialResponseAllowed": false,
       "helpAvailable": true,
-      "resourceDomains": [{
+      "resource": {
         "resourceId": 10,
         "link": "https://resourceDomains.com/#10",
-        "description": "ResourceDomain question #3"
-      }
-      ],
+        "description": "ResourceDomain question #10",
+        "type": "image",
+        "width": 360,
+        "height": 240
+      },
       "answers": [{
         "answerId": 1,
         "phrase": "Target phraseDomain for FBMQ answer #1",
@@ -190,12 +196,14 @@
       "required": false,
       "partialResponseAllowed": false,
       "helpAvailable": true,
-      "resourceDomains": [{
+      "resource": {
         "resourceId": 12,
         "link": "https://resourceDomains.com/#12",
-        "description": "ResourceDomain question #4"
-      }
-      ],
+        "description": "ResourceDomain question #12",
+        "type": "image",
+        "width": 360,
+        "height": 240
+      },
       "leftPhrases": [{
         "answerId": 3,
         "leftPhraseDomain": {
@@ -270,13 +278,14 @@
         "required": false,
         "partialResponseAllowed": false,
         "helpAvailable": true,
-        "resourceDomains": [
-          {
-            "resourceId": 18,
-            "link": "https://resourceDomains.com/#18",
-            "description": "ResourceDomain question #4"
-          }
-        ],
+        "resource": {
+          "resourceId": 18,
+          "link": "https://resourceDomains.com/#18",
+          "description": "ResourceDomain question #18",
+          "type": "image",
+          "width": 360,
+          "height": 240
+        },
         "answers": [
           {
             "answerId": 5,

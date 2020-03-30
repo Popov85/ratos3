@@ -475,12 +475,12 @@ CREATE TABLE IF NOT EXISTS  answer_sq  (
 
 
 -- -----------------------------------------------------
--- Table  helpAvailable
+-- Table  help
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS help (
   help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  text VARCHAR(5000) NOT NULL,
+  text VARCHAR(2000) NOT NULL,
   is_deleted  TINYINT(1) NOT NULL DEFAULT 0,
   staff_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (help_id),

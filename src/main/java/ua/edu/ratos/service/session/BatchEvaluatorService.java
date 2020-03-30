@@ -56,7 +56,7 @@ public class BatchEvaluatorService {
             // look up response in BatchInDto
             final Response response = batchInDto.getResponses().get(questionId);
             if (response != null) {// if found, evaluate
-                double score = (response.isNullable() ? 0 : response.evaluateWith(new EvaluatorImpl(questionDomain)));
+                double score = response.isNullable() ? 0 : questionDomain.evaluate(response);
                 responsesEvaluated.add(new ResponseEvaluated(questionId, response, score, timeout.isTimeouted()));
                 log.debug("Evaluated response = {}, ID = {}, score = {}", response, questionId, score);
             } else {// if not found, consider incorrect

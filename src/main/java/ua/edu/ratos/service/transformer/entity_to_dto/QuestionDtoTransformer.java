@@ -38,6 +38,7 @@ public class QuestionDtoTransformer {
     public QuestionMCQOutDto toDto(@NonNull final QuestionMCQ entity) {
         QuestionMCQOutDto dto = new QuestionMCQOutDto();
         mapDto(entity, dto);
+        dto.setSingle(entity.isSingle());
         entity.getAnswers().forEach(a-> dto.addAnswer(answerDtoTransformer.toDto(a)));
         return dto;
     }

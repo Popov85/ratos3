@@ -77,7 +77,7 @@ public class QuestionSQDomainParameterizedTest {
         if (expectedException != null) {
             thrown.expect(expectedException);
         }
-        assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response));
+        assertEquals("Calculated score is not equal to the expected", expected, question.evaluate(response), 0.01);
     }
 
     private AnswerSQDomain createAnswer(Long answerId, short order) {

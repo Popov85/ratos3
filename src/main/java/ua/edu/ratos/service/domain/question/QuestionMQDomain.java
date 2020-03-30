@@ -8,9 +8,11 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerMQDomain;
+import ua.edu.ratos.service.domain.response.Response;
+import ua.edu.ratos.service.domain.response.ResponseMQ;
 import ua.edu.ratos.service.dto.out.answer.CorrectAnswerMQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionMQSessionOutDto;
-import ua.edu.ratos.service.domain.response.ResponseMQ;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -37,8 +39,11 @@ public class QuestionMQDomain extends QuestionDomain {
      * @param response
      * @return result of evaluation
      */
-    public double evaluate(@NonNull final ResponseMQ response) {
-        final Set<ResponseMQ.Triple> responses = response.getMatchedPhrases();
+    @Override
+    public double evaluate(@NonNull final Response response) {
+        if (!(response instanceof ResponseMQ))
+            throw new RuntimeException("Invalid Response type: ResponseMQ was expected!");
+        final Set<ResponseMQ.Triple> responses = ((ResponseMQ) response).getMatchedPhrases();
         if (responses==null || responses.isEmpty()) return 0;
         // Traverse through all the answers of this question
         int matchCounter = 0;
@@ -78,7 +83,7 @@ public class QuestionMQDomain extends QuestionDomain {
         QuestionMQSessionOutDto dto = modelMapper.map(this, QuestionMQSessionOutDto.class);
         dto.setLeftPhrases(new HashSet<>()).setLeftPhrases(new HashSet<>());
         dto.setHelpAvailable((getHelpDomain().isPresent()) ? true : false);
-        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        dto.setResource((getResourceDomain().isPresent()) ? getResourceDomain().get() : null);
         answers.forEach(a->dto.addLeftPhrase(a.toDto()));
         answers.forEach(a->dto.addRightPhrase(a.getRightPhraseDomain()));
         return dto;

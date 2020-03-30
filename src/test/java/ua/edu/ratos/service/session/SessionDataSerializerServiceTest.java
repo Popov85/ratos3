@@ -103,6 +103,7 @@ public class SessionDataSerializerServiceTest extends QuestionGeneratorHelper {
         // Serialize with our service bean into JSON string
         SessionDataSerializerService serializer = new SessionDataSerializerService(objectMapper);
         String actual = serializer.serialize(sessionData);
+        //log.debug("actual = {}", actual);
         // Compare two strings
         JSONAssert.assertEquals("Actual JSON string is different from what is expected", expected, actual, JSONCompareMode.LENIENT);
     }
@@ -445,7 +446,7 @@ public class SessionDataSerializerServiceTest extends QuestionGeneratorHelper {
         String expected = new String(encoded, Charset.defaultCharset());
         SessionDataSerializerService serializer = new SessionDataSerializerService(objectMapper);
         String actual = serializer.serialize(sessionData);
-        //log.debug("Serialised sessionData (terminal) object = {}", actual);
+        log.debug("Serialised sessionData (terminal) object = {}", actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 

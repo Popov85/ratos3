@@ -8,6 +8,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 import ua.edu.ratos.service.domain.answer.AnswerMCQDomain;
+import ua.edu.ratos.service.domain.response.Response;
 import ua.edu.ratos.service.dto.out.answer.CorrectAnswerMCQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionMCQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseMCQ;
@@ -43,14 +44,16 @@ public class QuestionMCQDomain extends QuestionDomain {
      * 3-step algorithm:
      * 1. Check if response contains any WRONG answers, if so - the whole response count as incorrect;
      * 2. Check if response contains all REQUIRED answers, if not all - the whole response count as incorrect;
-     * 3. Calculate the total score
-     *
+     * 3. Calculate the total score;
      * @param response
      * @return result of evaluation: a number [0-100]
      */
-    public int evaluate(@NonNull final ResponseMCQ response) {
+    @Override
+    public double evaluate(@NonNull final Response response) {
         List<Long> zeroAnswers = getZeroAnswers();
-        Set<Long> responseIds = response.getAnswerIds();
+        if (!(response instanceof ResponseMCQ))
+            throw new RuntimeException("Invalid Response type: ResponseMCQ was expected!");
+        Set<Long> responseIds = ((ResponseMCQ) response).getAnswerIds();
         if (responseIds==null) return 0;
         for (Long responseId : responseIds) {
             if (zeroAnswers.contains(responseId)) return 0;
@@ -106,7 +109,7 @@ public class QuestionMCQDomain extends QuestionDomain {
         QuestionMCQSessionOutDto dto = modelMapper.map(this, QuestionMCQSessionOutDto.class);
         dto.setAnswers(new HashSet<>());
         dto.setHelpAvailable(getHelpDomain().isPresent() ? true : false);
-        dto.setResourceDomains((getResourceDomains().isPresent()) ? getResourceDomains().get() : null);
+        dto.setResource((getResourceDomain().isPresent()) ? getResourceDomain().get() : null);
         answers.forEach(a -> dto.addAnswer(a.toDto()));
         return dto;
     }

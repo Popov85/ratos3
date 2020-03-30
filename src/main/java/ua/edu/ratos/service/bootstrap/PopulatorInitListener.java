@@ -23,7 +23,7 @@ public class PopulatorInitListener {
 
     @Order(3)
     @EventListener(ContextRefreshedEvent.class)
-    public void populate() throws Exception {
+    public void populate() {
         // Work here to change populating options
         if (populate) {
             log.debug("Starting to populate DB with test data...");

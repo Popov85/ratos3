@@ -54,7 +54,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.hibernate" additivity="false" level="INFO">
+        <logger name="org.hibernate" additivity="false" level="WARN">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -125,8 +125,7 @@
 
     </springProfile>
 
-
-    <springProfile name="prod">
+    <springProfile name="stage">
         <root level="ERROR">
             <appender-ref ref="FILE"/>
         </root>
