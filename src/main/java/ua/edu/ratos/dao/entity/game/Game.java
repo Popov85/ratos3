@@ -4,13 +4,16 @@ import lombok.*;
 import ua.edu.ratos.dao.entity.Student;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
 @ToString
 @Entity
 @Table(name = "game")
-public class Game {
+public class Game implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "stud_id")

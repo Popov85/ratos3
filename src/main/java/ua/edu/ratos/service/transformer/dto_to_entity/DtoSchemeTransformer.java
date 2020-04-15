@@ -1,7 +1,7 @@
 package ua.edu.ratos.service.transformer.dto_to_entity;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,25 +9,25 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Component
+@AllArgsConstructor
 public class DtoSchemeTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
+    private final DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Scheme toEntity(@NonNull final SchemeInDto dto) {
         Scheme scheme = new Scheme();
+        scheme.setSchemeId(dto.getSchemeId());
         scheme.setName(dto.getName());
         scheme.setActive(dto.isActive());
         scheme.setStrategy(em.getReference(Strategy.class, dto.getStrategyId()));
@@ -36,28 +36,16 @@ public class DtoSchemeTransformer {
         scheme.setOptions(em.getReference(Options.class, dto.getOptId()));
         scheme.setGrading(em.getReference(Grading.class, dto.getGradingId()));
         scheme.setCourse(em.getReference(Course.class, dto.getCourseId()));
-        // SecurityUtils in action
         scheme.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
         scheme.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         scheme.setAccess(em.getReference(Access.class, dto.getAccessId()));
         // themes
         if (dto.getThemes()==null || dto.getThemes().isEmpty())
             throw new RuntimeException("Failed to create Scheme: no themes");
+
         dto.getThemes().forEach(t->{
-            SchemeTheme st = new SchemeTheme();
-            st.setTheme(em.getReference(Theme.class, t.getThemeId()));
-            st.setOrder(t.getOrder());
-            if (t.getSettings()==null || t.getSettings().isEmpty())
-                throw new RuntimeException("Failed to create Scheme: theme has no settings");
-            t.getSettings().forEach(s-> {
-                SchemeThemeSettings sts = new SchemeThemeSettings();
-                sts.setType(em.getReference(QuestionType.class, s.getQuestionTypeId()));
-                sts.setLevel1(s.getLevel1());
-                sts.setLevel2(s.getLevel2());
-                sts.setLevel3(s.getLevel3());
-                st.addSchemeThemeSettings(sts);
-            });
-            scheme.addSchemeTheme(st);
+            SchemeTheme schemeTheme = dtoSchemeThemeTransformer.toEntity(t);
+            scheme.addSchemeTheme(schemeTheme);
         });
 
         // groups

@@ -2,34 +2,20 @@ package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.SchemeService;
-import ua.edu.ratos.service.SchemeThemeService;
-import ua.edu.ratos.service.SchemeThemeSettingsService;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
-import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
-import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
-import ua.edu.ratos.service.dto.out.*;
+import ua.edu.ratos.service.dto.in.patch.StringInDto;
+import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
+import ua.edu.ratos.service.dto.out.SchemeOutDto;
+import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.List;
 import java.util.Set;
 
-/**
- * Scheme CRUD, for REST conventions see also:
- * @see <a href="https://stackoverflow.com/questions/2443324/best-practice-for-partial-updates-in-a-restful-service">link1</a>
- * @see <a href="https://stackoverflow.com/questions/10855388/http-method-to-use-for-adding-to-a-collection-in-a-restful-api">link2</a>
- */
 @Slf4j
 @RestController
 @SuppressWarnings("MVCPathVariableInspection")
@@ -38,90 +24,58 @@ public class SchemeController {
 
     private final SchemeService schemeService;
 
-    private final SchemeThemeService schemeThemeService;
-
-    private final SchemeThemeSettingsService schemeThemeSettingsService;
-
     //----------------------------------------------------CRUD----------------------------------------------------------
     @PostMapping(value = "/instructor/schemes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody SchemeInDto dto) {
-        final Long schemeId = schemeService.save(dto);
-        log.debug("Saved Scheme, schemeId = {}", schemeId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(schemeId).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<SchemeOutDto> save(@Valid @RequestBody SchemeInDto dto) {
+        SchemeOutDto schemeOutDto = schemeService.save(dto);
+        log.debug("Saved Scheme, schemeId = {}", schemeOutDto.getSchemeId());
+        return ResponseEntity.ok(schemeOutDto);
+    }
+
+    @PutMapping(value = "/instructor/schemes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SchemeOutDto> update(@Valid @RequestBody SchemeInDto dto) {
+        SchemeOutDto schemeOutDto = schemeService.update(dto);
+        log.debug("Updated Scheme, schemeId = {}", schemeOutDto.getSchemeId());
+        return ResponseEntity.ok(schemeOutDto);
     }
 
     @GetMapping(value = "/instructor/schemes/{schemeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SchemeOutDto> findOne(@PathVariable Long schemeId) {
-        SchemeOutDto dto = schemeService.findByIdForUpdate(schemeId);
-        log.debug("Retrieved Scheme = {}", dto);
-        return ResponseEntity.ok(dto);
+        SchemeOutDto schemeOutDto = schemeService.findByIdForEdit(schemeId);
+        log.debug("Retrieved Scheme, schemeId = {}", schemeOutDto.getSchemeId());
+        return ResponseEntity.ok(schemeOutDto);
     }
 
-    // ---------------------------------------------------UPDATE--------------------------------------------------------
-    // Set of endpoints to immediately update any changes to Scheme object with AJAX
-    @PutMapping("/instructor/schemes/{schemeId}/name")
+    // -------------------------------------------------UPDATE fields---------------------------------------------------
+    // Set of endpoints to immediately update any changes to Scheme object with AJAX from table
+    @PatchMapping("/instructor/schemes/{schemeId}/name")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateName(@PathVariable Long schemeId, @RequestParam String name) {
+    public void updateName(@PathVariable Long schemeId, @Valid @RequestBody StringInDto dto) {
+        String name = dto.getValue();
         schemeService.updateName(schemeId, name);
         log.debug("Updated Scheme's name, schemeId = {}, new name = {}", schemeId, name);
     }
 
-    @PutMapping("/instructor/schemes/{schemeId}/settings")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateSettings(@PathVariable Long schemeId, @RequestParam Long setId) {
-        schemeService.updateSettings(schemeId, setId);
-        log.debug("Updated Scheme's Settings, schemeId = {}, new setId = {}", schemeId, setId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/strategy")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateStrategy(@PathVariable Long schemeId, @RequestParam Long strId) {
-        schemeService.updateStrategy(schemeId, strId);
-        log.debug("Updated Scheme's Strategy, schemeId = {}, new strId = {}", schemeId, strId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/mode")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateMode(@PathVariable Long schemeId, @RequestParam Long modeId) {
-        schemeService.updateMode(schemeId, modeId);
-        log.debug("Updated Scheme's Mode, schemeId = {}, new modeId = {}", schemeId, modeId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/access")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateAccess(@PathVariable Long schemeId, @RequestParam Long accessId) {
-        schemeService.updateAccess(schemeId, accessId);
-        log.debug("Updated Scheme's Access, schemeId = {}, new accessId = {}", schemeId, accessId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/grading")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateGrading(@PathVariable Long schemeId, @RequestParam Long gradingId, @RequestParam Long gradingDetailsId) {
-        schemeService.updateGrading(schemeId, gradingId, gradingDetailsId);
-        log.debug("Updated Scheme's Grading, schemeId = {}, new gradId = {}, new detailsId = {}", schemeId, gradingId, gradingDetailsId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/course")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void updateCourse(@PathVariable Long schemeId, @RequestParam Long courseId) {
-        schemeService.updateCourse(schemeId, courseId);
-        log.debug("Updated Scheme's Course, schemeId = {}, new courseId = {}", schemeId, courseId);
-    }
-
-    @PutMapping("/instructor/schemes/{schemeId}/is-active")
+    @PatchMapping("/instructor/schemes/{schemeId}/is-active")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateIsActive(@PathVariable Long schemeId, @RequestParam boolean isActive) {
         schemeService.updateIsActive(schemeId, isActive);
         log.debug("Updated Scheme's isActive flag, schemeId = {}, now the flag is = {}", schemeId, isActive);
     }
 
-    @PutMapping("/instructor/schemes/{schemeId}/is-lms-only")
+    @PatchMapping("/instructor/schemes/{schemeId}/is-lms-only")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateIsLmsOnly(@PathVariable Long schemeId, @RequestParam boolean isLmsOnly) {
         schemeService.updateIsLmsOnly(schemeId, isLmsOnly);
         log.debug("Updated Scheme's isLmsOnly flag, schemeId = {}, now the flag is = {}", schemeId, isLmsOnly);
     }
+
+    /*@PutMapping("/instructor/schemes/{schemeId}/access")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateAccess(@PathVariable Long schemeId, @RequestParam Long accessId) {
+        schemeService.updateAccess(schemeId, accessId);
+        log.debug("Updated Scheme's Access, schemeId = {}, new accessId = {}", schemeId, accessId);
+    }*/
 
     @DeleteMapping("/instructor/schemes/{schemeId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -130,10 +84,28 @@ public class SchemeController {
         log.debug("Deleted Scheme, schemeId = {}", schemeId);
     }
 
+    //----------------------------------------------------Staff table---------------------------------------------------
+    @GetMapping(value = "/department/schemes/all-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeShortOutDto> findAllByDepartment() {
+        return schemeService.findAllByDepartment();
+    }
+
+    //----------------------------------------------------Drop down-----------------------------------------------------
+
+    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId() { return schemeService.findAllForDropdownByDepartmentId(); }
+
+    @GetMapping(value="/fac-admin/schemes-dropdown/all-schemes-by-department", params = "depId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId(@RequestParam final Long depId) { return schemeService.findAllForDropdownByDepartmentId(depId); }
+
+    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-course", params = "courseId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SchemeMinOutDto> findAllForDropDownByCourseId(@RequestParam final Long courseId) { return schemeService.findAllForDropdownByCourseId(courseId); }
+
+
     //--------------------------------------------------------GROUPS----------------------------------------------------
     // If the groups being sent in the request body are intended to be added to a collection, rather than replace,
     // I would suggest POST. If you intend to replace the existing tags, use PUT.
-    @PostMapping(value = "/instructor/schemes/{schemeId}/groups/{groupId}")
+    /*@PostMapping(value = "/instructor/schemes/{schemeId}/groups/{groupId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void addGroup(@PathVariable Long schemeId, @PathVariable Long groupId) {
         schemeService.addGroup(schemeId, groupId);
@@ -146,7 +118,7 @@ public class SchemeController {
         schemeService.removeGroup(schemeId, groupId);
         log.debug("Removed Group from Scheme, schemeId = {}, groupId = {}", schemeId, groupId);
     }
-    
+
     // -------------------------------------------------------THEMES----------------------------------------------------
     @PostMapping(value = "/instructor/schemes/{schemeId}/themes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTheme(@PathVariable Long schemeId, @Valid @RequestBody SchemeThemeInDto dto) {
@@ -175,10 +147,10 @@ public class SchemeController {
     public void reOrderThemes(@PathVariable Long schemeId, @RequestBody List<Long> schemeThemeIds) {
         schemeService.reOrderThemes(schemeId, schemeThemeIds);
         log.debug("Re-ordered Themes of schemeId = {}", schemeId);
-    }
+    }*/
 
     // ------------------------------------------------------SETTINGS---------------------------------------------------
-    @PostMapping(value = "/instructor/schemes/{schemeId}/themes/{schemeThemeId}/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@PostMapping(value = "/instructor/schemes/{schemeId}/themes/{schemeThemeId}/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addSchemeThemeSettings(@Valid @RequestBody SchemeThemeSettingsInDto dto) {
         final Long schemeThemeSettingsId = schemeThemeSettingsService.save(dto);
         log.debug("Saved schemeThemeSettingsId = {} ", schemeThemeSettingsId);
@@ -199,85 +171,5 @@ public class SchemeController {
         schemeThemeService.removeSettings(schemeThemeId, schemeThemeSettingsId);
         log.debug("Deleted schemeThemeSettingsId = {}", schemeThemeSettingsId);
     }
-
-    //----------------------------------------------------Staff table---------------------------------------------------
-    @GetMapping(value = "/instructor/schemes/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByStaffId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 30) Pageable pageable) {
-        return schemeService.findAllByStaffId(pageable);
-    }
-
-    @GetMapping(value = "/instructor/schemes/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByDepartmentId(@PageableDefault(sort = {"created"}, direction = Sort.Direction.DESC, value = 50) Pageable pageable) {
-        return schemeService.findAllByDepartmentId(pageable);
-    }
-
-    //--------------------------------------------------Search in table-------------------------------------------------
-    @GetMapping(value = "/instructor/schemes/by-staff", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByStaffIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllByStaffIdAndName(letters, contains, pageable);
-    }
-
-    @GetMapping(value = "/instructor/schemes/by-department", params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SchemeShortOutDto> findAllByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllByDepartmentIdAndName(letters, contains, pageable);
-    }
-
-    //-------------------------------------------Staff min drop-down----------------------------------------------------
-
-    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByStaffId() {
-        return schemeService.findAllForDropdownByStaffId();
-    }
-
-    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId() { return schemeService.findAllForDropdownByDepartmentId(); }
-
-    @GetMapping(value="/fac-admin/schemes-dropdown/all-schemes-by-department", params = "depId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByDepartmentId(@RequestParam final Long depId) { return schemeService.findAllForDropdownByDepartmentId(depId); }
-
-    @GetMapping(value="/department/schemes-dropdown/all-schemes-by-course", params = "courseId", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByCourseId(@RequestParam final Long courseId) { return schemeService.findAllForDropdownByCourseId(courseId); }
-
-
-
-
-
-    //--------------------------------------------------For future references-------------------------------------------
-
-    @GetMapping(value="/fac-admin/schemes-dropdown/all-schemes-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByFacultyId() { return schemeService.findAllForDropdownByFacultyId(); }
-
-    @GetMapping(value="/org-admin/schemes-dropdown/all-schemes-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByOrganisationId() { return schemeService.findAllForDropdownByOrganisationId(); }
-
-    @GetMapping(value="/org-admin/schemes-dropdown/all-schemes-by-faculty", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByFacultyId(@RequestParam final Long facId) { return schemeService.findAllForDropdownByFacultyId(facId); }
-
-    @GetMapping(value="/global-admin/schemes-dropdown/all-schemes-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByRatosInstance() { return schemeService.findAllForDropdown(); }
-
-    @GetMapping(value="/global-admin/schemes-dropdown/all-schemes-by-organisation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<SchemeMinOutDto> findAllForDropDownByOrganisationId(@RequestParam final Long orgId) { return schemeService.findAllForDropdownByOrganisationId(orgId); }
-
-    //--------------------------------------------------Slice drop-down-------------------------------------------------
-    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return schemeService.findAllForDropDownByDepartmentId(pageable);
-    }
-
-    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-course", params = {"courseId"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<SchemeShortOutDto> findAllForDropDownByCourseId(@RequestParam Long courseId, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllForDropDownByCourseId(courseId, pageable);
-    }
-
-    //------------------------------------------------Search in drop-down-----------------------------------------------
-    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-department",  params = {"letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<SchemeShortOutDto> findAllForDropDownByDepartmentIdAndName(@RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return schemeService.findAllForDropDownByDepartmentIdAndName(letters, contains, pageable);
-    }
-
-    @GetMapping(value = "/schemes-dropdown/slice-schemes-by-course", params = {"courseId", "letters"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<SchemeShortOutDto> findAllForDropDownByCourseIdAndName(@RequestParam Long courseId, @RequestParam String letters, @RequestParam boolean contains, @PageableDefault(sort = {"name"}, value = 30) Pageable pageable) {
-        return schemeService.findAllForDropDownByCourseIdAndName(courseId, letters, contains, pageable);
-    }
+     */
 }

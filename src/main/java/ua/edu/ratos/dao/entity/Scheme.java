@@ -6,8 +6,10 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.grading.Grading;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,9 +25,11 @@ import java.util.Set;
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 @NoArgsConstructor
-public class Scheme {
+public class Scheme implements Serializable {
 
-    // Used for JPa repositories for projections
+    private static final Long serialVersionUID = 1L;
+
+    // Used for JPA repositories for projections
     public Scheme(Long schemeId, String name) {
         this.schemeId = schemeId;
         this.name = name;
@@ -74,8 +78,8 @@ public class Scheme {
     @JoinColumn(name = "belongs_to")
     private Department department;
 
-    @Column(name="created")
-    private LocalDateTime created;
+    @Column(name="created", updatable = false)
+    private OffsetDateTime created = OffsetDateTime.now();
 
     @Column(name="is_active")
     private boolean active;
@@ -93,6 +97,7 @@ public class Scheme {
     @OrderColumn(name = "theme_order")
     @OneToMany(mappedBy = "scheme", cascade = CascadeType.ALL, orphanRemoval = true)
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
     private List<SchemeTheme> themes = new ArrayList<>();
 
     public void addSchemeTheme(@NonNull SchemeTheme schemeTheme) {
@@ -107,6 +112,7 @@ public class Scheme {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "group_scheme", joinColumns = @JoinColumn(name = "scheme_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
     private Set<Group> groups = new HashSet<>();
 
     public void addGroup(Group group) {

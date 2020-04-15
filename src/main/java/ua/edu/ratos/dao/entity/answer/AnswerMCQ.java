@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -22,7 +23,10 @@ import java.util.Set;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
-public class AnswerMCQ {
+public class AnswerMCQ implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

@@ -69,4 +69,14 @@ insert into result(scheme_id, user_id, dep_id, percent, grade, is_passed, is_poi
 values(7, 7, 2, 86, 5, 1, 1, '2019-09-22 09:50:29.999999999', 51, 0, 0, 1);
 
 
+insert into result_details(detail_id, data, when_remove) values(1, 'JSON DATA', '2050-09-22 12:00:00.000000000');
+insert into result_details(detail_id, data, when_remove) values(2, 'JSON DATA', '2050-09-22 09:50:29.999999999');
+insert into result_details(detail_id, data, when_remove) values(3, 'JSON DATA', '2050-09-22 09:50:29.999999999');
+insert into result_details(detail_id, data, when_remove) values(4, 'JSON DATA', '2050-09-22 09:50:29.999999999');
+insert into result_details(detail_id, data, when_remove) values(5, 'JSON DATA', '2050-09-22 09:50:29.999999999');
+insert into result_details(detail_id, data, when_remove) values(6, 'JSON DATA', '2050-09-22 09:50:29.999999999');
+
+
+
+
 

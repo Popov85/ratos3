@@ -1,6 +1,6 @@
 package ua.edu.ratos.service.grading;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.grading.FreePointGrading;
 import ua.edu.ratos.dao.entity.grading.SchemeFreePoint;
@@ -12,32 +12,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class SchemeFreePointService implements SchemeGraderService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SchemeFreePointRepository repository;
+    private final SchemeFreePointRepository repository;
 
-    private FreePointGradingDtoTransformer transformer;
-
-    @Autowired
-    public void setRepository(SchemeFreePointRepository repository) {
-        this.repository = repository;
-    }
-
-    @Autowired
-    public void setTransformer(FreePointGradingDtoTransformer transformer) {
-        this.transformer = transformer;
-    }
+    private final FreePointGradingDtoTransformer transformer;
 
 
     @Override
-    public void save(long schemeId, long gradingDetailsId) {
+    public FreePointGradingOutDto save(long schemeId, long gradingDetailsId) {
         SchemeFreePoint schemeFreePoint = new SchemeFreePoint();
         schemeFreePoint.setSchemeId(schemeId);
         schemeFreePoint.setFreePointGrading(em.getReference(FreePointGrading.class, gradingDetailsId));
-        repository.save(schemeFreePoint);
+        schemeFreePoint = repository.save(schemeFreePoint);
+        return transformer.toDto(schemeFreePoint.getFreePointGrading());
     }
 
     @Override

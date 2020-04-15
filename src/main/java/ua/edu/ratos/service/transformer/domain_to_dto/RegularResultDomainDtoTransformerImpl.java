@@ -1,8 +1,8 @@
 package ua.edu.ratos.service.transformer.domain_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.*;
@@ -23,21 +23,12 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 @Slf4j
 @Service
 @Qualifier("regular")
+@AllArgsConstructor
 public class RegularResultDomainDtoTransformerImpl implements ResultDomainDtoTransformer {
 
-    private ResultPerThemeDtoTransformer resultPerThemeDtoTransformer;
+    private final ResultPerThemeDtoTransformer resultPerThemeDtoTransformer;
 
-    private EvaluatorPostProcessor evaluatorPostProcessor;
-
-    @Autowired
-    public void setResultPerThemeDtoTransformer(ResultPerThemeDtoTransformer resultPerThemeDtoTransformer) {
-        this.resultPerThemeDtoTransformer = resultPerThemeDtoTransformer;
-    }
-
-    @Autowired
-    public void setEvaluatorPostProcessor(EvaluatorPostProcessor evaluatorPostProcessor) {
-        this.evaluatorPostProcessor = evaluatorPostProcessor;
-    }
+    private final EvaluatorPostProcessor evaluatorPostProcessor;
 
     @Override
     public ResultOutDto toDto(@NonNull final ResultDomain r) {

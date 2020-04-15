@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
@@ -14,7 +15,9 @@ import javax.persistence.*;
 @Table(name="language")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Language {
+public class Language implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

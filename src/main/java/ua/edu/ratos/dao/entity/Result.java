@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,10 @@ import java.util.Optional;
 @ToString(exclude = {"scheme", "user", "lms", "resultTheme"})
 @Entity
 @Table(name = "result")
-public class Result {
+public class Result implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

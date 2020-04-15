@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.question.Question;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,9 @@ import java.util.Set;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NoArgsConstructor
-public class Theme {
+public class Theme implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public Theme(Long themeId, String name) {
         this.themeId = themeId;

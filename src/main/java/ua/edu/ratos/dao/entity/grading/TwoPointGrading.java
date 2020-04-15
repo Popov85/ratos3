@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -17,7 +18,10 @@ import javax.persistence.*;
 @Table(name = "two_point")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class TwoPointGrading {
+public class TwoPointGrading implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

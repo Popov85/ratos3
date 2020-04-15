@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,17 +11,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class SchemeThemeDtoTransformer {
 
-    private SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer;
+    private final SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer;
 
-    @Autowired
-    public void setSchemeThemeSettingsDtoTransformer(SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer) {
-        this.schemeThemeSettingsDtoTransformer = schemeThemeSettingsDtoTransformer;
-    }
 
     public SchemeThemeOutDto toDto(@NonNull final SchemeTheme entity) {
-        SchemeThemeOutDto dto = new SchemeThemeOutDto().setSchemeThemeId(entity.getSchemeThemeId())
+        SchemeThemeOutDto dto = new SchemeThemeOutDto()
+                .setSchemeThemeId(entity.getSchemeThemeId())
                 .setThemeId(entity.getTheme().getThemeId())
                 .setTheme(entity.getTheme().getName())
                 .setOrder(entity.getOrder());

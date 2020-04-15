@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,9 @@ import java.util.Set;
 @Table(name="scheme_theme")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class SchemeTheme {
+public class SchemeTheme implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

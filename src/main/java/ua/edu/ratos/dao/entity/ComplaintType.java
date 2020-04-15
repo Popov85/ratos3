@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Setter
@@ -15,7 +16,9 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name="complaint_type")
-public class ComplaintType {
+public class ComplaintType implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "type_id")

@@ -1,6 +1,6 @@
 package ua.edu.ratos.service.grading;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.dao.entity.grading.SchemeFourPoint;
@@ -12,30 +12,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class SchemeFourPointService implements SchemeGraderService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SchemeFourPointRepository repository;
+    private final SchemeFourPointRepository repository;
 
-    private FourPointGradingDtoTransformer transformer;
-    @Autowired
-    public void setRepository(SchemeFourPointRepository repository) {
-        this.repository = repository;
-    }
-
-    @Autowired
-    public void setTransformer(FourPointGradingDtoTransformer transformer) {
-        this.transformer = transformer;
-    }
+    private final FourPointGradingDtoTransformer transformer;
 
     @Override
-    public void save(long schemeId, long gradingDetailsId) {
+    public FourPointGradingOutDto save(long schemeId, long gradingDetailsId) {
         SchemeFourPoint schemeFourPoint = new SchemeFourPoint();
         schemeFourPoint.setSchemeId(schemeId);
         schemeFourPoint.setFourPointGrading(em.getReference(FourPointGrading.class, gradingDetailsId));
-        repository.save(schemeFourPoint);
+        schemeFourPoint = repository.save(schemeFourPoint);
+        return transformer.toDto(schemeFourPoint.getFourPointGrading());
     }
 
     @Override

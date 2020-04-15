@@ -1,6 +1,6 @@
 package ua.edu.ratos.service.grading;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.entity.grading.SchemeTwoPoint;
 import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
@@ -12,33 +12,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Service
+@AllArgsConstructor
 public class SchemeTwoPointService implements SchemeGraderService {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SchemeTwoPointRepository repository;
+    private final SchemeTwoPointRepository repository;
 
-    private TwoPointGradingDtoTransformer transformer;
-
-    @Autowired
-    public void setRepository(SchemeTwoPointRepository repository) {
-        this.repository = repository;
-    }
-
-    @Autowired
-    public void setTransformer(TwoPointGradingDtoTransformer transformer) {
-        this.transformer = transformer;
-    }
-
+    private final TwoPointGradingDtoTransformer transformer;
 
 
     @Override
-    public void save(long schemeId, long gradingDetailsId) {
-        SchemeTwoPoint SchemeTwoPoint = new SchemeTwoPoint();
-        SchemeTwoPoint.setSchemeId(schemeId);
-        SchemeTwoPoint.setTwoPointGrading(em.getReference(TwoPointGrading.class, gradingDetailsId));
-        repository.save(SchemeTwoPoint);
+    public TwoPointGradingOutDto save(long schemeId, long gradingDetailsId) {
+        SchemeTwoPoint schemeTwoPoint = new SchemeTwoPoint();
+        schemeTwoPoint.setSchemeId(schemeId);
+        schemeTwoPoint.setTwoPointGrading(em.getReference(TwoPointGrading.class, gradingDetailsId));
+        schemeTwoPoint = repository.save(schemeTwoPoint);
+        return transformer.toDto(schemeTwoPoint.getTwoPointGrading());
     }
 
     @Override

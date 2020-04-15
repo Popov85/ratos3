@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -20,7 +21,9 @@ import javax.persistence.*;
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 @SuppressWarnings("SpellCheckingInspection")
-public class Mode {
+public class Mode implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

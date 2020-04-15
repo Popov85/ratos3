@@ -1,10 +1,12 @@
 package ua.edu.ratos.service.dto.out;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import java.time.LocalDateTime;
+
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -22,13 +24,16 @@ public class SchemeShortOutDto {
 
     private ModeOutDto mode;
 
+    private OptionsOutDto options;
+
     private GradingOutDto grading;
 
-    private CourseOutDto course;
+    private CourseMinOutDto course;
 
     private StaffMinOutDto staff;
 
-    private LocalDateTime created;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
+    private OffsetDateTime created;
 
     private AccessOutDto access;
 

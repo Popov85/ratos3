@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.Student;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Setter
@@ -13,7 +14,9 @@ import java.time.LocalDate;
 @ToString
 @Entity
 @Table(name = "game_week_won")
-public class Wins {
+public class Wins implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

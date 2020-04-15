@@ -30,7 +30,7 @@ public class FacultyGenerator {
             if (list.size() == 1) {
                 org = list.get(0);
             } else {
-                org = list.get(rnd.rnd(0, list.size() - 1));
+                org = list.get(rnd.rnd(0, list.size()));
             }
             Faculty fac = createOne(i, org);
             results.add(fac);

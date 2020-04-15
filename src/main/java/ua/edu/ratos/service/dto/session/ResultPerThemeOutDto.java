@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import ua.edu.ratos.service.dto.out.ThemeMinOutDto;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
 
 @Getter
@@ -12,7 +13,7 @@ import ua.edu.ratos.service.dto.out.ThemeOutDto;
 @Accessors(chain = true)
 public class ResultPerThemeOutDto {
 
-    private ThemeOutDto theme;
+    private ThemeMinOutDto theme;
 
     // How many questions answered on this theme
     private int quantity;

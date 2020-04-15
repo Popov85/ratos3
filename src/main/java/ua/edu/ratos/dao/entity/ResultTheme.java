@@ -4,13 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
 @ToString(exclude = {"result", "theme"})
 @Entity
 @Table(name = "result_theme")
-public class ResultTheme {
+public class ResultTheme implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @EmbeddedId
     private ResultThemeId resultThemeId = new ResultThemeId();

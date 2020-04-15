@@ -31,7 +31,7 @@ public class DepartmentGenerator {
             if (list.size() == 1) {
                 fac = list.get(0);
             } else {
-                fac = list.get(rnd.rnd(0, list.size() - 1));
+                fac = list.get(rnd.rnd(0, list.size()));
             }
             Department dep = createOne(i, fac);
             results.add(dep);

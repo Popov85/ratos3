@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.dao.entity.question.Question;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -12,7 +13,9 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"user", "question"})
 @Entity
 @Table(name = "user_question_starred")
-public class UserQuestionStarred {
+public class UserQuestionStarred implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @EmbeddedId
     private UserQuestionStarredId userQuestionStarredId = new UserQuestionStarredId();

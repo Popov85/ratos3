@@ -4,6 +4,7 @@ import lombok.*;
 import ua.edu.ratos.dao.entity.Student;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Weekly resettable table.
@@ -19,7 +20,9 @@ import javax.persistence.*;
 @ToString(exclude = "stud")
 @Entity
 @Table(name = "game_week")
-public class Week {
+public class Week implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "stud_id")

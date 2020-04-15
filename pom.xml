@@ -36,6 +36,7 @@
 		<metamodel>5.4.1.Final</metamodel>
 		<swagger>2.9.2</swagger>
 		<swagger.ui>2.9.2</swagger.ui>
+		<jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -225,6 +226,19 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>${jib-maven-plugin.version}</version>
+				<configuration>
+					<from>
+						<image>openjdk:alpine</image>
+					</from>
+					<to>
+						<image>registry.hub.docker.com/gelever85/ratos3:prod</image>
+					</to>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

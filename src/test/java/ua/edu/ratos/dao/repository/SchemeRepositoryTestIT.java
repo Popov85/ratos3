@@ -144,73 +144,14 @@ public class SchemeRepositoryTestIT {
 
 
     //--------------------------------------------------INSTRUCTOR table----------------------------------------------
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdTest() {
-        assertThat("Page of Scheme is not of size = 10",
-                schemeRepository.findAllByStaffId(1L, PageRequest.of(0, 100)).getContent(), hasSize(10));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameContainsTest() {
-        assertThat("Page of Scheme is not of size = 4",
-                schemeRepository.findAllByStaffIdAndNameLettersContains(1L, "trainee", PageRequest.of(0, 100)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
-        assertThat("Page of Scheme is not of size = 5",
-                schemeRepository.findAllByDepartmentId(3L, PageRequest.of(0, 100)).getContent(), hasSize(5));
+        assertThat("Set of Scheme is not of size = 10 for depId = 1",
+                schemeRepository.findAllByDepartmentId(1L), hasSize(10));
     }
 
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameContainsTest() {
-        assertThat("Page of Scheme is not of size = 3",
-                schemeRepository.findAllByDepartmentIdAndNameContains(2L, "exam", PageRequest.of(0, 100)).getContent(), hasSize(3));
-    }
-
-    //-------------------------------------------------DROPDOWN slice-------------------------------------------------
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForDropDownByDepartmentIdTest() {
-        assertThat("Slice of Scheme is not of size = 5",
-                schemeRepository.findAllForDropDownByDepartmentId(3L, PageRequest.of(0, 100)).getContent(), hasSize(5));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForDropDownByCourseIdTest() {
-        assertThat("Slice of Scheme is not of size = 20",
-                schemeRepository.findAllForDropDownByCourseId(1L, PageRequest.of(0, 100)).getContent(), hasSize(20));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForDropDownByCourseIdMultipleSlicesTest() {
-        assertThat("Slice of Scheme is not of size = 10",
-                schemeRepository.findAllForDropDownByCourseId(1L, PageRequest.of(0, 10)).getContent(), hasSize(10));
-    }
-
-
-    //---------------------------------------------------ADMIN--------------------------------------------------------
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllTest() {
-        assertThat("Page of Scheme is not of size = 20",
-                schemeRepository.findAll(PageRequest.of(0, 100)).getContent(), hasSize(20));
-    }
 
     //---------------------------------------------REPORT on content----------------------------------------------------
     @Test(timeout = 5000)

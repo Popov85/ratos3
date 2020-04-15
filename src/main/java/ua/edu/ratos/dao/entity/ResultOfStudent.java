@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import ua.edu.ratos.dao.entity.lms.LMS;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,10 @@ import java.util.Optional;
 @ToString(exclude = {"scheme", "student", "lms", "resultTheme"})
 @Entity
 @Table(name = "result")
-public class ResultOfStudent {
+public class ResultOfStudent implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -66,6 +70,10 @@ public class ResultOfStudent {
 
     @OneToMany(mappedBy = "result", cascade = {CascadeType.ALL})
     private List<ResultOfStudentTheme> resultTheme = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "result_id")
+    private ResultOfStudentDetails resultDetails;
 
     public Optional<LMS> getLms() {
         return Optional.ofNullable(lms);

@@ -29,7 +29,7 @@ public class ClassGenerator {
             if (list.size() == 1) {
                 fac = list.get(0);
             } else {
-                fac = list.get(rnd.rnd(0, list.size() - 1));
+                fac = list.get(rnd.rnd(0, list.size()));
             }
             Clazz cl = createOne(i, fac);
             results.add(cl);

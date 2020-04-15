@@ -8,9 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ua.edu.ratos.dao.entity.ResultOfStudentDetails;
 import ua.edu.ratos.dao.repository.specs.SpecsFilter;
+import ua.edu.ratos.service.ResultOfStudentDetailsService;
 import ua.edu.ratos.service.ResultOfStudentsService;
-import ua.edu.ratos.service.dto.out.criteria.*;
+import ua.edu.ratos.service.dto.out.ResultOfStudentDetailsOutDto;
+import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForStaffOutDto;
+import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentSelfOutDto;
 
 import java.util.Map;
 
@@ -20,6 +24,8 @@ import java.util.Map;
 public class ResultOfStudentController {
 
     private final ResultOfStudentsService resultOfStudentsService;
+
+    private final ResultOfStudentDetailsService resultOfStudentDetailsService;
 
     //-----------------------------------------------------Student------------------------------------------------------
     @GetMapping(value = "/student/self-results", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +60,11 @@ public class ResultOfStudentController {
     public Page<ResultOfStudentForStaffOutDto> findAllByDepartmentIdAndSpec(@RequestParam final Long depId, @RequestBody  Map<String, SpecsFilter> specs, @PageableDefault(sort = {"sessionEnded"}, direction = Sort.Direction.DESC, value = 20) Pageable pageable) {
         return resultOfStudentsService.findAllByDepartmentIdAndSpecsAdmin(depId, specs, pageable);
     }
-    //-----------------------------------------------------Report on results--------------------------------------------
+    //---------------------------------------------------Extended Report on results-------------------------------------
+
+    @GetMapping(value = "/department/student-result-details", params = {"resultId"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResultOfStudentDetailsOutDto findStudentResultDetailsByResultId(@RequestParam Long resultId) {
+        return resultOfStudentDetailsService.getResultOfStudentDetails(resultId);
+    }
 
 }

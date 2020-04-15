@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -13,7 +14,10 @@ import javax.persistence.*;
 @Table(name = "scheme_two_point")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class SchemeTwoPoint {
+public class SchemeTwoPoint implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @Column(name = "scheme_id")
     private Long schemeId;

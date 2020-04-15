@@ -11,6 +11,7 @@ import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -21,7 +22,9 @@ import javax.persistence.*;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
-public class FourPointGrading {
+public class FourPointGrading implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

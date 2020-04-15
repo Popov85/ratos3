@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.Clazz;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Optional;
 
 @Getter
@@ -17,7 +18,9 @@ import java.util.Optional;
 @Table(name = "student")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Gamer {
+public class Gamer implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "stud_id")

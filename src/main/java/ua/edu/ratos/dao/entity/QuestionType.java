@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Setter
@@ -14,7 +15,9 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(name="question_type")
-public class QuestionType {
+public class QuestionType implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "type_id")

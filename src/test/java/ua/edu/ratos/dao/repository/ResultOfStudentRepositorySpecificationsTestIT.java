@@ -28,6 +28,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static ua.edu.ratos.dao.repository.specs.ResultPredicatesUtils.hasSpecs;
 
@@ -51,7 +52,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdTest() {
+    public void findAllByDepartmentId1Test() {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L);
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
                 PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
@@ -63,6 +64,29 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
                 .forEach(r ->{
                     assertTrue("Scheme was not loaded", persistenceUnitUtil.isLoaded(r, "scheme"));
                     assertTrue("Student was not loaded", persistenceUnitUtil.isLoaded(r, "student"));
+                    assertTrue("ResultDetails was not loaded", persistenceUnitUtil.isLoaded(r, "resultDetails"));
+                    assertTrue("ResultDetails was empty", r.getResultDetails()!=null);
+                    assertTrue("User of Staff was not loaded", persistenceUnitUtil.isLoaded(r.getStudent(), "user"));
+                });
+    }
+
+    @Test(timeout = 5000)
+    @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void findAllByDepartmentId2Test() {
+        Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L);
+        Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
+                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+        assertThat("Page of Students Results is not as expected", page, allOf(
+                hasProperty("content", hasSize(7)),
+                hasProperty("totalPages", equalTo(1)),
+                hasProperty("totalElements", equalTo(7L))));
+        page.getContent()
+                .forEach(r ->{
+                    assertTrue("Scheme was not loaded", persistenceUnitUtil.isLoaded(r, "scheme"));
+                    assertTrue("Student was not loaded", persistenceUnitUtil.isLoaded(r, "student"));
+                    assertTrue("ResultDetails was not loaded", persistenceUnitUtil.isLoaded(r, "resultDetails"));
+                    assertTrue("ResultDetails was not empty", r.getResultDetails()==null);
                     assertTrue("User of Staff was not loaded", persistenceUnitUtil.isLoaded(r.getStudent(), "user"));
                 });
     }

@@ -3,7 +3,6 @@ package ua.edu.ratos.service.session;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.domain.question.QuestionDomain;

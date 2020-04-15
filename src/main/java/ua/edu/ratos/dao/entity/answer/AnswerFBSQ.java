@@ -6,6 +6,7 @@ import ua.edu.ratos.dao.entity.Phrase;
 import ua.edu.ratos.dao.entity.SettingsFB;
 import ua.edu.ratos.dao.entity.question.QuestionFBSQ;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,9 @@ import java.util.Set;
 @Table(name = "answer_fbsq")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class AnswerFBSQ {
+public class AnswerFBSQ implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name="answer_id")

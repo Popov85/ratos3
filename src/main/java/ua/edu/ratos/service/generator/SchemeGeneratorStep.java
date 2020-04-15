@@ -6,15 +6,18 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.config.TrackTime;
-import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.entity.*;
+import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Generator of Schemes for STEP-like scenarios!
@@ -67,7 +70,7 @@ public class SchemeGeneratorStep {
         scheme.setOptions(em.getReference(Options.class, 1L));
         scheme.setMode(em.getReference(Mode.class, 1L));
         scheme.setAccess(em.getReference(Access.class, 1L));
-        scheme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
+        scheme.setCreated(OffsetDateTime.now().minusDays(rnd.rnd(1, 1000)));
         scheme.setActive(true);
         scheme.setThemes(getThemes(themes, scheme));
         return scheme;

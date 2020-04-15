@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -15,7 +16,9 @@ import javax.persistence.*;
 @Table(name = "organisation")
 @Where(clause = "is_deleted = 0")
 @NoArgsConstructor
-public class Organisation {
+public class Organisation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public Organisation(Long orgId, String name) {
         this.orgId = orgId;

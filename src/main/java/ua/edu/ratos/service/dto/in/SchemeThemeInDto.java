@@ -1,10 +1,15 @@
 package ua.edu.ratos.service.dto.in;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
+
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 
@@ -14,10 +19,11 @@ import java.util.Set;
 @Accessors(chain = true)
 public class SchemeThemeInDto {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private long schemeId;
+    private Long schemeThemeId;
 
-    @Positive(message = "{dto.value.positiveOrZero}")
+    private Long schemeId;
+
+    @Positive(message = "{dto.fk.required}")
     private long themeId;
 
     @PositiveOrZero(message = "{dto.value.positiveOrZero}")

@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -16,7 +17,9 @@ import javax.persistence.*;
 @Table(name = "department")
 @Where(clause = "is_deleted = 0")
 @NoArgsConstructor
-public class Department {
+public class Department implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public Department(Long depId, String name) {
         this.depId = depId;

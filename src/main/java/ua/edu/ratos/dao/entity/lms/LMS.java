@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.Organisation;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -19,7 +20,9 @@ import javax.persistence.*;
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 @NoArgsConstructor
-public class LMS {
+public class LMS implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     public LMS(Long lmsId, String name) {
         this.lmsId = lmsId;

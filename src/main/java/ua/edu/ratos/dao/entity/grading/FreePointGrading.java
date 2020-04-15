@@ -10,6 +10,7 @@ import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.session.grade.GradedResult;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -18,7 +19,10 @@ import javax.persistence.*;
 @Table(name = "free_point")
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class FreePointGrading {
+public class FreePointGrading implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

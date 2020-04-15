@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import ua.edu.ratos.service.dto.out.CourseMinOutDto;
-import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeWithCourseMinOutDto;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
-import java.time.LocalDateTime;
+import ua.edu.ratos.service.dto.session.ResultPerThemeOutDto;
+
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,4 +43,7 @@ public class ResultOfStudentForStaffOutDto {
 
     private boolean isLMS;
 
+    private boolean details;
+
+    private List<ResultPerThemeOutDto> themeResults;
 }

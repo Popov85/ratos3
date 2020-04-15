@@ -40,7 +40,7 @@ public class ThemeGenerator {
             if (list.size()==1) {
                 index = 0;
             } else {
-                index = rnd.rnd(0, list.size() - 1);
+                index = rnd.rnd(0, list.size());
             }
             Course course = list.get(index);
             Theme theme = createOne(i, course);

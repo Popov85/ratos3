@@ -8,11 +8,15 @@ import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForStaffOutDto;
 import ua.edu.ratos.service.session.GameService;
 import ua.edu.ratos.service.utils.DataFormatter;
 
+import java.util.stream.Collectors;
+
 @Component
 @AllArgsConstructor
 public class ResultOfStudentForStaffDtoTransformer {
 
     private final SchemeWithCourseMinDtoTransformer schemeWithCourseMinDtoTransformer;
+
+    private final ResultOfStudentPerThemeDtoTransformer resultPerThemeDtoTransformer;
 
     private final StudMinDtoTransformer studMinDtoTransformer;
 
@@ -32,6 +36,11 @@ public class ResultOfStudentForStaffDtoTransformer {
                 .setTimeouted(entity.isTimeOuted())
                 .setCancelled(entity.isCancelled())
                 .setPoints(entity.isPoints() ? gameService.getPoints(entity.getPercent()): null)
-                .setLMS(entity.getLms().isPresent());
+                .setLMS(entity.getLms().isPresent())
+                .setDetails(entity.getResultDetails()!=null)
+                .setThemeResults(entity.getResultTheme()
+                        .stream()
+                        .map(resultPerThemeDtoTransformer::toDto)
+                        .collect(Collectors.toList()));
     }
 }

@@ -10,9 +10,10 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.dao.repository.SchemeRepository;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public class SchemeGenerator {
             if (departments.size()==1) {
                 department = departments.get(0);
             } else {
-                department = departments.get(rnd.rnd(0, departments.size() - 1));
+                department = departments.get(rnd.rnd(0, departments.size()));
             }
             Course course;
             if (courses.size()==1) {
@@ -94,7 +95,7 @@ public class SchemeGenerator {
         scheme.setStrategy(em.getReference(Strategy.class, rnd.rndOne(4)));
         scheme.setMode(em.getReference(Mode.class, rnd.rndOne(3)));
         scheme.setAccess(em.getReference(Access.class, rnd.rndOne(3)));
-        scheme.setCreated(LocalDateTime.now().minusDays(rnd.rnd(1, 1000)));
+        scheme.setCreated(OffsetDateTime.now().minusDays(rnd.rnd(1, 1000)));
         scheme.setActive(true);
         scheme.setThemes(getThemes(themes, scheme, maxThemes));
         return scheme;

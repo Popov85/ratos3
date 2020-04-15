@@ -4,7 +4,7 @@ import ua.edu.ratos.service.NamedService;
 
 public interface SchemeGraderService extends NamedService<Long> {
 
-    void save(long schemeId, long gradingDetailsId);
+    Object save(long schemeId, long gradingDetailsId);
 
     void delete(long schemeId);
 

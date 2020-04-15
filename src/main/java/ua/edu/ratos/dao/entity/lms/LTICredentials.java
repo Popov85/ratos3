@@ -8,13 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @ToString
 @Entity
 @Table(name = "lti_credentials")
-public class LTICredentials {
+public class LTICredentials implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "credentials_id")

@@ -61,11 +61,14 @@ public class ResultOfStudentStaffSpecs {
         if (Long.class != query.getResultType()) {
             root.fetch(ResultOfStudent_.scheme, JoinType.INNER)
                     .fetch(Scheme_.course, JoinType.INNER).fetch(Course_.lmsCourse, JoinType.LEFT);
+
             Fetch<ResultOfStudent, Student> fs = root.fetch(ResultOfStudent_.student, JoinType.INNER);
             fs.fetch(Student_.user, JoinType.INNER);
             fs.fetch(Student_.studentClass, JoinType.INNER);
             fs.fetch(Student_.faculty, JoinType.INNER);
             fs.fetch(Student_.organisation, JoinType.INNER);
+
+            root.fetch(ResultOfStudent_.resultDetails, JoinType.LEFT);
         }
     }
 

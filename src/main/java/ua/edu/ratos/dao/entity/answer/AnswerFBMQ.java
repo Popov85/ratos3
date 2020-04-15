@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.Phrase;
 import ua.edu.ratos.dao.entity.SettingsFB;
 import ua.edu.ratos.dao.entity.question.QuestionFBMQ;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +26,10 @@ import java.util.Set;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
-public class AnswerFBMQ {
+public class AnswerFBMQ implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.dao.entity.question.Question;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -12,7 +13,9 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"question", "complaintType", "department"})
 @Entity
 @Table(name = "complaint")
-public class Complaint {
+public class Complaint implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @EmbeddedId
     private ComplaintId complaintId = new ComplaintId();

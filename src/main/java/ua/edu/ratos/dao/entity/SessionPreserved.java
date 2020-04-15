@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"scheme", "user"})
 @Entity
 @Table(name="session_preserved")
-public class SessionPreserved {
+public class SessionPreserved implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name="uuid")

@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Access level defines who can edit tables {course, scheme, theme};
@@ -18,7 +19,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "access_level")
-public class Access {
+public class Access implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")

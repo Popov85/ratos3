@@ -1,19 +1,15 @@
 package ua.edu.ratos.service.grading;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class SchemeGradingManagerService {
 
-    private SchemeGradingServiceFactory gradingServiceFactory;
-
-    @Autowired
-    public void setGradingServiceFactory(SchemeGradingServiceFactory gradingServiceFactory) {
-        this.gradingServiceFactory = gradingServiceFactory;
-    }
+    private final SchemeGradingServiceFactory gradingServiceFactory;
 
     /**
      *  1. Get a correct Scheme*Service based on gradingId
@@ -22,13 +18,18 @@ public class SchemeGradingManagerService {
      * @param gradingId
      * @param gradingDetailsId
      */
-    public void save(long schemeId, long gradingId, long gradingDetailsId) {
-        final SchemeGraderService graderService = gradingServiceFactory.getInstance(gradingId);
-        graderService.save(schemeId, gradingDetailsId);
+    public Object save(long schemeId, long gradingId, long gradingDetailsId) {
+        final SchemeGraderService schemeGraderService = gradingServiceFactory.getInstance(gradingId);
+        return schemeGraderService.save(schemeId, gradingDetailsId);
     }
 
     public void remove(long schemeId, long gradingId) {
         final SchemeGraderService graderService = gradingServiceFactory.getInstance(gradingId);
         graderService.delete(schemeId);
+    }
+
+    public Object findDetails(long schemeId, long gradingId) {
+        final SchemeGraderService schemeGraderService = gradingServiceFactory.getInstance(gradingId);
+        return schemeGraderService.findDetails(schemeId);
     }
 }

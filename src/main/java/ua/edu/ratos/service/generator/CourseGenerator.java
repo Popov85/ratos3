@@ -36,7 +36,7 @@ public class CourseGenerator {
             if (list.size()==1) {
                 index = 0;
             } else {
-                index = rnd.rnd(0, list.size() - 1);
+                index = rnd.rnd(0, list.size());
             }
             Department dep = list.get(index);
             Course course = createOne(i, dep);

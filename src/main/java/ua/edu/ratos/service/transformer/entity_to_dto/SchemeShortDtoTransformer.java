@@ -2,12 +2,10 @@ package ua.edu.ratos.service.transformer.entity_to_dto;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 
-@Slf4j
 @Component
 @AllArgsConstructor
 public class SchemeShortDtoTransformer {
@@ -18,9 +16,11 @@ public class SchemeShortDtoTransformer {
 
     private final ModeDtoTransformer modeDtoTransformer;
 
+    private final OptionsDtoTransformer optionsDtoTransformer;
+
     private final GradingDtoTransformer gradingDtoTransformer;
 
-    private final CourseDtoTransformer courseDtoTransformer;
+    private final CourseMinDtoTransformer courseMinDtoTransformer;
 
     private final StaffMinDtoTransformer staffDtoTransformer;
 
@@ -37,8 +37,9 @@ public class SchemeShortDtoTransformer {
                 .setStrategy(strategyDtoTransformer.toDto(entity.getStrategy()))
                 .setSettings(settingsDtoTransformer.toDto(entity.getSettings()))
                 .setMode(modeDtoTransformer.toDto(entity.getMode()))
+                .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
                 .setGrading(gradingDtoTransformer.toDto(entity.getGrading()))
-                .setCourse(courseDtoTransformer.toDto(entity.getCourse()))
+                .setCourse(courseMinDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()))
                 .setThemes(entity.getThemes().size())

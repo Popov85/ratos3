@@ -1,15 +1,21 @@
 package ua.edu.ratos.service.dto.out;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * DTO of Scheme entity for single-object usage only!
+ * See also (for shortened version of DTO for usage in collections!)
+ * {@link ua.edu.ratos.service.dto.out.SchemeShortOutDto SchemeShortOutDto}
+ */
 @Getter
 @Setter
 @ToString
@@ -26,21 +32,24 @@ public class SchemeOutDto {
 
     private ModeOutDto mode;
 
+    private OptionsOutDto options;
+
     private GradingOutDto grading;
 
     private Object gradingDetails;
 
-    private CourseOutDto course;
+    private CourseMinOutDto course;
 
     private StaffMinOutDto staff;
 
-    private LocalDateTime created;
+    private AccessOutDto access;
 
     private boolean active;
 
     private boolean lmsOnly;
 
-    private AccessOutDto access;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
+    private OffsetDateTime created;
 
     private Set<GroupMinOutDto> groups = new HashSet<>();
 

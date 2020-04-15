@@ -5,13 +5,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
 @ToString
 @Entity
 @Table(name = "user_role")
-public class UserRole {
+public class UserRole implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @EmbeddedId
     private UserRoleId userRoleId = new UserRoleId();

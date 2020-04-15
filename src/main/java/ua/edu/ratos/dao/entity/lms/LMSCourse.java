@@ -5,13 +5,16 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.edu.ratos.dao.entity.Course;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @ToString(exclude = {"course", "lms"})
 @Entity
 @Table(name = "lms_course")
-public class LMSCourse {
+public class LMSCourse implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(name = "course_id")

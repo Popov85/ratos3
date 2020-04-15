@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import ua.edu.ratos.dao.entity.*;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Slf4j
@@ -23,7 +24,9 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_id", discriminatorType = DiscriminatorType.INTEGER)
 @Where(clause = "is_deleted = 0")
-public class Question {
+public class Question implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

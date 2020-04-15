@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
@@ -13,7 +14,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "class")
 @NoArgsConstructor
-public class Clazz {
+public class Clazz implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     public Clazz(Long classId, String name) {
         this.classId = classId;

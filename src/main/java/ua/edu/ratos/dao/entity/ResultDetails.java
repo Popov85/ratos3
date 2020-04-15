@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -11,7 +12,10 @@ import java.time.LocalDateTime;
 @ToString(exclude = "result")
 @Entity
 @Table(name = "result_details")
-public class ResultDetails {
+public class ResultDetails implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @Column(name = "detail_id")
     private Long detailId;

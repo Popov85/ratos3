@@ -88,7 +88,7 @@ public class SchemeServiceTestIT {
         ));
     }
 
-    @Test(timeout = 10000)
+    /*@Test(timeout = 10000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateStrategyTest() {
@@ -100,7 +100,7 @@ public class SchemeServiceTestIT {
                 hasProperty("name", equalTo("Scheme #1")),
                 hasProperty("strategy", hasProperty("strId", equalTo(2L)) )
         ));
-    }
+    }*/
 
     @Test(timeout = 10000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -117,7 +117,7 @@ public class SchemeServiceTestIT {
     }
 
     // Gradings
-    @Test(timeout = 10000)
+    /*@Test(timeout = 10000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/scheme_test_data_one_grading.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateGradingNewDetailsTest() {
@@ -247,5 +247,7 @@ public class SchemeServiceTestIT {
                 hasProperty("groups", hasSize(1))
         ));
     }
+
+     */
 
 }

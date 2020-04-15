@@ -5,13 +5,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Setter
 @Getter
 @ToString
 @Entity
 @Table(name = "group_scheme")
-public class GroupScheme {
+public class GroupScheme implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @EmbeddedId
     private GroupSchemeId groupSchemeId = new GroupSchemeId();
