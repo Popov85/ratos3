@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class QuestionsGeneratorsSuite {
 
     @Autowired

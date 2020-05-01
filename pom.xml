@@ -36,6 +36,7 @@
 		<metamodel>5.4.1.Final</metamodel>
 		<swagger>2.9.2</swagger>
 		<swagger.ui>2.9.2</swagger.ui>
+		<lombok>1.18.2</lombok>
 		<jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
 	</properties>
 
@@ -133,6 +134,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -160,7 +162,7 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -236,7 +238,7 @@
 						<image>openjdk:alpine</image>
 					</from>
 					<to>
-						<image>registry.hub.docker.com/gelever85/ratos3:prod</image>
+						<image>registry.hub.docker.com/gelever85/ratos3:stage-r</image>
 					</to>
 				</configuration>
 			</plugin>

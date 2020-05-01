@@ -27,5 +27,7 @@ public class SettingsOutDto {
 
     private boolean strictControlTimePerQuestion;
 
+    private boolean isDefault;
+
     private StaffMinOutDto staff;
 }

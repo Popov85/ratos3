@@ -63,7 +63,7 @@ public class AppProperties {
          * Specifies how many threads should do the job of loading to cache at start-up
          * Use the value 1 for single core CPU, 2 - for dual core CPU, etc.
          */
-        @Min(1)
+        @Min(0)
         @Max(32)
         private int cacheThreads;
 

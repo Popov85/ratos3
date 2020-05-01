@@ -12,7 +12,7 @@ import ua.edu.ratos.service.generator.suite.SessionSuite;
 
 @Slf4j
 @Service
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class PopulatorInitListener {
 
     @Value("${ratos.init.populate}")

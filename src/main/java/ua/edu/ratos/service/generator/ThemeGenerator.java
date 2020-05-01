@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class ThemeGenerator {
 
     @Autowired

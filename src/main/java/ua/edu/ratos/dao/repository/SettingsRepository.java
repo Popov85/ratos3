@@ -16,26 +16,13 @@ public interface SettingsRepository extends JpaRepository<Settings, Long> {
     Optional<Settings> findOneForEdit(Long setId);
 
     //---------------------------------------------------------DEFAULT--------------------------------------------------
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user where s.isDefault = true order by s.name asc")
+    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user where s.isDefault = true")
     Set<Settings> findAllDefault();
 
-    //-------------------------------------------------------INSTRUCTOR table-------------------------------------------
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user where st.staffId = ?1",
-            countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1")
-    Page<Settings> findAllByStaffId(Long staffId, Pageable pageable);
+    //---------------------------------------------------INSTRUCTOR table/drop-down-------------------------------------
 
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join s.department d where d.depId = ?1",
-            countQuery = "select count(s) from Settings s join s.department d where d.depId =?1")
-    Page<Settings> findAllByDepartmentId(Long depId, Pageable pageable);
-
-    //--------------------------------------------------------Table search----------------------------------------------
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user where st.staffId = ?1 and s.name like %?2%",
-            countQuery = "select count(s) from Settings s join s.staff st where st.staffId =?1 and s.name like %?2%")
-    Page<Settings> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
-
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join s.department d where d.depId = ?1 and s.name like %?2%",
-            countQuery = "select count(s) from Settings s join s.department d where d.depId =?1 and s.name like %?2%")
-    Page<Settings> findAllByDepartmentIdAndNameLettersContains(Long depId, String contains, Pageable pageable);
+    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join s.department d where d.depId = ?1")
+    Set<Settings> findAllByDepartmentId(Long depId);
 
     //------------------------------------------------------------ADMIN-------------------------------------------------
     @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join fetch s.department", countQuery = "select count(s) from Settings s")

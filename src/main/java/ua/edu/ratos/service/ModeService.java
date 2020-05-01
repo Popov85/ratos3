@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Mode;
@@ -74,37 +73,22 @@ public class ModeService {
                 .collect(Collectors.toSet());
     }
 
-    //---------------------------------------------------Staff table----------------------------------------------------
+    //------------------------------------------------Staff table/drop-down---------------------------------------------
     @Transactional(readOnly = true)
-    public Page<ModeOutDto> findAllForTableByStaffId(@NonNull final Pageable pageable) {
-        return modeRepository.findAllForTableByStaffId(securityUtils.getAuthStaffId(), pageable).map(modeDtoTransformer::toDto);
+    public Set<ModeOutDto> findAllByDepartment() {
+        return modeRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(modeDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
-    @Transactional(readOnly = true)
-    public Page<ModeOutDto> findAllForTableByStaffIdAndModeNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return modeRepository.findAllForTableByStaffIdAndModeNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(modeDtoTransformer::toDto);
-    }
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
 
     @Transactional(readOnly = true)
-    public Page<ModeOutDto> findAllForTableByDepartmentId(@NonNull final Pageable pageable) {
-        return modeRepository.findAllForTableByDepartmentId(securityUtils.getAuthDepId(), pageable).map(modeDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ModeOutDto> findAllForTableByDepartmentIdAndModeNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return modeRepository.findAllForTableByDepartmentIdAndModeNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(modeDtoTransformer::toDto);
-    }
-
-
-    //--------------------------------------------------Staff drop-down-------------------------------------------------
-    @Transactional(readOnly = true)
-    public Slice<ModeOutDto> findAllForDropDownByStaffIdAndModeNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return modeRepository.findAllForDropDownByStaffIdAndModeNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(modeDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<ModeOutDto> findAllForDropDownByDepartmentIdAndModeNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return modeRepository.findAllForDropDownByDepartmentIdAndModeNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(modeDtoTransformer::toDto);
+    public Set<ModeOutDto> findAllByDepartmentWithDefault() {
+        Set<ModeOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 
     //-------------------------------------------------------ADMIN------------------------------------------------------

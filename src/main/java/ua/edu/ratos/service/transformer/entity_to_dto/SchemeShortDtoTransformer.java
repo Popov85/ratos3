@@ -42,7 +42,7 @@ public class SchemeShortDtoTransformer {
                 .setCourse(courseMinDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()))
-                .setThemes(entity.getThemes().size())
-                .setGroups(entity.getGroups().size());
+                .setThemesCount(entity.getThemes().size())
+                .setGroupsCount(entity.getGroups().size());
     }
 }

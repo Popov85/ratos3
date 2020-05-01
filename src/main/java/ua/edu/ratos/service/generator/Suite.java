@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 @ToString
 @Accessors(chain = true)
 @SuppressWarnings("SpellCheckingInspection")
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class Suite {
     private int organisations;
     private int faculties;

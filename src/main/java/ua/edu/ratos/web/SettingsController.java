@@ -2,9 +2,6 @@ package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +17,12 @@ import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor")
 @AllArgsConstructor
 public class SettingsController {
 
     private final SettingsService settingsService;
 
-    @PostMapping(value = "/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/instructor/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@Validated @RequestBody SettingsInDto dto) {
         final Long setId = settingsService.save(dto);
         log.debug("Saved Settings, setId = {}", setId);
@@ -34,7 +30,7 @@ public class SettingsController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/settings/{setId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/instructor/settings/{setId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SettingsOutDto> findOne(@PathVariable Long setId) {
         SettingsOutDto dto = settingsService.findOneForEdit(setId);
         log.debug("Retrieved Settings = {}", dto);
@@ -42,14 +38,14 @@ public class SettingsController {
     }
 
     // Make sure to include setId to DTO object
-    @PutMapping(value = "/settings/{setId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/instructor/settings/{setId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void update(@PathVariable Long setId, @Validated @RequestBody SettingsInDto dto) {
         settingsService.update(dto);
         log.debug("Updated Settings, setId = {}", setId);
     }
 
-    @DeleteMapping("/settings/{setId}")
+    @DeleteMapping("/instructor/settings/{setId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long setId) {
         settingsService.deleteById(setId);
@@ -57,30 +53,16 @@ public class SettingsController {
     }
 
     //-----------------------------------------------------Default------------------------------------------------------
-    @GetMapping(value = "/settings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/department/settings/all-default-settings", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<SettingsOutDto> findAllDefault() {
         return settingsService.findAllDefault();
     }
 
-    //--------------------------------------------------Staff table-----------------------------------------------------
-    @GetMapping(value="/settings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SettingsOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return settingsService.findAllByStaffId(pageable);
-    }
+    //----------------------------------------------Staff table/drop-down-----------------------------------------------
 
-    @GetMapping(value = "/settings/by-staff", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SettingsOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return settingsService.findAllByStaffIdAndNameLettersContains(letters, pageable);
-    }
-
-    @GetMapping(value="/settings/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SettingsOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return settingsService.findAllByDepartmentId(pageable);
-    }
-
-    @GetMapping(value = "/settings/by-department", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<SettingsOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return settingsService.findAllByDepartmentIdAndSettingsNameLettersContains(letters, pageable);
+    @GetMapping(value="/department/settings/all-settings-by-department-with-default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<SettingsOutDto> findAllByDepartmentWithDefault() {
+        return settingsService.findAllByDepartmentWithDefault();
     }
 
 }

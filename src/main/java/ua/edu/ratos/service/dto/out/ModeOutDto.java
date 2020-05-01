@@ -32,5 +32,7 @@ public class ModeOutDto {
 
     private boolean starrable;
 
+    private boolean isDefault;
+
     private StaffMinOutDto staff;
 }

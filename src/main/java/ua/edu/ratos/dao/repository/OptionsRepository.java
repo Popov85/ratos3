@@ -15,28 +15,15 @@ public interface OptionsRepository extends JpaRepository<Options, Long> {
     Optional<Options> findOneForEdit(Long optId);
 
     //---------------------------------------------------------DEFAULT--------------------------------------------------
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user where o.isDefault = true order by o.name asc")
+    @Query(value="select o from Options o join fetch o.staff st join fetch st.user where o.isDefault = true")
     Set<Options> findAllDefault();
 
-    //-------------------------------------------------------INSTRUCTOR table-------------------------------------------
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user where st.staffId = ?1",
-            countQuery = "select count(o) from Options o join o.staff st where st.staffId =?1")
-    Page<Options> findAllByStaffId(Long staffId, Pageable pageable);
-
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join o.department d where d.depId = ?1",
-            countQuery = "select count(o) from Options o join o.department d where d.depId =?1")
-    Page<Options> findAllByDepartmentId(Long depId, Pageable pageable);
-
-    //--------------------------------------------------------Table search----------------------------------------------
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user where st.staffId = ?1 and o.name like %?2%",
-            countQuery = "select count(o) from Options o join o.staff st where st.staffId =?1 and o.name like %?2%")
-    Page<Options> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
-
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join o.department d where d.depId = ?1 and o.name like %?2%",
-            countQuery = "select count(o) from Options o join o.department d where d.depId =?1 and o.name like %?2%")
-    Page<Options> findAllByDepartmentIdAndNameLettersContains(Long depId, String contains, Pageable pageable);
+    //--------------------------------------------------INSTRUCTOR table/drop-down--------------------------------------
+    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join o.department d where d.depId = ?1")
+    Set<Options> findAllByDepartmentId(Long depId);
 
     //------------------------------------------------------------ADMIN-------------------------------------------------
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join fetch o.department", countQuery = "select count(o) from Options o")
+    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join fetch o.department",
+            countQuery = "select count(o) from Options o")
     Page<Options> findAllAdmin(Pageable pageable);
 }

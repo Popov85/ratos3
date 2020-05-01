@@ -78,25 +78,22 @@ public class SettingsService {
                 .collect(Collectors.toSet());
     }
 
-    //---------------------------------------------------Staff table----------------------------------------------------
+    //---------------------------------------------------Staff table/drop-down------------------------------------------
     @Transactional(readOnly = true)
-    public Page<SettingsOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return settingsRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(settingsDtoTransformer::toDto);
+    public Set<SettingsOutDto> findAllByDepartment() {
+        return settingsRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(settingsDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
-    @Transactional(readOnly = true)
-    public Page<SettingsOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return settingsRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(settingsDtoTransformer::toDto);
-    }
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
 
     @Transactional(readOnly = true)
-    public Page<SettingsOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return settingsRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(settingsDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<SettingsOutDto> findAllByDepartmentIdAndSettingsNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return settingsRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(settingsDtoTransformer::toDto);
+    public Set<SettingsOutDto> findAllByDepartmentWithDefault() {
+        Set<SettingsOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 
     //--------------------------------------------------------ADMIN-----------------------------------------------------

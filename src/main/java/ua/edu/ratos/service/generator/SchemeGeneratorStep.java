@@ -24,7 +24,7 @@ import java.util.Set;
  */
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class SchemeGeneratorStep {
 
     @Autowired

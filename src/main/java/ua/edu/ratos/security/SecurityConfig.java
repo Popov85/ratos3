@@ -72,7 +72,7 @@ public class SecurityConfig {
                     .key("e-ratos")
                     .userDetailsService(authenticatedUserDetailsService)
                 .and()
-                .httpBasic().and()
+                //.httpBasic().and()
                 .headers()
                     .frameOptions().disable()
                 .and()
@@ -92,11 +92,10 @@ public class SecurityConfig {
         }
     }
 
-    //----------------------------------------------------TEST----------------------------------------------------------
 
     @Order(3)
     @Configuration
-    public static class TestConfig extends WebSecurityConfigurerAdapter {
+    public static class SessionConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
         private AuthenticatedUserDetailsService authenticatedUserDetailsService;

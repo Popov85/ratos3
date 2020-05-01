@@ -10,7 +10,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class StringGenerator {
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class SessionSuite {
 
     @Autowired

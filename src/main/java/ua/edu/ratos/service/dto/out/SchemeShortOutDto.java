@@ -41,7 +41,7 @@ public class SchemeShortOutDto {
 
     private boolean lmsOnly;
 
-    private int themes;
+    private int themesCount;
 
-    private int groups;
+    private int groupsCount;
 }

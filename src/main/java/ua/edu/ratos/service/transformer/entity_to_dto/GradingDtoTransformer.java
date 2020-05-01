@@ -13,6 +13,7 @@ public class GradingDtoTransformer {
     public GradingOutDto toDto(@NonNull final Grading entity) {
         return new GradingOutDto()
                 .setGradingId(entity.getGradingId())
-                .setName(entity.getName()).setDescription(entity.getDescription());
+                .setName(entity.getName())
+                .setDescription(entity.getDescription());
     }
 }

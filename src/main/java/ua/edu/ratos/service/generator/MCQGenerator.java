@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class MCQGenerator {
 
     private static final int MAX_LEVEL = 1;

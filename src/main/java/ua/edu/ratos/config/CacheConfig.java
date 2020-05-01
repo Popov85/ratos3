@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @EnableCaching
-@Profile({"prod", "stage", "dev", "demo"})
+@Profile({"prod", "stage", "dev"})
 public class CacheConfig {}

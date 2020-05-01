@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class RealResourceGenerator {
 
     private static List<String> resources = Arrays.asList(

@@ -138,6 +138,7 @@ public class QuestionMCQDomainParameterizedTest {
                     {new ResponseMCQ(1L, new HashSet(Arrays.asList(new Long[]{1001l}))), 0},
                     {new ResponseMCQ(1L, new HashSet(Arrays.asList(new Long[]{1000l, 1001l}))), 0},
                     {new ResponseMCQ(1L, new HashSet(Arrays.asList(new Long[]{1000L,1002L}))), 100},
+                    {new ResponseMCQ(1L, new HashSet(Arrays.asList(new Long[]{1000L,1002L, null}))), 100},
             });
         }
 

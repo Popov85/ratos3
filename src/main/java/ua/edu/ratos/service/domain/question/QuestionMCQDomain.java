@@ -13,10 +13,7 @@ import ua.edu.ratos.service.dto.out.answer.CorrectAnswerMCQOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionMCQSessionOutDto;
 import ua.edu.ratos.service.domain.response.ResponseMCQ;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Setter
@@ -50,11 +47,16 @@ public class QuestionMCQDomain extends QuestionDomain {
      */
     @Override
     public double evaluate(@NonNull final Response response) {
-        List<Long> zeroAnswers = getZeroAnswers();
         if (!(response instanceof ResponseMCQ))
             throw new RuntimeException("Invalid Response type: ResponseMCQ was expected!");
+        List<Long> zeroAnswers = getZeroAnswers();
         Set<Long> responseIds = ((ResponseMCQ) response).getAnswerIds();
         if (responseIds==null) return 0;
+        //Filter nulls if any!
+        /*Set<Long> responseIdsNonNull = responseIds
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());*/
         for (Long responseId : responseIds) {
             if (zeroAnswers.contains(responseId)) return 0;
         }
@@ -65,7 +67,8 @@ public class QuestionMCQDomain extends QuestionDomain {
         int result = 0;
         for (Long responseId : responseIds) {
             for (AnswerMCQDomain answer : this.answers) {
-                if (responseId.equals(answer.getAnswerId())) result += answer.getPercent();
+                //if (responseId.equals(answer.getAnswerId())) result += answer.getPercent();
+                if (answer.getAnswerId().equals(responseId)) result += answer.getPercent();
             }
         }
         return result;

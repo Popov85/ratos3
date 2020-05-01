@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class SchemeGenerator {
 
     //private static final int MAX_THEMES_PER_SCHEME = 3;

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class CourseGenerator {
     @Autowired
     private Rnd rnd;

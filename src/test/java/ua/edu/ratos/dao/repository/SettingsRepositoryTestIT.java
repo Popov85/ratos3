@@ -11,7 +11,6 @@ import ua.edu.ratos.ActiveProfile;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -38,41 +37,9 @@ public class SettingsRepositoryTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdTest() {
-        assertThat("Page of Settings is not of size = 4",
-                settingsRepository.findAllByStaffId(1L, PageRequest.of(0, 50)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
         assertThat("Page of Settings is not of size = 3",
-                settingsRepository.findAllByDepartmentId(2L, PageRequest.of(0, 50)).getContent(), hasSize(3));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameLettersContainsTest() {
-        assertThat("Page of Settings is not of size = 2",
-                settingsRepository.findAllByStaffIdAndNameLettersContains(4L, "year", PageRequest.of(0, 50)).getContent(), hasSize(2));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameLettersContainsTest() {
-        assertThat("Page of Settings is not of size = 3",
-                settingsRepository.findAllByDepartmentIdAndNameLettersContains(1L, "c", PageRequest.of(0, 50)).getContent(), hasSize(3));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/settings_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameLettersContainsNegativeOutcomeTest() {
-        assertThat("Page of Settings is not empty",
-                settingsRepository.findAllByDepartmentIdAndNameLettersContains(2L, "year6", PageRequest.of(0, 50)).getContent(), empty());
+                settingsRepository.findAllByDepartmentId(2L), hasSize(3));
     }
 
     @Test(timeout = 5000)

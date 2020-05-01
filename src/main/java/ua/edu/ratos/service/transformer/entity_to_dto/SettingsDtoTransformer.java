@@ -28,6 +28,7 @@ public class SettingsDtoTransformer {
                 .setQuestionsPerSheet(entity.getQuestionsPerSheet())
                 .setSecondsPerQuestion(entity.getSecondsPerQuestion())
                 .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion())
+                .setDefault(entity.isDefault())
                 .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
     }
 }

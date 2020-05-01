@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class Rnd {
 
     public int rnd(int from, int to) {

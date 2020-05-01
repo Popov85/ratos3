@@ -79,25 +79,22 @@ public class OptionsService {
                 .collect(Collectors.toSet());
     }
 
-    //---------------------------------------------------Staff table----------------------------------------------------
+    //---------------------------------------------------Staff table/drop-down------------------------------------------
     @Transactional(readOnly = true)
-    public Page<OptionsOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return optionsRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(optionsDtoTransformer::toDto);
+    public Set<OptionsOutDto> findAllByDepartment() {
+        return optionsRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(optionsDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
-    @Transactional(readOnly = true)
-    public Page<OptionsOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return optionsRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(optionsDtoTransformer::toDto);
-    }
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
 
     @Transactional(readOnly = true)
-    public Page<OptionsOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return optionsRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(optionsDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<OptionsOutDto> findAllByDepartmentIdAndOptionsNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return optionsRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(optionsDtoTransformer::toDto);
+    public Set<OptionsOutDto> findAllByDepartmentWithDefault() {
+        Set<OptionsOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 
     //--------------------------------------------------------ADMIN-----------------------------------------------------

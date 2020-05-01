@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Component
-@Profile({"dev", "demo"})
+@Profile({"dev"})
 public class StudentGenerator {
 
     private static final int[] YEAR = {2016, 2017, 2018, 2019};

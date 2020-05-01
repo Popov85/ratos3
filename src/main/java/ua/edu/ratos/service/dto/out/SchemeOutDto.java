@@ -1,6 +1,7 @@
 package ua.edu.ratos.service.dto.out;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -50,6 +51,16 @@ public class SchemeOutDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm (Z)")
     private OffsetDateTime created;
+
+    @JsonProperty("themesCount")
+    private int countThemes() {
+        return themes.size();
+    }
+
+    @JsonProperty("groupsCount")
+    private int countGroups() {
+        return groups.size();
+    }
 
     private Set<GroupMinOutDto> groups = new HashSet<>();
 

@@ -25,72 +25,21 @@ public class ModeRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findOneForEditTest() {
-        assertTrue("Mode was not found for modeId = 1L",
-                modeRepository.findOneForEdit(1L).isPresent());
+        assertTrue("Mode was not found for modeId = 1L", modeRepository.findOneForEdit(1L).isPresent());
     }
 
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllDefaultTest() {
-        assertThat("Set of default Mode is not of size = 3",
-                modeRepository.findAllDefault(), hasSize(3));
+        assertThat("Set of default Mode is not of size = 3", modeRepository.findAllDefault(), hasSize(3));
     }
 
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForTableByStaffIdTest() {
-        assertThat("Page of Mode is not of size = 4",
-                modeRepository.findAllForTableByStaffId(4L, PageRequest.of(0, 50)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForTableByStaffIdAndModeNameLettersContainsTest() {
-        assertThat("Page of Mode is not of size = 2",
-                modeRepository.findAllForTableByStaffIdAndModeNameLettersContains(1L, "pre", PageRequest.of(0, 50)).getContent(), hasSize(2));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForTableByDepartmentIdTest() {
-        assertThat("Page of Mode is not of size = 4",
-                modeRepository.findAllForTableByDepartmentId(2L, PageRequest.of(0, 50)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForTableByDepartmentIdAndModeNameLettersContainsTest() {
-        assertThat("Page of Mode is not of size = 1",
-                modeRepository.findAllForTableByDepartmentIdAndModeNameLettersContains(2L, "ing", PageRequest.of(0, 50)).getContent(), hasSize(1));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForTableByDepartmentIdAndModeNameLettersContainsNegativeOutcomeTest() {
-        assertThat("Page of Mode is not empty",
-                modeRepository.findAllForTableByDepartmentIdAndModeNameLettersContains(2L, "step", PageRequest.of(0, 50)).getContent(), empty());
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForDropDownByStaffIdAndModeNameLettersContainsTest() {
-        assertThat("Page of Mode is not of size = 2",
-                modeRepository.findAllForDropDownByStaffIdAndModeNameLettersContains(1L, "pre", PageRequest.of(0, 50)).getContent(), hasSize(2));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllForDropDownByDepartmentIdAndModeNameLettersContainsTest() {
-        assertThat("Page of Mode is not of size = 1",
-                modeRepository.findAllForDropDownByDepartmentIdAndModeNameLettersContains(2L, "ing", PageRequest.of(0, 50)).getContent(), hasSize(1));
+    public void findAllBDepartmentIdTest() {
+        assertThat("Set of Mode by department 1L is not of size = 5", modeRepository.findAllByDepartmentId(1L), hasSize(5));
     }
 
     @Test(timeout = 5000)

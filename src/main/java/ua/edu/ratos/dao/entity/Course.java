@@ -61,4 +61,6 @@ public class Course implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
     private LMSCourse lmsCourse;
+
+    // TODO: add setter to sync both parts of OnToOne!
 }
