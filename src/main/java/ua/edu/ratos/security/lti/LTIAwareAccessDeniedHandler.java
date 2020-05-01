@@ -29,6 +29,7 @@ public class LTIAwareAccessDeniedHandler implements AccessDeniedHandler {
 			return;
 		}
 		log.debug("Detected a non-LTI user lacking authority trying to access protected resource, redirection to /access-denied endpoint");
+		log.debug("Rejected authorities = {}", auth.getAuthorities());
 		response.sendRedirect(request.getContextPath() + "/access-denied");
 	}
 
