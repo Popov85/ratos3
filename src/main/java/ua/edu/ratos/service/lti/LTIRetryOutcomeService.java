@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth.consumer.client.OAuthRestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -23,6 +24,7 @@ public class LTIRetryOutcomeService {
 	 * @param entity ready in object to be sent to LMS to post a score
 	 * @see <a href="https://www.imsglobal.org/gws/gwsv1p0/imsgws_wsdlBindv1p0.html"> IMS General Web Services WSDL Binding Guidelines</a>
 	 */
+	@Async
 	@SuppressWarnings("SpellCheckingInspection")
 	@Retryable(maxAttempts = 6, value = RestClientException.class, backoff = @Backoff(delay = 500, multiplier = 2))
 	public void doSend(OAuthRestTemplate oAuthRestTemplate, URI uri, HttpEntity<String> entity, String email, Long schemeId) {

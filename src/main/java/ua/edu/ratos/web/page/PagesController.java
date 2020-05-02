@@ -36,11 +36,9 @@ public class PagesController {
         return "student";
     }
 
-
     @GetMapping("/session/start")
     public String getSessionPage(@RequestParam Long schemeId, final HttpServletResponse response) {
         response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
         return "session";
     }
-
 }

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ua.edu.ratos.security.AuthenticatedStaff;
 import ua.edu.ratos.security.AuthenticatedUser;
 import ua.edu.ratos.security.SecurityUtils;
+import ua.edu.ratos.security.lti.LISUser;
+import ua.edu.ratos.security.lti.LTIUserConsumerCredentials;
 import ua.edu.ratos.service.dto.out.*;
 
 @Service
@@ -14,6 +16,23 @@ public class InfoService {
     private final SecurityUtils securityUtils;
 
     public UserInfoOutDto getUserInfo() {
+
+        // Is LMS-USER with LTIUserConsumerCredentials as Principal?
+        if (securityUtils.isLmsUser()) {
+            LTIUserConsumerCredentials principal
+                    = securityUtils.getLmsUserAuthentication();
+            LISUser user = principal.getUser()
+                    .orElse(new LISUser("LMS", "user"));
+            return new UserInfoOutDto()
+                    .setUserId(principal.getUserId())
+                    .setName(user.getName())
+                    .setSurname(user.getSurname())
+                    .setEmail(principal.getEmail()
+                            .orElse("default@example.com"))
+                    .setRole("LMS-USER")
+                    .setLms(true);
+        }
+
         AuthenticatedUser user = securityUtils.getAuthUser();
         // ID
         Long userId = user.getUserId();

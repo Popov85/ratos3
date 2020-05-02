@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.oauth.consumer.BaseProtectedResourceDetails;
 import org.springframework.security.oauth.consumer.client.OAuthClientHttpRequestFactory;
 import org.springframework.security.oauth.consumer.client.OAuthRestTemplate;
@@ -58,7 +56,6 @@ public class LTIOutcomeService {
      * @param protocol   actual network protocol to perform post request
      * @see <a href="https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide#toc-3">LTI v 1.1.1</a>
      */
-    @Async
     public void sendOutcome(final Long schemeId, final String percent, final String protocol) {
         LTIUserConsumerCredentials principal = securityUtils.getLmsUserAuthentication();
         String email = principal.getEmail().orElse("unknown e-mail");
@@ -87,7 +84,7 @@ public class LTIOutcomeService {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         // Try to send multiple times for sure
         ltiRetryOutcomeService.doSend(authRestTemplate, uri, request, email, schemeId);
-        log.debug("Outcome is sent to LMS server");
+        log.debug("Outcome is gonna be sent to LMS server...");
     }
 
     /**

@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@Profile({"prod", "stage"})
+@Profile({"prod", "stage", "dev"})
 public class LTILaunchController {
 
     @GetMapping("/lms/start")
-    public String getStartPage(@RequestParam Long schemeId) {
-        return "session?schemeId="+schemeId;
+    public String getSessionPage(@RequestParam Long schemeId) {
+        return "session";
     }
 
     @PostMapping("/lti/1p0/launch")
     public String launch(@RequestParam Long schemeId) {
-        log.debug("POST via LTI v1.1 is performed, requested schemeId = {}", schemeId);
+        //log.debug("POST via LTI v1.1 is performed, requested schemeId = {}", schemeId);
         return "redirect:/lms/start?schemeId="+schemeId;
     }
 }

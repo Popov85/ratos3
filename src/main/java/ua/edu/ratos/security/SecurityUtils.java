@@ -194,9 +194,9 @@ public class SecurityUtils {
      */
     public LTIToolConsumerCredentials getLmsToolAuthentication() {
         Authentication auth = getAuthentication();
-        if (auth.getPrincipal().getClass()!= LTIToolConsumerCredentials.class)
+        if (!(auth.getPrincipal() instanceof LTIToolConsumerCredentials))
             throw new SecurityException("Lack of authority: non-lms user");
-        return (LTIToolConsumerCredentials) auth;
+        return (LTIToolConsumerCredentials) auth.getPrincipal();
     }
 
     /**
@@ -207,7 +207,7 @@ public class SecurityUtils {
         Authentication auth = getAuthentication();
         if (auth.getPrincipal().getClass()!= LTIUserConsumerCredentials.class)
             throw new SecurityException("Lack of authority: non-authenticated lms user");
-        return (LTIUserConsumerCredentials) auth;
+        return (LTIUserConsumerCredentials) auth.getPrincipal();
     }
 
     /**
