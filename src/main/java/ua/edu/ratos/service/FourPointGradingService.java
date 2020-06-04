@@ -2,8 +2,6 @@ package ua.edu.ratos.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.grading.FourPointGrading;
@@ -36,27 +34,29 @@ public class FourPointGradingService {
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final FourPointGradingInDto dto) {
-        return fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto)).getFourId();
+    public FourPointGradingOutDto save(@NonNull final FourPointGradingInDto dto) {
+        FourPointGrading fourPointGrading = fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto));
+        return fourPointGradingDtoTransformer.toDto(fourPointGrading);
     }
 
     @Transactional
-    public void update(@NonNull final FourPointGradingInDto dto) {
+    public FourPointGradingOutDto update(@NonNull final FourPointGradingInDto dto) {
         Long fourId = dto.getFourId();
-        if (fourId == null || fourId ==0)
-            throw new RuntimeException(ID_IS_NOT_INCLUDED);
-        FourPointGrading entity = fourPointGradingRepository.findById(fourId)
+        if (fourId == null || fourId == 0)
+            throw new RuntimeException(ID_IS_NOT_INCLUDED + fourId);
+        FourPointGrading fourPointGrading = fourPointGradingRepository.findById(fourId)
                 .orElseThrow(() -> new EntityNotFoundException(FOUR_NOT_FOUND + fourId));
-        if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
-        entity.setName(dto.getName());
-        entity.setThreshold3(dto.getThreshold3());
-        entity.setThreshold4(dto.getThreshold4());
-        entity.setThreshold5(dto.getThreshold5());
+        if (fourPointGrading.isDefault())
+            throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
+        // Will merge actually
+        FourPointGrading updFourPointGrading = fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto));
+        return fourPointGradingDtoTransformer.toDto(updFourPointGrading);
     }
 
     @Transactional
     public void deleteById(@NonNull final Long fourId) {
-        FourPointGrading entity = fourPointGradingRepository.findById(fourId).orElseThrow(() -> new EntityNotFoundException(FOUR_NOT_FOUND + fourId));
+        FourPointGrading entity = fourPointGradingRepository
+                .findById(fourId).orElseThrow(() -> new EntityNotFoundException(FOUR_NOT_FOUND + fourId));
         if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
         entity.setDeleted(true);
     }
@@ -77,25 +77,20 @@ public class FourPointGradingService {
                 .collect(Collectors.toSet());
     }
 
-
-    //----------------------------------------------------Staff table---------------------------------------------------
+    //---------------------------------------------------Staff table/drop-down------------------------------------------
     @Transactional(readOnly = true)
-    public Slice<FourPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return fourPointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(fourPointGradingDtoTransformer::toDto);
+    public Set<FourPointGradingOutDto> findAllByDepartment() {
+        return fourPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(fourPointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
     @Transactional(readOnly = true)
-    public Slice<FourPointGradingOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return fourPointGradingRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(fourPointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<FourPointGradingOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return fourPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(fourPointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<FourPointGradingOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return fourPointGradingRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(fourPointGradingDtoTransformer::toDto);
+    public Set<FourPointGradingOutDto> findAllByDepartmentWithDefault() {
+        Set<FourPointGradingOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 }

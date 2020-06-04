@@ -37,6 +37,7 @@ public class SchemeOutDto {
 
     private GradingOutDto grading;
 
+    // TODO revisit!
     private Object gradingDetails;
 
     private CourseMinOutDto course;

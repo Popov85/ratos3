@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.service.StrategyService;
 import ua.edu.ratos.service.dto.out.StrategyOutDto;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public class StrategyController {
     private final StrategyService strategyService;
 
     @GetMapping(value="/department/strategies-dropdown/all-strategies-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<StrategyOutDto> findAll() {
+    public List<StrategyOutDto> findAll() {
         return strategyService.findAll();
     }
 }

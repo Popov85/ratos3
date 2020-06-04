@@ -19,25 +19,9 @@ public interface FourPointGradingRepository extends JpaRepository<FourPointGradi
     @Query(value = "select g from FourPointGrading g join fetch g.staff where g.isDefault = true order by g.name asc")
     Set<FourPointGrading> findAllDefault();
 
-    //----------------------------------------------INSTRUCTOR table/dropdown-------------------------------------------
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s where s.staffId = ?1")
-    Slice<FourPointGrading> findAllByStaffId(Long staffId, Pageable pageable);
-
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s join g.department d where d.depId = ?1")
-    Slice<FourPointGrading> findAllByDepartmentId(Long depId, Pageable pageable);
-
-    //-------------------------------------------------Dropdown search--------------------------------------------------
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like ?2%")
-    Slice<FourPointGrading> findAllByStaffIdAndNameStarts(Long staffId, String starts, Pageable pageable);
-
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like %?2%")
-    Slice<FourPointGrading> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
-
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like ?2%")
-    Slice<FourPointGrading> findAllByDepartmentIdAndNameStarts(Long depId, String starts, Pageable pageable);
-
-    @Query(value = "select g from FourPointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like %?2%")
-    Slice<FourPointGrading> findAllByDepartmentIdAndNameLettersContains(Long depId, String letters, Pageable pageable);
+    //--------------------------------------------------INSTRUCTOR table/drop-down--------------------------------------
+    @Query(value="select g from FourPointGrading g join fetch g.staff join g.department d where g.isDefault = false and d.depId = ?1")
+    Set<FourPointGrading> findAllByDepartmentId(Long depId);
 
     //-----------------------------------------------------ADMIN--------------------------------------------------------
     @Query(value = "select g from FourPointGrading g join fetch g.staff")

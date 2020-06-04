@@ -36,18 +36,20 @@ public class ModeService {
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final ModeInDto dto) {
-        return modeRepository.save(dtoModeTransformer.toEntity(dto)).getModeId();
+    public ModeOutDto save(@NonNull final ModeInDto dto) {
+        Mode mode = modeRepository.save(dtoModeTransformer.toEntity(dto));
+        return modeDtoTransformer.toDto(mode);
     }
 
     @Transactional
-    public void update(@NonNull final ModeInDto dto) {
+    public ModeOutDto update(@NonNull final ModeInDto dto) {
         Long modeId = dto.getModeId();
         if (modeId == null || modeId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
         Mode mode = modeRepository.findById(modeId)
                 .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND + modeId));
         if (mode.isDefaultMode()) throw new RuntimeException(DEFAULT_MODES_CANNOT_BE_MODIFIED);
-        modeRepository.save(dtoModeTransformer.toEntity(dto));
+        Mode updMode = modeRepository.save(dtoModeTransformer.toEntity(dto));
+        return modeDtoTransformer.toDto(updMode);
     }
 
     @Transactional

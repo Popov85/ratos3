@@ -142,7 +142,8 @@ public class ThemeService {
     @Transactional(readOnly = true)
     public ThemeMapOutDto getQuestionTypeLevelMapByThemeId(@NonNull final Long themeId) {
         Set<Question> questions = questionRepository.findAllForTypeLevelMapByThemeId(themeId);
-        if (questions==null || questions.isEmpty()) throw new IllegalStateException("No questions in this theme!");
+        if (questions==null || questions.isEmpty())
+            throw new IllegalStateException("No questions in this theme!");
         return themeMapDtoTransformer.toDto(themeId, questions);
     }
 

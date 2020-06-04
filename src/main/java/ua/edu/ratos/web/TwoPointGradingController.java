@@ -2,54 +2,48 @@ package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.TwoPointGradingService;
 import ua.edu.ratos.service.dto.in.TwoPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor")
 @AllArgsConstructor
 public class TwoPointGradingController {
 
     private final TwoPointGradingService twoPointGradingService;
 
-    @PostMapping(value = "/two-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody TwoPointGradingInDto dto) {
-        final Long twoId = twoPointGradingService.save(dto);
-        log.debug("Saved TwoPointGrading, twoId = {}", twoId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(twoId).toUri();
-        return ResponseEntity.created(location).build();
+    @PostMapping(value = "/instructor/two-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TwoPointGradingOutDto> save(@Valid @RequestBody TwoPointGradingInDto dto) {
+        TwoPointGradingOutDto twoPointGradingOutDto = twoPointGradingService.save(dto);
+        log.debug("Saved TwoPointGrading, twoId = {}", twoPointGradingOutDto.getTwoId());
+        return ResponseEntity.ok(twoPointGradingOutDto);
     }
 
-    @GetMapping(value = "/two-point-gradings/{twoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/instructor/two-point-gradings/{twoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TwoPointGradingOutDto> findOne(@PathVariable Long twoId) {
-        TwoPointGradingOutDto dto = twoPointGradingService.findOneForEdit(twoId);
-        log.debug("Retrieved TwoPointGrading = {}", dto);
-        return ResponseEntity.ok(dto);
+        TwoPointGradingOutDto twoPointGradingOutDto = twoPointGradingService.findOneForEdit(twoId);
+        log.debug("Retrieved TwoPointGrading = {}", twoPointGradingOutDto);
+        return ResponseEntity.ok(twoPointGradingOutDto);
     }
 
     // Make sure to include twoId to DTO object
-    @PutMapping(value = "/two-point-gradings/{twoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/instructor/two-point-gradings/{twoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long twoId, @Valid @RequestBody TwoPointGradingInDto dto) {
-        twoPointGradingService.update(dto);
+    public ResponseEntity<TwoPointGradingOutDto> update(@PathVariable Long twoId, @Valid @RequestBody TwoPointGradingInDto dto) {
+        TwoPointGradingOutDto twoPointGradingOutDto = twoPointGradingService.update(dto);
         log.debug("Updated TwoPointGrading, twoId = {}", twoId);
+        return ResponseEntity.ok(twoPointGradingOutDto);
     }
 
-    @DeleteMapping("/two-point-gradings/{twoId}")
+    @DeleteMapping("/instructor/two-point-gradings/{twoId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long twoId) {
         twoPointGradingService.deleteById(twoId);
@@ -57,29 +51,16 @@ public class TwoPointGradingController {
     }
 
     //-----------------------------------------------------Default------------------------------------------------------
-    @GetMapping(value = "/two-point-gradings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/department/two-point-gradings/all-default-two-point-gradings", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<TwoPointGradingOutDto> findAllDefault() {
         return twoPointGradingService.findAllDefault();
     }
 
-    //-----------------------------------------------------Staff table--------------------------------------------------
-    @GetMapping(value = "/two-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<TwoPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return twoPointGradingService.findAllByStaffId(pageable);
+    //--------------------------------------------------Staff table-----------------------------------------------------
+    @GetMapping(value="/department/two-point-gradings/all-two-point-gradings-with-default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<TwoPointGradingOutDto> findAllByDepartment() {
+        return twoPointGradingService.findAllByDepartmentWithDefault();
     }
 
-    @GetMapping(value = "/two-point-gradings/by-staff", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<TwoPointGradingOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return twoPointGradingService.findAllByStaffIdAndNameLettersContains(letters, pageable);
-    }
 
-    @GetMapping(value = "/two-point-gradings/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<TwoPointGradingOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return twoPointGradingService.findAllByDepartmentId(pageable);
-    }
-
-    @GetMapping(value = "/two-point-gradings/by-department", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<TwoPointGradingOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return twoPointGradingService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
-    }
 }

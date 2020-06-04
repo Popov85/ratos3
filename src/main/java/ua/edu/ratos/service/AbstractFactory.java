@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Used to implement Spring's factory method; to get instance out of many with given name;
+ */
 public abstract class AbstractFactory<K, V extends NamedService<K>> {
 
     private final Map<K, V> map;
@@ -21,7 +24,6 @@ public abstract class AbstractFactory<K, V extends NamedService<K>> {
      * Factory method for getting an appropriate implementation of a service
      * @param name name of service impl.
      * @return concrete service impl.
-
      */
     public V getInstance(@NonNull final K name) {
         V t = map.get(name);

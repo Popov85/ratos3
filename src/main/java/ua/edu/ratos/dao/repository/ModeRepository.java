@@ -20,7 +20,7 @@ public interface ModeRepository extends JpaRepository<Mode, Long> {
     Set<Mode> findAllDefault();
 
     //-------------------------------------------------------INSTRUCTOR table-------------------------------------------
-    @Query(value="select m from Mode m join fetch m.staff s join fetch s.user join m.department d where d.depId = ?1")
+    @Query(value="select m from Mode m join fetch m.staff s join fetch s.user join m.department d where m.defaultMode = false and d.depId = ?1")
     Set<Mode> findAllByDepartmentId(Long depId);
 
     //-----------------------------------------------------------ADMIN--------------------------------------------------

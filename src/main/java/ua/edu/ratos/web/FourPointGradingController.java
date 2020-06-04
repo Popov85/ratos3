@@ -2,51 +2,45 @@ package ua.edu.ratos.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.service.FourPointGradingService;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping("/instructor")
 @AllArgsConstructor
 public class FourPointGradingController {
 
     private final FourPointGradingService fourPointGradingService;
 
-    @PostMapping(value = "/four-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody FourPointGradingInDto dto) {
-        final Long fourId = fourPointGradingService.save(dto);
-        log.debug("Saved FourPointGrading, fourId = {}", fourId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(fourId).toUri();
-        return ResponseEntity.created(location).build();
+    @PostMapping(value = "/instructor/four-point-gradings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FourPointGradingOutDto> save(@Valid @RequestBody FourPointGradingInDto dto) {
+        FourPointGradingOutDto fourPointGradingOutDto = fourPointGradingService.save(dto);
+        log.debug("Saved FourPointGrading, fourId = {}", fourPointGradingOutDto.getFourId());
+        return ResponseEntity.ok(fourPointGradingOutDto);
     }
 
-    @GetMapping(value = "/four-point-gradings/{fourId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/instructor/four-point-gradings/{fourId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FourPointGradingOutDto> findOne(@PathVariable Long fourId) {
-        FourPointGradingOutDto dto = fourPointGradingService.findOneForEdit(fourId);
-        log.debug("Retrieved FourPointGrading = {}", dto);
-        return ResponseEntity.ok(dto);
+        FourPointGradingOutDto fourPointGradingOutDto = fourPointGradingService.findOneForEdit(fourId);
+        log.debug("Retrieved FourPointGrading = {}", fourPointGradingOutDto);
+        return ResponseEntity.ok(fourPointGradingOutDto);
     }
 
     // Make sure to include fourId to DTO object
-    @PutMapping(value = "/four-point-gradings/{fourId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/instructor/four-point-gradings/{fourId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long fourId, @Valid @RequestBody FourPointGradingInDto dto) {
-        fourPointGradingService.update(dto);
+    public ResponseEntity<FourPointGradingOutDto> update(@PathVariable Long fourId, @Valid @RequestBody FourPointGradingInDto dto) {
+        FourPointGradingOutDto fourPointGradingOutDto = fourPointGradingService.update(dto);
         log.debug("Updated FourPointGrading, fourId = {}", fourId);
+        return ResponseEntity.ok(fourPointGradingOutDto);
     }
 
     @DeleteMapping("/four-point-gradings/{fourId}")
@@ -57,29 +51,15 @@ public class FourPointGradingController {
     }
 
     //-----------------------------------------------------Default------------------------------------------------------
-    @GetMapping(value = "/four-point-gradings/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/department/four-point-gradings/all-default-four-point-gradings", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<FourPointGradingOutDto> findAllDefault() {
         return fourPointGradingService.findAllDefault();
     }
 
-    //-------------------------------------------------Staff table------------------------------------------------------
-    @GetMapping(value = "/four-point-gradings/by-staff", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<FourPointGradingOutDto> findAllByStaffId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return fourPointGradingService.findAllByStaffId(pageable);
+    //--------------------------------------------------Staff table-----------------------------------------------------
+    @GetMapping(value="/department/four-point-gradings/all-four-point-gradings-with-default", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<FourPointGradingOutDto> findAllByDepartment() {
+        return fourPointGradingService.findAllByDepartmentWithDefault();
     }
 
-    @GetMapping(value = "/four-point-gradings/by-staff", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<FourPointGradingOutDto> findAllByStaffIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return fourPointGradingService.findAllByStaffIdAndNameLettersContains(letters, pageable);
-    }
-
-    @GetMapping(value = "/four-point-gradings/by-department", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<FourPointGradingOutDto> findAllByDepartmentId(@PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return fourPointGradingService.findAllByDepartmentId(pageable);
-    }
-
-    @GetMapping(value = "/four-point-gradings/by-department", params = "letters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<FourPointGradingOutDto> findAllByDepartmentIdAndNameLettersContains(@RequestParam String letters, @PageableDefault(sort = {"name"}, value = 50) Pageable pageable) {
-        return fourPointGradingService.findAllByDepartmentIdAndNameLettersContains(letters, pageable);
-    }
 }

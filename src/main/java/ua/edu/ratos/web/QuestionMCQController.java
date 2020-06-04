@@ -53,9 +53,9 @@ public class QuestionMCQController {
     // For bulk question processing via *.rtp-file; as for now only applicable to MCQ
     @PostMapping(value = "/instructor/questions-mcq-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionsParsingResultOutDto> saveMany(@RequestParam("file") MultipartFile multipartFile,
-                                                @RequestParam Long themeId, @RequestParam boolean confirmed) throws IOException {
+                                                @RequestParam Long themeId, @RequestParam boolean confirmed) {
         QuestionsParsingResultOutDto parsingResultOutDto =
-                questionsFileParserService.parseAndSave(multipartFile, new FileInDto(themeId, 1L, confirmed));
+                questionsFileParserService.parseAndSave(multipartFile, themeId,  confirmed);
         return ResponseEntity.ok(parsingResultOutDto);
     }
 }

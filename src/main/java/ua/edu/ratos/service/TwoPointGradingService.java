@@ -2,8 +2,6 @@ package ua.edu.ratos.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
@@ -36,19 +34,23 @@ public class TwoPointGradingService {
 
     //-------------------------------------------------CRUD-------------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final TwoPointGradingInDto dto) {
-        return twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto)).getTwoId();
+    public TwoPointGradingOutDto save(@NonNull final TwoPointGradingInDto dto) {
+        TwoPointGrading twoPointGrading = twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto));
+        return twoPointGradingDtoTransformer.toDto(twoPointGrading);
     }
 
     @Transactional
-    public void update(@NonNull final TwoPointGradingInDto dto) {
+    public TwoPointGradingOutDto update(@NonNull final TwoPointGradingInDto dto) {
         Long twoId = dto.getTwoId();
-        if (twoId == null || twoId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
-        TwoPointGrading entity = twoPointGradingRepository.findById(twoId)
+        if (twoId == null || twoId == 0)
+            throw new RuntimeException(ID_IS_NOT_INCLUDED + twoId);
+        TwoPointGrading twoPointGrading = twoPointGradingRepository.findById(twoId)
                 .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId));
-        if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
-        entity.setName(dto.getName());
-        entity.setThreshold(dto.getThreshold());
+        if (twoPointGrading.isDefault())
+            throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
+        // Will merge actually
+        TwoPointGrading updTwoPointGrading = twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto));
+        return twoPointGradingDtoTransformer.toDto(updTwoPointGrading);
     }
 
     @Transactional
@@ -59,7 +61,7 @@ public class TwoPointGradingService {
         entity.setDeleted(true);
     }
 
-    //-------------------------------------------------ONE--------------------------------------------------------------
+    //--------------------------------------------------------ONE-------------------------------------------------------
     @Transactional(readOnly = true)
     public TwoPointGradingOutDto findOneForEdit(@NonNull final Long twoId) {
         return twoPointGradingDtoTransformer.toDto(twoPointGradingRepository.findOneForEdit(twoId)
@@ -75,24 +77,20 @@ public class TwoPointGradingService {
                 .collect(Collectors.toSet());
     }
 
-    //-------------------------------------------------INSTRUCTOR search------------------------------------------------
+    //---------------------------------------------------Staff table/drop-down------------------------------------------
     @Transactional(readOnly = true)
-    public Slice<TwoPointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return twoPointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(twoPointGradingDtoTransformer::toDto);
+    public Set<TwoPointGradingOutDto> findAllByDepartment() {
+        return twoPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(twoPointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
     @Transactional(readOnly = true)
-    public Slice<TwoPointGradingOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return twoPointGradingRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(twoPointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<TwoPointGradingOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return twoPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(twoPointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<TwoPointGradingOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return twoPointGradingRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(twoPointGradingDtoTransformer::toDto);
+    public Set<TwoPointGradingOutDto> findAllByDepartmentWithDefault() {
+        Set<TwoPointGradingOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 }

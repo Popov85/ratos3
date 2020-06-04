@@ -7,7 +7,8 @@ import ua.edu.ratos.dao.repository.AccessRepository;
 import ua.edu.ratos.service.dto.out.AccessOutDto;
 import ua.edu.ratos.service.transformer.entity_to_dto.AccessDtoTransformer;
 
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,12 +19,12 @@ public class AccessService {
 
     private final AccessDtoTransformer accessDtoTransformer;
 
-
     @Transactional(readOnly = true)
-    public Set<AccessOutDto> findAllAccessesForDropDown() {
+    public List<AccessOutDto> findAllAccessesForDropDown() {
         return accessRepository.findAll()
                 .stream()
                 .map(accessDtoTransformer::toDto)
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(AccessOutDto::getAccessId))
+                .collect(Collectors.toList());
     }
 }

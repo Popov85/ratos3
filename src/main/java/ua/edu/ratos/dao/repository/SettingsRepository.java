@@ -21,7 +21,7 @@ public interface SettingsRepository extends JpaRepository<Settings, Long> {
 
     //---------------------------------------------------INSTRUCTOR table/drop-down-------------------------------------
 
-    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join s.department d where d.depId = ?1")
+    @Query(value="select s from Settings s join fetch s.staff st join fetch st.user join s.department d where s.isDefault = false and d.depId = ?1")
     Set<Settings> findAllByDepartmentId(Long depId);
 
     //------------------------------------------------------------ADMIN-------------------------------------------------

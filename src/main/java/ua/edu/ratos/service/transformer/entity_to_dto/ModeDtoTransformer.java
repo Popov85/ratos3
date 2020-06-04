@@ -1,22 +1,18 @@
 package ua.edu.ratos.service.transformer.entity_to_dto;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class ModeDtoTransformer {
 
-    private StaffMinDtoTransformer staffMinDtoTransformer;
-
-    @Autowired
-    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
-        this.staffMinDtoTransformer = staffMinDtoTransformer;
-    }
+    private final StaffMinDtoTransformer staffMinDtoTransformer;
 
     public ModeOutDto toDto(@NonNull final Mode entity) {
         return new ModeOutDto()

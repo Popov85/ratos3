@@ -23,26 +23,26 @@ public class SettingsController {
     private final SettingsService settingsService;
 
     @PostMapping(value = "/instructor/settings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Validated @RequestBody SettingsInDto dto) {
-        final Long setId = settingsService.save(dto);
-        log.debug("Saved Settings, setId = {}", setId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(setId).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<SettingsOutDto> save(@Validated @RequestBody SettingsInDto dto) {
+        SettingsOutDto settingsOutDto = settingsService.save(dto);
+        log.debug("Saved Settings, setId = {}", settingsOutDto.getSetId());
+        return ResponseEntity.ok(settingsOutDto);
     }
 
     @GetMapping(value = "/instructor/settings/{setId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SettingsOutDto> findOne(@PathVariable Long setId) {
-        SettingsOutDto dto = settingsService.findOneForEdit(setId);
-        log.debug("Retrieved Settings = {}", dto);
-        return ResponseEntity.ok(dto);
+        SettingsOutDto settingsOutDto = settingsService.findOneForEdit(setId);
+        log.debug("Retrieved Settings = {}", settingsOutDto);
+        return ResponseEntity.ok(settingsOutDto);
     }
 
     // Make sure to include setId to DTO object
     @PutMapping(value = "/instructor/settings/{setId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long setId, @Validated @RequestBody SettingsInDto dto) {
-        settingsService.update(dto);
+    public ResponseEntity<SettingsOutDto> update(@PathVariable Long setId, @Validated @RequestBody SettingsInDto dto) {
+        SettingsOutDto settingsOutDto = settingsService.update(dto);
         log.debug("Updated Settings, setId = {}", setId);
+        return ResponseEntity.ok(settingsOutDto);
     }
 
     @DeleteMapping("/instructor/settings/{setId}")

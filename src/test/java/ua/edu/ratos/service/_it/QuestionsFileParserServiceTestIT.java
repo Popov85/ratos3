@@ -12,7 +12,6 @@ import org.springframework.util.ResourceUtils;
 import ua.edu.ratos.ActiveProfile;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.QuestionsFileParserService;
-import ua.edu.ratos.service.dto.in.FileInDto;
 import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 
 import javax.persistence.EntityManager;
@@ -34,8 +33,6 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 @SpringBootTest
 public class QuestionsFileParserServiceTestIT {
 
-    private static final String JSON_TXT = "classpath:json/file_txt_in_dto_new.json";
-    private static final String JSON_RTP = "classpath:json/file_rtp_in_dto_new.json";
     private static final String TYPICAL_CASE_TXT = "classpath:files/txt/typical_case.txt";
     private static final String TYPICAL_CASE_RTP = "classpath:files/rtp/typical_case.rtp";
     private static final String WIN1251_CASE = "classpath:files/txt/win1251_case.txt";
@@ -47,22 +44,17 @@ public class QuestionsFileParserServiceTestIT {
     private EntityManager em;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private QuestionsFileParserService questionsFileParserService;
 
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/questions_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void parseAndSaveTXTFileNoIssuesTest() throws Exception {
-        File json = ResourceUtils.getFile(JSON_TXT);
-        FileInDto dto = objectMapper.readValue(json, FileInDto.class);
         File file = ResourceUtils.getFile(TYPICAL_CASE_TXT);
         final byte[] bytes = Files.readAllBytes(file.toPath());
         MockMultipartFile mock = new MockMultipartFile("mock", "questions.txt", "text/plain", bytes);
         // Actual test begins
-        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, dto);
+        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, 1L, false);
         assertThat("Result of saving object is not as expected", result, allOf(
                     hasProperty("questions", equalTo(10)),
                     hasProperty("issues", equalTo(0)),
@@ -80,13 +72,11 @@ public class QuestionsFileParserServiceTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/questions_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void parseAndSaveRTPFileNoIssuesTest() throws Exception {
-        File json = ResourceUtils.getFile(JSON_RTP);
-        FileInDto dto = objectMapper.readValue(json, FileInDto.class);
         File file = ResourceUtils.getFile(TYPICAL_CASE_RTP);
         final byte[] bytes = Files.readAllBytes(file.toPath());
         MockMultipartFile mock = new MockMultipartFile("mock", "questions.rtp", "text/plain", bytes);
         // Actual test begins
-        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, dto);
+        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, 1L, true);
         assertThat("Result of saving object is not as expected", result, allOf(
                     hasProperty("questions", equalTo(10)),
                     hasProperty("issues", equalTo(0)),
@@ -104,13 +94,11 @@ public class QuestionsFileParserServiceTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/questions_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void parseAndSaveTXT1251EncodedFileNoIssuesTest() throws Exception {
-        File json = ResourceUtils.getFile(JSON_TXT);
-        FileInDto dto = objectMapper.readValue(json, FileInDto.class);
         File file = ResourceUtils.getFile(WIN1251_CASE);
         final byte[] bytes = Files.readAllBytes(file.toPath());
         MockMultipartFile mock = new MockMultipartFile("mock", "questions_windows_1251.txt", "text/plain", bytes);
         // Actual test begins
-        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, dto);
+        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, 1L, false);
         assertThat("Result of saving object is not as expected", result, allOf(
                 hasProperty("questions", equalTo(10)),
                 hasProperty("issues", equalTo(0)),
@@ -128,13 +116,11 @@ public class QuestionsFileParserServiceTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/questions_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void parseAndSaveTXTFileWithIssuesNotConfirmedTest() throws Exception {
-        File json = ResourceUtils.getFile(JSON_TXT);
-        FileInDto dto = objectMapper.readValue(json, FileInDto.class);
         File file = ResourceUtils.getFile(WITH_ISSUES_CASE);
         final byte[] bytes = Files.readAllBytes(file.toPath());
         MockMultipartFile mock = new MockMultipartFile("mock", "questions.txt", "text/plain", bytes);
         // Actual test begins
-        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, dto);
+        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, 1L, false);
         assertThat("Result of saving object is not as expected", result, allOf(
                 hasProperty("questions", equalTo(3)),
                 hasProperty("issues", equalTo(5)),
@@ -152,13 +138,11 @@ public class QuestionsFileParserServiceTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/questions_test_data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_" + ActiveProfile.NOW + ".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void parseAndSaveRTPFileWithIssuesConfirmedTest() throws Exception {
-        File json = ResourceUtils.getFile(JSON_RTP);
-        FileInDto dto = objectMapper.readValue(json, FileInDto.class);
         File file = ResourceUtils.getFile(WITH_ISSUES_CASE);
         final byte[] bytes = Files.readAllBytes(file.toPath());
         MockMultipartFile mock = new MockMultipartFile("mock", "questions.txt", "text/plain", bytes);
         // Actual test begins
-        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, dto);
+        final QuestionsParsingResultOutDto result = questionsFileParserService.parseAndSave(mock, 1L, true);
         assertThat("Result of saving object is not as expected", result, allOf(
                 hasProperty("questions", equalTo(3)),
                 hasProperty("issues", equalTo(5)),

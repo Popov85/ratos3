@@ -23,26 +23,26 @@ public class ModeController {
     private final ModeService modeService;
 
     @PostMapping(value = "/instructor/modes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@Valid @RequestBody ModeInDto dto) {
-        final Long modeId = modeService.save(dto);
-        log.debug("Saved Mode, modeId = {}", modeId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(modeId).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<ModeOutDto> save(@Valid @RequestBody ModeInDto dto) {
+        ModeOutDto modeOutDto = modeService.save(dto);
+        log.debug("Saved Mode, modeId = {}", modeOutDto);
+        return ResponseEntity.ok(modeOutDto);
     }
 
     @GetMapping(value = "/instructor/modes/{modeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ModeOutDto> findOne(@PathVariable Long modeId) {
-        ModeOutDto dto = modeService.findOneForEdit(modeId);
-        log.debug("Retrieved Mode = {}", dto);
-        return ResponseEntity.ok(dto);
+        ModeOutDto modeOutDto = modeService.findOneForEdit(modeId);
+        log.debug("Retrieved Mode = {}", modeOutDto);
+        return ResponseEntity.ok(modeOutDto);
     }
 
     // Make sure to include modeId to DTO object
     @PutMapping(value = "/instructor/modes/{modeId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void update(@PathVariable Long modeId, @Valid @RequestBody ModeInDto dto) {
-        modeService.update(dto);
+    public ResponseEntity<ModeOutDto> update(@PathVariable Long modeId, @Valid @RequestBody ModeInDto dto) {
+        ModeOutDto modeOutDto = modeService.update(dto);
         log.debug("Updated Mode, modeId = {}", modeId);
+        return ResponseEntity.ok(modeOutDto);
     }
 
     @DeleteMapping("/instructor/modes/{modeId}")

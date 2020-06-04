@@ -7,11 +7,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ratos.service.SchemeService;
+import ua.edu.ratos.service.SchemeThemeService;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
+import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.in.patch.StringInDto;
 import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
+import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
 
 import javax.validation.Valid;
 import java.util.Set;
@@ -23,6 +26,8 @@ import java.util.Set;
 public class SchemeController {
 
     private final SchemeService schemeService;
+
+    private final SchemeThemeService schemeThemeService;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @PostMapping(value = "/instructor/schemes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -117,15 +122,15 @@ public class SchemeController {
     public void removeGroup(@PathVariable Long schemeId, @PathVariable Long groupId) {
         schemeService.removeGroup(schemeId, groupId);
         log.debug("Removed Group from Scheme, schemeId = {}, groupId = {}", schemeId, groupId);
-    }
+    }*/
 
     // -------------------------------------------------------THEMES----------------------------------------------------
     @PostMapping(value = "/instructor/schemes/{schemeId}/themes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTheme(@PathVariable Long schemeId, @Valid @RequestBody SchemeThemeInDto dto) {
         final Long schemeThemeId = schemeThemeService.save(schemeId,  dto);
         log.debug("Added Theme to Scheme, created schemeThemeId = {} ", schemeThemeId);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(schemeThemeId).toUri();
-        return ResponseEntity.created(location).build();
+        //URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(schemeThemeId).toUri();
+        return ResponseEntity.ok("OK");
     }
 
     @GetMapping(value = "/instructor/schemes/{schemeId}/themes{schemeThemeId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -135,14 +140,14 @@ public class SchemeController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/instructor/schemes/{schemeId}/themes/{schemeThemeId}")
+    /*@DeleteMapping("/instructor/schemes/{schemeId}/themes/{schemeThemeId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeTheme(@PathVariable Long schemeId, @PathVariable Long schemeThemeId) {
         schemeService.removeTheme(schemeId, schemeThemeId);
         log.debug("Deleted schemeThemeId = {}", schemeThemeId);
-    }
+    }*/
 
-    @PutMapping("/instructor/schemes/{schemeId}/themes/re-order")
+    /*@PutMapping("/instructor/schemes/{schemeId}/themes/re-order")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void reOrderThemes(@PathVariable Long schemeId, @RequestBody List<Long> schemeThemeIds) {
         schemeService.reOrderThemes(schemeId, schemeThemeIds);

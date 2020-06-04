@@ -3,19 +3,18 @@ package ua.edu.ratos.service.session;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.GradingRepository;
 import ua.edu.ratos.service.domain.GradingDomain;
-import ua.edu.ratos.service.dto.out.AccessOutDto;
 import ua.edu.ratos.service.dto.out.GradingOutDto;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import ua.edu.ratos.service.session.grade.Grader;
 import ua.edu.ratos.service.session.grade.GradingFactory;
 import ua.edu.ratos.service.transformer.entity_to_dto.GradingDtoTransformer;
 
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,11 +42,12 @@ public class GradingService {
     }
 
     @Transactional(readOnly = true)
-    public Set<GradingOutDto> findAllGradingsForDropDown() {
+    public List<GradingOutDto> findAllGradingsForDropDown() {
         return gradingRepository.findAll()
                 .stream()
                 .map(gradingDtoTransformer::toDto)
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(GradingOutDto::getGradingId))
+                .collect(Collectors.toList());
     }
 
 }

@@ -89,6 +89,7 @@ public class ThemeController {
 
     //---------------------------------------------Scheme creating support with levels----------------------------------
     /**
+     * Peek functionality;
      * Use this endpoint for scheme creating support to obtain all existing types and levels in this theme.
      * It works rather fast (100-500ms) with questions per theme = 200-500 pieces,
      * but requires to fetch all questions from theme for calculations.

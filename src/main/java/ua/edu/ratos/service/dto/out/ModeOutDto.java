@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.out;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,8 +25,6 @@ public class ModeOutDto {
 
     private boolean rightAnswer;
 
-    private boolean resultDetails;
-
     private boolean preservable;
 
     private boolean reportable;
@@ -35,4 +34,9 @@ public class ModeOutDto {
     private boolean isDefault;
 
     private StaffMinOutDto staff;
+
+    @JsonProperty("isDefault")
+    public boolean isDefault() {
+        return isDefault;
+    }
 }

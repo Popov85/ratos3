@@ -39,7 +39,7 @@ public class ModeRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/mode_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllBDepartmentIdTest() {
-        assertThat("Set of Mode by department 1L is not of size = 5", modeRepository.findAllByDepartmentId(1L), hasSize(5));
+        assertThat("Set of Mode by department 1L is not of size = 2", modeRepository.findAllByDepartmentId(1L), hasSize(2));
     }
 
     @Test(timeout = 5000)

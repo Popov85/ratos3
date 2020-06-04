@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.out.grading;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,5 +23,12 @@ public class FreePointGradingOutDto {
 
     private short maxValue;
 
+    private boolean isDefault;
+
     private StaffMinOutDto staff;
+
+    @JsonProperty("isDefault")
+    public boolean isDefault() {
+        return isDefault;
+    }
 }

@@ -19,27 +19,9 @@ public interface FreePointGradingRepository extends JpaRepository<FreePointGradi
     @Query(value="select g from FreePointGrading g join fetch g.staff where g.isDefault = true order by g.name asc")
     Set<FreePointGrading> findAllDefault();
 
-    //-----------------------------------------------------INSTRUCTOR table---------------------------------------------
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s where s.staffId = ?1")
-    Slice<FreePointGrading> findAllByStaffId(Long staffId, Pageable pageable);
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1")
-    Slice<FreePointGrading> findAllByDepartmentId(Long depId, Pageable pageable);
-
-    //---------------------------------------------------------Search---------------------------------------------------
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like ?2%")
-    Slice<FreePointGrading> findAllByStaffIdAndNameStarts(Long staffId, String starts, Pageable pageable);
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like %?2%")
-    Slice<FreePointGrading> findAllByStaffIdAndNameLettersContains(Long staffId, String contains, Pageable pageable);
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like ?2%")
-    Slice<FreePointGrading> findAllByDepartmentIdAndNameStarts(Long depId, String starts, Pageable pageable);
-
-    @Query(value="select g from FreePointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like %?2%")
-    Slice<FreePointGrading> findAllByDepartmentIdAndNameLettersContains(Long depId, String letters, Pageable pageable);
+    //--------------------------------------------------INSTRUCTOR table/drop-down--------------------------------------
+    @Query(value="select g from FreePointGrading g join fetch g.staff join g.department d where g.isDefault = false and d.depId = ?1")
+    Set<FreePointGrading> findAllByDepartmentId(Long depId);
 
     //----------------------------------------------------------ADMIN---------------------------------------------------
 

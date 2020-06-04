@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -51,40 +50,8 @@ public class FourPointGradingRepositoryTestIT {
     @Test(timeout = 5000)
     @Sql(scripts = {"/scripts/init.sql", "/scripts/four_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdTest() {
-        assertThat("Slice of FourPointGrading is not of size = 4",
-                fourPointGradingRepository.findAllByStaffId(4L, PageRequest.of(0, 50)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/four_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
-        assertThat("Slice of FourPointGrading is not of size = 4",
-                fourPointGradingRepository.findAllByDepartmentId(2L, PageRequest.of(0, 50)).getContent(), hasSize(4));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/four_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByStaffIdAndNameLettersContainsTest() {
-        assertThat("Slice of FourPointGrading is not of size = 2",
-                fourPointGradingRepository.findAllByStaffIdAndNameLettersContains(1L, "year", PageRequest.of(0, 50)).getContent(), hasSize(2));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/four_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameLettersContainsTest() {
-        assertThat("Slice of FourPointGrading is not of size = 2",
-                fourPointGradingRepository.findAllByDepartmentIdAndNameLettersContains(2L, "Strict", PageRequest.of(0, 50)).getContent(), hasSize(2));
-    }
-
-    @Test(timeout = 5000)
-    @Sql(scripts = {"/scripts/init.sql", "/scripts/four_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void findAllByDepartmentIdAndNameLettersContainsNegativeTest() {
-        assertThat("Slice of FourPointGrading is not empty",
-                fourPointGradingRepository.findAllByDepartmentIdAndNameLettersContains(2L, "xyz", PageRequest.of(0, 50)).getContent(), empty());
+        assertThat("Set of FourPointGrading is not of size = 4",
+                fourPointGradingRepository.findAllByDepartmentId(2L), hasSize(4));
     }
 }

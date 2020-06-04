@@ -140,7 +140,6 @@ public class SchemeService {
     }
 
     //------------------------------------------------Drop-down (results)-----------------------------------------------
-
     @Transactional(readOnly = true)
     public Set<SchemeMinOutDto> findAllForDropdownByCourseId(@NonNull final Long courseId) {
         return schemeRepository.findAllForDropDownByCourseId(courseId)
@@ -148,7 +147,6 @@ public class SchemeService {
                 .map(schemeMinDtoTransformer::toDto)
                 .collect(Collectors.toSet());
     }
-
 
     @Transactional(readOnly = true)
     public Set<SchemeMinOutDto> findAllForDropdownByDepartmentId(@NonNull final Long depId) {

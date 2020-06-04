@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ratos.service.AccessService;
 import ua.edu.ratos.service.dto.out.AccessOutDto;
 
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,7 +19,7 @@ public class AccessController {
 
     // For dep .staff. to get a set of available accesses
     @GetMapping(value = "/department/accesses-dropdown/all-accesses-by-ratos", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<AccessOutDto> findAllAccessesForDropDown() {
+    public List<AccessOutDto> findAllAccessesForDropDown() {
         return accessService.findAllAccessesForDropDown();
     }
 }

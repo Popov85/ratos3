@@ -19,19 +19,9 @@ public interface TwoPointGradingRepository extends JpaRepository<TwoPointGrading
     @Query(value="select g from TwoPointGrading g join fetch g.staff where g.isDefault = true order by g.name asc")
     Set<TwoPointGrading> findAllDefault();
 
-    //----------------------------------------------INSTRUCTOR table & dropdown-----------------------------------------
-    @Query(value="select g from TwoPointGrading g join fetch g.staff s where s.staffId = ?1")
-    Slice<TwoPointGrading> findAllByStaffId(Long staffId, Pageable pageable);
-
-    @Query(value="select g from TwoPointGrading g join fetch g.staff s join g.department d where d.depId = ?1")
-    Slice<TwoPointGrading> findAllByDepartmentId(Long depId, Pageable pageable);
-
-    //--------------------------------------------------Search in table-------------------------------------------------
-    @Query(value="select g from TwoPointGrading g join fetch g.staff s where s.staffId = ?1 and g.name like %?2%")
-    Slice<TwoPointGrading> findAllByStaffIdAndNameLettersContains(Long staffId, String letters, Pageable pageable);
-
-    @Query(value="select g from TwoPointGrading g join fetch g.staff s join g.department d where d.depId = ?1 and g.name like %?2%")
-    Slice<TwoPointGrading> findAllByDepartmentIdAndNameLettersContains(Long depId, String letters, Pageable pageable);
+    //--------------------------------------------------INSTRUCTOR table/drop-down--------------------------------------
+    @Query(value="select g from TwoPointGrading g join fetch g.staff join g.department d where g.isDefault = false and d.depId = ?1")
+    Set<TwoPointGrading> findAllByDepartmentId(Long depId);
 
     //----------------------------------------------------------ADMIN---------------------------------------------------
     @Query(value="select g from TwoPointGrading g join fetch g.staff")

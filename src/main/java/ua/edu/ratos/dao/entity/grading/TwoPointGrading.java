@@ -34,7 +34,6 @@ public class TwoPointGrading implements Serializable {
     @Column(name = "threshold")
     private byte threshold;
 
-
     @Column(name="is_default")
     private boolean isDefault;
 

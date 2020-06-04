@@ -2,8 +2,6 @@ package ua.edu.ratos.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.grading.FreePointGrading;
@@ -36,21 +34,23 @@ public class FreePointGradingService {
 
     //------------------------------------------------------CRUD--------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final FreePointGradingInDto dto) {
-        return freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto)).getFreeId();
+    public FreePointGradingOutDto save(@NonNull final FreePointGradingInDto dto) {
+        FreePointGrading freePointGrading = freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto));
+        return freePointGradingDtoTransformer.toDto(freePointGrading);
     }
 
     @Transactional
-    public void update(@NonNull final FreePointGradingInDto dto) {
+    public FreePointGradingOutDto update(@NonNull final FreePointGradingInDto dto) {
         Long freeId = dto.getFreeId();
-        if (freeId == null || freeId == 0) throw new RuntimeException(ID_IS_NOT_INCLUDED);
-        FreePointGrading entity = freePointGradingRepository.findById(freeId)
+        if (freeId == null || freeId == 0)
+            throw new RuntimeException(ID_IS_NOT_INCLUDED + freeId);
+        FreePointGrading freePointGrading = freePointGradingRepository.findById(freeId)
                 .orElseThrow(() -> new EntityNotFoundException(FREE_NOT_FOUND + freeId));
-        if (entity.isDefault()) throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED);
-        entity.setName(dto.getName());
-        entity.setMinValue(dto.getMinValue());
-        entity.setPassValue(dto.getPassValue());
-        entity.setMaxValue(dto.getMaxValue());
+        if (freePointGrading.isDefault())
+            throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
+        // Will merge actually
+        FreePointGrading updFreePointGrading = freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto));
+        return freePointGradingDtoTransformer.toDto(updFreePointGrading);
     }
 
     @Transactional
@@ -76,24 +76,20 @@ public class FreePointGradingService {
                 .collect(Collectors.toSet());
     }
 
-    //-----------------------------------------------------Staff table--------------------------------------------------
+    //---------------------------------------------------Staff table/drop-down------------------------------------------
     @Transactional(readOnly = true)
-    public Slice<FreePointGradingOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return freePointGradingRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(freePointGradingDtoTransformer::toDto);
+    public Set<FreePointGradingOutDto> findAllByDepartment() {
+        return freePointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
+                .stream()
+                .map(freePointGradingDtoTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
+    //-----------------------------------------------Staff table/drop-down+default--------------------------------------
     @Transactional(readOnly = true)
-    public Slice<FreePointGradingOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return freePointGradingRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(freePointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<FreePointGradingOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return freePointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(freePointGradingDtoTransformer::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<FreePointGradingOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return freePointGradingRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(freePointGradingDtoTransformer::toDto);
+    public Set<FreePointGradingOutDto> findAllByDepartmentWithDefault() {
+        Set<FreePointGradingOutDto> result = findAllByDepartment();
+        result.addAll(findAllDefault());
+        return result;
     }
 }

@@ -36,14 +36,15 @@ public class OptionsService {
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final OptionsInDto dto) {
-        return optionsRepository.save(dtoOptionsTransformer.toEntity(dto)).getOptId();
+    public OptionsOutDto save(@NonNull final OptionsInDto dto) {
+        Options options = optionsRepository.save(dtoOptionsTransformer.toEntity(dto));
+        return optionsDtoTransformer.toDto(options);
     }
 
     // Not the "redundant save" anti-pattern!!
     // Exactly 2 queries: select, update + dynamic update(!)
     @Transactional
-    public void update(@NonNull final OptionsInDto dto) {
+    public OptionsOutDto update(@NonNull final OptionsInDto dto) {
         Long optId = dto.getOptId();
         if (optId == null || optId == 0)
             throw new RuntimeException(ID_IS_NOT_INCLUDED + optId);
@@ -52,7 +53,8 @@ public class OptionsService {
         if (options.isDefault())
             throw new RuntimeException(DEFAULT_OPTIONS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        optionsRepository.save(dtoOptionsTransformer.toEntity(dto));
+        Options updOptions = optionsRepository.save(dtoOptionsTransformer.toEntity(dto));
+        return optionsDtoTransformer.toDto(updOptions);
     }
 
     @Transactional

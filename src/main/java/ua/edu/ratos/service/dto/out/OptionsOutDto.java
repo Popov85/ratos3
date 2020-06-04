@@ -1,5 +1,6 @@
 package ua.edu.ratos.service.dto.out;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -37,5 +38,12 @@ public class OptionsOutDto {
 
     private boolean displayResultOnQuestions;
 
+    private boolean isDefault;
+
     private StaffMinOutDto staff;
+
+    @JsonProperty("isDefault")
+    public boolean isDefault() {
+        return isDefault;
+    }
 }

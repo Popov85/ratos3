@@ -22,6 +22,7 @@ import ua.edu.ratos.service.utils.CharsetDetector;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,33 +50,42 @@ public class QuestionsFileParserService {
     /**
      * Parses multipart file and saves all the questions to DB
      * @param multipartFile file with questions
-     * @param dto metadata of the file
+     * @param themeId theme all the questions belong to
+     * @param confirmed is the operation confirmed by the user?
      * @return result on parsing and saving
      */
     @Transactional
-    public QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile, @NonNull final FileInDto dto) throws IOException {
+    public QuestionsParsingResultOutDto parseAndSave(@NonNull final MultipartFile multipartFile,
+                                                     @NonNull final Long themeId,
+                                                     boolean confirmed) {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         QuestionsFileParser parser = parserFactory.getParser(extension);
-        final String encoding = charsetDetector.detectEncoding(multipartFile.getInputStream());
-        final QuestionsParsingResult parsingResult = parser.parseStream(multipartFile.getInputStream(), encoding);
-        if (dto.isConfirmed()) {
-            save(parsingResult.getQuestions(), dto);
-            log.debug("Saved questions into the DB after confirmation, {}", parsingResult.getQuestions().size());
-            return transformer.toDto(parsingResult, true);
-        }
-        if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
-            save(parsingResult.getQuestions(), dto);
-            log.debug("Saved questions into the DB with no major issues, {}", parsingResult.getQuestions().size());
-            return transformer.toDto(parsingResult, true);
-        } else {
-            return transformer.toDto(parsingResult, false);
+        try (InputStream is = multipartFile.getInputStream();
+             InputStream is2 = multipartFile.getInputStream()) {
+            final String encoding = charsetDetector.detectEncoding(is);
+            final QuestionsParsingResult parsingResult = parser.parseStream(is2, encoding);
+            int quantity = parsingResult.getQuestions().size();
+            if (confirmed) {
+                save(parsingResult.getQuestions(), themeId);
+                log.debug("Saved questions into the DB after confirmation, {}", quantity);
+                return transformer.toDto(parsingResult, true);
+            }
+            if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
+                save(parsingResult.getQuestions(), themeId);
+                log.debug("Saved questions into the DB with no major issues, {}", quantity);
+                return transformer.toDto(parsingResult, true);
+            } else {
+                return transformer.toDto(parsingResult, false);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to perform parsing and saving!", e);
         }
     }
 
-    private void save(@NonNull final List<QuestionMCQ> parsedQuestions, final @NonNull FileInDto dto) {
+    private void save(@NonNull final List<QuestionMCQ> parsedQuestions, @NonNull final Long themeId) {
         // First, Enrich question with Theme and Type, secondly for each non-null Help, enrich it with Staff
         QuestionType type = em.getReference(QuestionType.class, DEFAULT_QUESTION_TYPE_ID);
-        Theme theme = em.getReference(Theme.class, dto.getThemeId());
+        Theme theme = em.getReference(Theme.class, themeId);
         Staff staff = em.getReference(Staff.class, securityUtils.getAuthStaffId());
         final List<Question> questions = new ArrayList<>();
         parsedQuestions.forEach(q->{

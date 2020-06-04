@@ -19,7 +19,7 @@ public interface OptionsRepository extends JpaRepository<Options, Long> {
     Set<Options> findAllDefault();
 
     //--------------------------------------------------INSTRUCTOR table/drop-down--------------------------------------
-    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join o.department d where d.depId = ?1")
+    @Query(value="select o from Options o join fetch o.staff st join fetch st.user join o.department d where o.isDefault = false and d.depId = ?1")
     Set<Options> findAllByDepartmentId(Long depId);
 
     //------------------------------------------------------------ADMIN-------------------------------------------------

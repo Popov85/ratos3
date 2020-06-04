@@ -35,14 +35,15 @@ public class SettingsService {
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
     @Transactional
-    public Long save(@NonNull final SettingsInDto dto) {
-        return settingsRepository.save(dtoSettingsTransformer.toEntity(dto)).getSetId();
+    public SettingsOutDto save(@NonNull final SettingsInDto dto) {
+        Settings settings = settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
+        return settingsDtoTransformer.toDto(settings);
     }
 
     // Not the "redundant save" anti-pattern!!
     // Exactly 2 queries: select, update + dynamic update(!)
     @Transactional
-    public void update(@NonNull final SettingsInDto dto) {
+    public SettingsOutDto update(@NonNull final SettingsInDto dto) {
         Long setId = dto.getSetId();
         if (setId == null || setId == 0)
             throw new RuntimeException(ID_IS_NOT_INCLUDED + setId);
@@ -51,7 +52,8 @@ public class SettingsService {
         if (settings.isDefault())
             throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
+        Settings updSave = settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
+        return settingsDtoTransformer.toDto(updSave);
     }
 
     @Transactional

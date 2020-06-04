@@ -380,7 +380,9 @@ module.exports="/logo-white.1f6bc709.png";
 
 },{}],"Sr7R":[function(require,module,exports) {
 
+},{}],"FTtd":[function(require,module,exports) {
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.dev=void 0;var e=!1;exports.dev=e;
 },{}],"Focm":[function(require,module,exports) {
-"use strict";var e=u(require("react")),r=u(require("react-dom")),t=u(require("./src/common/Welcome"));function u(e){return e&&e.__esModule?e:{default:e}}require("bootstrap/dist/css/bootstrap.min.css"),require("./main.css"),r.default.render(e.default.createElement(t.default,null),document.getElementById("app"));
-},{"react":"HdMw","react-dom":"X9zx","./src/common/Welcome":"fzdc","bootstrap/dist/css/bootstrap.min.css":"H97Y","./main.css":"Sr7R"}]},{},["Focm"], null)
+"use strict";var e=u(require("react")),r=u(require("react-dom")),t=u(require("./src/common/Welcome"));require("bootstrap/dist/css/bootstrap.min.css"),require("./main.css");var o=require("./src/profile");function u(e){return e&&e.__esModule?e:{default:e}}console.log("Active profile dev = ",o.dev),r.default.render(e.default.createElement(t.default,null),document.getElementById("app"));
+},{"react":"HdMw","react-dom":"X9zx","./src/common/Welcome":"fzdc","bootstrap/dist/css/bootstrap.min.css":"H97Y","./main.css":"Sr7R","./src/profile":"FTtd"}]},{},["Focm"], null)
 //# sourceMappingURL=/index.js.map
