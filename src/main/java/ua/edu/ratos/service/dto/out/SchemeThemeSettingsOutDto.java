@@ -15,7 +15,7 @@ public class SchemeThemeSettingsOutDto {
 
     private Long schemeThemeId;
 
-    private Long typeId;
+    private Long questionTypeId;
 
     private String type;
 

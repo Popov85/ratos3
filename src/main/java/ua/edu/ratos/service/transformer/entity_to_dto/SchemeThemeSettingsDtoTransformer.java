@@ -12,7 +12,7 @@ public class SchemeThemeSettingsDtoTransformer {
         return new SchemeThemeSettingsOutDto()
                 .setSchemeThemeSettingsId(entity.getSchemeThemeSettingsId())
                 .setSchemeThemeId(entity.getSchemeTheme().getSchemeThemeId())
-                .setTypeId(entity.getType().getTypeId())
+                .setQuestionTypeId(entity.getType().getTypeId())
                 .setType(entity.getType().getAbbreviation())
                 .setLevel1(entity.getLevel1())
                 .setLevel2(entity.getLevel2())

@@ -18,27 +18,38 @@ public class PagesController {
     @Value("${spring.resources.cache.cachecontrol.max-age}")
     private String maxAge;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @GetMapping({"/", "/index"})
     public String getIndexPage(final HttpServletResponse response) {
-        response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        if (activeProfile!="dev") {
+            response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        }
         return "index";
     }
 
     @GetMapping("/department/**")
     public String getStaffPage(final HttpServletResponse response) {
-        response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        if (activeProfile!="dev") {
+            response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        }
         return "staff";
     }
 
     @GetMapping("/student/**")
     public String getStudentPage(final HttpServletResponse response) {
-        response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        if (activeProfile!="dev") {
+            response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        }
         return "student";
     }
 
     @GetMapping("/session/start")
     public String getSessionPage(@RequestParam Long schemeId, final HttpServletResponse response) {
-        response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        if (activeProfile!="dev") {
+            response.addHeader("Cache-Control", "max-age="+maxAge+", must-revalidate, no-transform");
+        }
         return "session";
     }
 }

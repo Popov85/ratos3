@@ -20,7 +20,7 @@ public class SchemeInDto {
     private Long schemeId;
 
     @NotBlank(message = "{dto.string.required}")
-    @Size(min = 1, max = 100, message = "{dto.string.invalid}")
+    @Size(min = 1, max = 400, message = "{dto.string.invalid}")
     private String name;
 
     @Positive(message = "{dto.fk.required}")
