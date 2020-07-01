@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
 		<spring.security.oauth>2.3.5.RELEASE</spring.security.oauth>
 		<h2.version>1.4.197</h2.version>
-		<mysql.version>8.0.11</mysql.version>
+		<mysql.version>8.0.16</mysql.version>
 		<mapper.version>2.1.0</mapper.version>
 		<commons-io.version>2.6</commons-io.version>
 		<char.detector>1.0.3</char.detector>
