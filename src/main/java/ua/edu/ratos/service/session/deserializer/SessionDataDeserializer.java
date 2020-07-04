@@ -30,14 +30,18 @@ public class SessionDataDeserializer extends JsonDeserializer<SessionData> {
         JsonNode root = jsonParser.getCodec().readTree(jsonParser);
 
         JsonNode lmsId = root.path("lmsId");
+
         long userId = root.path("userId").asLong();
         SchemeDomain schemeDomain = objectMapper.treeToValue(root.path("schemeDomain"), SchemeDomain.class);
         List<QuestionDomain> sequence = objectMapper.readerFor(new TypeReference<List<QuestionDomain>>() {
         }).readValue(root.path("sequence"));
         SessionData sessionData;
-        if (!lmsId.isMissingNode()) {
+        // Fixed bug (second check)
+        if (!lmsId.isMissingNode() && !lmsId.isNull()) {
+            log.debug("LMS session retrieved");
             sessionData = SessionData.createFromLMS(lmsId.longValue(), userId, schemeDomain, sequence);
         } else {
+            log.debug("Non-LMS session retrieved");
             sessionData = SessionData.createNoLMS(userId, schemeDomain, sequence);
         }
 

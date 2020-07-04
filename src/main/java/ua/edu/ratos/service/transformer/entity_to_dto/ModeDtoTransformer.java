@@ -25,6 +25,7 @@ public class ModeDtoTransformer {
                 .setRightAnswer(entity.isRightAnswer())
                 .setSkipable(entity.isSkipable())
                 .setStarrable(entity.isStarrable())
+                .setPauseable(entity.isPauseable())
                 .setDefault(entity.isDefaultMode())
                 .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
     }

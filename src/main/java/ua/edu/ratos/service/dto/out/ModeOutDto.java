@@ -29,6 +29,8 @@ public class ModeOutDto {
 
     private boolean reportable;
 
+    private boolean pauseable;
+
     private boolean starrable;
 
     private boolean isDefault;
