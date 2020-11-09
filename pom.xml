@@ -36,6 +36,7 @@
 		<metamodel>5.4.1.Final</metamodel>
 		<swagger>2.9.2</swagger>
 		<swagger.ui>2.9.2</swagger.ui>
+		<sendgrid>4.6.8</sendgrid>
 		<lombok>1.18.2</lombok>
 		<flyway>7.0.4</flyway>
 		<jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
@@ -210,6 +211,12 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.ui}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>${sendgrid}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
