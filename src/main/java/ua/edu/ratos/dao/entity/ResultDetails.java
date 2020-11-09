@@ -28,7 +28,7 @@ public class ResultDetails implements Serializable {
     @Column(name = "data")
     private String jsonData;
 
-    @Column(name = "when_remove")
+    @Column(name = "when_remove", columnDefinition = "TIMESTAMP")
     private LocalDateTime whenRemove;
 
 }

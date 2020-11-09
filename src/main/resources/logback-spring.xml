@@ -106,6 +106,10 @@
         <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" additivity="false" level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </logger>
+
+        <logger name="org.flywaydb" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
     </springProfile>
 
     <springProfile name="h2, mysql">
@@ -149,6 +153,10 @@
         </logger>
 
         <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.flywaydb" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>

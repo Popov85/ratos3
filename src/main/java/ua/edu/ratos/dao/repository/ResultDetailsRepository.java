@@ -11,5 +11,9 @@ public interface ResultDetailsRepository extends JpaRepository<ResultDetails, Lo
 
     @Modifying
     @Query(value = "DELETE FROM ResultDetails r where r.whenRemove<=?1")
-    void cleanExpired(LocalDateTime localDateTime);
+    void cleanExpiredOld(LocalDateTime localDateTime); // Not working with MySQL
+
+    @Modifying
+    @Query(value="DELETE FROM result_details where when_remove <= ?1", nativeQuery=true)
+    void cleanExpired(String datetime);
 }

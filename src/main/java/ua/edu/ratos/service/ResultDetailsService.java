@@ -13,6 +13,7 @@ import ua.edu.ratos.service.session.SessionDataSerializerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @AllArgsConstructor
@@ -46,6 +47,8 @@ public class ResultDetailsService {
     // Scheduled {daily, weekly, monthly, yearly}
     @Transactional
     public void cleanExpired() {
-        resultDetailsRepository.cleanExpired(LocalDateTime.now());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTimeNow = LocalDateTime.now().format(formatter);
+        resultDetailsRepository.cleanExpired(formattedDateTimeNow);
     }
 }

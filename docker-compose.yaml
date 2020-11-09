@@ -15,10 +15,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=gTq0js9m
       - MYSQL_DATABASE=ratos3
       - MYSQL_USER=spring
-      - MYSQL_PASSWORD=spring
+      - MYSQL_PASSWORD=gTq0js9m
     volumes:
       - ./database:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
@@ -43,12 +43,12 @@ services:
       - "80:8080"
     environment:
       - DATABASE_HOST=ratos_db
-      - DATABASE_USER=spring
-      - DATABASE_PASSWORD=spring
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=gTq0js9m
       - DATABASE_NAME=ratos3
       - DATABASE_PORT=3306
       - REDIS_HOST=redis_db
-      - REDIS_SECRET=spring
+      - REDIS_SECRET=sP7vCxu5
       - REDIS_PORT=6379
       - SPRING_CACHE_TYPE=caffeine # Specify cache type options: {none, simple, caffeine, redis}
       - SPRING_SESSION_STORE_TYPE=none # Should we use some specific store type for backing HttpSession? {none, redis}
@@ -72,6 +72,6 @@ services:
       - RATOS_SECURITY_LMS_REGISTRATION=true # Should we allow students to do self-registration inside LMS? (TRUE/FALSE)
       - RATOS_SECURITY_NON_LMS_REGISTRATION=true # Should we allow students to do self-registration outside LMS? (TRUE/FALSE)
       - RATOS_LTI_LAUNCH_URL_FIX=true # Whether we should replace https (requested) to http (actual) protocols? (TRUE/FALSE)
-      - RATOS_LTI_LAUNCH_URL=http://3.125.114.242:80/lti/1p0/launch # Specify full URL to be used by LMS
+      - RATOS_LTI_LAUNCH_URL=http://ec2-35-157-5-152.eu-central-1.compute.amazonaws.com/lti/1p0/launch # Specify full URL to be used by LMS
     volumes:
       - ./logs:/logs

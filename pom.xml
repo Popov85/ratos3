@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
 		<spring.security.oauth>2.3.5.RELEASE</spring.security.oauth>
 		<h2.version>1.4.197</h2.version>
-		<mysql.version>8.0.11</mysql.version>
+		<mysql.version>8.0.22</mysql.version>
 		<mapper.version>2.1.0</mapper.version>
 		<commons-io.version>2.6</commons-io.version>
 		<char.detector>1.0.3</char.detector>
@@ -37,6 +37,7 @@
 		<swagger>2.9.2</swagger>
 		<swagger.ui>2.9.2</swagger.ui>
 		<lombok>1.18.2</lombok>
+		<flyway>7.0.4</flyway>
 		<jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
 	</properties>
 
@@ -209,6 +210,10 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.ui}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -240,6 +245,15 @@
 					<to>
 						<image>registry.hub.docker.com/gelever85/ratos3:stage</image>
 					</to>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>jdbc:mysql://localhost:3306/ratos3?useSsl=false</url>
+					<user>spring</user>
+					<password>sP3gxP2V</password>
 				</configuration>
 			</plugin>
 		</plugins>

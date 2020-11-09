@@ -101,7 +101,7 @@ public class StaticALLSessionTestIT {
         Assert.assertNotNull(resultDetails);
         assertEquals(1L, resultDetails.getDetailId().longValue());
         assertFalse(resultDetails.getJsonData().isEmpty());
-        assertTrue(LocalDateTime.now().isAfter(resultDetails.getWhenRemove().minusHours(24)));
+        assertTrue(LocalDateTime.now().isAfter(resultDetails.getWhenRemove().minusHours(25)));
 
         final List<ResultTheme> resultThemes = (List<ResultTheme>) em.createQuery("select r from ResultTheme r join r.result rr where rr.resultId =:resultId").setParameter("resultId", 1L).getResultList();
         Assert.assertEquals(5, resultThemes.size());
@@ -181,7 +181,7 @@ public class StaticALLSessionTestIT {
         Assert.assertNotNull(resultDetails);
         assertEquals(1L, resultDetails.getDetailId().longValue());
         assertFalse(resultDetails.getJsonData().isEmpty());
-        assertTrue(LocalDateTime.now().isAfter(resultDetails.getWhenRemove().minusHours(24)));
+        assertTrue(LocalDateTime.now().isAfter(resultDetails.getWhenRemove().minusHours(25)));
 
         final List<ResultTheme> resultThemes = (List<ResultTheme>) em.createQuery("select r from ResultTheme r join r.result rr where rr.resultId =:resultId").setParameter("resultId", 1L).getResultList();
         Assert.assertEquals(5, resultThemes.size());

@@ -1,14 +1,11 @@
 -- -----------------------------------------------------
 -- Schema ratos3
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS ratos3 DEFAULT CHARACTER SET utf8 ;
-USE ratos3 ;
+CREATE SCHEMA IF NOT EXISTS ratos3;
 
 -- -----------------------------------------------------
 -- Table organisation
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS organisation ;
-
 CREATE TABLE IF NOT EXISTS organisation (
   org_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
@@ -20,8 +17,6 @@ CREATE TABLE IF NOT EXISTS organisation (
 -- -----------------------------------------------------
 -- Table faculty
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS faculty ;
-
 CREATE TABLE IF NOT EXISTS faculty (
   fac_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
@@ -40,8 +35,6 @@ CREATE TABLE IF NOT EXISTS faculty (
 -- -----------------------------------------------------
 -- Table department
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS department ;
-
 CREATE TABLE IF NOT EXISTS department (
   dep_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
@@ -60,8 +53,6 @@ CREATE TABLE IF NOT EXISTS department (
 -- -----------------------------------------------------
 -- Table access_level
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS access_level ;
-
 CREATE TABLE IF NOT EXISTS access_level (
   access_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -72,8 +63,6 @@ CREATE TABLE IF NOT EXISTS access_level (
 -- -----------------------------------------------------
 -- Table position
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS position ;
-
 CREATE TABLE IF NOT EXISTS position (
   pos_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
@@ -85,8 +74,6 @@ CREATE TABLE IF NOT EXISTS position (
 -- -----------------------------------------------------
 -- Table user
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user ;
-
 CREATE TABLE IF NOT EXISTS user (
   user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -104,8 +91,6 @@ CREATE TABLE IF NOT EXISTS user (
 -- -----------------------------------------------------
 -- Table staff
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS staff ;
-
 CREATE TABLE IF NOT EXISTS staff (
   staff_id INT UNSIGNED NOT NULL,
   dep_id INT UNSIGNED NOT NULL,
@@ -135,8 +120,6 @@ CREATE TABLE IF NOT EXISTS staff (
 -- -----------------------------------------------------
 -- Table course
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS course ;
-
 CREATE TABLE IF NOT EXISTS course (
   course_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(500) NOT NULL,
@@ -175,8 +158,6 @@ CREATE TABLE IF NOT EXISTS course (
 -- -----------------------------------------------------
 -- Table theme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS theme ;
-
 CREATE TABLE IF NOT EXISTS theme (
   theme_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -222,8 +203,6 @@ CREATE TABLE IF NOT EXISTS theme (
 -- -----------------------------------------------------
 -- Table question_type
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS question_type ;
-
 CREATE TABLE IF NOT EXISTS question_type (
   type_id INT UNSIGNED NOT NULL,
   eng_abbreviation VARCHAR(50) NOT NULL,
@@ -235,8 +214,6 @@ CREATE TABLE IF NOT EXISTS question_type (
 -- -----------------------------------------------------
 -- Table language
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS language ;
-
 CREATE TABLE IF NOT EXISTS language (
   lang_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL,
@@ -250,8 +227,6 @@ CREATE TABLE IF NOT EXISTS language (
 -- -----------------------------------------------------
 -- Table question
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS question ;
-
 CREATE TABLE IF NOT EXISTS question (
   question_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(2500) NOT NULL,
@@ -281,8 +256,6 @@ CREATE TABLE IF NOT EXISTS question (
 -- -----------------------------------------------------
 -- Table answer_mcq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_mcq ;
-
 CREATE TABLE IF NOT EXISTS answer_mcq (
   answer_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   answer VARCHAR(1000) NOT NULL,
@@ -303,8 +276,6 @@ CREATE TABLE IF NOT EXISTS answer_mcq (
 -- -----------------------------------------------------
 -- Table settings_fbq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS settings_fbq ;
-
 CREATE TABLE IF NOT EXISTS settings_fbq (
   set_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -336,8 +307,6 @@ CREATE TABLE IF NOT EXISTS settings_fbq (
 -- -----------------------------------------------------
 -- Table answer_fbsq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_fbsq ;
-
 CREATE TABLE IF NOT EXISTS answer_fbsq (
   answer_id INT UNSIGNED NOT NULL,
   set_id INT UNSIGNED NOT NULL,
@@ -359,8 +328,6 @@ CREATE TABLE IF NOT EXISTS answer_fbsq (
 -- -----------------------------------------------------
 -- Table phrase
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS phrase ;
-
 CREATE TABLE IF NOT EXISTS phrase (
   phrase_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   phrase VARCHAR(100) NOT NULL,
@@ -381,8 +348,6 @@ CREATE TABLE IF NOT EXISTS phrase (
 -- -----------------------------------------------------
 -- Table answer_mq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_mq ;
-
 CREATE TABLE IF NOT EXISTS answer_mq (
   answer_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   left_phrase_id INT UNSIGNED NOT NULL,
@@ -414,8 +379,6 @@ CREATE TABLE IF NOT EXISTS answer_mq (
 -- -----------------------------------------------------
 -- Table answer_sq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_sq ;
-
 CREATE TABLE IF NOT EXISTS answer_sq (
   answer_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   phrase_id INT UNSIGNED NOT NULL,
@@ -441,8 +404,6 @@ CREATE TABLE IF NOT EXISTS answer_sq (
 -- -----------------------------------------------------
 -- Table help
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS help ;
-
 CREATE TABLE IF NOT EXISTS help (
   help_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -463,8 +424,6 @@ CREATE TABLE IF NOT EXISTS help (
 -- -----------------------------------------------------
 -- Table resource
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS resource ;
-
 CREATE TABLE IF NOT EXISTS resource (
   resource_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   hyperlink VARCHAR(200) NOT NULL,
@@ -489,8 +448,6 @@ CREATE TABLE IF NOT EXISTS resource (
 -- -----------------------------------------------------
 -- Table fbsq_phrase
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS fbsq_phrase ;
-
 CREATE TABLE IF NOT EXISTS fbsq_phrase (
   phrase_id INT UNSIGNED NOT NULL,
   answer_id INT UNSIGNED NOT NULL,
@@ -513,8 +470,6 @@ CREATE TABLE IF NOT EXISTS fbsq_phrase (
 -- -----------------------------------------------------
 -- Table answer_fbmq
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_fbmq ;
-
 CREATE TABLE IF NOT EXISTS answer_fbmq (
   answer_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   phrase VARCHAR(100) NOT NULL,
@@ -541,8 +496,6 @@ CREATE TABLE IF NOT EXISTS answer_fbmq (
 -- -----------------------------------------------------
 -- Table fbmq_phrase
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS fbmq_phrase ;
-
 CREATE TABLE IF NOT EXISTS fbmq_phrase (
   answer_id INT UNSIGNED NOT NULL,
   phrase_id INT UNSIGNED NOT NULL,
@@ -565,8 +518,6 @@ CREATE TABLE IF NOT EXISTS fbmq_phrase (
 -- -----------------------------------------------------
 -- Table help_resource
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS help_resource ;
-
 CREATE TABLE IF NOT EXISTS help_resource (
   help_id INT UNSIGNED NOT NULL,
   resource_id INT UNSIGNED NOT NULL,
@@ -588,8 +539,6 @@ CREATE TABLE IF NOT EXISTS help_resource (
 -- -----------------------------------------------------
 -- Table question_resource
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS question_resource ;
-
 CREATE TABLE IF NOT EXISTS question_resource (
   question_id INT UNSIGNED NOT NULL,
   resource_id INT UNSIGNED NOT NULL,
@@ -611,8 +560,6 @@ CREATE TABLE IF NOT EXISTS question_resource (
 -- -----------------------------------------------------
 -- Table answer_mcq_resource
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS answer_mcq_resource ;
-
 CREATE TABLE IF NOT EXISTS answer_mcq_resource (
   answer_id INT UNSIGNED NOT NULL,
   resource_id INT UNSIGNED NOT NULL,
@@ -634,8 +581,6 @@ CREATE TABLE IF NOT EXISTS answer_mcq_resource (
 -- -----------------------------------------------------
 -- Table strategy
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS strategy ;
-
 CREATE TABLE IF NOT EXISTS strategy (
   str_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -647,8 +592,6 @@ CREATE TABLE IF NOT EXISTS strategy (
 -- -----------------------------------------------------
 -- Table settings
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS settings ;
-
 CREATE TABLE IF NOT EXISTS settings (
   set_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -682,8 +625,6 @@ CREATE TABLE IF NOT EXISTS settings (
 -- -----------------------------------------------------
 -- Table mode
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS mode ;
-
 CREATE TABLE IF NOT EXISTS mode (
   mode_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -719,8 +660,6 @@ CREATE TABLE IF NOT EXISTS mode (
 -- -----------------------------------------------------
 -- Table grading
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS grading ;
-
 CREATE TABLE IF NOT EXISTS grading (
   grading_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -732,8 +671,6 @@ CREATE TABLE IF NOT EXISTS grading (
 -- -----------------------------------------------------
 -- Table options
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS options ;
-
 CREATE TABLE IF NOT EXISTS options (
   opt_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -772,8 +709,6 @@ CREATE TABLE IF NOT EXISTS options (
 -- -----------------------------------------------------
 -- Table scheme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS scheme ;
-
 CREATE TABLE IF NOT EXISTS scheme (
   scheme_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(400) NOT NULL,
@@ -856,8 +791,6 @@ CREATE TABLE IF NOT EXISTS scheme (
 -- -----------------------------------------------------
 -- Table scheme_theme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS scheme_theme ;
-
 CREATE TABLE IF NOT EXISTS scheme_theme (
   scheme_theme_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   scheme_id INT UNSIGNED NOT NULL,
@@ -882,8 +815,6 @@ CREATE TABLE IF NOT EXISTS scheme_theme (
 -- -----------------------------------------------------
 -- Table type_level
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS type_level ;
-
 CREATE TABLE IF NOT EXISTS type_level (
   type_level_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   scheme_theme_id INT UNSIGNED NOT NULL,
@@ -910,8 +841,6 @@ CREATE TABLE IF NOT EXISTS type_level (
 -- -----------------------------------------------------
 -- Table role
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS role ;
-
 CREATE TABLE IF NOT EXISTS role (
   role_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -922,8 +851,6 @@ CREATE TABLE IF NOT EXISTS role (
 -- -----------------------------------------------------
 -- Table lti_version
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS lti_version ;
-
 CREATE TABLE IF NOT EXISTS lti_version (
   version_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   version VARCHAR(20) NOT NULL,
@@ -934,8 +861,6 @@ CREATE TABLE IF NOT EXISTS lti_version (
 -- -----------------------------------------------------
 -- Table lti_credentials
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS lti_credentials ;
-
 CREATE TABLE IF NOT EXISTS lti_credentials (
   credentials_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   lti_consumer_key VARCHAR(1000) NOT NULL,
@@ -948,8 +873,6 @@ CREATE TABLE IF NOT EXISTS lti_credentials (
 -- -----------------------------------------------------
 -- Table lms
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS lms ;
-
 CREATE TABLE IF NOT EXISTS lms (
   lms_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -982,8 +905,6 @@ CREATE TABLE IF NOT EXISTS lms (
 -- -----------------------------------------------------
 -- Table result
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS result ;
-
 CREATE TABLE IF NOT EXISTS result (
   result_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   scheme_id INT UNSIGNED NOT NULL,
@@ -1032,8 +953,6 @@ CREATE TABLE IF NOT EXISTS result (
 -- -----------------------------------------------------
 -- Table result_theme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS result_theme ;
-
 CREATE TABLE IF NOT EXISTS result_theme (
   result_id INT UNSIGNED NOT NULL,
   theme_id INT UNSIGNED NOT NULL,
@@ -1057,8 +976,6 @@ CREATE TABLE IF NOT EXISTS result_theme (
 -- -----------------------------------------------------
 -- Table result_details
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS result_details ;
-
 CREATE TABLE IF NOT EXISTS result_details (
   detail_id INT UNSIGNED NOT NULL,
   data LONGTEXT NOT NULL,
@@ -1076,8 +993,6 @@ CREATE TABLE IF NOT EXISTS result_details (
 -- -----------------------------------------------------
 -- Table session_preserved
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS session_preserved ;
-
 CREATE TABLE IF NOT EXISTS session_preserved (
   uuid VARCHAR(61) NOT NULL,
   scheme_id INT UNSIGNED NOT NULL,
@@ -1104,8 +1019,6 @@ CREATE TABLE IF NOT EXISTS session_preserved (
 -- -----------------------------------------------------
 -- Table class
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS class ;
-
 CREATE TABLE IF NOT EXISTS class (
   class_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -1123,8 +1036,6 @@ CREATE TABLE IF NOT EXISTS class (
 -- -----------------------------------------------------
 -- Table student
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS student ;
-
 CREATE TABLE IF NOT EXISTS student (
   stud_id INT UNSIGNED NOT NULL,
   class_id INT UNSIGNED NOT NULL,
@@ -1162,8 +1073,6 @@ CREATE TABLE IF NOT EXISTS student (
 -- -----------------------------------------------------
 -- Table question_help
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS question_help ;
-
 CREATE TABLE IF NOT EXISTS question_help (
   question_id INT UNSIGNED NOT NULL,
   help_id INT UNSIGNED NOT NULL,
@@ -1185,8 +1094,6 @@ CREATE TABLE IF NOT EXISTS question_help (
 -- -----------------------------------------------------
 -- Table user_role
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_role ;
-
 CREATE TABLE IF NOT EXISTS user_role (
   role_id INT UNSIGNED NOT NULL,
   user_id INT UNSIGNED NOT NULL,
@@ -1208,8 +1115,6 @@ CREATE TABLE IF NOT EXISTS user_role (
 -- -----------------------------------------------------
 -- Table four_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS four_point ;
-
 CREATE TABLE IF NOT EXISTS four_point (
   four_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -1247,8 +1152,6 @@ CREATE TABLE IF NOT EXISTS four_point (
 -- -----------------------------------------------------
 -- Table scheme_four_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS scheme_four_point ;
-
 CREATE TABLE IF NOT EXISTS scheme_four_point (
   scheme_id INT UNSIGNED NOT NULL,
   four_point_id INT UNSIGNED NOT NULL,
@@ -1270,8 +1173,6 @@ CREATE TABLE IF NOT EXISTS scheme_four_point (
 -- -----------------------------------------------------
 -- Table two_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS two_point ;
-
 CREATE TABLE IF NOT EXISTS two_point (
   two_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -1307,8 +1208,6 @@ CREATE TABLE IF NOT EXISTS two_point (
 -- -----------------------------------------------------
 -- Table scheme_two_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS scheme_two_point ;
-
 CREATE TABLE IF NOT EXISTS scheme_two_point (
   scheme_id INT UNSIGNED NOT NULL,
   two_point_id INT UNSIGNED NOT NULL,
@@ -1330,8 +1229,6 @@ CREATE TABLE IF NOT EXISTS scheme_two_point (
 -- -----------------------------------------------------
 -- Table free_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS free_point ;
-
 CREATE TABLE IF NOT EXISTS free_point (
   free_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -1369,8 +1266,6 @@ CREATE TABLE IF NOT EXISTS free_point (
 -- -----------------------------------------------------
 -- Table scheme_free_point
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS scheme_free_point ;
-
 CREATE TABLE IF NOT EXISTS scheme_free_point (
   scheme_id INT UNSIGNED NOT NULL,
   free_point_id INT UNSIGNED NOT NULL,
@@ -1392,8 +1287,6 @@ CREATE TABLE IF NOT EXISTS scheme_free_point (
 -- -----------------------------------------------------
 -- Table phrase_resource
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS phrase_resource ;
-
 CREATE TABLE IF NOT EXISTS phrase_resource (
   phrase_id INT UNSIGNED NOT NULL,
   resource_id INT UNSIGNED NOT NULL,
@@ -1416,8 +1309,6 @@ CREATE TABLE IF NOT EXISTS phrase_resource (
 -- -----------------------------------------------------
 -- Table user_question_starred
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_question_starred ;
-
 CREATE TABLE IF NOT EXISTS user_question_starred (
   user_id INT UNSIGNED NOT NULL,
   question_id INT UNSIGNED NOT NULL,
@@ -1442,8 +1333,6 @@ CREATE TABLE IF NOT EXISTS user_question_starred (
 -- -----------------------------------------------------
 -- Table lms_course
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS lms_course ;
-
 CREATE TABLE IF NOT EXISTS lms_course (
   course_id INT UNSIGNED NOT NULL,
   lms_id INT UNSIGNED NOT NULL,
@@ -1466,8 +1355,6 @@ CREATE TABLE IF NOT EXISTS lms_course (
 -- -----------------------------------------------------
 -- Table groups
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS groups ;
-
 CREATE TABLE IF NOT EXISTS groups (
   group_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
@@ -1496,8 +1383,6 @@ CREATE TABLE IF NOT EXISTS groups (
 -- -----------------------------------------------------
 -- Table student_group
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS student_group ;
-
 CREATE TABLE IF NOT EXISTS student_group (
   stud_id INT UNSIGNED NOT NULL,
   group_id INT UNSIGNED NOT NULL,
@@ -1520,8 +1405,6 @@ CREATE TABLE IF NOT EXISTS student_group (
 -- -----------------------------------------------------
 -- Table group_scheme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS group_scheme ;
-
 CREATE TABLE IF NOT EXISTS group_scheme (
   group_id INT UNSIGNED NOT NULL,
   scheme_id INT UNSIGNED NOT NULL,
@@ -1543,8 +1426,6 @@ CREATE TABLE IF NOT EXISTS group_scheme (
 -- -----------------------------------------------------
 -- Table complaint_type
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS complaint_type ;
-
 CREATE TABLE IF NOT EXISTS complaint_type (
   type_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
@@ -1556,8 +1437,6 @@ CREATE TABLE IF NOT EXISTS complaint_type (
 -- -----------------------------------------------------
 -- Table complaint
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS complaint ;
-
 CREATE TABLE IF NOT EXISTS complaint (
   question_id INT UNSIGNED NOT NULL,
   ctype_id INT UNSIGNED NOT NULL,
@@ -1588,8 +1467,6 @@ CREATE TABLE IF NOT EXISTS complaint (
 -- -----------------------------------------------------
 -- Table game
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS game ;
-
 CREATE TABLE IF NOT EXISTS game (
   stud_id INT UNSIGNED NOT NULL,
   total_points INT NOT NULL DEFAULT 0,
@@ -1607,8 +1484,6 @@ CREATE TABLE IF NOT EXISTS game (
 -- -----------------------------------------------------
 -- Table game_week
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS game_week ;
-
 CREATE TABLE IF NOT EXISTS game_week (
   stud_id INT UNSIGNED NOT NULL,
   week_points INT NOT NULL DEFAULT 0,
@@ -1627,8 +1502,6 @@ CREATE TABLE IF NOT EXISTS game_week (
 -- -----------------------------------------------------
 -- Table game_bonus
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS game_bonus ;
-
 CREATE TABLE IF NOT EXISTS game_bonus (
   bonus_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   stud_id INT UNSIGNED NOT NULL,
@@ -1647,8 +1520,6 @@ CREATE TABLE IF NOT EXISTS game_bonus (
 -- -----------------------------------------------------
 -- Table game_week_won
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS game_week_won ;
-
 CREATE TABLE IF NOT EXISTS game_week_won (
   won_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   stud_id INT UNSIGNED NOT NULL,
