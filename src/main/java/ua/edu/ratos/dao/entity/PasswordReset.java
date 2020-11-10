@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class PasswordReset {
     @Column(name = "secret")
     private String secret;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "when_requested", columnDefinition = "TIMESTAMP")
     private LocalDateTime whenRequested;
 

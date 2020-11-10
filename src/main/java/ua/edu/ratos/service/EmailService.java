@@ -75,11 +75,12 @@ public class EmailService {
             request.setBody(mail.build());
             Response response = this.sendgrid.api(request);
             int statusCode = response.getStatusCode();
+            log.debug("Response code = {}, Response body = {}", statusCode, response.getBody());
             if (statusCode < 200 || statusCode > 203) {
                 throw new RuntimeException("Wrong status code: "+statusCode);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error sending email through SendGrid. Connection error:" + e.getMessage());
+            throw new RuntimeException("Error sending email through SendGrid. Message:" + e.getMessage());
         }
     }
 

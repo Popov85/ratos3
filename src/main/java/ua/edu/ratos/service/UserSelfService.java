@@ -14,7 +14,7 @@ import ua.edu.ratos.service.dto.in.UserMinInDto;
 @AllArgsConstructor
 public class UserSelfService {
 
-    private final UserRepository staffRepository;
+    private final UserRepository userRepository;
 
     private final PasswordEncoder encoder;
 
@@ -23,7 +23,7 @@ public class UserSelfService {
     //---------------------------------------------------ACCOUNT update-------------------------------------------------
     @Transactional
     public void updateProfile(@NonNull final UserMinInDto dto) {
-        User user = staffRepository.findById(securityUtils.getAuthUserId()).get();
+        User user = userRepository.findById(securityUtils.getAuthUserId()).get();
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
         user.setEmail(dto.getEmail());
@@ -32,9 +32,15 @@ public class UserSelfService {
     //--------------------------------------------------PASSWORD update-------------------------------------------------
     @Transactional
     public void updatePassword(@NonNull final char[] oldPassword, @NonNull final char[] newPassword) {
-        User user = staffRepository.findById(securityUtils.getAuthUserId()).get();
+        User user = userRepository.findById(securityUtils.getAuthUserId()).get();
         if (!encoder.matches(new String(oldPassword), new String(user.getPassword())))
             throw new RuntimeException("Old password does not match the one provided");
+        user.setPassword(encoder.encode(new String(newPassword)).toCharArray());
+    }
+
+    //--------------------------------------------------PASSWORD reset-------------------------------------------------
+    @Transactional
+    public void updatePassword(@NonNull final User user, @NonNull final String newPassword) {
         user.setPassword(encoder.encode(new String(newPassword)).toCharArray());
     }
 }

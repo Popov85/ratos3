@@ -6,22 +6,17 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.edu.ratos.config.properties.AppProperties;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.SelfRegistrationService;
-import ua.edu.ratos.service.domain.SessionDataMap;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.ClassMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.net.URI;
 import java.util.Set;
 
@@ -43,8 +38,6 @@ public class SelfRegistrationController {
     private final AppProperties appProperties;
 
     private final SecurityUtils securityUtils;
-
-    private final PasswordResetService passwordResetService;
 
     @Getter
     @ToString
@@ -155,20 +148,6 @@ public class SelfRegistrationController {
         log.debug("Saved LMS student, studId = {}", studId);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/lab/students/{id}").buildAndExpand(studId).toUri();
         return ResponseEntity.created(location).build();
-    }
-
-    //------------------------------------------Password reset------------------------------------------------
-
-    @GetMapping(value="/self-registration/${email}/password-reset")
-    public void passwordReset(@PathVariable String email, HttpServletRequest request) {
-        log.debug("Requested password reset for email = {}", email);
-        passwordResetService.generateSecretAndSend(email, request.getServerName());
-    }
-
-    @GetMapping(value="/self-registration/${email}/${secret}/do-password-reset")
-    public void doPasswordReset(@PathVariable String email, @PathVariable String secret) {
-        log.debug("Requested password reset for email = {}, secret = {}", email, secret);
-        passwordResetService.checkSecretAndSendTemporaryPassword(email, secret);
     }
 
 }
