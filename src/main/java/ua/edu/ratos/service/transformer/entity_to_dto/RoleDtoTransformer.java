@@ -8,6 +8,7 @@ import ua.edu.ratos.service.dto.out.RoleOutDto;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Component
 public class RoleDtoTransformer {
 

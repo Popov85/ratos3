@@ -5,21 +5,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Faculty;
 import ua.edu.ratos.service.dto.out.FacultyOutDto;
+import ua.edu.ratos.service.transformer.OrganisationMapper;
 
+@Deprecated
 @Component
 public class FacultyDtoTransformer {
 
-    private OrganisationDtoTransformer organisationDtoTransformer;
+    private OrganisationMapper organisationMapper;
 
     @Autowired
-    public void setOrganisationDtoTransformer(OrganisationDtoTransformer organisationDtoTransformer) {
-        this.organisationDtoTransformer = organisationDtoTransformer;
+    public void setOrganisationDtoTransformer(OrganisationMapper organisationMapper) {
+        this.organisationMapper = organisationMapper;
     }
 
     public FacultyOutDto toDto(@NonNull final Faculty entity) {
         return new FacultyOutDto()
                 .setFacId(entity.getFacId())
                 .setName(entity.getName())
-                .setOrganisation(organisationDtoTransformer.toDto(entity.getOrganisation()));
+                .setOrganisation(organisationMapper.toDto(entity.getOrganisation()));
     }
 }
