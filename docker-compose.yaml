@@ -73,5 +73,10 @@ services:
       - RATOS_SECURITY_NON_LMS_REGISTRATION=true # Should we allow students to do self-registration outside LMS? (TRUE/FALSE)
       - RATOS_LTI_LAUNCH_URL_FIX=true # Whether we should replace https (requested) to http (actual) protocols? (TRUE/FALSE)
       - RATOS_LTI_LAUNCH_URL=http://ec2-35-157-5-152.eu-central-1.compute.amazonaws.com/lti/1p0/launch # Specify full URL to be used by LMS
+      - SENDGRID_API_KEY=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
+      - SENDGRID_SENDER_EMAIL=noreply@ratos3.xyz
+      - SENDGRID_SENDER_NAME=Ratos3
+      - SENDGRID_TEMPLATE_PASS_RESET=d-feab52cad2bf4891b473c67ecb135048
+      - SENDGRID_TEMPLATE_TEMP_PASS=d-5783ab2be11248dcb6de380c43a7868c
     volumes:
       - ./logs:/logs
