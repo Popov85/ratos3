@@ -12,8 +12,8 @@ import ua.edu.ratos.dao.repository.StudentRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.StudOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoStudentTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.StudDtoTransformer;
+import ua.edu.ratos.service.transformer.StudMapper;
+import ua.edu.ratos.service.transformer.StudTransformer;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -25,9 +25,9 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    private final DtoStudentTransformer dtoStudentTransformer;
+    private final StudTransformer studTransformer;
 
-    private final StudDtoTransformer studDtoTransformer;
+    private final StudMapper studMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -36,7 +36,7 @@ public class StudentService {
     @Secured({"ROLE_LAB-ASSISTANT", "ROLE_INSTRUCTOR", "ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     // TODO: here comes logic to send email to provided address with information about password and link to RATOS
     public Long save(@NonNull final StudentInDto dto) {
-        return studentRepository.save(dtoStudentTransformer.toEntity(dto)).getStudId();
+        return studentRepository.save(studTransformer.toEntity(dto)).getStudId();
     }
 
     //------------------------------------------------DEACTIVATE (expelled/graduated)-----------------------------------
@@ -52,24 +52,24 @@ public class StudentService {
     //--------------------------------------------------------One (for edit)--------------------------------------------
     @Transactional(readOnly = true)
     public StudOutDto findOneForEdit(@NonNull final Long studId) {
-        return studDtoTransformer.toDto(studentRepository.findOneForEdit(studId).
+        return studMapper.toDto(studentRepository.findOneForEdit(studId).
                 orElseThrow(() -> new EntityNotFoundException(STUDENT_NOT_FOUND + studId)));
     }
 
     //---------------------------------------------------------Staff table----------------------------------------------
     @Transactional(readOnly = true)
     public Page<StudOutDto> findAllByOrganisationId(@NonNull final Pageable pageable) {
-        return studentRepository.findAllByOrgId(securityUtils.getAuthOrgId(), pageable).map(studDtoTransformer::toDto);
+        return studentRepository.findAllByOrgId(securityUtils.getAuthOrgId(), pageable).map(studMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Slice<StudOutDto> findAllByOrganisationIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return studentRepository.findAllByOrgIdAndNameLettersContains(securityUtils.getAuthOrgId(), letters, pageable).map(studDtoTransformer::toDto);
+        return studentRepository.findAllByOrgIdAndNameLettersContains(securityUtils.getAuthOrgId(), letters, pageable).map(studMapper::toDto);
     }
 
     //-------------------------------------------------------------ADMIN------------------------------------------------
     @Transactional(readOnly = true)
     public Page<StudOutDto> findAllAdmin(@NonNull final Pageable pageable) {
-        return studentRepository.findAllAdmin(pageable).map(studDtoTransformer::toDto);
+        return studentRepository.findAllAdmin(pageable).map(studMapper::toDto);
     }
 }

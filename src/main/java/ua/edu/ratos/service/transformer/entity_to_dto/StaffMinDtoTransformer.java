@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 
+@Deprecated
 @Slf4j
 @Component
 public class StaffMinDtoTransformer {

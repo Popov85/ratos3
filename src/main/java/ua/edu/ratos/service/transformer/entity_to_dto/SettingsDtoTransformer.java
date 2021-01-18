@@ -6,16 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Slf4j
 @Component
 public class SettingsDtoTransformer {
 
-    private StaffMinDtoTransformer staffMinDtoTransformer;
+    private StaffMinMapper staffMinMapper;
 
     @Autowired
-    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
-        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    public void setStaffMinDtoTransformer(StaffMinMapper staffMinMapper) {
+        this.staffMinMapper = staffMinMapper;
     }
 
     public SettingsOutDto toDto(@NonNull final Settings entity) {
@@ -29,6 +30,6 @@ public class SettingsDtoTransformer {
                 .setSecondsPerQuestion(entity.getSecondsPerQuestion())
                 .setStrictControlTimePerQuestion(entity.isStrictControlTimePerQuestion())
                 .setDefault(entity.isDefault())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
+                .setStaff(staffMinMapper.toDto(entity.getStaff()));
     }
 }

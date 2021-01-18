@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.service.dto.in.PositionInDto;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class DtoPositionTransformer {

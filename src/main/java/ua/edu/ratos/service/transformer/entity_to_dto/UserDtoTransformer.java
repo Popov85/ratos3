@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.service.dto.out.UserOutDto;
 import ua.edu.ratos.service.transformer.RoleMapper;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class UserDtoTransformer {

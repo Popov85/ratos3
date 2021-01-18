@@ -10,6 +10,8 @@ import ua.edu.ratos.dao.repository.RoleRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.StaffUpdInDto;
+import ua.edu.ratos.service.transformer.UserMapper;
+import ua.edu.ratos.service.transformer.UserUpdMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class DtoStaffTransformer {
@@ -25,9 +28,9 @@ public class DtoStaffTransformer {
     @PersistenceContext
     private final EntityManager em;
 
-    private final DtoUserTransformer dtoUserTransformer;
+    private final UserMapper userMapper;
 
-    private final DtoUserUpdTransformer dtoUserUpdTransformer;
+    private final UserUpdMapper userUpdMapper;
 
     private final RoleRepository roleRepository;
 
@@ -39,7 +42,7 @@ public class DtoStaffTransformer {
     public Staff toEntity(@NonNull final StaffInDto dto) {
         Staff staff = new Staff();
         staff.setStaffId(dto.getStaffId());
-        User user = dtoUserTransformer.toEntity(dto.getUser());
+        User user = userMapper.toEntity(dto.getUser());
         Optional<Role> role = roleRepository.findByName(dto.getRole());
         user.setRoles(new HashSet<>(Arrays.asList(role.orElseThrow(()->
                 new EntityNotFoundException("ROLE is not found!")))));
@@ -56,7 +59,7 @@ public class DtoStaffTransformer {
     @Transactional(propagation = Propagation.MANDATORY)
     public Staff toEntity(@NonNull final Staff staff, @NonNull final StaffUpdInDto dto) {
         staff.setStaffId(dto.getStaffId());
-        User user = dtoUserUpdTransformer.toEntity(staff.getUser(), dto.getUser());
+        User user = userUpdMapper.toEntity(staff.getUser(), dto.getUser());
         Optional<Role> role = roleRepository.findByName(dto.getRole());
         user.setRoles(new HashSet<>(Arrays.asList(role.orElseThrow(()->
                 new EntityNotFoundException("ROLE is not found!")))));

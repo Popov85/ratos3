@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.service.domain.UserDomain;
 
+@Deprecated
 @Component
 public class UserDomainTransformer {
 

@@ -9,19 +9,22 @@ import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
 import ua.edu.ratos.service.dto.out.game.GamerOutDto;
 import ua.edu.ratos.service.session.GameLabelResolver;
+import ua.edu.ratos.service.transformer.FacultyMinMapper;
+import ua.edu.ratos.service.transformer.OrganisationMinMapper;
+import ua.edu.ratos.service.transformer.UserMinMapper;
 
 import java.util.Optional;
 
 @Component
 public class GamerDtoTransformer {
 
-    private UserMinDtoTransformer userMinDtoTransformer;
+    private UserMinMapper userMinMapper;
 
     private ClassMinDtoTransformer classMinDtoTransformer;
 
-    private FacultyMinDtoTransformer facultyMinDtoTransformer;
+    private FacultyMinMapper facultyMinMapper;
 
-    private OrganisationMinDtoTransformer organisationMinDtoTransformer;
+    private OrganisationMinMapper organisationMinMapper;
 
     private GameLabelResolver gameLabelResolver;
 
@@ -35,18 +38,18 @@ public class GamerDtoTransformer {
     }
 
     @Autowired
-    public void setFacultyMinDtoTransformer(FacultyMinDtoTransformer facultyMinDtoTransformer) {
-        this.facultyMinDtoTransformer = facultyMinDtoTransformer;
+    public void setFacultyMinDtoTransformer(FacultyMinMapper facultyMinMapper) {
+        this.facultyMinMapper = facultyMinMapper;
     }
 
     @Autowired
-    public void setUserMinDtoTransformer(UserMinDtoTransformer userMinDtoTransformer) {
-        this.userMinDtoTransformer = userMinDtoTransformer;
+    public void setUserMinDtoTransformer(UserMinMapper userMinMapper) {
+        this.userMinMapper = userMinMapper;
     }
 
     @Autowired
-    public void setOrganisationMinDtoTransformer(OrganisationMinDtoTransformer organisationMinDtoTransformer) {
-        this.organisationMinDtoTransformer = organisationMinDtoTransformer;
+    public void setOrganisationMinDtoTransformer(OrganisationMinMapper organisationMinMapper) {
+        this.organisationMinMapper = organisationMinMapper;
     }
 
     @Autowired
@@ -79,10 +82,10 @@ public class GamerDtoTransformer {
     private StudMinOutDto getStud(@NonNull final Gamer entity) {
         return new StudMinOutDto()
                 .setStudId(entity.getStudId())
-                .setUser(userMinDtoTransformer.toDto(entity.getUser()))
+                .setUser(userMinMapper.toDto(entity.getUser()))
                 .setStudentClass(classMinDtoTransformer.toDto(entity.getStudentClass()))
-                .setFaculty(facultyMinDtoTransformer.toDto(entity.getFaculty()))
-                .setOrganisation(organisationMinDtoTransformer.toDto(entity.getOrganisation()))
+                .setFaculty(facultyMinMapper.toDto(entity.getFaculty()))
+                .setOrganisation(organisationMinMapper.toDto(entity.getOrganisation()))
                 .setEntranceYear(entity.getEntranceYear());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Help;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Slf4j
 @Component
@@ -13,7 +14,7 @@ public class HelpDtoTransformer {
 
     private ResourceDtoTransformer resourceDtoTransformer;
 
-    private StaffMinDtoTransformer staffMinDtoTransformer;
+    private StaffMinMapper staffMinMapper;
 
     @Autowired
     public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
@@ -21,8 +22,8 @@ public class HelpDtoTransformer {
     }
 
     @Autowired
-    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
-        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    public void setStaffMinDtoTransformer(StaffMinMapper staffMinMapper) {
+        this.staffMinMapper = staffMinMapper;
     }
 
     public HelpOutDto toDto(@NonNull final Help entity) {
@@ -30,7 +31,7 @@ public class HelpDtoTransformer {
                 .setHelpId(entity.getHelpId())
                 .setName(entity.getName())
                 .setHelp(entity.getHelp())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()))
+                .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setResource((entity.getResource().isPresent()) ? resourceDtoTransformer.toDto(entity.getResource().get()) : null);
     }
 }

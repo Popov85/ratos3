@@ -16,9 +16,9 @@ import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.StaffUpdInDto;
 import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoStaffTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.StaffDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.StaffMinDtoTransformer;
+import ua.edu.ratos.service.transformer.StaffMapper;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
+import ua.edu.ratos.service.transformer.StaffTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -40,11 +40,11 @@ public class StaffService {
 
     private final StaffRepository staffRepository;
 
-    private final DtoStaffTransformer dtoStaffTransformer;
+    private final StaffTransformer staffTransformer;
 
-    private final StaffDtoTransformer staffDtoTransformer;
+    private final StaffMapper staffMapper;
 
-    private final StaffMinDtoTransformer staffMinDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -53,9 +53,9 @@ public class StaffService {
     @Transactional
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public StaffOutDto save(@NonNull final StaffInDto dto) {
-        Staff staff = dtoStaffTransformer.toEntity(dto);
+        Staff staff = staffTransformer.toEntity(dto);
         Staff result = staffRepository.save(staff);
-        return staffDtoTransformer.toDto(result);
+        return staffMapper.toDto(result);
     }
 
     @Transactional
@@ -65,8 +65,8 @@ public class StaffService {
         if (staffId == null) throw new RuntimeException("Failed to update staff, staffId is required");
         Staff staff = staffRepository.findById(staffId).orElseThrow(() ->
                 new EntityNotFoundException(STAFF_NOT_FOUND));
-        dtoStaffTransformer.toEntity(staff, dto);
-        return staffDtoTransformer.toDto(staff);
+        staffTransformer.toEntity(staff, dto);
+        return staffMapper.toDto(staff);
     }
 
     @Transactional
@@ -81,7 +81,7 @@ public class StaffService {
     public StaffMinOutDto findOneForDto(@NonNull final Long staffId) {
         Staff staff = staffRepository.findOneForEdit(staffId)
                 .orElseThrow(() -> new EntityNotFoundException("Staff is not found, staffId = " + staffId));
-        return staffMinDtoTransformer.toDto(staff);
+        return staffMinMapper.toDto(staff);
     }
 
     //---------------------------------------------------ALL for ADMIN-s------------------------------------------------
@@ -90,7 +90,7 @@ public class StaffService {
     public Set<StaffOutDto> findAllByDepartmentId() {
         return staffRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(staffDtoTransformer::toDto)
+                .map(staffMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -99,7 +99,7 @@ public class StaffService {
     public Set<StaffOutDto> findAllByFacultyId() {
         return staffRepository.findAllByFacultyId(securityUtils.getAuthFacId())
                 .stream()
-                .map(staffDtoTransformer::toDto)
+                .map(staffMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -109,7 +109,7 @@ public class StaffService {
     public Set<StaffOutDto> findAllByOrganisationId() {
         return staffRepository.findAllByOrganisationId(securityUtils.getAuthOrgId())
                 .stream()
-                .map(staffDtoTransformer::toDto)
+                .map(staffMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -118,7 +118,7 @@ public class StaffService {
     public Set<StaffOutDto> findAllByRatos() {
         return staffRepository.findAllByRatos()
                 .stream()
-                .map(staffDtoTransformer::toDto)
+                .map(staffMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -128,20 +128,20 @@ public class StaffService {
     @Transactional(readOnly = true)
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public Page<StaffOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return staffRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(staffDtoTransformer::toDto);
+        return staffRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(staffMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     @Secured({"ROLE_DEP-ADMIN", "ROLE_FAC-ADMIN", "ROLE_ORG-ADMIN", "ROLE_GLOBAL-ADMIN"})
     public Page<StaffOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return staffRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(staffDtoTransformer::toDto);
+        return staffRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(staffMapper::toDto);
     }
 
     //--------------------------------------------------------ADMIN-----------------------------------------------------
     @Transactional(readOnly = true)
     @Secured({"ROLE_GLOBAL-ADMIN"})
     public Page<StaffOutDto> findAllAdmin(@NonNull final Pageable pageable) {
-        return staffRepository.findAllAdmin(pageable).map(staffDtoTransformer::toDto);
+        return staffRepository.findAllAdmin(pageable).map(staffMapper::toDto);
     }
 
 }

@@ -5,12 +5,13 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.grading.FreePointGrading;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Component
 @AllArgsConstructor
 public class FreePointGradingDtoTransformer {
 
-    private final StaffMinDtoTransformer staffMinDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     public FreePointGradingOutDto toDto(@NonNull final FreePointGrading entity) {
         return new FreePointGradingOutDto()
@@ -20,6 +21,6 @@ public class FreePointGradingDtoTransformer {
                 .setMinValue(entity.getMinValue())
                 .setMaxValue(entity.getMaxValue())
                 .setDefault(entity.isDefault())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
+                .setStaff(staffMinMapper.toDto(entity.getStaff()));
     }
 }

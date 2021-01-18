@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.service.dto.out.UserMinOutDto;
 
+@Deprecated
 @Component
 public class UserMinDtoTransformer {
 

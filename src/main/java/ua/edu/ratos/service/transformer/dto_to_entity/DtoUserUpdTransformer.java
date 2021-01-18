@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.User;
 import ua.edu.ratos.service.dto.in.UserUpdInDto;
 
+@Deprecated
 @Component
 public class DtoUserUpdTransformer {
 

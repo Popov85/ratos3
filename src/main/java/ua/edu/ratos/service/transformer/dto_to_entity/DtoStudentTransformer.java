@@ -5,10 +5,10 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Clazz;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.repository.RoleRepository;
 import ua.edu.ratos.service.dto.in.StudentInDto;
+import ua.edu.ratos.service.transformer.UserMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class DtoStudentTransformer {
@@ -26,7 +27,7 @@ public class DtoStudentTransformer {
     @PersistenceContext
     private final EntityManager em;
 
-    private final DtoUserTransformer dtoUserTransformer;
+    private final UserMapper userMapper;
 
     private final RoleRepository roleRepository;
 
@@ -35,7 +36,7 @@ public class DtoStudentTransformer {
     public Student toEntity(@NonNull final StudentInDto dto) {
         Student stud = new Student();
         stud.setStudId(dto.getStudId());
-        User user = dtoUserTransformer.toEntity(dto.getUser());
+        User user = userMapper.toEntity(dto.getUser());
         Optional<Role> role = roleRepository.findByName(ROLE);
         user.setRoles(new HashSet<>(Arrays.asList(role.orElseThrow(()->
                 new EntityNotFoundException("ROLE_STUDENT is not found!")))));

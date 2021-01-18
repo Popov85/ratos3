@@ -10,7 +10,7 @@ import ua.edu.ratos.dao.repository.OrganisationRepository;
 import ua.edu.ratos.service.dto.in.OrganisationInDto;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
 import ua.edu.ratos.service.transformer.OrganisationMapper;
-import ua.edu.ratos.service.transformer.entity_to_dto.OrganisationMinDtoTransformer;
+import ua.edu.ratos.service.transformer.OrganisationMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -27,14 +27,14 @@ public class OrganisationService {
 
     private final OrganisationMapper organisationMapper;
 
-    private final OrganisationMinDtoTransformer organisationMinDtoTransformer;
+    private final OrganisationMinMapper organisationMinMapper;
 
 
     @Transactional
     public OrganisationMinOutDto save(@NonNull final OrganisationInDto dto) {
         Organisation organisation = organisationMapper.toEntity(dto);
         organisation = organisationRepository.save(organisation);
-        return organisationMinDtoTransformer.toDto(organisation);
+        return organisationMinMapper.toDto(organisation);
     }
 
     @Transactional
@@ -43,7 +43,7 @@ public class OrganisationService {
             throw new RuntimeException("Failed to update, nullable orgId field");
         Organisation organisation = organisationMapper.toEntity(dto);
         organisation = organisationRepository.save(organisation);
-        return organisationMinDtoTransformer.toDto(organisation);
+        return organisationMinMapper.toDto(organisation);
     }
 
     @Transactional
@@ -66,7 +66,7 @@ public class OrganisationService {
         return organisationRepository
                 .findAllForDropDown()
                 .stream()
-                .map(organisationMinDtoTransformer::toDto)
+                .map(organisationMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 }

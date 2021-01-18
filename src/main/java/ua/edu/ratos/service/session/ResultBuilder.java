@@ -12,7 +12,7 @@ import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.grade.GradedResult;
-import ua.edu.ratos.service.transformer.entity_to_domain.UserDomainTransformer;
+import ua.edu.ratos.service.transformer.UserMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ResultBuilder {
 
     private final UserRepository userRepository;
 
-    private final UserDomainTransformer userDomainTransformer;
+    private final UserMapper userMapper;
 
     private final EvaluatorPostProcessor evaluatorPostProcessor;
 
@@ -63,7 +63,7 @@ public class ResultBuilder {
         Long userId = sessionData.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
-        UserDomain userDomain = userDomainTransformer.toDomain(user);
+        UserDomain userDomain = userMapper.toDomain(user);
 
         // 4. Additional params
         Map<Long, QuestionDomain> questionsMap = sessionData.getQuestionsMap();

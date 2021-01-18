@@ -6,13 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class ModeDtoTransformer {
 
-    private final StaffMinDtoTransformer staffMinDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     public ModeOutDto toDto(@NonNull final Mode entity) {
         return new ModeOutDto()
@@ -27,6 +28,6 @@ public class ModeDtoTransformer {
                 .setStarrable(entity.isStarrable())
                 .setPauseable(entity.isPauseable())
                 .setDefault(entity.isDefaultMode())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
+                .setStaff(staffMinMapper.toDto(entity.getStaff()));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Organisation;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
 
+@Deprecated
 @Component
 public class OrganisationMinDtoTransformer {
 

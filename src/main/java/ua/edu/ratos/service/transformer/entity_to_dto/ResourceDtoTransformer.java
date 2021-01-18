@@ -6,13 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.service.dto.out.ResourceOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class ResourceDtoTransformer {
 
-    private final StaffMinDtoTransformer staffMinDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     public ResourceOutDto toDto(@NonNull final Resource entity) {
         return new ResourceOutDto()
@@ -23,6 +24,6 @@ public class ResourceDtoTransformer {
                 .setWidth(entity.getWidth())
                 .setHeight(entity.getHeight())
                 .setLastUsed(entity.getLastUsed())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()));
+                .setStaff(staffMinMapper.toDto(entity.getStaff()));
     }
 }

@@ -11,9 +11,8 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.DepartmentInDto;
 import ua.edu.ratos.service.dto.out.DepartmentMinOutDto;
 import ua.edu.ratos.service.dto.out.DepartmentOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoDepartmentTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.DepartmentDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.DepartmentMinDtoTransformer;
+import ua.edu.ratos.service.transformer.DepartmentMapper;
+import ua.edu.ratos.service.transformer.DepartmentMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -28,31 +27,29 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    private final DtoDepartmentTransformer dtoDepartmentTransformer;
+    private final DepartmentMapper departmentMapper;
 
-    private final DepartmentDtoTransformer departmentDtoTransformer;
-
-    private final DepartmentMinDtoTransformer departmentMinDtoTransformer;
+    private final DepartmentMinMapper departmentMinMapper;
 
     private final SecurityUtils securityUtils;
 
 
     @Transactional
     public DepartmentOutDto save(@NonNull final DepartmentInDto dto) {
-        Department department = dtoDepartmentTransformer.toEntity(dto);
+        Department department = departmentMapper.toEntity(dto);
         checkModificationPossibility(department);
         department = departmentRepository.save(department);
-        return departmentDtoTransformer.toDto(department);
+        return departmentMapper.toDto(department);
     }
 
     @Transactional
     public DepartmentOutDto update(@NonNull final DepartmentInDto dto) {
         if (dto.getDepId()==null)
             throw new RuntimeException("Failed to update, nullable depId field");
-        Department department = dtoDepartmentTransformer.toEntity(dto);
+        Department department = departmentMapper.toEntity(dto);
         checkModificationPossibility(department);
         department = departmentRepository.save(department);
-        return departmentDtoTransformer.toDto(department);
+        return departmentMapper.toDto(department);
     }
 
     @Transactional
@@ -97,7 +94,7 @@ public class DepartmentService {
     public Set<DepartmentMinOutDto> findAllByFacIdForDropDown() {
         return departmentRepository.findAllByFacIdForDropDown(securityUtils.getAuthFacId())
                 .stream()
-                .map(departmentMinDtoTransformer::toDto)
+                .map(departmentMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -106,7 +103,7 @@ public class DepartmentService {
     public Set<DepartmentMinOutDto> findAllByFacIdForDropDown(@NonNull final Long facId) {
         return departmentRepository.findAllByFacIdForDropDown(facId)
                 .stream()
-                .map(departmentMinDtoTransformer::toDto)
+                .map(departmentMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -117,7 +114,7 @@ public class DepartmentService {
     public Set<DepartmentOutDto> findAllByFacIdForTable() {
         return departmentRepository.findAllByFacIdForTable(securityUtils.getAuthFacId())
                 .stream()
-                .map(departmentDtoTransformer::toDto)
+                .map(departmentMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -125,7 +122,7 @@ public class DepartmentService {
     public Set<DepartmentOutDto> findAllByOrgIdForTable() {
         return departmentRepository.findAllByOrgIdForTable(securityUtils.getAuthOrgId())
                 .stream()
-                .map(departmentDtoTransformer::toDto)
+                .map(departmentMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -133,7 +130,7 @@ public class DepartmentService {
     public Set<DepartmentOutDto> findAllByRatosForTable() {
         return departmentRepository.findAllByRatosForTable()
                 .stream()
-                .map(departmentDtoTransformer::toDto)
+                .map(departmentMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

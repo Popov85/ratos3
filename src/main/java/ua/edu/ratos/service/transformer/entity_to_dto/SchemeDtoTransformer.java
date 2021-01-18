@@ -11,6 +11,7 @@ import ua.edu.ratos.service.dto.out.GroupMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class SchemeDtoTransformer {
 
     private final CourseMinDtoTransformer courseMinDtoTransformer;
 
-    private final StaffMinDtoTransformer staffDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     private final AccessDtoTransformer accessDtoTransformer;
 
@@ -59,7 +60,7 @@ public class SchemeDtoTransformer {
                 .setGradingDetails(schemeGradingManagerService
                         .findDetails(entity.getSchemeId(), entity.getGrading().getGradingId()))
                 .setCourse(courseMinDtoTransformer.toDto(entity.getCourse()))
-                .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
+                .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()));
 
         List<SchemeThemeOutDto> themes = entity.getThemes().stream().map(t -> schemeThemeDtoTransformer.toDto(t)).collect(Collectors.toList());

@@ -6,19 +6,20 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.game.Game;
 import ua.edu.ratos.service.dto.out.game.AllTimesGamerOutDto;
 import ua.edu.ratos.service.session.GameLabelResolver;
+import ua.edu.ratos.service.transformer.StudMinMapper;
 
 @Component
 public class TotalTopDtoTransformer {
 
-    private StudMinDtoTransformer studMinDtoTransformer;
+    private StudMinMapper studMinMapper;
 
     private GameLabelResolver gameLabelResolver;
 
     private TotalAchievementsDtoTransformer totalAchievementsDtoTransformer;
 
     @Autowired
-    public void setStudMinDtoTransformer(StudMinDtoTransformer studMinDtoTransformer) {
-        this.studMinDtoTransformer = studMinDtoTransformer;
+    public void setStudMinDtoTransformer(StudMinMapper studMinMapper) {
+        this.studMinMapper = studMinMapper;
     }
 
     @Autowired
@@ -33,7 +34,7 @@ public class TotalTopDtoTransformer {
 
     public AllTimesGamerOutDto toDto(@NonNull final Game entity) {
         return new AllTimesGamerOutDto()
-                .setStudent(studMinDtoTransformer.toDto(entity.getStud()))
+                .setStudent(studMinMapper.toDto(entity.getStud()))
                 .setLabel(gameLabelResolver.getLabel(entity.getTotalWins()))
                 .setTotalAchievements(totalAchievementsDtoTransformer.toDto(entity));
     }

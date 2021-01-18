@@ -5,19 +5,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Student;
 import ua.edu.ratos.service.dto.out.StudOutDto;
+import ua.edu.ratos.service.transformer.FacultyMinMapper;
+import ua.edu.ratos.service.transformer.OrganisationMinMapper;
+import ua.edu.ratos.service.transformer.UserMapper;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Component
 public class StudDtoTransformer {
 
-    private UserDtoTransformer userDtoTransformer;
+    private UserMapper userMapper;
 
     private ClassMinDtoTransformer classMinDtoTransformer;
 
-    private FacultyMinDtoTransformer facultyMinDtoTransformer;
+    private FacultyMinMapper facultyMinMapper;
 
-    private OrganisationMinDtoTransformer organisationMinDtoTransformer;
+    private OrganisationMinMapper organisationMinMapper;
 
     @Autowired
     public void setClassMinDtoTransformer(ClassMinDtoTransformer classMinDtoTransformer) {
@@ -25,27 +30,27 @@ public class StudDtoTransformer {
     }
 
     @Autowired
-    public void setUserDtoTransformer(UserDtoTransformer userDtoTransformer) {
-        this.userDtoTransformer = userDtoTransformer;
+    public void setUserDtoTransformer(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Autowired
-    public void setFacultyMinDtoTransformer(FacultyMinDtoTransformer facultyMinDtoTransformer) {
-        this.facultyMinDtoTransformer = facultyMinDtoTransformer;
+    public void setFacultyMinDtoTransformer(FacultyMinMapper facultyMinMapper) {
+        this.facultyMinMapper = facultyMinMapper;
     }
 
     @Autowired
-    public void setOrganisationMinDtoTransformer(OrganisationMinDtoTransformer organisationMinDtoTransformer) {
-        this.organisationMinDtoTransformer = organisationMinDtoTransformer;
+    public void setOrganisationMinDtoTransformer(OrganisationMinMapper organisationMinMapper) {
+        this.organisationMinMapper = organisationMinMapper;
     }
 
     public StudOutDto toDto(@NonNull final Student entity) {
         return new StudOutDto()
                 .setStudId(entity.getStudId())
-                .setUser(userDtoTransformer.toDto(entity.getUser()))
+                .setUser(userMapper.toDto(entity.getUser()))
                 .setStudentClass(classMinDtoTransformer.toDto(entity.getStudentClass()))
-                .setFaculty(facultyMinDtoTransformer.toDto(entity.getFaculty()))
-                .setOrganisation(organisationMinDtoTransformer.toDto(entity.getOrganisation()))
+                .setFaculty(facultyMinMapper.toDto(entity.getFaculty()))
+                .setOrganisation(organisationMinMapper.toDto(entity.getOrganisation()))
                 .setEntranceYear(entity.getEntranceYear());
     }
 

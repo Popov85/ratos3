@@ -5,22 +5,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Group;
 import ua.edu.ratos.service.dto.out.GroupOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
+import ua.edu.ratos.service.transformer.StudMapper;
 
 @Component
 public class GroupDtoTransformer {
 
-    private StaffMinDtoTransformer staffMinDtoTransformer;
+    private StaffMinMapper staffMinMapper;
 
-    private StudDtoTransformer studDtoTransformer;
+    private StudMapper studMapper;
 
     @Autowired
-    public void setStaffMinDtoTransformer(StaffMinDtoTransformer staffMinDtoTransformer) {
-        this.staffMinDtoTransformer = staffMinDtoTransformer;
+    public void setStaffMinDtoTransformer(StaffMinMapper staffMinMapper) {
+        this.staffMinMapper = staffMinMapper;
     }
 
     @Autowired
-    public void setStudMinDtoTransformer(StudDtoTransformer studMinDtoTransformer) {
-        this.studDtoTransformer = studMinDtoTransformer;
+    public void setStudMinDtoTransformer(StudMapper studMapper) {
+        this.studMapper = studMapper;
     }
 
 
@@ -30,8 +32,8 @@ public class GroupDtoTransformer {
                 .setName(entity.getName())
                 .setCreated(entity.getCreated())
                 .setEnabled(entity.isEnabled())
-                .setStaff(staffMinDtoTransformer.toDto(entity.getStaff()))
-                .setStudents(studDtoTransformer.toDto(entity.getStudents()));
+                .setStaff(staffMinMapper.toDto(entity.getStaff()))
+                .setStudents(studMapper.toDto(entity.getStudents()));
     }
 
 }

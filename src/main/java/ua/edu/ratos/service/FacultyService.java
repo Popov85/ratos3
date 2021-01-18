@@ -12,8 +12,7 @@ import ua.edu.ratos.service.dto.in.FacultyInDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyOutDto;
 import ua.edu.ratos.service.transformer.FacultyMapper;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoFacultyTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FacultyMinDtoTransformer;
+import ua.edu.ratos.service.transformer.FacultyMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -30,7 +29,7 @@ public class FacultyService {
 
     private final FacultyMapper facultyMapper;
 
-    private final FacultyMinDtoTransformer facultyMinDtoTransformer;
+    private final FacultyMinMapper facultyMinMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -88,7 +87,7 @@ public class FacultyService {
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown() {
         return facultyRepository.findAllByOrgIdForDropDown(securityUtils.getAuthOrgId())
                 .stream()
-                .map(facultyMinDtoTransformer::toDto)
+                .map(facultyMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -98,7 +97,7 @@ public class FacultyService {
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown(@NonNull final Long orgId) {
         return facultyRepository.findAllByOrgIdForDropDown(orgId)
                 .stream()
-                .map(facultyMinDtoTransformer::toDto)
+                .map(facultyMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

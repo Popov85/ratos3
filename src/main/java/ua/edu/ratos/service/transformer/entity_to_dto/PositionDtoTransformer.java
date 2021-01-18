@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Position;
 import ua.edu.ratos.service.dto.out.PositionOutDto;
 
+@Deprecated
 @Component
 public class PositionDtoTransformer {
 

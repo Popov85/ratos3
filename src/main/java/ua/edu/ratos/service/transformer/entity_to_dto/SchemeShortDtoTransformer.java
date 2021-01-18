@@ -5,6 +5,7 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
+import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Component
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class SchemeShortDtoTransformer {
 
     private final CourseMinDtoTransformer courseMinDtoTransformer;
 
-    private final StaffMinDtoTransformer staffDtoTransformer;
+    private final StaffMinMapper staffMinMapper;
 
     private final AccessDtoTransformer accessDtoTransformer;
 
@@ -40,7 +41,7 @@ public class SchemeShortDtoTransformer {
                 .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
                 .setGrading(gradingDtoTransformer.toDto(entity.getGrading()))
                 .setCourse(courseMinDtoTransformer.toDto(entity.getCourse()))
-                .setStaff(staffDtoTransformer.toDto(entity.getStaff()))
+                .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessDtoTransformer.toDto(entity.getAccess()))
                 .setThemesCount(entity.getThemes().size())
                 .setGroupsCount(entity.getGroups().size());

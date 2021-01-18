@@ -8,8 +8,7 @@ import ua.edu.ratos.dao.entity.Position;
 import ua.edu.ratos.dao.repository.PositionRepository;
 import ua.edu.ratos.service.dto.in.PositionInDto;
 import ua.edu.ratos.service.dto.out.PositionOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoPositionTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.PositionDtoTransformer;
+import ua.edu.ratos.service.transformer.PositionMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -23,13 +22,11 @@ public class PositionService {
 
     private final PositionRepository positionRepository;
 
-    private final DtoPositionTransformer dtoPositionTransformer;
-
-    private final PositionDtoTransformer positionDtoTransformer;
+    private final PositionMapper positionMapper;
 
     @Transactional
     public Long save(@NonNull final PositionInDto dto) {
-        Position position = dtoPositionTransformer.toEntity(dto);
+        Position position = positionMapper.toEntity(dto);
         return positionRepository.save(position).getPosId();
     }
 
@@ -50,7 +47,7 @@ public class PositionService {
     public Set<PositionOutDto> findAll() {
         return positionRepository.findAll()
                 .stream()
-                .map(p->positionDtoTransformer.toDto(p))
+                .map(p->positionMapper.toDto(p))
                 .collect(Collectors.toSet());
     }
 }
