@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Student;
 import ua.edu.ratos.service.dto.out.StudOutDto;
+import ua.edu.ratos.service.transformer.ClassMinMapper;
 import ua.edu.ratos.service.transformer.FacultyMinMapper;
 import ua.edu.ratos.service.transformer.OrganisationMinMapper;
 import ua.edu.ratos.service.transformer.UserMapper;
@@ -18,15 +19,15 @@ public class StudDtoTransformer {
 
     private UserMapper userMapper;
 
-    private ClassMinDtoTransformer classMinDtoTransformer;
+    private ClassMinMapper classMinMapper;
 
     private FacultyMinMapper facultyMinMapper;
 
     private OrganisationMinMapper organisationMinMapper;
 
     @Autowired
-    public void setClassMinDtoTransformer(ClassMinDtoTransformer classMinDtoTransformer) {
-        this.classMinDtoTransformer = classMinDtoTransformer;
+    public void setClassMinDtoTransformer(ClassMinMapper classMinMapper) {
+        this.classMinMapper = classMinMapper;
     }
 
     @Autowired
@@ -48,7 +49,7 @@ public class StudDtoTransformer {
         return new StudOutDto()
                 .setStudId(entity.getStudId())
                 .setUser(userMapper.toDto(entity.getUser()))
-                .setStudentClass(classMinDtoTransformer.toDto(entity.getStudentClass()))
+                .setStudentClass(classMinMapper.toDto(entity.getStudentClass()))
                 .setFaculty(facultyMinMapper.toDto(entity.getFaculty()))
                 .setOrganisation(organisationMinMapper.toDto(entity.getOrganisation()))
                 .setEntranceYear(entity.getEntranceYear());

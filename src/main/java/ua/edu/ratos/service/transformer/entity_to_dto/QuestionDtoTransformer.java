@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.dto.out.question.*;
+import ua.edu.ratos.service.transformer.HelpMinMapper;
+import ua.edu.ratos.service.transformer.ResourceMapper;
 
 @Slf4j
 @Component
@@ -14,9 +16,9 @@ public class QuestionDtoTransformer {
 
     private final AnswerDtoTransformer answerDtoTransformer;
 
-    private final HelpMinDtoTransformer helpDtoTransformer;
+    private final HelpMinMapper helpMinMapper;
 
-    private final ResourceDtoTransformer resourceDtoTransformer;
+    private final ResourceMapper resourceMapper;
 
     private final QuestionTypeDtoTransformer questionTypeDtoTransformer;
 
@@ -69,8 +71,8 @@ public class QuestionDtoTransformer {
         dto.setLevel(entity.getLevel());
         dto.setRequired(entity.isRequired());
         dto.setType(questionTypeDtoTransformer.toDto(entity.getType()));
-        dto.setHelp(entity.getHelp().isPresent() ? helpDtoTransformer.toDto(entity.getHelp().get()) : null);
-        dto.setResource(entity.getResource().isPresent() ? resourceDtoTransformer.toDto(entity.getResource().get()): null);
+        dto.setHelp(entity.getHelp().isPresent() ? helpMinMapper.toDto(entity.getHelp().get()) : null);
+        dto.setResource(entity.getResource().isPresent() ? resourceMapper.toDto(entity.getResource().get()): null);
     }
     
 }

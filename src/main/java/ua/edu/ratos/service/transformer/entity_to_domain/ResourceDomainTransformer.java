@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.service.domain.ResourceDomain;
 
+@Deprecated
 @Slf4j
 @Component
 public class ResourceDomainTransformer {

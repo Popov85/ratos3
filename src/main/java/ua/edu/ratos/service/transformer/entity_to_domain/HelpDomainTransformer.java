@@ -6,16 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Help;
 import ua.edu.ratos.service.domain.HelpDomain;
+import ua.edu.ratos.service.transformer.ResourceMapper;
 
+@Deprecated
 @Slf4j
 @Component
 public class HelpDomainTransformer {
 
-    private ResourceDomainTransformer resourceDomainTransformer;
+    private ResourceMapper resourceMapper;
 
     @Autowired
-    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
-        this.resourceDomainTransformer = resourceDomainTransformer;
+    public void setResourceDomainTransformer(ResourceMapper resourceMapper) {
+        this.resourceMapper = resourceMapper;
     }
 
     public HelpDomain toDomain(@NonNull final Help entity) {
@@ -23,7 +25,7 @@ public class HelpDomainTransformer {
                 .setHelpId(entity.getHelpId())
                 .setName(entity.getName())
                 .setHelp(entity.getHelp())
-                .setResourceDomain((entity.getResource().isPresent()) ? resourceDomainTransformer.toDomain(entity.getResource().get()) : null);
+                .setResourceDomain((entity.getResource().isPresent()) ? resourceMapper.toDomain(entity.getResource().get()) : null);
     }
 
 }

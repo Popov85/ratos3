@@ -6,19 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Help;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
+import ua.edu.ratos.service.transformer.ResourceMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 public class HelpDtoTransformer {
 
-    private ResourceDtoTransformer resourceDtoTransformer;
+    private ResourceMapper resourceMapper;
 
     private StaffMinMapper staffMinMapper;
 
     @Autowired
-    public void setResourceDtoTransformer(ResourceDtoTransformer resourceDtoTransformer) {
-        this.resourceDtoTransformer = resourceDtoTransformer;
+    public void setResourceDtoTransformer(ResourceMapper resourceMapper) {
+        this.resourceMapper = resourceMapper;
     }
 
     @Autowired
@@ -32,6 +34,6 @@ public class HelpDtoTransformer {
                 .setName(entity.getName())
                 .setHelp(entity.getHelp())
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
-                .setResource((entity.getResource().isPresent()) ? resourceDtoTransformer.toDto(entity.getResource().get()) : null);
+                .setResource((entity.getResource().isPresent()) ? resourceMapper.toDto(entity.getResource().get()) : null);
     }
 }

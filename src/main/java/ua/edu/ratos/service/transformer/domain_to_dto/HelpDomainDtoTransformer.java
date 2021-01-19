@@ -5,15 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.dto.out.HelpMinOutDto;
+import ua.edu.ratos.service.transformer.ResourceMapper;
 
+@Deprecated
 @Component
 public class HelpDomainDtoTransformer {
 
-    private ResourceDomainDtoTransformer resourceDomainDtoTransformer;
+    private ResourceMapper resourceMapper;
 
     @Autowired
-    public void setResourceDomainDtoTransformer(ResourceDomainDtoTransformer resourceDomainDtoTransformer) {
-        this.resourceDomainDtoTransformer = resourceDomainDtoTransformer;
+    public void setResourceDomainDtoTransformer(ResourceMapper resourceMapper) {
+        this.resourceMapper = resourceMapper;
     }
 
     public HelpMinOutDto toDto(@NonNull final HelpDomain domain) {
@@ -22,6 +24,6 @@ public class HelpDomainDtoTransformer {
                 .setName(domain.getName())
                 .setHelp(domain.getHelp())
                 .setResource(((domain.getResourceDomain().isPresent()) ?
-                        resourceDomainDtoTransformer.toDto(domain.getResourceDomain().get()) : null));
+                        resourceMapper.toDto(domain.getResourceDomain().get()) : null));
     }
 }

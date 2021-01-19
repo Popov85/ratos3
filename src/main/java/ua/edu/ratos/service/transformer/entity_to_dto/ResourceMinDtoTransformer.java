@@ -9,6 +9,7 @@ import ua.edu.ratos.service.dto.out.ResourceMinOutDto;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Slf4j
 @Component
 public class ResourceMinDtoTransformer {

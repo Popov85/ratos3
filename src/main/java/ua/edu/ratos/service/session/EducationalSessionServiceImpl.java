@@ -21,7 +21,7 @@ import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import ua.edu.ratos.service.dto.session.StarredInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
-import ua.edu.ratos.service.transformer.domain_to_dto.HelpDomainDtoTransformer;
+import ua.edu.ratos.service.transformer.HelpMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,7 +51,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
 
     private final SessionPreservedService sessionPreservedService;
 
-    private final HelpDomainDtoTransformer helpDomainDtoTransformer;
+    private final HelpMapper helpMapper;
 
     private final ComplaintService complaintService;
 
@@ -171,7 +171,7 @@ public class EducationalSessionServiceImpl implements EducationalSessionService 
         Optional<HelpDomain> help = sessionData.getQuestionsMap().get(questionId).getHelpDomain();
         if (!help.isPresent()) throw new IllegalStateException(NO_HELP_AVAILABLE);
         metaDataService.createOrUpdateHelp(sessionData, questionId);
-        return helpDomainDtoTransformer.toDto(help.get());
+        return helpMapper.toDto(help.get());
     }
 
     @Override

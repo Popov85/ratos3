@@ -6,21 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.answer.*;
 import ua.edu.ratos.service.domain.answer.*;
+import ua.edu.ratos.service.transformer.ResourceMapper;
+
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class AnswerDomainTransformer {
 
-    private ResourceDomainTransformer resourceDomainTransformer;
+    private ResourceMapper resourceMapper;
 
     private SettingsFBDomainTransformer settingsFBDomainTransformer;
 
     private PhraseDomainTransformer phraseDomainTransformer;
 
     @Autowired
-    public void setResourceDomainTransformer(ResourceDomainTransformer resourceDomainTransformer) {
-        this.resourceDomainTransformer = resourceDomainTransformer;
+    public void setResourceDomainTransformer(ResourceMapper resourceMapper) {
+        this.resourceMapper = resourceMapper;
     }
 
     @Autowired
@@ -62,7 +64,7 @@ public class AnswerDomainTransformer {
                 .setPercent(entity.getPercent())
                 .setRequired(entity.isRequired())
                 .setResourceDomain((entity.getResource().isPresent()) ?
-                        resourceDomainTransformer.toDomain(entity.getResource().get()) : null);
+                        resourceMapper.toDomain(entity.getResource().get()) : null);
     }
 
     public AnswerMQDomain toDomain(@NonNull final AnswerMQ entity) {

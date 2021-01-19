@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.domain.ResourceDomain;
 import ua.edu.ratos.service.dto.out.ResourceMinOutDto;
 
+@Deprecated
 @Component
 public class ResourceDomainDtoTransformer {
 

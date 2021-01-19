@@ -5,6 +5,7 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionMinOutDto;
+import ua.edu.ratos.service.transformer.ResourceMinMapper;
 
 @Component
 @AllArgsConstructor
@@ -12,7 +13,7 @@ public class QuestionMinDtoTransformer {
 
     private final ThemeMinDtoTransformer themeMinDtoTransformer;
 
-    private final ResourceMinDtoTransformer resourceMinDtoTransformer;
+    private final ResourceMinMapper resourceMinMapper;
 
     public QuestionSessionMinOutDto toDto(@NonNull final Question entity) {
         return new QuestionSessionMinOutDto()
@@ -22,6 +23,6 @@ public class QuestionMinDtoTransformer {
                 .setType(entity.getType().getTypeId())
                 .setHelpAvailable(entity.getHelp().isPresent())
                 .setTheme(themeMinDtoTransformer.toDto(entity.getTheme()))
-                .setResources((entity.getResources()!=null) ? resourceMinDtoTransformer.toDto(entity.getResources()) : null);
+                .setResources((entity.getResources()!=null) ? resourceMinMapper.toDto(entity.getResources()) : null);
     }
 }

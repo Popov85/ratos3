@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.domain.question.*;
+import ua.edu.ratos.service.transformer.HelpMapper;
+import ua.edu.ratos.service.transformer.ResourceMapper;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,9 +23,9 @@ public class QuestionDomainTransformer {
 
     private final AnswerDomainTransformer answerDomainTransformer;
 
-    private final HelpDomainTransformer helpDomainTransformer;
+    private final HelpMapper helpMapper;
 
-    private final ResourceDomainTransformer resourceDomainTransformer;
+    private final ResourceMapper resourceMapper;
 
     // Here opened earlier transaction comes into play
     @Transactional(propagation = Propagation.MANDATORY)
@@ -93,11 +95,11 @@ public class QuestionDomainTransformer {
         domain.setType(entity.getType().getTypeId());
 
         domain.setHelpDomain((entity.getHelp().isPresent())
-                ? helpDomainTransformer.toDomain(entity.getHelp().get()) : null);
+                ? helpMapper.toDomain(entity.getHelp().get()) : null);
         if (entity.getResources()!=null) {
             domain.setResourceDomains(entity.getResources()
                     .stream()
-                    .map(resourceDomainTransformer::toDomain)
+                    .map(resourceMapper::toDomain)
                     .collect(Collectors.toSet()));
         } else {
             domain.setResourceDomains(Collections.emptySet());

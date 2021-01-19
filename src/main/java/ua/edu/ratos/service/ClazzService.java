@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.ClazzRepository;
 import ua.edu.ratos.service.dto.out.ClassMinOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.ClassMinDtoTransformer;
+import ua.edu.ratos.service.transformer.ClassMinMapper;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ public class ClazzService {
 
     private final ClazzRepository classRepository;
 
-    private final ClassMinDtoTransformer classMinDtoTransformer;
+    private final ClassMinMapper classMinMapper;
 
     // TODO: CRUD by dep. staff;
 
@@ -31,7 +31,7 @@ public class ClazzService {
         return classRepository
                 .findAllByFacultyId(facId)
                 .stream()
-                .map(classMinDtoTransformer::toDto)
+                .map(classMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 }

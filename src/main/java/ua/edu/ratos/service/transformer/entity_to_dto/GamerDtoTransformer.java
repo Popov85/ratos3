@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
 import ua.edu.ratos.service.dto.out.game.GamerOutDto;
 import ua.edu.ratos.service.session.GameLabelResolver;
+import ua.edu.ratos.service.transformer.ClassMinMapper;
 import ua.edu.ratos.service.transformer.FacultyMinMapper;
 import ua.edu.ratos.service.transformer.OrganisationMinMapper;
 import ua.edu.ratos.service.transformer.UserMinMapper;
@@ -20,7 +21,7 @@ public class GamerDtoTransformer {
 
     private UserMinMapper userMinMapper;
 
-    private ClassMinDtoTransformer classMinDtoTransformer;
+    private ClassMinMapper classMinMapper;
 
     private FacultyMinMapper facultyMinMapper;
 
@@ -33,8 +34,8 @@ public class GamerDtoTransformer {
     private WeeklyAchievementsDtoTransformer weeklyAchievementsDtoTransformer;
 
     @Autowired
-    public void setClassMinDtoTransformer(ClassMinDtoTransformer classMinDtoTransformer) {
-        this.classMinDtoTransformer = classMinDtoTransformer;
+    public void setClassMinDtoTransformer(ClassMinMapper classMinMapper) {
+        this.classMinMapper = classMinMapper;
     }
 
     @Autowired
@@ -83,7 +84,7 @@ public class GamerDtoTransformer {
         return new StudMinOutDto()
                 .setStudId(entity.getStudId())
                 .setUser(userMinMapper.toDto(entity.getUser()))
-                .setStudentClass(classMinDtoTransformer.toDto(entity.getStudentClass()))
+                .setStudentClass(classMinMapper.toDto(entity.getStudentClass()))
                 .setFaculty(facultyMinMapper.toDto(entity.getFaculty()))
                 .setOrganisation(organisationMinMapper.toDto(entity.getOrganisation()))
                 .setEntranceYear(entity.getEntranceYear());

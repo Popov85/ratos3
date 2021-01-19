@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.answer.*;
 import ua.edu.ratos.service.dto.out.answer.*;
+import ua.edu.ratos.service.transformer.ResourceMinMapper;
 
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public class AnswerDtoTransformer {
 
     private final SettingsFBDtoTransformer settingsFBDtoTransformer;
 
-    private final ResourceMinDtoTransformer resourceMinDtoTransformer;
+    private final ResourceMinMapper resourceMinMapper;
 
     private final PhraseDtoTransformer phraseDtoTransformer;
 
@@ -49,7 +50,7 @@ public class AnswerDtoTransformer {
                 .setAnswer(entity.getAnswer())
                 .setPercent(entity.getPercent())
                 .setRequired(entity.isRequired())
-                .setResource((entity.getResource().isPresent()) ? resourceMinDtoTransformer.toDto(entity.getResource().get()) : null);
+                .setResource((entity.getResource().isPresent()) ? resourceMinMapper.toDto(entity.getResource().get()) : null);
     }
 
     public AnswerMQOutDto toDto(@NonNull final AnswerMQ entity) {

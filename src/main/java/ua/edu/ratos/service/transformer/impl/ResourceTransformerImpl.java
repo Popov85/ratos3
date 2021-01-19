@@ -1,24 +1,22 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ResourceInDto;
+import ua.edu.ratos.service.transformer.ResourceTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.OffsetDateTime;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoResourceTransformer {
+public class ResourceTransformerImpl implements ResourceTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -27,8 +25,6 @@ public class DtoResourceTransformer {
 
     private final SecurityUtils securityUtils;
 
-
-    @Transactional(propagation = Propagation.MANDATORY)
     public Resource toEntity(@NonNull final ResourceInDto dto) {
         final Resource resource = modelMapper.map(dto, Resource.class);
         resource.setStaff((em.getReference(Staff.class, securityUtils.getAuthStaffId())));

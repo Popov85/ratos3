@@ -13,8 +13,8 @@ import ua.edu.ratos.dao.repository.HelpRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.HelpInDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoHelpTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.HelpDtoTransformer;
+import ua.edu.ratos.service.transformer.HelpMapper;
+import ua.edu.ratos.service.transformer.HelpTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -34,9 +34,9 @@ public class HelpService {
 
     private final HelpRepository helpRepository;
 
-    private final DtoHelpTransformer dtoHelpTransformer;
+    private final HelpTransformer helpTransformer;
 
-    private final HelpDtoTransformer helpDtoTransformer;
+    private final HelpMapper helpMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -44,16 +44,16 @@ public class HelpService {
     //-------------------------------------------------------CRUD-------------------------------------------------------
     @Transactional
     public HelpOutDto save(@NonNull final HelpInDto dto) {
-        Help help = dtoHelpTransformer.toEntity(dto);
-        return helpDtoTransformer.toDto(helpRepository.save(help));
+        Help help = helpTransformer.toEntity(dto);
+        return helpMapper.toDto(helpRepository.save(help));
     }
 
     @Transactional
     public HelpOutDto update(@NonNull final HelpInDto dto) {
         if (dto.getHelpId()==null)
             throw new RuntimeException("Failed to update a help, nullable helpId");
-        Help help = dtoHelpTransformer.toEntity(dto);
-        return helpDtoTransformer.toDto(helpRepository.save(help));
+        Help help = helpTransformer.toEntity(dto);
+        return helpMapper.toDto(helpRepository.save(help));
     }
 
     @Transactional
@@ -97,35 +97,35 @@ public class HelpService {
         log.debug("Service got job, depId = {}", securityUtils.getAuthDepId());
         return helpRepository.findAllByDepartment(securityUtils.getAuthDepId())
                 .stream()
-                .map(helpDtoTransformer::toDto)
+                .map(helpMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
     //-----------------------------------------Staff table for future references----------------------------------------
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return helpRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(helpDtoTransformer::toDto);
+        return helpRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(helpMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return helpRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(helpDtoTransformer::toDto);
+        return helpRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(helpMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return helpRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(helpDtoTransformer::toDto);
+        return helpRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(helpMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return helpRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(helpDtoTransformer::toDto);
+        return helpRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(helpMapper::toDto);
     }
 
     //----------------------------------------------------ADMIN table---------------------------------------------------
     @Transactional(readOnly = true)
     public Page<HelpOutDto> findAll(@NonNull final Pageable pageable) {
-        return helpRepository.findAll(pageable).map(helpDtoTransformer::toDto);
+        return helpRepository.findAll(pageable).map(helpMapper::toDto);
     }
 
 }
