@@ -10,8 +10,8 @@ import ua.edu.ratos.dao.repository.SettingsFBRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsFBInDto;
 import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsFBTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SettingsFBDtoTransformer;
+import ua.edu.ratos.service.transformer.SettingsFBMapper;
+import ua.edu.ratos.service.transformer.SettingsFBTransformer;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -23,22 +23,22 @@ public class SettingsFBService {
 
     private final SettingsFBRepository settingsFBRepository;
 
-    private final DtoSettingsFBTransformer dtoSettingsFBTransformer;
+    private final SettingsFBTransformer settingsFBTransformer;
 
-    private final SettingsFBDtoTransformer settingsFBDtoTransformer;
+    private final SettingsFBMapper settingsFBMapper;
 
     private final SecurityUtils securityUtils;
 
     //--------------------------------------------------------CRUD------------------------------------------------------
     @Transactional
     public Long save(@NonNull final SettingsFBInDto dto) {
-        return settingsFBRepository.save(dtoSettingsFBTransformer.toEntity(dto)).getSettingsId();
+        return settingsFBRepository.save(settingsFBTransformer.toEntity(dto)).getSettingsId();
     }
 
     @Transactional
     public void update(@NonNull final SettingsFBInDto dto) {
         if (dto.getSettingsId() == null) throw new RuntimeException("SettingsId is not found!");
-        settingsFBRepository.save(dtoSettingsFBTransformer.toEntity(dto));
+        settingsFBRepository.save(settingsFBTransformer.toEntity(dto));
     }
 
     @Transactional
@@ -49,34 +49,34 @@ public class SettingsFBService {
     //---------------------------------------------------One (for update)-----------------------------------------------
     @Transactional(readOnly = true)
     public SettingsFBOutDto findOneForEdit(@NonNull final Long setId) {
-        return settingsFBDtoTransformer.toDto(settingsFBRepository.findOneForEdit(setId)
+        return settingsFBMapper.toDto(settingsFBRepository.findOneForEdit(setId)
                 .orElseThrow(() -> new EntityNotFoundException(SETTINGS_FB_NOT_FOUND_ID + setId)));
     }
 
     //-----------------------------------------------------Staff table--------------------------------------------------
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return settingsFBRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(settingsFBDtoTransformer::toDto);
+        return settingsFBRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(settingsFBMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return settingsFBRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(settingsFBDtoTransformer::toDto);
+        return settingsFBRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), contains, pageable).map(settingsFBMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return settingsFBRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(settingsFBDtoTransformer::toDto);
+        return settingsFBRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(settingsFBMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String contains, @NonNull final Pageable pageable) {
-        return settingsFBRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(settingsFBDtoTransformer::toDto);
+        return settingsFBRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthDepId(), contains, pageable).map(settingsFBMapper::toDto);
     }
 
     //-----------------------------------------------------------ADMIN--------------------------------------------------
     @Transactional(readOnly = true)
     public Slice<SettingsFBOutDto> findAllAdmin(@NonNull final Pageable pageable) {
-        return settingsFBRepository.findAllAdmin(pageable).map(settingsFBDtoTransformer::toDto);
+        return settingsFBRepository.findAllAdmin(pageable).map(settingsFBMapper::toDto);
     }
 }

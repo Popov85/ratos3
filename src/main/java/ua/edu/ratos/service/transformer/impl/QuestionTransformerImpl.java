@@ -1,11 +1,8 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Help;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.Theme;
@@ -13,17 +10,16 @@ import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.QuestionTypeRepository;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.transformer.AnswerTransformer;
+import ua.edu.ratos.service.transformer.QuestionTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.Collection;
 
-@Deprecated
-@Slf4j
 @Component
 @AllArgsConstructor
-public class DtoQuestionTransformer {
+public class QuestionTransformerImpl implements QuestionTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -32,8 +28,6 @@ public class DtoQuestionTransformer {
 
     private final QuestionTypeRepository questionTypeRepository;
 
-
-    @Transactional(propagation = Propagation.MANDATORY)
     public QuestionMCQ toEntity(@NonNull final QuestionMCQInDto dto) {
         QuestionMCQ question = new QuestionMCQ();
         mapDto(dto, question, "MCQ");
@@ -41,7 +35,6 @@ public class DtoQuestionTransformer {
         return question;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public QuestionFBSQ toEntity(@NonNull final QuestionFBSQInDto dto) {
         check(dto.getAnswer().getPhrasesIds(), 1, "This question must contain at least one accepted phrase");
         QuestionFBSQ question = new QuestionFBSQ();
@@ -51,7 +44,6 @@ public class DtoQuestionTransformer {
         return question;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public QuestionFBMQ toEntity(@NonNull final QuestionFBMQInDto dto) {
         check(dto.getAnswers(), 1, "This question must contain at least 1 answer");
         QuestionFBMQ question = new QuestionFBMQ();
@@ -60,7 +52,6 @@ public class DtoQuestionTransformer {
         return question;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public QuestionMQ toEntity(@NonNull final QuestionMQInDto dto) {
         check(dto.getAnswers(), 2, "This question must contain at least 2 answers");
         QuestionMQ question = new QuestionMQ();
@@ -69,7 +60,6 @@ public class DtoQuestionTransformer {
         return question;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public QuestionSQ toEntity(@NonNull final QuestionSQInDto dto) {
         check(dto.getAnswers(), 3, "This question must contain at least 3 answers");
         QuestionSQ question = new QuestionSQ();
@@ -78,7 +68,6 @@ public class DtoQuestionTransformer {
         return question;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public void mapDto(@NonNull final QuestionInDto dto, @NonNull final Question question, @NonNull final String questionType) {
         question.setQuestionId(dto.getQuestionId());
         question.setQuestion(dto.getQuestion());
@@ -104,5 +93,4 @@ public class DtoQuestionTransformer {
         if (collection.isEmpty() || collection.size() < threshold)
             throw new IllegalStateException(message);
     }
-
 }

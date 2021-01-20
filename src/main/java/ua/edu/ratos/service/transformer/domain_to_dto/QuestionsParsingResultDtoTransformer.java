@@ -9,7 +9,7 @@ import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
 import ua.edu.ratos.service.dto.out.question.QuestionMCQOutDto;
 import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
 import ua.edu.ratos.service.parsers.QuestionsParsingResult;
-import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
+import ua.edu.ratos.service.transformer.QuestionMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +21,7 @@ public class QuestionsParsingResultDtoTransformer {
 
     private final QuestionsParsingIssueDtoTransformer questionsParsingIssueDtoTransformer;
 
-    private final QuestionDtoTransformer questionDtoTransformer;
+    private final QuestionMapper questionMapper;
 
     public QuestionsParsingResultOutDto toDto(@NonNull final QuestionsParsingResult parsingResult, boolean saved) {
         QuestionsParsingResultOutDto dto = new QuestionsParsingResultOutDto()
@@ -43,7 +43,7 @@ public class QuestionsParsingResultDtoTransformer {
     }
 
     private Set<QuestionMCQOutDto> toListOfQuestionsDto(@NonNull final List<QuestionMCQ> questions) {
-        return questions.stream().map(questionDtoTransformer::toDto).collect(Collectors.toSet());
+        return questions.stream().map(questionMapper::toDto).collect(Collectors.toSet());
     }
 
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.SettingsFB;
 import ua.edu.ratos.service.domain.SettingsFBDomain;
 
+@Deprecated
 @Slf4j
 @Component
 public class SettingsFBDomainTransformer {

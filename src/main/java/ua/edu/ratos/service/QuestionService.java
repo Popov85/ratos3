@@ -13,8 +13,8 @@ import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoQuestionTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.QuestionDtoTransformer;
+import ua.edu.ratos.service.transformer.QuestionMapper;
+import ua.edu.ratos.service.transformer.QuestionTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,47 +33,47 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    private final DtoQuestionTransformer dtoQuestionTransformer;
+    private final QuestionTransformer questionTransformer;
 
-    private final QuestionDtoTransformer questionDtoTransformer;
+    private final QuestionMapper questionMapper;
 
     //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
     public QuestionMCQOutDto save(@NonNull final QuestionMCQInDto dto) {
-        QuestionMCQ questionMCQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionMCQ);
+        QuestionMCQ questionMCQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionMCQ);
     }
 
     @Transactional
     public QuestionMCQOutDto update(@NonNull final QuestionMCQInDto dto) {
         if (dto.getQuestionId()==null)
             throw new RuntimeException("Failed to update question MCQ, questionId is not present!");
-        QuestionMCQ questionMCQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionMCQ);
+        QuestionMCQ questionMCQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionMCQ);
     }
 
     @Transactional
     public QuestionFBSQOutDto save(@NonNull final QuestionFBSQInDto dto) {
-        QuestionFBSQ questionFBSQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionFBSQ);
+        QuestionFBSQ questionFBSQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionFBSQ);
     }
 
     @Transactional
     public QuestionFBMQOutDto save(@NonNull final QuestionFBMQInDto dto) {
-        QuestionFBMQ questionFBMQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionFBMQ);
+        QuestionFBMQ questionFBMQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionFBMQ);
     }
 
     @Transactional
     public QuestionMQOutDto save(@NonNull final QuestionMQInDto dto) {
-        QuestionMQ questionMQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionMQ);
+        QuestionMQ questionMQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionMQ);
     }
 
     @Transactional
     public QuestionSQOutDto save(@NonNull final QuestionSQInDto dto) {
-        QuestionSQ questionSQ = questionRepository.save(dtoQuestionTransformer.toEntity(dto));
-        return questionDtoTransformer.toDto(questionSQ);
+        QuestionSQ questionSQ = questionRepository.save(questionTransformer.toEntity(dto));
+        return questionMapper.toDto(questionSQ);
     }
 
     /**
@@ -243,7 +243,7 @@ public class QuestionService {
         return questionRepository
                 .findAllMCQForEditByThemeId(themeId)
                 .stream()
-                .map(questionDtoTransformer::toDto)
+                .map(questionMapper::toDto)
                 .collect(Collectors.toSet());
     }
 }

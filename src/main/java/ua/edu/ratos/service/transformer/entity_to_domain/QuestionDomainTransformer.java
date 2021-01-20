@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.domain.ThemeDomain;
 import ua.edu.ratos.service.domain.question.*;
+import ua.edu.ratos.service.transformer.AnswerMapper;
 import ua.edu.ratos.service.transformer.HelpMapper;
 import ua.edu.ratos.service.transformer.ResourceMapper;
 
@@ -16,12 +17,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor
 public class QuestionDomainTransformer {
 
-    private final AnswerDomainTransformer answerDomainTransformer;
+    private final AnswerMapper answerMapper;
 
     private final HelpMapper helpMapper;
 
@@ -47,14 +49,14 @@ public class QuestionDomainTransformer {
         QuestionFBMQDomain domain = new QuestionFBMQDomain();
         mapDomain(entity, domain);
         domain.setAnswers(new HashSet<>());
-        entity.getAnswers().forEach(a-> domain.addAnswer(answerDomainTransformer.toDomain(a)));
+        entity.getAnswers().forEach(a-> domain.addAnswer(answerMapper.toDomain(a)));
         return domain;
     }
 
     public QuestionFBSQDomain toDomain(@NonNull final QuestionFBSQ entity) {
         QuestionFBSQDomain domain = new QuestionFBSQDomain();
         mapDomain(entity, domain);
-        domain.setAnswer(answerDomainTransformer.toDomain(entity.getAnswer()));
+        domain.setAnswer(answerMapper.toDomain(entity.getAnswer()));
         return domain;
     }
 
@@ -63,7 +65,7 @@ public class QuestionDomainTransformer {
         mapDomain(entity, domain);
         domain.setSingle(entity.isSingle());
         domain.setAnswers(new HashSet<>());
-        entity.getAnswers().forEach(a-> domain.addAnswer(answerDomainTransformer.toDomain(a)));
+        entity.getAnswers().forEach(a-> domain.addAnswer(answerMapper.toDomain(a)));
         return domain;
     }
 
@@ -71,14 +73,14 @@ public class QuestionDomainTransformer {
         QuestionMQDomain domain = new QuestionMQDomain();
         mapDomain(entity, domain);
         domain.setAnswers(new HashSet<>());
-        entity.getAnswers().forEach(a -> domain.addAnswer(answerDomainTransformer.toDomain(a)));
+        entity.getAnswers().forEach(a -> domain.addAnswer(answerMapper.toDomain(a)));
         return domain;
     }
 
     public QuestionSQDomain toDomain(@NonNull final QuestionSQ entity) {
         QuestionSQDomain domain = new QuestionSQDomain();
         mapDomain(entity, domain);
-        entity.getAnswers().forEach(a -> domain.add(answerDomainTransformer.toDomain(a)));
+        entity.getAnswers().forEach(a -> domain.add(answerMapper.toDomain(a)));
         return domain;
     }
 

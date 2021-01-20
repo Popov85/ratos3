@@ -1,11 +1,9 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Phrase;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.SettingsFB;
@@ -15,15 +13,14 @@ import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.dao.entity.question.QuestionMQ;
 import ua.edu.ratos.dao.entity.question.QuestionSQ;
 import ua.edu.ratos.service.dto.in.*;
+import ua.edu.ratos.service.transformer.AnswerTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-@SuppressWarnings("SpellCheckingInspection")
-public class DtoAnswerTransformer {
+public class AnswerTransformerImpl implements AnswerTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -33,14 +30,12 @@ public class DtoAnswerTransformer {
     //------------------------------------MCQ----------------------------------
 
     // Used to add answer to an existing question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMCQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = toEntity(dto);
         answer.setQuestion(em.getReference(QuestionMCQ.class, questionId));
         return answer;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMCQ toEntity(@NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = modelMapper.map(dto, AnswerMCQ.class);
         if (dto.getResourceId().isPresent()) {
@@ -53,7 +48,7 @@ public class DtoAnswerTransformer {
     }
 
     //---------------------------------FBSQ-------------------------------------
-    @Transactional(propagation = Propagation.MANDATORY)
+
     public AnswerFBSQ toEntity(@NonNull final AnswerFBSQInDto dto) {
         if ( dto.getPhrasesIds().isEmpty() || dto.getPhrasesIds().size()<1)
             throw new RuntimeException("Answer FBSQ does not make sense without any accepted phrases!");
@@ -66,7 +61,6 @@ public class DtoAnswerTransformer {
     //---------------------------------FBMQ-------------------------------------
 
     // Used to add answer to an existing question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerFBMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerFBMQInDto dto) {
         AnswerFBMQ answer = toEntity(dto);
         answer.setQuestion(em.getReference(QuestionFBMQ.class, questionId));
@@ -74,7 +68,6 @@ public class DtoAnswerTransformer {
     }
 
     // Used to cascaded doGameProcessing all answers with a new question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerFBMQ toEntity(@NonNull final AnswerFBMQInDto dto) {
         if (dto.getPhrasesIds().isEmpty())
             throw new RuntimeException("Answer FBMQ does not make sense without any accepted phrases!");
@@ -87,7 +80,6 @@ public class DtoAnswerTransformer {
     //----------------------------------MQ-------------------------------------
 
     // Used to add answer to an existing question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = toEntity(dto);
         answer.setQuestion(em.getReference(QuestionMQ.class, questionId));
@@ -95,7 +87,6 @@ public class DtoAnswerTransformer {
     }
 
     // Used to cascaded doGameProcessing all answers with a new question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerMQ toEntity(@NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = modelMapper.map(dto, AnswerMQ.class);
         answer.setLeftPhrase(em.getReference(Phrase.class, dto.getLeftPhraseId()));
@@ -103,10 +94,9 @@ public class DtoAnswerTransformer {
         return answer;
     }
 
-   //-----------------------------------SQ-------------------------------------
+    //-----------------------------------SQ-------------------------------------
 
     // Used to add answer to an existing question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerSQ toEntity(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = toEntity(dto);
         answer.setQuestion(em.getReference(QuestionSQ.class, questionId));
@@ -114,11 +104,9 @@ public class DtoAnswerTransformer {
     }
 
     // Used to cascaded doGameProcessing all answers with a new question
-    @Transactional(propagation = Propagation.MANDATORY)
     public AnswerSQ toEntity(@NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = modelMapper.map(dto, AnswerSQ.class);
         answer.setPhrase(em.getReference(Phrase.class, dto.getPhraseId()));
         return answer;
     }
-
 }

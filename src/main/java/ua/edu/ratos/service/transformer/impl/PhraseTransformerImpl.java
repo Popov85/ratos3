@@ -1,7 +1,7 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,25 +10,21 @@ import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.PhraseInDto;
+import ua.edu.ratos.service.transformer.PhraseTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
-@Deprecated
 @Component
-public class DtoPhraseTransformer {
+@AllArgsConstructor
+public class PhraseTransformerImpl implements PhraseTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Transactional(propagation = Propagation.MANDATORY)
     public Phrase toEntity(@NonNull final PhraseInDto dto) {
         Phrase phrase = new Phrase();
         phrase.setPhrase(dto.getPhrase());
@@ -39,5 +35,4 @@ public class DtoPhraseTransformer {
         phrase.setLastUsed(LocalDateTime.now());
         return phrase;
     }
-
 }

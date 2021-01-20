@@ -8,6 +8,8 @@ import ua.edu.ratos.service.domain.HelpDomain;
 import ua.edu.ratos.service.dto.out.HelpMinOutDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {StaffMinMapper.class, ResourceMapper.class})
 public interface HelpMapper {
@@ -19,4 +21,9 @@ public interface HelpMapper {
 
     @Mapping(target = "resource", source = "resourceDomain")
     HelpMinOutDto toDto(HelpDomain domain);
+
+    default HelpDomain toDomain(Optional<Help> help) {
+        if (!help.isPresent()) return null;
+        return toDomain(help.get());
+    }
 }

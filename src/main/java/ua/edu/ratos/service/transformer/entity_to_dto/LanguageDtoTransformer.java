@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Language;
 import ua.edu.ratos.service.dto.out.LanguageOutDto;
 
+@Deprecated
 @Component
 public class LanguageDtoTransformer {
 

@@ -12,8 +12,8 @@ import ua.edu.ratos.dao.repository.PhraseRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.PhraseInDto;
 import ua.edu.ratos.service.dto.out.PhraseOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoPhraseTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.PhraseDtoTransformer;
+import ua.edu.ratos.service.transformer.PhraseMapper;
+import ua.edu.ratos.service.transformer.PhraseTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -30,16 +30,16 @@ public class PhraseService {
 
     private final PhraseRepository phraseRepository;
 
-    private final DtoPhraseTransformer dtoPhraseTransformer;
+    private final PhraseTransformer phraseTransformer;
 
-    private final PhraseDtoTransformer phraseDtoTransformer;
+    private final PhraseMapper phraseMapper;
 
     private final SecurityUtils securityUtils;
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
     @Transactional
     public Long save(@NonNull final PhraseInDto dto) {
-        Phrase phrase = dtoPhraseTransformer.toEntity(dto);
+        Phrase phrase = phraseTransformer.toEntity(dto);
         return phraseRepository.save(phrase).getPhraseId();
     }
 
@@ -68,35 +68,35 @@ public class PhraseService {
     //-------------------------------------------------One (for update)-------------------------------------------------
     @Transactional(readOnly = true)
     public PhraseOutDto findOneForUpdate(@NonNull final Long phraseId) {
-        return phraseDtoTransformer.toDto(phraseRepository.findOneForEdit(phraseId)
+        return phraseMapper.toDto(phraseRepository.findOneForEdit(phraseId)
                 .orElseThrow(() -> new EntityNotFoundException(PHRASE_NOT_FOUND + phraseId)));
     }
 
     //----------------------------------------------------Staff table---------------------------------------------------
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return phraseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(phraseDtoTransformer::toDto);
+        return phraseRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(phraseMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return phraseRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(phraseDtoTransformer::toDto);
+        return phraseRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(phraseMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByStaffIdAndPhraseLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return phraseRepository.findAllByStaffIdAndPhraseLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(phraseDtoTransformer::toDto);
+        return phraseRepository.findAllByStaffIdAndPhraseLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(phraseMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAllByDepartmentIdAndPhraseLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return phraseRepository.findAllByDepartmentIdAndPhraseLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(phraseDtoTransformer::toDto);
+        return phraseRepository.findAllByDepartmentIdAndPhraseLettersContains(securityUtils.getAuthDepId(), letters, pageable).map(phraseMapper::toDto);
     }
 
     //--------------------------------------------------------ADMIN-----------------------------------------------------
     @Transactional(readOnly = true)
     public Page<PhraseOutDto> findAll(@NonNull final Pageable pageable) {
-        return phraseRepository.findAll(pageable).map(phraseDtoTransformer::toDto);
+        return phraseRepository.findAll(pageable).map(phraseMapper::toDto);
     }
 
 }

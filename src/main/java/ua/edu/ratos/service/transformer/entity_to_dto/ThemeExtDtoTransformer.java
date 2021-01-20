@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.dao.repository.projections.TypeAndCount;
 import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
 import ua.edu.ratos.service.dto.out.TypeMinOutDto;
+import ua.edu.ratos.service.transformer.AccessMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 import java.util.Set;
@@ -25,7 +26,7 @@ public class ThemeExtDtoTransformer {
 
     private final StaffMinMapper staffMinMapper;
 
-    private final AccessDtoTransformer accessDtoTransformer;
+    private final AccessMapper accessMapper;
 
 
     public ThemeExtOutDto toDto(@NonNull final Theme entity) {
@@ -36,7 +37,7 @@ public class ThemeExtDtoTransformer {
                 .setCreated(entity.getCreated())
                 .setCourse(courseMinLMSDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
-                .setAccess(accessDtoTransformer.toDto(entity.getAccess())))
+                .setAccess(accessMapper.toDto(entity.getAccess())))
                 .setTotal(typesAndCount.stream().mapToInt(TypeAndCount::getCount).sum())
                 .setTotalByType(toDto(typesAndCount));
     }

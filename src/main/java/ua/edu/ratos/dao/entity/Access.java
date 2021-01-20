@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
+ * TODO: replace with enum!
  * Access level defines who can edit tables {course, scheme, theme};
  * There are 2 types of access level so far: dep-private and private;
  * <b>Dep-private</b> access level allows editing of an element by any department instructor

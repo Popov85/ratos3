@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
+import ua.edu.ratos.service.transformer.AccessMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Slf4j
@@ -17,7 +18,7 @@ public class ThemeDtoTransformer {
 
     private final StaffMinMapper staffMinMapper;
 
-    private final AccessDtoTransformer accessDtoTransformer;
+    private final AccessMapper accessMapper;
 
 
     public ThemeOutDto toDto(@NonNull final Theme entity) {
@@ -27,7 +28,7 @@ public class ThemeDtoTransformer {
                 .setCreated(entity.getCreated())
                 .setCourse(courseMinLMSDtoTransformer.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
-                .setAccess(accessDtoTransformer.toDto(entity.getAccess()));
+                .setAccess(accessMapper.toDto(entity.getAccess()));
     }
 
 }

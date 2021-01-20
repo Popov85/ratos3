@@ -1,41 +1,30 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Language;
 import ua.edu.ratos.dao.entity.SettingsFB;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsFBInDto;
+import ua.edu.ratos.service.transformer.SettingsFBTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
-public class DtoSettingsFBTransformer {
+@AllArgsConstructor
+public class SettingsFBTransformerImpl implements SettingsFBTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Transactional(propagation = Propagation.MANDATORY)
     public SettingsFB toEntity(@NonNull final SettingsFBInDto dto) {
         SettingsFB settings = modelMapper.map(dto, SettingsFB.class);
         settings.setLang(em.getReference(Language.class, dto.getLang()));

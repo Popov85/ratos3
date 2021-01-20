@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.service.dto.out.QuestionTypeOutDto;
 
+@Deprecated
 @Component
 public class QuestionTypeDtoTransformer {
 

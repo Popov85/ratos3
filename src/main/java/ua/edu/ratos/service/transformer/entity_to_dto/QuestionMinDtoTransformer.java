@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionMinOutDto;
 import ua.edu.ratos.service.transformer.ResourceMinMapper;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class QuestionMinDtoTransformer {

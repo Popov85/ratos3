@@ -5,18 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.SettingsFB;
 import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
+import ua.edu.ratos.service.transformer.LanguageMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Component
 public class SettingsFBDtoTransformer {
 
-    private LanguageDtoTransformer languageDtoTransformer;
+    private LanguageMapper languageMapper;
 
     private StaffMinMapper staffMinMapper;
 
     @Autowired
-    public void setLanguageDtoTransformer(LanguageDtoTransformer languageDtoTransformer) {
-        this.languageDtoTransformer = languageDtoTransformer;
+    public void setLanguageDtoTransformer(LanguageMapper languageMapper) {
+        this.languageMapper = languageMapper;
     }
 
     @Autowired
@@ -33,7 +35,7 @@ public class SettingsFBDtoTransformer {
                 .setNumeric(entity.isNumeric())
                 .setWordsLimit(entity.getWordsLimit())
                 .setSymbolsLimit(entity.getSymbolsLimit())
-                .setLang(languageDtoTransformer.toDto(entity.getLang()))
+                .setLang(languageMapper.toDto(entity.getLang()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()));
     }
 }

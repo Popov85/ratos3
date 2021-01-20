@@ -6,20 +6,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.answer.*;
 import ua.edu.ratos.service.dto.out.answer.*;
+import ua.edu.ratos.service.transformer.PhraseMapper;
 import ua.edu.ratos.service.transformer.ResourceMinMapper;
+import ua.edu.ratos.service.transformer.SettingsFBMapper;
 
 import java.util.stream.Collectors;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor
 public class AnswerDtoTransformer {
 
-    private final SettingsFBDtoTransformer settingsFBDtoTransformer;
+    private final SettingsFBMapper settingsFBMapper;
 
     private final ResourceMinMapper resourceMinMapper;
 
-    private final PhraseDtoTransformer phraseDtoTransformer;
+    private final PhraseMapper phraseMapper;
 
 
     public AnswerFBMQOutDto toDto(@NonNull final AnswerFBMQ entity) {
@@ -27,20 +30,20 @@ public class AnswerDtoTransformer {
                 .setAnswerId(entity.getAnswerId())
                 .setPhrase(entity.getPhrase())
                 .setOccurrence(entity.getOccurrence())
-                .setSettings(settingsFBDtoTransformer.toDto(entity.getSettings()))
+                .setSettings(settingsFBMapper.toDto(entity.getSettings()))
                 .setAcceptedPhrases(entity.getAcceptedPhrases()
                         .stream()
-                        .map(phraseDtoTransformer::toDto)
+                        .map(phraseMapper::toDto)
                         .collect(Collectors.toSet()));
     }
 
     public AnswerFBSQOutDto toDto(@NonNull final AnswerFBSQ entity) {
         return new AnswerFBSQOutDto()
                 .setAnswerId(entity.getAnswerId())
-                .setSettings(settingsFBDtoTransformer.toDto(entity.getSettings()))
+                .setSettings(settingsFBMapper.toDto(entity.getSettings()))
                 .setAcceptedPhrases(entity.getAcceptedPhrases()
                         .stream()
-                        .map(phraseDtoTransformer::toDto)
+                        .map(phraseMapper::toDto)
                         .collect(Collectors.toSet()));
     }
 
@@ -56,14 +59,14 @@ public class AnswerDtoTransformer {
     public AnswerMQOutDto toDto(@NonNull final AnswerMQ entity) {
         return new AnswerMQOutDto()
                 .setAnswerId(entity.getAnswerId())
-                .setLeftPhrase(phraseDtoTransformer.toDto(entity.getLeftPhrase()))
-                .setRightPhrase(phraseDtoTransformer.toDto(entity.getRightPhrase()));
+                .setLeftPhrase(phraseMapper.toDto(entity.getLeftPhrase()))
+                .setRightPhrase(phraseMapper.toDto(entity.getRightPhrase()));
     }
 
     public AnswerSQOutDto toDto(@NonNull final AnswerSQ entity) {
         return new AnswerSQOutDto()
                 .setAnswerId(entity.getAnswerId())
-                .setPhrase(phraseDtoTransformer.toDto(entity.getPhrase()))
+                .setPhrase(phraseMapper.toDto(entity.getPhrase()))
                 .setOrder(entity.getOrder());
     }
 }

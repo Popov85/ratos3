@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.AccessRepository;
 import ua.edu.ratos.service.dto.out.AccessOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.AccessDtoTransformer;
+import ua.edu.ratos.service.transformer.AccessMapper;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,13 +17,13 @@ public class AccessService {
 
     private final AccessRepository accessRepository;
 
-    private final AccessDtoTransformer accessDtoTransformer;
+    private final AccessMapper accessMapper;
 
     @Transactional(readOnly = true)
     public List<AccessOutDto> findAllAccessesForDropDown() {
         return accessRepository.findAll()
                 .stream()
-                .map(accessDtoTransformer::toDto)
+                .map(accessMapper::toDto)
                 .sorted(Comparator.comparing(AccessOutDto::getAccessId))
                 .collect(Collectors.toList());
     }

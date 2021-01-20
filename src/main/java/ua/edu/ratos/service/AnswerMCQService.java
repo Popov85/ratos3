@@ -8,8 +8,8 @@ import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
 import ua.edu.ratos.dao.repository.answer.AnswerMCQRepository;
 import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import ua.edu.ratos.service.dto.out.answer.AnswerMCQOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.AnswerDtoTransformer;
+import ua.edu.ratos.service.transformer.AnswerMapper;
+import ua.edu.ratos.service.transformer.AnswerTransformer;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -21,23 +21,23 @@ public class AnswerMCQService {
 
     private final AnswerMCQRepository answerRepository;
 
-    private final DtoAnswerTransformer dtoAnswerTransformer;
+    private final AnswerTransformer answerTransformer;
 
-    private final AnswerDtoTransformer answerDtoTransformer;
+    private final AnswerMapper answerMapper;
 
 
     @Transactional
     public AnswerMCQOutDto save(@NonNull final Long questionId, @NonNull final AnswerMCQInDto dto) {
-        AnswerMCQ answerMCQ = answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto));
-        return answerDtoTransformer.toDto(answerMCQ);
+        AnswerMCQ answerMCQ = answerRepository.save(answerTransformer.toEntity(questionId, dto));
+        return answerMapper.toDto(answerMCQ);
     }
 
     @Transactional
     public AnswerMCQOutDto update(@NonNull final Long questionId, @NonNull final AnswerMCQInDto dto) {
         if (dto.getAnswerId() == null)
             throw new RuntimeException("Answer MCQ must have answerId to be updated!");
-        AnswerMCQ answerMCQ = answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto));
-        return answerDtoTransformer.toDto(answerMCQ);
+        AnswerMCQ answerMCQ = answerRepository.save(answerTransformer.toEntity(questionId, dto));
+        return answerMapper.toDto(answerMCQ);
     }
 
     @Transactional

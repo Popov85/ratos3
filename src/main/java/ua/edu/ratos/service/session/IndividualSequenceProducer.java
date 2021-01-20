@@ -11,7 +11,7 @@ import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.sequence.QuestionLoader;
 import ua.edu.ratos.service.session.sequence.SequenceFactory;
 import ua.edu.ratos.service.session.sequence.SequenceProducer;
-import ua.edu.ratos.service.transformer.entity_to_domain.QuestionDomainTransformer;
+import ua.edu.ratos.service.transformer.QuestionMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class IndividualSequenceProducer {
 
     private final SequenceFactory sequenceFactory;
 
-    private final QuestionDomainTransformer questionDomainTransformer;
+    private final QuestionMapper questionMapper;
 
     /**
      * Prepares an individual sequence of questions for student's session enriched with serialNumber
@@ -40,7 +40,7 @@ public class IndividualSequenceProducer {
         List<QuestionDomain> sequence = new ArrayList<>(questions.size());
         // Let's enumerate each questions in the sequence (for displaying in browser)
         for (int i = 0; i < questions.size(); i++) {
-            QuestionDomain questionDomain = questionDomainTransformer.toDomain(questions.get(i));
+            QuestionDomain questionDomain = questionMapper.toDomain(questions.get(i));
             int serialNumber = i + 1;
             questionDomain.setSerialNumber(serialNumber);
             sequence.add(questionDomain);

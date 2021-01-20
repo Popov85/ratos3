@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.answer.AnswerSQRepository;
 import ua.edu.ratos.service.dto.in.AnswerSQInDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoAnswerTransformer;
+import ua.edu.ratos.service.transformer.AnswerTransformer;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -18,17 +18,17 @@ public class AnswerSQService {
 
     private final AnswerSQRepository answerRepository;
 
-    private final DtoAnswerTransformer dtoAnswerTransformer;
+    private final AnswerTransformer answerTransformer;
 
     @Transactional
     public Long save(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {
-        return answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto)).getAnswerId();
+        return answerRepository.save(answerTransformer.toEntity(questionId, dto)).getAnswerId();
     }
 
     @Transactional
     public void update(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {
         if (dto.getAnswerId()==null) throw new RuntimeException();
-        answerRepository.save(dtoAnswerTransformer.toEntity(questionId, dto));
+        answerRepository.save(answerTransformer.toEntity(questionId, dto));
     }
 
     @Transactional

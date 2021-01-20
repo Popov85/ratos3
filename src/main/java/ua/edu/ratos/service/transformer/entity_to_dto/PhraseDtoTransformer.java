@@ -9,6 +9,7 @@ import ua.edu.ratos.service.dto.out.PhraseOutDto;
 import ua.edu.ratos.service.transformer.ResourceMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 public class PhraseDtoTransformer {

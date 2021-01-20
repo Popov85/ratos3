@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.Phrase;
 import ua.edu.ratos.service.domain.PhraseDomain;
 import ua.edu.ratos.service.transformer.ResourceMapper;
 
+@Deprecated
 @Slf4j
 @Component
 public class PhraseDomainTransformer {
