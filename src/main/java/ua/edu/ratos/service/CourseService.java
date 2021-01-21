@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ratos.dao.entity.Access;
 import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.dao.entity.lms.LMSCourse;
@@ -16,9 +15,9 @@ import ua.edu.ratos.service.dto.in.CourseInDto;
 import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoCourseTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.CourseDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.CourseMinDtoTransformer;
+import ua.edu.ratos.service.transformer.CourseMapper;
+import ua.edu.ratos.service.transformer.CourseMinMapper;
+import ua.edu.ratos.service.transformer.CourseTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -37,11 +36,11 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    private final DtoCourseTransformer dtoCourseTransformer;
+    private final CourseTransformer courseTransformer;
 
-    private final CourseDtoTransformer courseDtoTransformer;
+    private final CourseMapper courseMapper;
 
-    private final CourseMinDtoTransformer courseMinDtoTransformer;
+    private final CourseMinMapper courseMinMapper;
 
     private final AccessChecker accessChecker;
 
@@ -50,16 +49,16 @@ public class CourseService {
 
     @Transactional
     public CourseOutDto save(@NonNull final CourseInDto dto) {
-        Course course = dtoCourseTransformer.toEntity(dto);
+        Course course = courseTransformer.toEntity(dto);
         Course result = courseRepository.save(course);
-        return courseDtoTransformer.toDto(result);
+        return courseMapper.toDto(result);
     }
 
     @Transactional
     public CourseOutDto save(@NonNull final LMSCourseInDto dto) {
-        Course course = dtoCourseTransformer.toLMSEntity(dto);
+        Course course = courseTransformer.toLMSEntity(dto);
         Course result = courseRepository.save(course);
-        return courseDtoTransformer.toDto(result);
+        return courseMapper.toDto(result);
     }
 
     @Transactional
@@ -67,9 +66,9 @@ public class CourseService {
         if (dto.getCourseId()==null)
             throw new RuntimeException("Failed to update, courseId is nullable!");
         Course course = checkModificationPossibility(dto.getCourseId());
-        course = dtoCourseTransformer.toEntity(course, dto);
+        course = courseTransformer.toEntity(course, dto);
         Course result = courseRepository.save(course);
-        return courseDtoTransformer.toDto(result);
+        return courseMapper.toDto(result);
     }
 
     @Transactional
@@ -77,9 +76,9 @@ public class CourseService {
         if (dto.getCourseId()==null)
             throw new RuntimeException("Failed to update LMS course, courseId is nullable!");
         Course course = checkModificationPossibility(dto.getCourseId());
-        course = dtoCourseTransformer.toLMSEntity(course, dto);
+        course = courseTransformer.toLMSEntity(course, dto);
         Course result = courseRepository.save(course);
-        return courseDtoTransformer.toDto(result);
+        return courseMapper.toDto(result);
     }
 
     @Transactional
@@ -130,7 +129,7 @@ public class CourseService {
     public Set<CourseMinOutDto> findAllForDropdownByStaffId() {
         return courseRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId())
                 .stream()
-                .map(courseMinDtoTransformer::toDto)
+                .map(courseMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -138,7 +137,7 @@ public class CourseService {
     public Set<CourseMinOutDto> findAllForDropdownByDepartmentId() {
         return courseRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(courseMinDtoTransformer::toDto)
+                .map(courseMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -147,7 +146,7 @@ public class CourseService {
     public Set<CourseMinOutDto> findAllForDropdownByDepartmentId(@NonNull final Long depId) {
         return courseRepository.findAllForDropDownByDepartmentId(depId)
                 .stream()
-                .map(courseMinDtoTransformer::toDto)
+                .map(courseMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -156,7 +155,7 @@ public class CourseService {
     public Set<CourseOutDto> findAllForTableByDepartment() {
         return courseRepository.findAllForTableByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(courseDtoTransformer::toDto)
+                .map(courseMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -164,7 +163,7 @@ public class CourseService {
     public Set<CourseOutDto> findAllForTableByDepartmentId(@NonNull Long depId) {
         return courseRepository.findAllForTableByDepartmentId(depId)
                 .stream()
-                .map(courseDtoTransformer::toDto)
+                .map(courseMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -172,6 +171,6 @@ public class CourseService {
     //-----------------------------------------------Admin (for simple table)-------------------------------------------
     @Transactional(readOnly = true)
     public Page<CourseOutDto> findAll(@NonNull final Pageable pageable) {
-        return courseRepository.findAll(pageable).map(courseDtoTransformer::toDto);
+        return courseRepository.findAll(pageable).map(courseMapper::toDto);
     }
 }

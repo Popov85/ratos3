@@ -1,23 +1,21 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ThemeInDto;
+import ua.edu.ratos.service.transformer.ThemeTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.OffsetDateTime;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoThemeTransformer {
+public class ThemeTransformerImpl implements ThemeTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -26,8 +24,6 @@ public class DtoThemeTransformer {
 
     private final SecurityUtils securityUtils;
 
-
-    @Transactional(propagation = Propagation.MANDATORY)
     public Theme toEntity(@NonNull final ThemeInDto dto) {
         Theme theme = modelMapper.map(dto, Theme.class);
         theme.setAccess(em.getReference(Access.class, dto.getAccessId()));
@@ -38,7 +34,6 @@ public class DtoThemeTransformer {
         return theme;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public Theme toEntity(@NonNull final Theme entity, @NonNull final ThemeInDto dto) {
         Theme theme = entity;
         theme.setThemeId(dto.getThemeId());

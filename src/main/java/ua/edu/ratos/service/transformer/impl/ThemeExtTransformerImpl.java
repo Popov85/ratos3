@@ -1,8 +1,7 @@
-package ua.edu.ratos.service.transformer.entity_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.repository.QuestionRepository;
@@ -12,15 +11,14 @@ import ua.edu.ratos.service.dto.out.TypeMinOutDto;
 import ua.edu.ratos.service.transformer.AccessMapper;
 import ua.edu.ratos.service.transformer.CourseMinLMSMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
+import ua.edu.ratos.service.transformer.ThemeExtTransformer;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Deprecated
-@Slf4j
 @Component
 @AllArgsConstructor
-public class ThemeExtDtoTransformer {
+public class ThemeExtTransformerImpl implements ThemeExtTransformer {
 
     private final QuestionRepository questionRepository;
 
@@ -29,7 +27,6 @@ public class ThemeExtDtoTransformer {
     private final StaffMinMapper staffMinMapper;
 
     private final AccessMapper accessMapper;
-
 
     public ThemeExtOutDto toDto(@NonNull final Theme entity) {
         Set<TypeAndCount> typesAndCount = questionRepository.countAllTypesByThemeId(entity.getThemeId());
@@ -46,8 +43,7 @@ public class ThemeExtDtoTransformer {
 
     private Set<TypeMinOutDto> toDto(Set<TypeAndCount> typesAndCount) {
         return typesAndCount.stream().map(t->
-            new TypeMinOutDto().setTypeId(t.getType()).setType(t.getAbbreviation()).setQuestions(t.getCount()))
+                new TypeMinOutDto().setTypeId(t.getType()).setType(t.getAbbreviation()).setQuestions(t.getCount()))
                 .collect(Collectors.toSet());
     }
-
 }

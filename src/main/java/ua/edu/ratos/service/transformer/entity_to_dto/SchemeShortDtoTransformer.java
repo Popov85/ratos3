@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.transformer.AccessMapper;
+import ua.edu.ratos.service.transformer.CourseMinMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
 @Component
@@ -22,7 +23,7 @@ public class SchemeShortDtoTransformer {
 
     private final GradingDtoTransformer gradingDtoTransformer;
 
-    private final CourseMinDtoTransformer courseMinDtoTransformer;
+    private final CourseMinMapper courseMinMapper;
 
     private final StaffMinMapper staffMinMapper;
 
@@ -41,7 +42,7 @@ public class SchemeShortDtoTransformer {
                 .setMode(modeDtoTransformer.toDto(entity.getMode()))
                 .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
                 .setGrading(gradingDtoTransformer.toDto(entity.getGrading()))
-                .setCourse(courseMinDtoTransformer.toDto(entity.getCourse()))
+                .setCourse(courseMinMapper.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessMapper.toDto(entity.getAccess()))
                 .setThemesCount(entity.getThemes().size())

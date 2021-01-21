@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.lms.LMS;
 import ua.edu.ratos.service.dto.out.LMSMinOutDto;
 
+@Deprecated
 @Component
 public class LMSMinDtoTransformer {
 

@@ -1,4 +1,4 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -9,14 +9,14 @@ import ua.edu.ratos.dao.entity.lms.LTICredentials;
 import ua.edu.ratos.dao.entity.lms.LTIVersion;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.LMSInDto;
+import ua.edu.ratos.service.transformer.LMSTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoLMSTransformer {
+public class LMSTransformerImpl implements LMSTransformer {
 
     @PersistenceContext
     private final EntityManager em;

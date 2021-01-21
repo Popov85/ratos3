@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import ua.edu.ratos.service.transformer.AccessMapper;
+import ua.edu.ratos.service.transformer.CourseMinLMSMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor
 public class ThemeDtoTransformer {
 
-    private final CourseMinLMSDtoTransformer courseMinLMSDtoTransformer;
+    private final CourseMinLMSMapper courseMinLMSMapper;
 
     private final StaffMinMapper staffMinMapper;
 
@@ -26,7 +28,7 @@ public class ThemeDtoTransformer {
                 .setThemeId(entity.getThemeId())
                 .setName(entity.getName())
                 .setCreated(entity.getCreated())
-                .setCourse(courseMinLMSDtoTransformer.toDto(entity.getCourse()))
+                .setCourse(courseMinLMSMapper.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessMapper.toDto(entity.getAccess()));
     }

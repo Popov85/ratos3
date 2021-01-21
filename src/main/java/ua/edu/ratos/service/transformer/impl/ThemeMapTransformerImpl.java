@@ -1,19 +1,21 @@
-package ua.edu.ratos.service.transformer.entity_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.QuestionType;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.service.dto.out.LevelsOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
-import java.util.*;
+import ua.edu.ratos.service.transformer.ThemeMapTransformer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@Deprecated
-@Slf4j
 @Component
-public class ThemeMapDtoTransformer {
+public class ThemeMapTransformerImpl implements ThemeMapTransformer {
 
     public ThemeMapOutDto toDto(@NonNull final Long themeId, @NonNull final Set<Question> entities) {
 

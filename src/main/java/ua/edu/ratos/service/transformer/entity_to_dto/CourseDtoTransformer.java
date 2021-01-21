@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Course;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
 import ua.edu.ratos.service.transformer.AccessMapper;
+import ua.edu.ratos.service.transformer.LMSMinMapper;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class CourseDtoTransformer{
 
     private final StaffMinMapper staffMinMapper;
 
-    private final LMSMinDtoTransformer lmsMinDtoTransformer;
+    private final LMSMinMapper lmsMinMapper;
 
 
     public CourseOutDto toDto(@NonNull final Course entity) {
@@ -30,7 +32,7 @@ public class CourseDtoTransformer{
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setActive(!entity.isDeleted())
                 .setLms(entity.getLmsCourse()!=null
-                        ? lmsMinDtoTransformer.toDto(entity.getLmsCourse().getLms())
+                        ? lmsMinMapper.toDto(entity.getLmsCourse().getLms())
                         : null);
     }
 }

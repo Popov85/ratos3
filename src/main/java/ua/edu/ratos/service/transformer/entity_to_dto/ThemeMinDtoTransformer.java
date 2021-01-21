@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.service.dto.out.ThemeMinOutDto;
 
+@Deprecated
 @Component
 public class ThemeMinDtoTransformer {
 

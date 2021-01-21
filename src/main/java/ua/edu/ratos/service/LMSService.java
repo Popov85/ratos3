@@ -13,9 +13,9 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.LMSInDto;
 import ua.edu.ratos.service.dto.out.LMSMinOutDto;
 import ua.edu.ratos.service.dto.out.LMSOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoLMSTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.LMSDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.LMSMinDtoTransformer;
+import ua.edu.ratos.service.transformer.LMSMapper;
+import ua.edu.ratos.service.transformer.LMSMinMapper;
+import ua.edu.ratos.service.transformer.LMSTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -30,19 +30,19 @@ public class LMSService {
 
     private final LMSRepository lmsRepository;
 
-    private final DtoLMSTransformer dtoLMSTransformer;
+    private final LMSTransformer LMSTransformer;
 
-    private final LMSDtoTransformer lmsDtoTransformer;
+    private final LMSMapper lmsMapper;
 
-    private final LMSMinDtoTransformer lmsMinDtoTransformer;
+    private final LMSMinMapper lmsMinMapper;
 
     private final SecurityUtils securityUtils;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
     public LMSOutDto save(@NonNull final LMSInDto dto) {
-        LMS lms = lmsRepository.save(dtoLMSTransformer.toEntity(dto));
-        return lmsDtoTransformer.toDto(lms);
+        LMS lms = lmsRepository.save(LMSTransformer.toEntity(dto));
+        return lmsMapper.toDto(lms);
     }
 
     @Transactional
@@ -52,8 +52,8 @@ public class LMSService {
             throw new RuntimeException("Failed to update, lmsId is nullable");
         LMS lms = lmsRepository.findById(lmsId)
                 .orElseThrow(()->new EntityNotFoundException(LMS_NOT_FOUND+lmsId));
-        lms = dtoLMSTransformer.toEntity(lms, dto);
-        LMSOutDto lmsOutDto = lmsDtoTransformer.toDto(lms);
+        lms = LMSTransformer.toEntity(lms, dto);
+        LMSOutDto lmsOutDto = lmsMapper.toDto(lms);
         return lmsOutDto;
     }
 
@@ -82,7 +82,7 @@ public class LMSService {
     public Set<LMSMinOutDto> findAllForDropdownByOrganisation() {
         return lmsRepository.findAllForDropdownByOrgId(securityUtils.getAuthOrgId())
                 .stream()
-                .map(lmsMinDtoTransformer::toDto)
+                .map(lmsMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -92,7 +92,7 @@ public class LMSService {
     public Set<LMSOutDto> findAllForTableByOrganisation() {
         return lmsRepository.findAllForTableByOrgId(securityUtils.getAuthOrgId())
                 .stream()
-                .map(lmsDtoTransformer::toDto)
+                .map(lmsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -100,13 +100,13 @@ public class LMSService {
     public Set<LMSOutDto> findAllForTableByOrganisationId(@NonNull final Long orgId) {
         return lmsRepository.findAllForDropdownByOrgId(orgId)
                 .stream()
-                .map(lmsDtoTransformer::toDto)
+                .map(lmsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
     //--------------------------------------------------------ADMIN table-----------------------------------------------
     @Transactional(readOnly = true)
     public Page<LMSOutDto> findAllAdmin(@NonNull final Pageable pageable) {
-        return lmsRepository.findAllAdmin(pageable).map(lmsDtoTransformer::toDto);
+        return lmsRepository.findAllAdmin(pageable).map(lmsMapper::toDto);
     }
 }
