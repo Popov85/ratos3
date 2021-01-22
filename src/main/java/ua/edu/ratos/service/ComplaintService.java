@@ -14,7 +14,7 @@ import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.repository.ComplaintRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.out.ComplaintOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.ComplaintDtoTransformer;
+import ua.edu.ratos.service.transformer.ComplaintMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,7 +31,7 @@ public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
 
-    private final ComplaintDtoTransformer complaintDtoTransformer;
+    private final ComplaintMapper complaintMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -74,7 +74,7 @@ public class ComplaintService {
     //-------------------------------------------------Staff table------------------------------------------------------
     @Transactional(readOnly = true)
     public Page<ComplaintOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return complaintRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(complaintDtoTransformer::toDto);
+        return complaintRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(complaintMapper::toDto);
     }
 
 }

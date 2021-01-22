@@ -11,9 +11,7 @@ import ua.edu.ratos.service.dto.out.GroupMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
-import ua.edu.ratos.service.transformer.AccessMapper;
-import ua.edu.ratos.service.transformer.CourseMinMapper;
-import ua.edu.ratos.service.transformer.StaffMinMapper;
+import ua.edu.ratos.service.transformer.*;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SchemeDtoTransformer {
 
-    private final StrategyDtoTransformer strategyDtoTransformer;
+    private final StrategyMapper strategyMapper;
 
     private final SettingsDtoTransformer settingsDtoTransformer;
 
@@ -40,7 +38,7 @@ public class SchemeDtoTransformer {
 
     private final OptionsDtoTransformer optionsDtoTransformer;
 
-    private final GroupMinDtoTransformer groupMinDtoTransformer;
+    private final GroupMinMapper groupMinMapper;
 
     private final SchemeThemeDtoTransformer schemeThemeDtoTransformer;
 
@@ -54,7 +52,7 @@ public class SchemeDtoTransformer {
                 .setLmsOnly(entity.isLmsOnly())
                 .setActive(entity.isActive())
                 .setCreated(entity.getCreated())
-                .setStrategy(strategyDtoTransformer.toDto(entity.getStrategy()))
+                .setStrategy(strategyMapper.toDto(entity.getStrategy()))
                 .setSettings(settingsDtoTransformer.toDto(entity.getSettings()))
                 .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
                 .setMode(modeDtoTransformer.toDto(entity.getMode()))
@@ -67,7 +65,7 @@ public class SchemeDtoTransformer {
 
         List<SchemeThemeOutDto> themes = entity.getThemes().stream().map(t -> schemeThemeDtoTransformer.toDto(t)).collect(Collectors.toList());
         schemeOutDto.setThemes(themes);
-        Set<GroupMinOutDto> groups = entity.getGroups().stream().map(g -> groupMinDtoTransformer.toDto(g)).collect(Collectors.toSet());
+        Set<GroupMinOutDto> groups = entity.getGroups().stream().map(g -> groupMinMapper.toDto(g)).collect(Collectors.toSet());
         schemeOutDto.setGroups(groups);
         return schemeOutDto;
     }

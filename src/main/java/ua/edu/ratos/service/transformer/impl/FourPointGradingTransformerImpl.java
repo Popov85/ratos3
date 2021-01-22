@@ -1,8 +1,8 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
@@ -10,33 +10,25 @@ import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
+import ua.edu.ratos.service.transformer.FourPointGradingTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
-public class DtoFourPointGradingTransformer {
+@AllArgsConstructor
+public class FourPointGradingTransformerImpl implements FourPointGradingTransformer {
 
     private static final Long GRADING_ID = 1L;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
+    @Override
     public FourPointGrading toEntity(@NonNull final FourPointGradingInDto dto) {
         FourPointGrading entity = modelMapper.map(dto, FourPointGrading.class);
         entity.setGrading(em.getReference(Grading.class, GRADING_ID));
@@ -44,5 +36,4 @@ public class DtoFourPointGradingTransformer {
         entity.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return entity;
     }
-
 }

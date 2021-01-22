@@ -25,6 +25,7 @@ public class SettingsFBTransformerImpl implements SettingsFBTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public SettingsFB toEntity(@NonNull final SettingsFBInDto dto) {
         SettingsFB settings = modelMapper.map(dto, SettingsFB.class);
         settings.setLang(em.getReference(Language.class, dto.getLang()));

@@ -29,6 +29,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
 
     //------------------------------------MCQ----------------------------------
 
+    @Override
     // Used to add answer to an existing question
     public AnswerMCQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = toEntity(dto);
@@ -36,6 +37,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
         return answer;
     }
 
+    @Override
     public AnswerMCQ toEntity(@NonNull final AnswerMCQInDto dto) {
         AnswerMCQ answer = modelMapper.map(dto, AnswerMCQ.class);
         if (dto.getResourceId().isPresent()) {
@@ -49,6 +51,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
 
     //---------------------------------FBSQ-------------------------------------
 
+    @Override
     public AnswerFBSQ toEntity(@NonNull final AnswerFBSQInDto dto) {
         if ( dto.getPhrasesIds().isEmpty() || dto.getPhrasesIds().size()<1)
             throw new RuntimeException("Answer FBSQ does not make sense without any accepted phrases!");
@@ -60,6 +63,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
 
     //---------------------------------FBMQ-------------------------------------
 
+    @Override
     // Used to add answer to an existing question
     public AnswerFBMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerFBMQInDto dto) {
         AnswerFBMQ answer = toEntity(dto);
@@ -67,6 +71,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
         return answer;
     }
 
+    @Override
     // Used to cascaded doGameProcessing all answers with a new question
     public AnswerFBMQ toEntity(@NonNull final AnswerFBMQInDto dto) {
         if (dto.getPhrasesIds().isEmpty())
@@ -79,6 +84,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
 
     //----------------------------------MQ-------------------------------------
 
+    @Override
     // Used to add answer to an existing question
     public AnswerMQ toEntity(@NonNull final Long questionId, @NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = toEntity(dto);
@@ -86,6 +92,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
         return answer;
     }
 
+    @Override
     // Used to cascaded doGameProcessing all answers with a new question
     public AnswerMQ toEntity(@NonNull final AnswerMQInDto dto) {
         AnswerMQ answer = modelMapper.map(dto, AnswerMQ.class);
@@ -96,6 +103,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
 
     //-----------------------------------SQ-------------------------------------
 
+    @Override
     // Used to add answer to an existing question
     public AnswerSQ toEntity(@NonNull final Long questionId, @NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = toEntity(dto);
@@ -103,6 +111,7 @@ public class AnswerTransformerImpl implements AnswerTransformer {
         return answer;
     }
 
+    @Override
     // Used to cascaded doGameProcessing all answers with a new question
     public AnswerSQ toEntity(@NonNull final AnswerSQInDto dto) {
         AnswerSQ answer = modelMapper.map(dto, AnswerSQ.class);

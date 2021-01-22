@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
+@Deprecated
 @Component
 public class DtoGroupTransformer {
 

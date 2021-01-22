@@ -27,6 +27,7 @@ public class CourseTransformerImpl implements CourseTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public Course toEntity(@NonNull final CourseInDto dto) {
         Course course = new Course();
         course.setCourseId(dto.getCourseId());
@@ -40,6 +41,7 @@ public class CourseTransformerImpl implements CourseTransformer {
         return course;
     }
 
+    @Override
     public Course toLMSEntity(@NonNull final LMSCourseInDto dto) {
         Course course = new Course();
         course.setCourseId(dto.getCourseId());
@@ -60,6 +62,7 @@ public class CourseTransformerImpl implements CourseTransformer {
     }
     //---------------------------------------------Mutator--------------------------------------------------------------
 
+    @Override
     public Course toEntity(@NonNull final Course course, @NonNull final CourseInDto dto) {
         course.setCourseId(dto.getCourseId());
         course.setName(dto.getName());
@@ -70,6 +73,7 @@ public class CourseTransformerImpl implements CourseTransformer {
         return course;
     }
 
+    @Override
     public Course toLMSEntity(@NonNull final Course course, @NonNull final LMSCourseInDto dto) {
         course.setCourseId(dto.getCourseId());
         course.setName(dto.getName());

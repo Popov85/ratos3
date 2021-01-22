@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Complaint;
 import ua.edu.ratos.service.dto.out.ComplaintOutDto;
 
+@Deprecated
 @Component
 public class ComplaintDtoTransformer {
 

@@ -28,6 +28,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
 
     private final QuestionTypeRepository questionTypeRepository;
 
+    @Override
     public QuestionMCQ toEntity(@NonNull final QuestionMCQInDto dto) {
         QuestionMCQ question = new QuestionMCQ();
         mapDto(dto, question, "MCQ");
@@ -35,6 +36,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
         return question;
     }
 
+    @Override
     public QuestionFBSQ toEntity(@NonNull final QuestionFBSQInDto dto) {
         check(dto.getAnswer().getPhrasesIds(), 1, "This question must contain at least one accepted phrase");
         QuestionFBSQ question = new QuestionFBSQ();
@@ -44,6 +46,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
         return question;
     }
 
+    @Override
     public QuestionFBMQ toEntity(@NonNull final QuestionFBMQInDto dto) {
         check(dto.getAnswers(), 1, "This question must contain at least 1 answer");
         QuestionFBMQ question = new QuestionFBMQ();
@@ -52,6 +55,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
         return question;
     }
 
+    @Override
     public QuestionMQ toEntity(@NonNull final QuestionMQInDto dto) {
         check(dto.getAnswers(), 2, "This question must contain at least 2 answers");
         QuestionMQ question = new QuestionMQ();
@@ -60,6 +64,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
         return question;
     }
 
+    @Override
     public QuestionSQ toEntity(@NonNull final QuestionSQInDto dto) {
         check(dto.getAnswers(), 3, "This question must contain at least 3 answers");
         QuestionSQ question = new QuestionSQ();
@@ -68,7 +73,7 @@ public class QuestionTransformerImpl implements QuestionTransformer {
         return question;
     }
 
-    public void mapDto(@NonNull final QuestionInDto dto, @NonNull final Question question, @NonNull final String questionType) {
+    void mapDto(@NonNull final QuestionInDto dto, @NonNull final Question question, @NonNull final String questionType) {
         question.setQuestionId(dto.getQuestionId());
         question.setQuestion(dto.getQuestion());
         question.setLevel(dto.getLevel());

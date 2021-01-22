@@ -23,6 +23,7 @@ public class LMSTransformerImpl implements LMSTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     // For new
     public LMS toEntity(@NonNull final LMSInDto dto) {
         LMS lms = new LMS();
@@ -39,6 +40,7 @@ public class LMSTransformerImpl implements LMSTransformer {
         return lms;
     }
 
+    @Override
     // For update
     public LMS toEntity(@NonNull final LMS lms, @NonNull final LMSInDto dto) {
         lms.setName(dto.getName());

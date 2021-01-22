@@ -22,6 +22,7 @@ public class HelpTransformerImpl implements HelpTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public Help toEntity(@NonNull final HelpInDto dto) {
         Help help = new Help();
         help.setHelpId(dto.getHelpId());

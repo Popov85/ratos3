@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Group;
 import ua.edu.ratos.service.dto.out.GroupMinOutDto;
 
+@Deprecated
 @Component
 public class GroupMinDtoTransformer {
 

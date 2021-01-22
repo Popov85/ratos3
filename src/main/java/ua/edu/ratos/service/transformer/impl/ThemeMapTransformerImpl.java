@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class ThemeMapTransformerImpl implements ThemeMapTransformer {
 
+    @Override
     public ThemeMapOutDto toDto(@NonNull final Long themeId, @NonNull final Set<Question> entities) {
 
         Map<Long, LevelsOutDto> typeLevelMap = new HashMap<>();

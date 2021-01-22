@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class FourPointGradingDtoTransformer {

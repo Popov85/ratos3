@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.grading.FreePointGrading;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class FreePointGradingDtoTransformer {

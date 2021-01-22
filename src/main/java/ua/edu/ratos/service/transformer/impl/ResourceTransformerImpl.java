@@ -25,6 +25,7 @@ public class ResourceTransformerImpl implements ResourceTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public Resource toEntity(@NonNull final ResourceInDto dto) {
         final Resource resource = modelMapper.map(dto, Resource.class);
         resource.setStaff((em.getReference(Staff.class, securityUtils.getAuthStaffId())));

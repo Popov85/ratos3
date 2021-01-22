@@ -9,8 +9,8 @@ import ua.edu.ratos.dao.repository.FourPointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoFourPointGradingTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FourPointGradingDtoTransformer;
+import ua.edu.ratos.service.transformer.FourPointGradingMapper;
+import ua.edu.ratos.service.transformer.FourPointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -26,17 +26,17 @@ public class FourPointGradingService {
 
     private final FourPointGradingRepository fourPointGradingRepository;
 
-    private final FourPointGradingDtoTransformer fourPointGradingDtoTransformer;
+    private final FourPointGradingMapper fourPointGradingMapper;
 
-    private final DtoFourPointGradingTransformer dtoFourPointGradingTransformer;
+    private final FourPointGradingTransformer fourPointGradingTransformer;
 
     private final SecurityUtils securityUtils;
 
     //-------------------------------------------------------CRUD-------------------------------------------------------
     @Transactional
     public FourPointGradingOutDto save(@NonNull final FourPointGradingInDto dto) {
-        FourPointGrading fourPointGrading = fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto));
-        return fourPointGradingDtoTransformer.toDto(fourPointGrading);
+        FourPointGrading fourPointGrading = fourPointGradingRepository.save(fourPointGradingTransformer.toEntity(dto));
+        return fourPointGradingMapper.toDto(fourPointGrading);
     }
 
     @Transactional
@@ -49,8 +49,8 @@ public class FourPointGradingService {
         if (fourPointGrading.isDefault())
             throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        FourPointGrading updFourPointGrading = fourPointGradingRepository.save(dtoFourPointGradingTransformer.toEntity(dto));
-        return fourPointGradingDtoTransformer.toDto(updFourPointGrading);
+        FourPointGrading updFourPointGrading = fourPointGradingRepository.save(fourPointGradingTransformer.toEntity(dto));
+        return fourPointGradingMapper.toDto(updFourPointGrading);
     }
 
     @Transactional
@@ -64,7 +64,7 @@ public class FourPointGradingService {
     //--------------------------------------------------One (for edit)--------------------------------------------------
     @Transactional(readOnly = true)
     public FourPointGradingOutDto findOneForEdit(@NonNull final Long fourId) {
-        return fourPointGradingDtoTransformer.toDto(fourPointGradingRepository.findOneForEdit(fourId)
+        return fourPointGradingMapper.toDto(fourPointGradingRepository.findOneForEdit(fourId)
                 .orElseThrow(()->new EntityNotFoundException(FOUR_NOT_FOUND+fourId)));
     }
 
@@ -73,7 +73,7 @@ public class FourPointGradingService {
     public Set<FourPointGradingOutDto> findAllDefault() {
         return fourPointGradingRepository.findAllDefault()
                 .stream()
-                .map(fourPointGradingDtoTransformer::toDto)
+                .map(fourPointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -82,7 +82,7 @@ public class FourPointGradingService {
     public Set<FourPointGradingOutDto> findAllByDepartment() {
         return fourPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(fourPointGradingDtoTransformer::toDto)
+                .map(fourPointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

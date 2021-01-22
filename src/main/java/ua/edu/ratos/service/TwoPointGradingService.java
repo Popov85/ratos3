@@ -9,8 +9,8 @@ import ua.edu.ratos.dao.repository.TwoPointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.TwoPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoTwoPointGradingTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.TwoPointGradingDtoTransformer;
+import ua.edu.ratos.service.transformer.TwoPointGradingMapper;
+import ua.edu.ratos.service.transformer.TwoPointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -26,17 +26,17 @@ public class TwoPointGradingService {
 
     private final TwoPointGradingRepository twoPointGradingRepository;
 
-    private final TwoPointGradingDtoTransformer twoPointGradingDtoTransformer;
+    private final TwoPointGradingMapper twoPointGradingMapper;
 
-    private final DtoTwoPointGradingTransformer dtoTwoPointGradingTransformer;
+    private final TwoPointGradingTransformer twoPointGradingTransformer;
 
     private final SecurityUtils securityUtils;
 
     //-------------------------------------------------CRUD-------------------------------------------------------------
     @Transactional
     public TwoPointGradingOutDto save(@NonNull final TwoPointGradingInDto dto) {
-        TwoPointGrading twoPointGrading = twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto));
-        return twoPointGradingDtoTransformer.toDto(twoPointGrading);
+        TwoPointGrading twoPointGrading = twoPointGradingRepository.save(twoPointGradingTransformer.toEntity(dto));
+        return twoPointGradingMapper.toDto(twoPointGrading);
     }
 
     @Transactional
@@ -49,8 +49,8 @@ public class TwoPointGradingService {
         if (twoPointGrading.isDefault())
             throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        TwoPointGrading updTwoPointGrading = twoPointGradingRepository.save(dtoTwoPointGradingTransformer.toEntity(dto));
-        return twoPointGradingDtoTransformer.toDto(updTwoPointGrading);
+        TwoPointGrading updTwoPointGrading = twoPointGradingRepository.save(twoPointGradingTransformer.toEntity(dto));
+        return twoPointGradingMapper.toDto(updTwoPointGrading);
     }
 
     @Transactional
@@ -64,7 +64,7 @@ public class TwoPointGradingService {
     //--------------------------------------------------------ONE-------------------------------------------------------
     @Transactional(readOnly = true)
     public TwoPointGradingOutDto findOneForEdit(@NonNull final Long twoId) {
-        return twoPointGradingDtoTransformer.toDto(twoPointGradingRepository.findOneForEdit(twoId)
+        return twoPointGradingMapper.toDto(twoPointGradingRepository.findOneForEdit(twoId)
                 .orElseThrow(() -> new EntityNotFoundException(TWO_NOT_FOUND + twoId)));
     }
 
@@ -73,7 +73,7 @@ public class TwoPointGradingService {
     public Set<TwoPointGradingOutDto> findAllDefault() {
         return twoPointGradingRepository.findAllDefault()
                 .stream()
-                .map(twoPointGradingDtoTransformer::toDto)
+                .map(twoPointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -82,7 +82,7 @@ public class TwoPointGradingService {
     public Set<TwoPointGradingOutDto> findAllByDepartment() {
         return twoPointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(twoPointGradingDtoTransformer::toDto)
+                .map(twoPointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

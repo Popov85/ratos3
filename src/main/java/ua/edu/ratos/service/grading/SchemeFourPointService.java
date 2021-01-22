@@ -6,7 +6,7 @@ import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.dao.entity.grading.SchemeFourPoint;
 import ua.edu.ratos.dao.repository.SchemeFourPointRepository;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.FourPointGradingDtoTransformer;
+import ua.edu.ratos.service.transformer.FourPointGradingMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +20,7 @@ public class SchemeFourPointService implements SchemeGraderService {
 
     private final SchemeFourPointRepository repository;
 
-    private final FourPointGradingDtoTransformer transformer;
+    private final FourPointGradingMapper fourPointGradingMapper;
 
     @Override
     public FourPointGradingOutDto save(long schemeId, long gradingDetailsId) {
@@ -28,12 +28,12 @@ public class SchemeFourPointService implements SchemeGraderService {
         schemeFourPoint.setSchemeId(schemeId);
         schemeFourPoint.setFourPointGrading(em.getReference(FourPointGrading.class, gradingDetailsId));
         schemeFourPoint = repository.save(schemeFourPoint);
-        return transformer.toDto(schemeFourPoint.getFourPointGrading());
+        return fourPointGradingMapper.toDto(schemeFourPoint.getFourPointGrading());
     }
 
     @Override
     public FourPointGradingOutDto findDetails(long schemeId) {
-        return transformer.toDto(repository.findForDtoById(schemeId).getFourPointGrading());
+        return fourPointGradingMapper.toDto(repository.findForDtoById(schemeId).getFourPointGrading());
     }
 
     @Override

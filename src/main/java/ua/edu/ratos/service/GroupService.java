@@ -16,9 +16,9 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.GroupInDto;
 import ua.edu.ratos.service.dto.out.GroupExtendedOutDto;
 import ua.edu.ratos.service.dto.out.GroupOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoGroupTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.GroupDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.GroupExtendedDtoTransformer;
+import ua.edu.ratos.service.transformer.GroupExtMapper;
+import ua.edu.ratos.service.transformer.GroupMapper;
+import ua.edu.ratos.service.transformer.GroupTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -35,11 +35,11 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
 
-    private final DtoGroupTransformer dtoGroupTransformer;
+    private final GroupTransformer groupTransformer;
 
-    private final GroupExtendedDtoTransformer groupExtendedDtoTransformer;
+    private final GroupExtMapper groupExtMapper;
 
-    private final GroupDtoTransformer groupDtoTransformer;
+    private final GroupMapper groupMapper;
 
     private final StudentGroupRepository studentGroupRepository;
 
@@ -48,7 +48,7 @@ public class GroupService {
     //-------------------------------------------------------CRUD-------------------------------------------------------
     @Transactional
     public Long save(@NonNull final GroupInDto dto) {
-        return groupRepository.save(dtoGroupTransformer.toEntity(dto)).getGroupId();
+        return groupRepository.save(groupTransformer.toEntity(dto)).getGroupId();
     }
 
     @Transactional
@@ -82,35 +82,35 @@ public class GroupService {
     //-------------------------------------------------------One (for edit)---------------------------------------------
     @Transactional(readOnly = true)
     public GroupOutDto findOneForEdit(@NonNull final Long groupId) {
-        return groupDtoTransformer.toDto(groupRepository.findOneForEdit(groupId)
+        return groupMapper.toDto(groupRepository.findOneForEdit(groupId)
                 .orElseThrow(() -> new EntityNotFoundException(GROUP_NOT_FOUND + groupId)));
     }
 
     //--------------------------------------------------------Staff table-----------------------------------------------
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllByStaffId(@NonNull final Pageable pageable) {
-        return groupRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(groupExtendedDtoTransformer::toDto);
+        return groupRepository.findAllByStaffId(securityUtils.getAuthStaffId(), pageable).map(groupExtMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllByStaffIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return groupRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(groupExtendedDtoTransformer::toDto);
+        return groupRepository.findAllByStaffIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(groupExtMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllByDepartmentId(@NonNull final Pageable pageable) {
-        return groupRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(groupExtendedDtoTransformer::toDto);
+        return groupRepository.findAllByDepartmentId(securityUtils.getAuthDepId(), pageable).map(groupExtMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllByDepartmentIdAndNameLettersContains(@NonNull final String letters, @NonNull final Pageable pageable) {
-        return groupRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(groupExtendedDtoTransformer::toDto);
+        return groupRepository.findAllByDepartmentIdAndNameLettersContains(securityUtils.getAuthStaffId(), letters, pageable).map(groupExtMapper::toDto);
     }
 
     //--------------------------------------------------------ADMIN table-----------------------------------------------
     @Transactional(readOnly = true)
     public Page<GroupExtendedOutDto> findAllAdmin(@NonNull final Pageable pageable) {
-        return groupRepository.findAllAdmin(pageable).map(groupExtendedDtoTransformer::toDto);
+        return groupRepository.findAllAdmin(pageable).map(groupExtMapper::toDto);
     }
 
 }

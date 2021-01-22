@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.Group;
 import ua.edu.ratos.service.dto.out.GroupExtendedOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Component
 public class GroupExtendedDtoTransformer {
 

@@ -28,6 +28,7 @@ public class ThemeExtTransformerImpl implements ThemeExtTransformer {
 
     private final AccessMapper accessMapper;
 
+    @Override
     public ThemeExtOutDto toDto(@NonNull final Theme entity) {
         Set<TypeAndCount> typesAndCount = questionRepository.countAllTypesByThemeId(entity.getThemeId());
         return ((ThemeExtOutDto) new ThemeExtOutDto()

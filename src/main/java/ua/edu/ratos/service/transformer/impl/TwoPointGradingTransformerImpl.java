@@ -1,42 +1,34 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Staff;
-import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
 import ua.edu.ratos.dao.entity.grading.Grading;
+import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.TwoPointGradingInDto;
+import ua.edu.ratos.service.transformer.TwoPointGradingTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
-public class DtoTwoPointGradingTransformer {
+@AllArgsConstructor
+public class TwoPointGradingTransformerImpl implements TwoPointGradingTransformer {
 
     private static final Long GRADING_ID = 2L;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
+    @Override
     public TwoPointGrading toEntity(@NonNull final TwoPointGradingInDto dto) {
         TwoPointGrading entity = modelMapper.map(dto, TwoPointGrading.class);
         entity.setGrading(em.getReference(Grading.class, GRADING_ID));

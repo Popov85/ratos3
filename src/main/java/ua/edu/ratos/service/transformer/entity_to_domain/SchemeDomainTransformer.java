@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.domain.SchemeDomain;
+import ua.edu.ratos.service.transformer.StrategyMapper;
 
 @Slf4j
 @Component
@@ -13,7 +14,7 @@ public class SchemeDomainTransformer {
 
     private ModeDomainTransformer modeDomainTransformer;
 
-    private StrategyDomainTransformer strategyDomainTransformer;
+    private StrategyMapper strategyMapper;
 
     private GradingDomainTransformer gradingDomainTransformer;
 
@@ -27,8 +28,8 @@ public class SchemeDomainTransformer {
     }
 
     @Autowired
-    public void setStrategyDomainTransformer(StrategyDomainTransformer strategyDomainTransformer) {
-        this.strategyDomainTransformer = strategyDomainTransformer;
+    public void setStrategyDomainTransformer(StrategyMapper strategyMapper) {
+        this.strategyMapper = strategyMapper;
     }
 
     @Autowired
@@ -51,7 +52,7 @@ public class SchemeDomainTransformer {
                 .setSchemeId(entity.getSchemeId())
                 .setName(entity.getName())
                 .setModeDomain(modeDomainTransformer.toDomain(entity.getMode()))
-                .setStrategyDomain(strategyDomainTransformer.toDomain(entity.getStrategy()))
+                .setStrategyDomain(strategyMapper.toDomain(entity.getStrategy()))
                 .setGradingDomain(gradingDomainTransformer.toDomain(entity.getGrading()))
                 .setSettingsDomain(settingsDomainTransformer.toDomain(entity.getSettings()))
                 .setOptionsDomain(optionsDomainTransformer.toDomain(entity.getOptions()));

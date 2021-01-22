@@ -9,8 +9,8 @@ import ua.edu.ratos.dao.repository.FreePointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FreePointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoFreePointGradingTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FreePointGradingDtoTransformer;
+import ua.edu.ratos.service.transformer.FreePointGradingMapper;
+import ua.edu.ratos.service.transformer.FreePointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -26,17 +26,17 @@ public class FreePointGradingService {
 
     private final FreePointGradingRepository freePointGradingRepository;
 
-    private final FreePointGradingDtoTransformer freePointGradingDtoTransformer;
+    private final FreePointGradingMapper freePointGradingMapper;
 
-    private final DtoFreePointGradingTransformer dtoFreePointGradingTransformer;
+    private final FreePointGradingTransformer freePointGradingTransformer;
 
     private final SecurityUtils securityUtils;
 
     //------------------------------------------------------CRUD--------------------------------------------------------
     @Transactional
     public FreePointGradingOutDto save(@NonNull final FreePointGradingInDto dto) {
-        FreePointGrading freePointGrading = freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto));
-        return freePointGradingDtoTransformer.toDto(freePointGrading);
+        FreePointGrading freePointGrading = freePointGradingRepository.save(freePointGradingTransformer.toEntity(dto));
+        return freePointGradingMapper.toDto(freePointGrading);
     }
 
     @Transactional
@@ -49,8 +49,8 @@ public class FreePointGradingService {
         if (freePointGrading.isDefault())
             throw new RuntimeException(DEFAULT_GRADINGS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        FreePointGrading updFreePointGrading = freePointGradingRepository.save(dtoFreePointGradingTransformer.toEntity(dto));
-        return freePointGradingDtoTransformer.toDto(updFreePointGrading);
+        FreePointGrading updFreePointGrading = freePointGradingRepository.save(freePointGradingTransformer.toEntity(dto));
+        return freePointGradingMapper.toDto(updFreePointGrading);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class FreePointGradingService {
     //--------------------------------------------------One (for update)------------------------------------------------
     @Transactional(readOnly = true)
     public FreePointGradingOutDto findOneForEdit(@NonNull final Long freeId) {
-        return freePointGradingDtoTransformer.toDto(freePointGradingRepository.findOneForEdit(freeId)
+        return freePointGradingMapper.toDto(freePointGradingRepository.findOneForEdit(freeId)
                 .orElseThrow(() -> new EntityNotFoundException(FREE_NOT_FOUND + freeId)));
     }
 
@@ -72,7 +72,7 @@ public class FreePointGradingService {
     public Set<FreePointGradingOutDto> findAllDefault() {
         return freePointGradingRepository.findAllDefault()
                 .stream()
-                .map(freePointGradingDtoTransformer::toDto)
+                .map(freePointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -81,7 +81,7 @@ public class FreePointGradingService {
     public Set<FreePointGradingOutDto> findAllByDepartment() {
         return freePointGradingRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(freePointGradingDtoTransformer::toDto)
+                .map(freePointGradingMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

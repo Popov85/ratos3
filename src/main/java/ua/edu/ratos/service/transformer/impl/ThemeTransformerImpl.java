@@ -24,6 +24,7 @@ public class ThemeTransformerImpl implements ThemeTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public Theme toEntity(@NonNull final ThemeInDto dto) {
         Theme theme = modelMapper.map(dto, Theme.class);
         theme.setAccess(em.getReference(Access.class, dto.getAccessId()));
@@ -34,6 +35,7 @@ public class ThemeTransformerImpl implements ThemeTransformer {
         return theme;
     }
 
+    @Override
     public Theme toEntity(@NonNull final Theme entity, @NonNull final ThemeInDto dto) {
         Theme theme = entity;
         theme.setThemeId(dto.getThemeId());

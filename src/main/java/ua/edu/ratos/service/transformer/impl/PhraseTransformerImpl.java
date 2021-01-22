@@ -3,8 +3,6 @@ package ua.edu.ratos.service.transformer.impl;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Phrase;
 import ua.edu.ratos.dao.entity.Resource;
 import ua.edu.ratos.dao.entity.Staff;
@@ -25,6 +23,7 @@ public class PhraseTransformerImpl implements PhraseTransformer {
 
     private final SecurityUtils securityUtils;
 
+    @Override
     public Phrase toEntity(@NonNull final PhraseInDto dto) {
         Phrase phrase = new Phrase();
         phrase.setPhrase(dto.getPhrase());

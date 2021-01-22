@@ -8,6 +8,7 @@ import ua.edu.ratos.service.dto.out.GroupOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 import ua.edu.ratos.service.transformer.StudMapper;
 
+@Deprecated
 @Component
 public class GroupDtoTransformer {
 
