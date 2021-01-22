@@ -4,8 +4,13 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.edu.ratos.dao.entity.*;
+import ua.edu.ratos.dao.entity.Scheme;
+import ua.edu.ratos.dao.entity.SchemeTheme;
+import ua.edu.ratos.dao.entity.SchemeThemeSettings;
+import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
+import ua.edu.ratos.service.transformer.ModeMinMapper;
+
 import java.util.List;
 import java.util.Set;
 
@@ -13,11 +18,11 @@ import java.util.Set;
 @Component
 public class SchemeInfoDtoTransformer {
 
-    private ModeMinDtoTransformer modeMinDtoTransformer;
+    private ModeMinMapper modeMinMapper;
 
     @Autowired
-    public void setModeMinDtoTransformer(ModeMinDtoTransformer modeMinDtoTransformer) {
-        this.modeMinDtoTransformer = modeMinDtoTransformer;
+    public void setModeMinDtoTransformer(ModeMinMapper modeMinMapper) {
+        this.modeMinMapper = modeMinMapper;
     }
 
     public SchemeInfoOutDto toDto(@NonNull final Scheme entity) {
@@ -29,7 +34,7 @@ public class SchemeInfoDtoTransformer {
                 .setQuestions(this.getQuestions(entity.getThemes()))
                 .setTimings(entity.getSettings().getSecondsPerQuestion())
                 .setBatchTimeLimited(entity.getSettings().isStrictControlTimePerQuestion())
-                .setMode(modeMinDtoTransformer.toDto(entity.getMode()))
+                .setMode(modeMinMapper.toDto(entity.getMode()))
                 .setStaff(this.getStaff(entity.getStaff()));
     }
 

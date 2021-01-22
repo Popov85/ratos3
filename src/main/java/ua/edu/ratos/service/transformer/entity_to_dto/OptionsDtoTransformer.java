@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.Options;
 import ua.edu.ratos.service.dto.out.OptionsOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor

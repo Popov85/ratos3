@@ -5,24 +5,22 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
-import ua.edu.ratos.service.transformer.AccessMapper;
-import ua.edu.ratos.service.transformer.CourseMinMapper;
-import ua.edu.ratos.service.transformer.StaffMinMapper;
-import ua.edu.ratos.service.transformer.StrategyMapper;
+import ua.edu.ratos.service.transformer.*;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class SchemeShortDtoTransformer {
 
     private final StrategyMapper strategyMapper;
 
-    private final SettingsDtoTransformer settingsDtoTransformer;
+    private final SettingsMapper settingsMapper;
 
-    private final ModeDtoTransformer modeDtoTransformer;
+    private final ModeMapper modeMapper;
 
-    private final OptionsDtoTransformer optionsDtoTransformer;
+    private final OptionsMapper optionsMapper;
 
-    private final GradingDtoTransformer gradingDtoTransformer;
+    private final GradingMapper gradingMapper;
 
     private final CourseMinMapper courseMinMapper;
 
@@ -39,10 +37,10 @@ public class SchemeShortDtoTransformer {
                 .setActive(entity.isActive())
                 .setCreated(entity.getCreated())
                 .setStrategy(strategyMapper.toDto(entity.getStrategy()))
-                .setSettings(settingsDtoTransformer.toDto(entity.getSettings()))
-                .setMode(modeDtoTransformer.toDto(entity.getMode()))
-                .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
-                .setGrading(gradingDtoTransformer.toDto(entity.getGrading()))
+                .setSettings(settingsMapper.toDto(entity.getSettings()))
+                .setMode(modeMapper.toDto(entity.getMode()))
+                .setOptions(optionsMapper.toDto(entity.getOptions()))
+                .setGrading(gradingMapper.toDto(entity.getGrading()))
                 .setCourse(courseMinMapper.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessMapper.toDto(entity.getAccess()))

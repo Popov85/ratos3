@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -24,11 +25,11 @@ public class SchemeDtoTransformer {
 
     private final StrategyMapper strategyMapper;
 
-    private final SettingsDtoTransformer settingsDtoTransformer;
+    private final SettingsMapper settingsMapper;
 
-    private final ModeDtoTransformer modeDtoTransformer;
+    private final ModeMapper modeMapper;
 
-    private final GradingDtoTransformer gradingDtoTransformer;
+    private final GradingMapper gradingMapper;
 
     private final CourseMinMapper courseMinMapper;
 
@@ -36,11 +37,11 @@ public class SchemeDtoTransformer {
 
     private final AccessMapper accessMapper;
 
-    private final OptionsDtoTransformer optionsDtoTransformer;
+    private final OptionsMapper optionsMapper;
 
     private final GroupMinMapper groupMinMapper;
 
-    private final SchemeThemeDtoTransformer schemeThemeDtoTransformer;
+    private final SchemeThemeMapper schemeThemeMapper;
 
     private final SchemeGradingManagerService schemeGradingManagerService;
 
@@ -53,17 +54,17 @@ public class SchemeDtoTransformer {
                 .setActive(entity.isActive())
                 .setCreated(entity.getCreated())
                 .setStrategy(strategyMapper.toDto(entity.getStrategy()))
-                .setSettings(settingsDtoTransformer.toDto(entity.getSettings()))
-                .setOptions(optionsDtoTransformer.toDto(entity.getOptions()))
-                .setMode(modeDtoTransformer.toDto(entity.getMode()))
-                .setGrading(gradingDtoTransformer.toDto(entity.getGrading()))
+                .setSettings(settingsMapper.toDto(entity.getSettings()))
+                .setOptions(optionsMapper.toDto(entity.getOptions()))
+                .setMode(modeMapper.toDto(entity.getMode()))
+                .setGrading(gradingMapper.toDto(entity.getGrading()))
                 .setGradingDetails(schemeGradingManagerService
                         .findDetails(entity.getSchemeId(), entity.getGrading().getGradingId()))
                 .setCourse(courseMinMapper.toDto(entity.getCourse()))
                 .setStaff(staffMinMapper.toDto(entity.getStaff()))
                 .setAccess(accessMapper.toDto(entity.getAccess()));
 
-        List<SchemeThemeOutDto> themes = entity.getThemes().stream().map(t -> schemeThemeDtoTransformer.toDto(t)).collect(Collectors.toList());
+        List<SchemeThemeOutDto> themes = entity.getThemes().stream().map(t -> schemeThemeMapper.toDto(t)).collect(Collectors.toList());
         schemeOutDto.setThemes(themes);
         Set<GroupMinOutDto> groups = entity.getGroups().stream().map(g -> groupMinMapper.toDto(g)).collect(Collectors.toSet());
         schemeOutDto.setGroups(groups);

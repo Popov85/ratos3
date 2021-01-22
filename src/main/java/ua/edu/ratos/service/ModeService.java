@@ -11,8 +11,8 @@ import ua.edu.ratos.dao.repository.ModeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ModeInDto;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoModeTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ModeDtoTransformer;
+import ua.edu.ratos.service.transformer.ModeMapper;
+import ua.edu.ratos.service.transformer.ModeTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -28,17 +28,17 @@ public class ModeService {
 
     private final ModeRepository modeRepository;
 
-    private final DtoModeTransformer dtoModeTransformer;
+    private final ModeTransformer modeTransformer;
 
-    private final ModeDtoTransformer modeDtoTransformer;
+    private final ModeMapper modeMapper;
 
     private final SecurityUtils securityUtils;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
     public ModeOutDto save(@NonNull final ModeInDto dto) {
-        Mode mode = modeRepository.save(dtoModeTransformer.toEntity(dto));
-        return modeDtoTransformer.toDto(mode);
+        Mode mode = modeRepository.save(modeTransformer.toEntity(dto));
+        return modeMapper.toDto(mode);
     }
 
     @Transactional
@@ -48,8 +48,8 @@ public class ModeService {
         Mode mode = modeRepository.findById(modeId)
                 .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND + modeId));
         if (mode.isDefaultMode()) throw new RuntimeException(DEFAULT_MODES_CANNOT_BE_MODIFIED);
-        Mode updMode = modeRepository.save(dtoModeTransformer.toEntity(dto));
-        return modeDtoTransformer.toDto(updMode);
+        Mode updMode = modeRepository.save(modeTransformer.toEntity(dto));
+        return modeMapper.toDto(updMode);
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class ModeService {
     //-------------------------------------------------One (for edit)---------------------------------------------------
     @Transactional(readOnly = true)
     public ModeOutDto findOneForEdit(@NonNull final Long modeId) {
-        return modeDtoTransformer.toDto(modeRepository.findOneForEdit(modeId)
+        return modeMapper.toDto(modeRepository.findOneForEdit(modeId)
                 .orElseThrow(() -> new EntityNotFoundException(MODE_NOT_FOUND + modeId)));
     }
 
@@ -71,7 +71,7 @@ public class ModeService {
     public Set<ModeOutDto> findAllDefault() {
         return modeRepository.findAllDefault()
                 .stream()
-                .map(modeDtoTransformer::toDto)
+                .map(modeMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -80,7 +80,7 @@ public class ModeService {
     public Set<ModeOutDto> findAllByDepartment() {
         return modeRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(modeDtoTransformer::toDto)
+                .map(modeMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -96,6 +96,6 @@ public class ModeService {
     //-------------------------------------------------------ADMIN------------------------------------------------------
     @Transactional(readOnly = true)
     public Page<ModeOutDto> findAll(@NonNull final Pageable pageable) {
-        return modeRepository.findAll(pageable).map(modeDtoTransformer::toDto);
+        return modeRepository.findAll(pageable).map(modeMapper::toDto);
     }
 }

@@ -14,6 +14,7 @@ import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class DtoSchemeThemeSettingsTransformer {

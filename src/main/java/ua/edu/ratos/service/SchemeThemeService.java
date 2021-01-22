@@ -9,8 +9,8 @@ import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.repository.SchemeThemeRepository;
 import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeThemeTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeThemeDtoTransformer;
+import ua.edu.ratos.service.transformer.SchemeThemeMapper;
+import ua.edu.ratos.service.transformer.SchemeThemeTransformer;
 
 import java.util.Set;
 
@@ -20,16 +20,16 @@ public class SchemeThemeService {
 
     private final SchemeThemeRepository schemeThemeRepository;
 
-    private final DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
+    private final SchemeThemeTransformer schemeThemeTransformer;
 
-    private final SchemeThemeDtoTransformer schemeThemeDtoTransformer;
+    private final SchemeThemeMapper schemeThemeMapper;
 
     private final SchemeThemeSettingsService schemeThemeSettingsService;
 
     //-----------------------------------------------CRUD---------------------------------------------------------------
     @Transactional
     public Long save(@NonNull final Long schemeId, @NonNull final SchemeThemeInDto dto) {
-        SchemeTheme schemeTheme = dtoSchemeThemeTransformer.toEntity(schemeId, dto);
+        SchemeTheme schemeTheme = schemeThemeTransformer.toEntity(schemeId, dto);
         return schemeThemeRepository.save(schemeTheme).getSchemeThemeId();
     }
 
@@ -42,7 +42,7 @@ public class SchemeThemeService {
 
     @Transactional(readOnly = true)
     public SchemeThemeOutDto findOne(@NonNull final Long schemeThemeId) {
-        return schemeThemeDtoTransformer.toDto(schemeThemeRepository.findForDtoById(schemeThemeId));
+        return schemeThemeMapper.toDto(schemeThemeRepository.findForDtoById(schemeThemeId));
     }
 
     private boolean hasMultipleSettings(@NonNull final Long schemeThemeId) {

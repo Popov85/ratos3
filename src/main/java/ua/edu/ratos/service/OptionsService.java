@@ -11,8 +11,8 @@ import ua.edu.ratos.dao.repository.OptionsRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.OptionsInDto;
 import ua.edu.ratos.service.dto.out.OptionsOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoOptionsTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.OptionsDtoTransformer;
+import ua.edu.ratos.service.transformer.OptionsMapper;
+import ua.edu.ratos.service.transformer.OptionsTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -28,17 +28,17 @@ public class OptionsService {
 
     private final OptionsRepository optionsRepository;
 
-    private final DtoOptionsTransformer dtoOptionsTransformer;
+    private final OptionsTransformer optionsTransformer;
 
-    private final OptionsDtoTransformer optionsDtoTransformer;
+    private final OptionsMapper optionsMapper;
 
     private final SecurityUtils securityUtils;
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
     @Transactional
     public OptionsOutDto save(@NonNull final OptionsInDto dto) {
-        Options options = optionsRepository.save(dtoOptionsTransformer.toEntity(dto));
-        return optionsDtoTransformer.toDto(options);
+        Options options = optionsRepository.save(optionsTransformer.toEntity(dto));
+        return optionsMapper.toDto(options);
     }
 
     // Not the "redundant save" anti-pattern!!
@@ -53,8 +53,8 @@ public class OptionsService {
         if (options.isDefault())
             throw new RuntimeException(DEFAULT_OPTIONS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        Options updOptions = optionsRepository.save(dtoOptionsTransformer.toEntity(dto));
-        return optionsDtoTransformer.toDto(updOptions);
+        Options updOptions = optionsRepository.save(optionsTransformer.toEntity(dto));
+        return optionsMapper.toDto(updOptions);
     }
 
     @Transactional
@@ -68,7 +68,7 @@ public class OptionsService {
     //-------------------------------------------------One (for update)-------------------------------------------------
     @Transactional(readOnly = true)
     public OptionsOutDto findOneForEdit(@NonNull final Long optId) {
-        return optionsDtoTransformer.toDto(optionsRepository.findOneForEdit(optId)
+        return optionsMapper.toDto(optionsRepository.findOneForEdit(optId)
                 .orElseThrow(()->new EntityNotFoundException(OPTIONS_NOT_FOUND +optId)));
     }
 
@@ -77,7 +77,7 @@ public class OptionsService {
     public Set<OptionsOutDto> findAllDefault() {
         return optionsRepository.findAllDefault()
                 .stream()
-                .map(optionsDtoTransformer::toDto)
+                .map(optionsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -86,7 +86,7 @@ public class OptionsService {
     public Set<OptionsOutDto> findAllByDepartment() {
         return optionsRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(optionsDtoTransformer::toDto)
+                .map(optionsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -102,7 +102,7 @@ public class OptionsService {
     //--------------------------------------------------------ADMIN-----------------------------------------------------
     @Transactional(readOnly = true)
     public Page<OptionsOutDto> findAllAdmin(@NonNull Pageable pageable) {
-        return optionsRepository.findAllAdmin(pageable).map(optionsDtoTransformer::toDto);
+        return optionsRepository.findAllAdmin(pageable).map(optionsMapper::toDto);
     }
 
 }

@@ -11,8 +11,8 @@ import ua.edu.ratos.dao.repository.SettingsRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsInDto;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoSettingsTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SettingsDtoTransformer;
+import ua.edu.ratos.service.transformer.SettingsMapper;
+import ua.edu.ratos.service.transformer.SettingsTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -27,17 +27,17 @@ public class SettingsService {
 
     private final SettingsRepository settingsRepository;
 
-    private final DtoSettingsTransformer dtoSettingsTransformer;
+    private final SettingsTransformer settingsTransformer;
 
-    private final SettingsDtoTransformer settingsDtoTransformer;
+    private final SettingsMapper settingsMapper;
 
     private final SecurityUtils securityUtils;
 
     //-----------------------------------------------------CRUD---------------------------------------------------------
     @Transactional
     public SettingsOutDto save(@NonNull final SettingsInDto dto) {
-        Settings settings = settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
-        return settingsDtoTransformer.toDto(settings);
+        Settings settings = settingsRepository.save(settingsTransformer.toEntity(dto));
+        return settingsMapper.toDto(settings);
     }
 
     // Not the "redundant save" anti-pattern!!
@@ -52,8 +52,8 @@ public class SettingsService {
         if (settings.isDefault())
             throw new RuntimeException(DEFAULT_SETTINGS_CANNOT_BE_MODIFIED );
         // Will merge actually
-        Settings updSave = settingsRepository.save(dtoSettingsTransformer.toEntity(dto));
-        return settingsDtoTransformer.toDto(updSave);
+        Settings updSave = settingsRepository.save(settingsTransformer.toEntity(dto));
+        return settingsMapper.toDto(updSave);
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class SettingsService {
     //-------------------------------------------------One (for update)-------------------------------------------------
     @Transactional(readOnly = true)
     public SettingsOutDto findOneForEdit(@NonNull final Long setId) {
-        return settingsDtoTransformer.toDto(settingsRepository.findOneForEdit(setId)
+        return settingsMapper.toDto(settingsRepository.findOneForEdit(setId)
                 .orElseThrow(()->new EntityNotFoundException("Settings is not found, setId = "+setId)));
     }
 
@@ -76,7 +76,7 @@ public class SettingsService {
     public Set<SettingsOutDto> findAllDefault() {
         return settingsRepository.findAllDefault()
                 .stream()
-                .map(settingsDtoTransformer::toDto)
+                .map(settingsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -85,7 +85,7 @@ public class SettingsService {
     public Set<SettingsOutDto> findAllByDepartment() {
         return settingsRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(settingsDtoTransformer::toDto)
+                .map(settingsMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -101,7 +101,7 @@ public class SettingsService {
     //--------------------------------------------------------ADMIN-----------------------------------------------------
     @Transactional(readOnly = true)
     public Page<SettingsOutDto> findAll(@NonNull Pageable pageable) {
-        return settingsRepository.findAll(pageable).map(settingsDtoTransformer::toDto);
+        return settingsRepository.findAll(pageable).map(settingsMapper::toDto);
     }
 
 }

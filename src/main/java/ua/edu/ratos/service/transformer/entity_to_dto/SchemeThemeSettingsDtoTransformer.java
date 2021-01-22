@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.service.dto.out.SchemeThemeSettingsOutDto;
 
+@Deprecated
 @Component
 public class SchemeThemeSettingsDtoTransformer {
 

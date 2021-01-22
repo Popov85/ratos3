@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.service.dto.out.GradingOutDto;
 
+@Deprecated
 @Slf4j
 @Component
 public class GradingDtoTransformer {

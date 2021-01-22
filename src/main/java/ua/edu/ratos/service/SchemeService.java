@@ -16,11 +16,11 @@ import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
+import ua.edu.ratos.service.transformer.SchemeMapper;
+import ua.edu.ratos.service.transformer.SchemeMinMapper;
+import ua.edu.ratos.service.transformer.SchemeShortMapper;
 import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeDtoTransformer;
 import ua.edu.ratos.service.transformer.entity_to_dto.SchemeInfoDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeMinDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeShortDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -38,11 +38,11 @@ public class SchemeService {
 
     private final SchemeGradingManagerService gradingManagerService;
 
-    private final SchemeShortDtoTransformer schemeShortDtoTransformer;
+    private final SchemeShortMapper schemeShortMapper;
 
-    private final SchemeDtoTransformer schemeDtoTransformer;
+    private final SchemeMapper schemeMapper;
 
-    private final SchemeMinDtoTransformer schemeMinDtoTransformer;
+    private final SchemeMinMapper schemeMinMapper;
 
     private final SchemeInfoDtoTransformer schemeInfoDtoTransformer;
 
@@ -61,7 +61,7 @@ public class SchemeService {
         final long gradingId = dto.getGradingId();
         final long gradingDetailsId = dto.getGradingDetailsId();
         gradingManagerService.save(scheme.getSchemeId(), gradingId, gradingDetailsId);
-        return schemeDtoTransformer.toDto(scheme);
+        return schemeMapper.toDto(scheme);
     }
 
     @Transactional
@@ -90,12 +90,6 @@ public class SchemeService {
         scheme.setLmsOnly(isLmsOnly);
     }
 
-    /*@Transactional
-    public void updateAccess(@NonNull final Long schemeId, @NonNull final Long accessId) {
-        Scheme scheme = checkModificationPossibility(schemeId);
-        scheme.setAccess(em.getReference(Access.class, accessId));
-    }*/
-
     @Transactional
     public void deleteById(@NonNull final Long schemeId) {
         Scheme scheme = checkModificationPossibility(schemeId);
@@ -112,7 +106,7 @@ public class SchemeService {
     //------------------------------------------------One (for edit)----------------------------------------------------
     @Transactional(readOnly = true)
     public SchemeOutDto findByIdForEdit(@NonNull final Long schemeId) {
-        return schemeDtoTransformer.toDto(schemeRepository.findForEditById(schemeId)
+        return schemeMapper.toDto(schemeRepository.findForEditById(schemeId)
                 .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId)));
     }
 
@@ -135,7 +129,7 @@ public class SchemeService {
     public Set<SchemeShortOutDto> findAllByDepartment() {
         return schemeRepository.findAllByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(schemeShortDtoTransformer::toDto)
+                .map(schemeShortMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -144,7 +138,7 @@ public class SchemeService {
     public Set<SchemeMinOutDto> findAllForDropdownByCourseId(@NonNull final Long courseId) {
         return schemeRepository.findAllForDropDownByCourseId(courseId)
                 .stream()
-                .map(schemeMinDtoTransformer::toDto)
+                .map(schemeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -152,7 +146,7 @@ public class SchemeService {
     public Set<SchemeMinOutDto> findAllForDropdownByDepartmentId(@NonNull final Long depId) {
         return schemeRepository.findAllForDropDownByDepartmentId(depId)
                 .stream()
-                .map(schemeMinDtoTransformer::toDto)
+                .map(schemeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -160,7 +154,7 @@ public class SchemeService {
     public Set<SchemeMinOutDto> findAllForDropdownByDepartmentId() {
         return schemeRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(schemeMinDtoTransformer::toDto)
+                .map(schemeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -189,44 +183,6 @@ public class SchemeService {
     //-------------------------------------------------Admin (for table)------------------------------------------------
     @Transactional(readOnly = true)
     public Page<SchemeShortOutDto> findAll(@NonNull final Pageable pageable) {
-        return schemeRepository.findAll(pageable).map(schemeShortDtoTransformer::toDto);
+        return schemeRepository.findAll(pageable).map(schemeShortMapper::toDto);
     }
-
-    //----------------------------------------------------THEMES--------------------------------------------------------
-    // we manage it here cause it affects scheme completeness
-    /*@Transactional
-    public void removeTheme(@NonNull final Long schemeId, @NonNull final Long schemeThemeId) {
-        if (!hasMultipleThemes(schemeId)) throw new RuntimeException("Cannot remove the last theme");
-        schemeThemeService.remove(schemeThemeId);
-    }
-
-    private boolean hasMultipleThemes(@NonNull final Long schemeId) {
-        Set<SchemeTheme> themes = schemeThemeService.findAllBySchemeId(schemeId);
-        return themes != null && themes.size() > 1;
-    }
-
-    @Transactional
-    public void reOrderThemes(@NonNull final Long schemeId, @NonNull final List<Long> schemeThemeIds) {
-        final Scheme scheme = schemeRepository.findForThemesManipulationById(schemeId)
-                .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId));
-        if (scheme.getThemes().size() != schemeThemeIds.size())
-            throw new RuntimeException("Cannot re-order themes: unequal list size");
-        scheme.clearSchemeTheme();
-        schemeThemeIds.forEach(id -> scheme.addSchemeTheme(em.find(SchemeTheme.class, id)));
-    }
-
-    //---------------------------------------------------GROUPS---------------------------------------------------------
-    @Transactional
-    public void addGroup(@NonNull final Long schemeId, @NonNull final Long groupId) {
-        GroupScheme groupScheme = new GroupScheme();
-        groupScheme.setGroup(em.getReference(Group.class, groupId));
-        groupScheme.setScheme(em.getReference(Scheme.class, schemeId));
-        groupSchemeRepository.save(groupScheme);
-    }
-
-    @Transactional
-    public void removeGroup(@NonNull final Long schemeId, @NonNull final Long groupId) {
-        groupSchemeRepository.deleteById(new GroupSchemeId(groupId, schemeId));
-    }*/
-
 }

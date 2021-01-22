@@ -7,14 +7,17 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.SchemeTheme;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeSettingsOutDto;
+import ua.edu.ratos.service.transformer.SchemeThemeSettingsMapper;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class SchemeThemeDtoTransformer {
 
-    private final SchemeThemeSettingsDtoTransformer schemeThemeSettingsDtoTransformer;
+    private final SchemeThemeSettingsMapper schemeThemeSettingsMapper;
 
 
     public SchemeThemeOutDto toDto(@NonNull final SchemeTheme entity) {
@@ -25,7 +28,7 @@ public class SchemeThemeDtoTransformer {
                 .setOrder(entity.getOrder());
         Set<SchemeThemeSettingsOutDto> settings = entity.getSettings()
                 .stream()
-                .map(s -> schemeThemeSettingsDtoTransformer.toDto(s))
+                .map(s -> schemeThemeSettingsMapper.toDto(s))
                 .collect(Collectors.toSet());
         dto.setSettings(settings);
         return dto;

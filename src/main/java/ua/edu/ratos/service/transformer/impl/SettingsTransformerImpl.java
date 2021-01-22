@@ -1,24 +1,22 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Department;
-import ua.edu.ratos.dao.entity.Options;
+import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.dto.in.OptionsInDto;
+import ua.edu.ratos.service.dto.in.SettingsInDto;
+import ua.edu.ratos.service.transformer.SettingsTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoOptionsTransformer {
+public class SettingsTransformerImpl implements SettingsTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -27,9 +25,9 @@ public class DtoOptionsTransformer {
 
     private final SecurityUtils securityUtils;
 
-    @Transactional(propagation = Propagation.MANDATORY)
-    public Options toEntity(@NonNull final OptionsInDto dto) {
-        Options settings = modelMapper.map(dto, Options.class);
+    @Override
+    public Settings toEntity(@NonNull final SettingsInDto dto) {
+        Settings settings = modelMapper.map(dto, Settings.class);
         settings.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));
         settings.setDepartment(em.getReference(Department.class, securityUtils.getAuthDepId()));
         return settings;

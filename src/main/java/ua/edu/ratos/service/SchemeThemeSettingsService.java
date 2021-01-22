@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.repository.SchemeThemeSettingsRepository;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeThemeSettingsTransformer;
+import ua.edu.ratos.service.transformer.SchemeThemeSettingsMapper;
 
 import java.util.Set;
 
@@ -17,12 +17,12 @@ public class SchemeThemeSettingsService {
 
     private final SchemeThemeSettingsRepository schemeThemeSettingsRepository;
 
-    private final DtoSchemeThemeSettingsTransformer dtoSchemeThemeSettingsTransformer;
+    private final SchemeThemeSettingsMapper schemeThemeSettingsMapper;
 
     //----------------------------------------------------CRUD----------------------------------------------------------
     @Transactional
     public Long save(@NonNull final SchemeThemeSettingsInDto dto) {
-        SchemeThemeSettings schemeThemeSettings = dtoSchemeThemeSettingsTransformer.toEntity(dto);
+        SchemeThemeSettings schemeThemeSettings = schemeThemeSettingsMapper.toEntity(dto);
         return schemeThemeSettingsRepository.save(schemeThemeSettings).getSchemeThemeSettingsId();
     }
 
@@ -30,7 +30,7 @@ public class SchemeThemeSettingsService {
     public void update(@NonNull final Long settingsId, @NonNull final SchemeThemeSettingsInDto dto) {
         if (!schemeThemeSettingsRepository.existsById(settingsId))
             throw new RuntimeException("Failed to update settings: ID does not exist");
-        SchemeThemeSettings schemeThemeSettings = dtoSchemeThemeSettingsTransformer.toEntity(dto);
+        SchemeThemeSettings schemeThemeSettings = schemeThemeSettingsMapper.toEntity(dto);
         schemeThemeSettingsRepository.save(schemeThemeSettings);
     }
 

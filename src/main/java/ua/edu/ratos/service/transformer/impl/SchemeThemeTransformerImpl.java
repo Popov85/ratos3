@@ -1,22 +1,20 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.transformer.SchemeThemeSettingsMapper;
+import ua.edu.ratos.service.transformer.SchemeThemeTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoSchemeThemeTransformer {
+public class SchemeThemeTransformerImpl implements SchemeThemeTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -25,8 +23,7 @@ public class DtoSchemeThemeTransformer {
 
     private final SchemeThemeSettingsMapper schemeThemeSettingsMapper;
 
-
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public SchemeTheme toEntity(@NonNull final Long schemeId, @NonNull SchemeThemeInDto dto) {
         SchemeTheme schemeTheme = new SchemeTheme();
         schemeTheme.setScheme(em.getReference(Scheme.class, schemeId));
@@ -40,7 +37,7 @@ public class DtoSchemeThemeTransformer {
         return schemeTheme;
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public SchemeTheme toEntity(@NonNull final SchemeThemeInDto dto) {
         SchemeTheme schemeTheme = new SchemeTheme();
         schemeTheme.setSchemeThemeId(dto.getSchemeThemeId());

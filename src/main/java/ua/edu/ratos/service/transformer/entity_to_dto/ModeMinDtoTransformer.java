@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.service.dto.out.ModeMinOutDto;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
 
+@Deprecated
 @Slf4j
 @Component
 public class ModeMinDtoTransformer {

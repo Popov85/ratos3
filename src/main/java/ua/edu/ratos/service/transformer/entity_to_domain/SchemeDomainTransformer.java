@@ -6,25 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.domain.SchemeDomain;
-import ua.edu.ratos.service.transformer.StrategyMapper;
+import ua.edu.ratos.service.transformer.*;
 
 @Slf4j
 @Component
 public class SchemeDomainTransformer {
 
-    private ModeDomainTransformer modeDomainTransformer;
+    private ModeMapper modeMapper;
 
     private StrategyMapper strategyMapper;
 
-    private GradingDomainTransformer gradingDomainTransformer;
+    private GradingMapper gradingMapper;
 
-    private SettingsDomainTransformer settingsDomainTransformer;
+    private SettingsMapper settingsMapper;
 
-    private OptionsDomainTransformer optionsDomainTransformer;
+    private OptionsMapper optionsMapper;
 
     @Autowired
-    public void setModeDomainTransformer(ModeDomainTransformer modeDomainTransformer) {
-        this.modeDomainTransformer = modeDomainTransformer;
+    public void setModeDomainTransformer(ModeMapper modeMapper) {
+        this.modeMapper = modeMapper;
     }
 
     @Autowired
@@ -33,28 +33,28 @@ public class SchemeDomainTransformer {
     }
 
     @Autowired
-    public void setGradingDomainTransformer(GradingDomainTransformer gradingDomainTransformer) {
-        this.gradingDomainTransformer = gradingDomainTransformer;
+    public void setGradingDomainTransformer(GradingMapper gradingMapper) {
+        this.gradingMapper = gradingMapper;
     }
 
     @Autowired
-    public void setSettingsDomainTransformer(SettingsDomainTransformer settingsDomainTransformer) {
-        this.settingsDomainTransformer = settingsDomainTransformer;
+    public void setSettingsDomainTransformer(SettingsMapper settingsMapper) {
+        this.settingsMapper = settingsMapper;
     }
 
     @Autowired
-    public void setOptionsDomainTransformer(OptionsDomainTransformer optionsDomainTransformer) {
-        this.optionsDomainTransformer = optionsDomainTransformer;
+    public void setOptionsDomainTransformer(OptionsMapper optionsMapper) {
+        this.optionsMapper = optionsMapper;
     }
 
     public SchemeDomain toDomain(@NonNull final Scheme entity) {
         return new SchemeDomain()
                 .setSchemeId(entity.getSchemeId())
                 .setName(entity.getName())
-                .setModeDomain(modeDomainTransformer.toDomain(entity.getMode()))
+                .setModeDomain(modeMapper.toDomain(entity.getMode()))
                 .setStrategyDomain(strategyMapper.toDomain(entity.getStrategy()))
-                .setGradingDomain(gradingDomainTransformer.toDomain(entity.getGrading()))
-                .setSettingsDomain(settingsDomainTransformer.toDomain(entity.getSettings()))
-                .setOptionsDomain(optionsDomainTransformer.toDomain(entity.getOptions()));
+                .setGradingDomain(gradingMapper.toDomain(entity.getGrading()))
+                .setSettingsDomain(settingsMapper.toDomain(entity.getSettings()))
+                .setOptionsDomain(optionsMapper.toDomain(entity.getOptions()));
     }
 }

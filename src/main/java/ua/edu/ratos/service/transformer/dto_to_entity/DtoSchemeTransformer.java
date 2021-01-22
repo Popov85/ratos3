@@ -9,6 +9,7 @@ import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
+import ua.edu.ratos.service.transformer.SchemeThemeTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,7 +23,7 @@ public class DtoSchemeTransformer {
 
     private final SecurityUtils securityUtils;
 
-    private final DtoSchemeThemeTransformer dtoSchemeThemeTransformer;
+    private final SchemeThemeTransformer schemeThemeTransformer;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Scheme toEntity(@NonNull final SchemeInDto dto) {
@@ -44,7 +45,7 @@ public class DtoSchemeTransformer {
             throw new RuntimeException("Failed to create Scheme: no themes");
 
         dto.getThemes().forEach(t->{
-            SchemeTheme schemeTheme = dtoSchemeThemeTransformer.toEntity(t);
+            SchemeTheme schemeTheme = schemeThemeTransformer.toEntity(t);
             scheme.addSchemeTheme(schemeTheme);
         });
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.service.domain.ModeDomain;
 
+@Deprecated
 @Slf4j
 @Component
 public class ModeDomainTransformer {

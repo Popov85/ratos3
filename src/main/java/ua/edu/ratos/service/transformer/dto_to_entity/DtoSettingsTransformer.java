@@ -14,6 +14,7 @@ import ua.edu.ratos.service.dto.in.SettingsInDto;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Deprecated
 @Component
 public class DtoSettingsTransformer {
 

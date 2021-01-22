@@ -11,7 +11,7 @@ import ua.edu.ratos.service.dto.out.GradingOutDto;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import ua.edu.ratos.service.session.grade.Grader;
 import ua.edu.ratos.service.session.grade.GradingFactory;
-import ua.edu.ratos.service.transformer.entity_to_dto.GradingDtoTransformer;
+import ua.edu.ratos.service.transformer.GradingMapper;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +24,7 @@ public class GradingService {
 
     private final GradingRepository gradingRepository;
 
-    private final GradingDtoTransformer gradingDtoTransformer;
+    private final GradingMapper gradingMapper;
 
     private final GradingFactory gradingFactory;
 
@@ -45,7 +45,7 @@ public class GradingService {
     public List<GradingOutDto> findAllGradingsForDropDown() {
         return gradingRepository.findAll()
                 .stream()
-                .map(gradingDtoTransformer::toDto)
+                .map(gradingMapper::toDto)
                 .sorted(Comparator.comparing(GradingOutDto::getGradingId))
                 .collect(Collectors.toList());
     }

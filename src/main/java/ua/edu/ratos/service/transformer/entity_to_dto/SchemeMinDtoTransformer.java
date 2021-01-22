@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 
+@Deprecated
 @Slf4j
 @Component
 public class SchemeMinDtoTransformer {

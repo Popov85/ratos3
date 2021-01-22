@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.Options;
 import ua.edu.ratos.service.dto.out.OptionsMinOutDto;
 
+@Deprecated
 @Slf4j
 @Component
 public class OptionsMinDtoTransformer {

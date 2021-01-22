@@ -1,41 +1,31 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.Department;
 import ua.edu.ratos.dao.entity.Mode;
 import ua.edu.ratos.dao.entity.Staff;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ModeInDto;
+import ua.edu.ratos.service.transformer.ModeTransformer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
-public class DtoModeTransformer {
+@AllArgsConstructor
+public class ModeTransformerImpl implements ModeTransformer {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
-    @Autowired
-    public void setSecurityUtils(SecurityUtils securityUtils) {
-        this.securityUtils = securityUtils;
-    }
-
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public Mode toEntity(@NonNull final ModeInDto dto) {
         Mode mode = modelMapper.map(dto, Mode.class);
         mode.setStaff(em.getReference(Staff.class, securityUtils.getAuthStaffId()));

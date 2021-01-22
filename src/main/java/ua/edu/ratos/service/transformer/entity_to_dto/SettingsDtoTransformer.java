@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.Settings;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
 import ua.edu.ratos.service.transformer.StaffMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 public class SettingsDtoTransformer {
