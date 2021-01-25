@@ -1,23 +1,21 @@
-package ua.edu.ratos.service.transformer.dto_to_entity;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.*;
 import ua.edu.ratos.dao.entity.grading.Grading;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SchemeInDto;
 import ua.edu.ratos.service.transformer.SchemeThemeTransformer;
+import ua.edu.ratos.service.transformer.SchemeTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class DtoSchemeTransformer {
+public class SchemeTransformerImpl implements SchemeTransformer {
 
     @PersistenceContext
     private final EntityManager em;
@@ -26,7 +24,7 @@ public class DtoSchemeTransformer {
 
     private final SchemeThemeTransformer schemeThemeTransformer;
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public Scheme toEntity(@NonNull final SchemeInDto dto) {
         Scheme scheme = new Scheme();
         scheme.setSchemeId(dto.getSchemeId());

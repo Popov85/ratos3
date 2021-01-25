@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.domain.SchemeDomain;
 import ua.edu.ratos.service.transformer.*;
 
+@Deprecated
 @Slf4j
 @Component
 public class SchemeDomainTransformer {

@@ -14,6 +14,7 @@ import ua.edu.ratos.service.transformer.ModeMinMapper;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 @Slf4j
 @Component
 public class SchemeInfoDtoTransformer {

@@ -8,6 +8,7 @@ import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.service.dto.out.SchemeWithCourseMinOutDto;
 import ua.edu.ratos.service.transformer.CourseMinMapper;
 
+@Deprecated
 @Slf4j
 @Component
 @AllArgsConstructor

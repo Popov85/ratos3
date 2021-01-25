@@ -13,7 +13,7 @@ import ua.edu.ratos.service.domain.SchemeDomain;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.transformer.entity_to_domain.SchemeDomainTransformer;
+import ua.edu.ratos.service.transformer.SchemeMapper;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class NonLmsStartProcessingServiceImpl implements StartProcessingService 
 
     private final IndividualSequenceProducer individualSequenceProducer;
 
-    private final SchemeDomainTransformer schemeDomainTransformer;
+    private final SchemeMapper schemeMapper;
 
     private final FirstBatchProducer firstBatchBuilder;
 
@@ -62,7 +62,7 @@ public class NonLmsStartProcessingServiceImpl implements StartProcessingService 
         log.debug("Found available schemeId = {}, containing themes = {}", scheme.getSchemeId(), scheme.getThemes().size());
         // Build individual sequence
         List<QuestionDomain> sequence = individualSequenceProducer.getIndividualSequence(scheme);
-        SchemeDomain schemeDomain = schemeDomainTransformer.toDomain(scheme);
+        SchemeDomain schemeDomain = schemeMapper.toDomain(scheme);
         // Build SessionData
         final SessionData sessionData = SessionData.createNoLMS(userId, schemeDomain, sequence);
         // Build first BatchOutDto

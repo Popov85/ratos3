@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentSelfOutDto;
 import ua.edu.ratos.service.session.GameService;
 import ua.edu.ratos.service.transformer.DepartmentMinMapper;
+import ua.edu.ratos.service.transformer.SchemeWithCourseMinMapper;
 
 @Component
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class ResultOfStudentSelfDtoTransformer {
 
     private final DepartmentMinMapper departmentMinMapper;
 
-    private final SchemeWithCourseMinDtoTransformer schemeMinDtoTransformer;
+    private final SchemeWithCourseMinMapper schemeWithCourseMinMapper;
 
     private final GameService gameService;
 
@@ -22,7 +23,7 @@ public class ResultOfStudentSelfDtoTransformer {
         return new ResultOfStudentSelfOutDto()
                 .setResultId(entity.getResultId())
                 .setDepartment(departmentMinMapper.toDto(entity.getDepartment()))
-                .setScheme(schemeMinDtoTransformer.toDto(entity.getScheme()))
+                .setScheme(schemeWithCourseMinMapper.toDto(entity.getScheme()))
                 .setGrade(entity.getGrade())
                 .setPassed(entity.isPassed())
                 .setPercent(entity.getPercent())

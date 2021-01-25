@@ -16,11 +16,7 @@ import ua.edu.ratos.service.dto.out.SchemeMinOutDto;
 import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
-import ua.edu.ratos.service.transformer.SchemeMapper;
-import ua.edu.ratos.service.transformer.SchemeMinMapper;
-import ua.edu.ratos.service.transformer.SchemeShortMapper;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoSchemeTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.SchemeInfoDtoTransformer;
+import ua.edu.ratos.service.transformer.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -34,7 +30,7 @@ public class SchemeService {
 
     private final SchemeRepository schemeRepository;
 
-    private final DtoSchemeTransformer dtoSchemeTransformer;
+    private final SchemeTransformer schemeTransformer;
 
     private final SchemeGradingManagerService gradingManagerService;
 
@@ -44,7 +40,7 @@ public class SchemeService {
 
     private final SchemeMinMapper schemeMinMapper;
 
-    private final SchemeInfoDtoTransformer schemeInfoDtoTransformer;
+    private final SchemeInfoMapper schemeInfoMapper;
 
     private final AccessChecker accessChecker;
 
@@ -54,7 +50,7 @@ public class SchemeService {
     //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
     public SchemeOutDto save(@NonNull final SchemeInDto dto) {
-        Scheme scheme = dtoSchemeTransformer.toEntity(dto);
+        Scheme scheme = schemeTransformer.toEntity(dto);
         scheme = schemeRepository.save(scheme);
         // By design, we cannot cascade saving of the grading details, we do it separately in the same transaction,
         // depending on the scheme's grading questionType specified and ID of selected details
@@ -120,7 +116,7 @@ public class SchemeService {
     //-------------------------------------------One for getting basic Info---------------------------------------------
     @Transactional(readOnly = true)
     public SchemeInfoOutDto findByIdForInfo(@NonNull final Long schemeId) {
-        return schemeInfoDtoTransformer.toDto(schemeRepository.findForInfoById(schemeId)
+        return schemeInfoMapper.toDto(schemeRepository.findForInfoById(schemeId)
                 .orElseThrow(() -> new EntityNotFoundException(SCHEME_NOT_FOUND_ID + schemeId)));
     }
 

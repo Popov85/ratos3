@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForReportOutDto;
 import ua.edu.ratos.service.session.GameService;
 import ua.edu.ratos.service.transformer.DepartmentMapper;
+import ua.edu.ratos.service.transformer.SchemeWithCourseMinMapper;
 import ua.edu.ratos.service.transformer.StudMinMapper;
 import ua.edu.ratos.service.utils.DataFormatter;
 
@@ -16,7 +17,7 @@ public class ResultOfStudentForReportDtoTransformer {
 
     private final DepartmentMapper departmentMapper;
 
-    private final SchemeWithCourseMinDtoTransformer schemeWithCourseMinDtoTransformer;
+    private final SchemeWithCourseMinMapper schemeWithCourseMinMapper;
 
     private final StudMinMapper studMinMapper;
 
@@ -25,7 +26,7 @@ public class ResultOfStudentForReportDtoTransformer {
     public ResultOfStudentForReportOutDto toDto(@NonNull final ResultOfStudent entity) {
         ResultOfStudentForReportOutDto resultOfStudentForReportOutDto = new ResultOfStudentForReportOutDto();
         resultOfStudentForReportOutDto.setResultId(entity.getResultId());
-        resultOfStudentForReportOutDto.setScheme(schemeWithCourseMinDtoTransformer.toDto(entity.getScheme()));
+        resultOfStudentForReportOutDto.setScheme(schemeWithCourseMinMapper.toDto(entity.getScheme()));
         resultOfStudentForReportOutDto.setStudent(studMinMapper.toDto(entity.getStudent()));
         resultOfStudentForReportOutDto.setGrade(DataFormatter.getPrettyDouble(entity.getGrade()));
         resultOfStudentForReportOutDto.setPercent(DataFormatter.getPrettyDouble(entity.getPercent()));

@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 /**
  * See also:
- * {@link ua.edu.ratos.service.transformer.entity_to_dto.SchemeInfoDtoTransformer}
+ * {@link ua.edu.ratos.service.transformer.SchemeInfoMapper}
  */
 
 @Getter

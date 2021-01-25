@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.ResultOfStudent;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForStaffOutDto;
 import ua.edu.ratos.service.session.GameService;
+import ua.edu.ratos.service.transformer.SchemeWithCourseMinMapper;
 import ua.edu.ratos.service.transformer.StudMinMapper;
 import ua.edu.ratos.service.utils.DataFormatter;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ResultOfStudentForStaffDtoTransformer {
 
-    private final SchemeWithCourseMinDtoTransformer schemeWithCourseMinDtoTransformer;
+    private final SchemeWithCourseMinMapper schemeWithCourseMinMapper;
 
     private final ResultOfStudentPerThemeDtoTransformer resultPerThemeDtoTransformer;
 
@@ -27,7 +28,7 @@ public class ResultOfStudentForStaffDtoTransformer {
     public ResultOfStudentForStaffOutDto toDto(@NonNull final ResultOfStudent entity) {
         return new ResultOfStudentForStaffOutDto()
                 .setResultId(entity.getResultId())
-                .setScheme(schemeWithCourseMinDtoTransformer.toDto(entity.getScheme()))
+                .setScheme(schemeWithCourseMinMapper.toDto(entity.getScheme()))
                 .setStudent(studMinMapper.toDto(entity.getStudent()))
                 .setGrade(DataFormatter.getPrettyDouble(entity.getGrade()))
                 .setPercent(DataFormatter.getPrettyDouble(entity.getPercent()))
