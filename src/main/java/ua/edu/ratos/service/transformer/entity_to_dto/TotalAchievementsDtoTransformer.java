@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.game.Game;
 import ua.edu.ratos.service.dto.out.game.TotalAchievementsOutDto;
 
+@Deprecated
 @Component
 public class TotalAchievementsDtoTransformer {
 

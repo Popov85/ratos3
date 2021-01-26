@@ -24,10 +24,10 @@ import ua.edu.ratos.service.dto.out.game.AllTimesGamerOutDto;
 import ua.edu.ratos.service.dto.out.game.GamerOutDto;
 import ua.edu.ratos.service.dto.out.game.WeeklyGamerOutDto;
 import ua.edu.ratos.service.dto.out.game.WinnerOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.GamerDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.TotalTopDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.WeeklyGamerDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.WinnerDtoTransformer;
+import ua.edu.ratos.service.transformer.GamerMapper;
+import ua.edu.ratos.service.transformer.TotalTopMapper;
+import ua.edu.ratos.service.transformer.WeeklyGamerMapper;
+import ua.edu.ratos.service.transformer.WinnerMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -58,13 +58,13 @@ public class GameService {
 
     private final GamerRepository gamerRepository;
 
-    private final GamerDtoTransformer gamerDtoTransformer;
+    private final GamerMapper gamerMapper;
 
-    private final WinnerDtoTransformer winnerDtoTransformer;
+    private final WinnerMapper winnerMapper;
 
-    private final WeeklyGamerDtoTransformer weeklyGamerDtoTransformer;
+    private final WeeklyGamerMapper weeklyGamerMapper;
 
-    private final TotalTopDtoTransformer totalTopDtoTransformer;
+    private final TotalTopMapper totalTopMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -300,28 +300,28 @@ public class GameService {
     @Transactional(readOnly = true)
     public GamerOutDto findMyGamingRating() {
         Long studId = securityUtils.getAuthUserId();
-        return gamerDtoTransformer.toDto(gamerRepository.findById(studId).get());
+        return gamerMapper.toDto(gamerRepository.findById(studId).get());
     }
 
     //-------------------------------------------For TOP weekly rating table--------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<WeeklyGamerOutDto> findWeeklyGamers(@NonNull final Pageable pageable) {
-        return weekRepository.findWeeklyGamers(pageable).map(weeklyGamerDtoTransformer::toDto);
+        return weekRepository.findWeeklyGamers(pageable).map(weeklyGamerMapper::toDto);
     }
 
     //------------------------------------------For TOP rating students table-------------------------------------------
 
     @Transactional(readOnly = true)
     public Page<AllTimesGamerOutDto> findBestGamers(@NonNull final Pageable pageable) {
-        return gameRepository.findBestGamers(pageable).map(totalTopDtoTransformer::toDto);
+        return gameRepository.findBestGamers(pageable).map(totalTopMapper::toDto);
     }
 
     //-------------------------------------------For last week winners table--------------------------------------------
     // sorted by points, bonuses and time spent
     @Transactional(readOnly = true)
     public Page<WinnerOutDto> findLastWeekWinners(@NonNull final Pageable pageable) {
-        return winsRepository.findAllWinnersSince(LocalDate.now().minusDays(7), pageable).map(winnerDtoTransformer::toDto);
+        return winsRepository.findAllWinnersSince(LocalDate.now().minusDays(7), pageable).map(winnerMapper::toDto);
     }
 
 }

@@ -6,13 +6,15 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.service.dto.out.game.WeeklyGamerOutDto;
 import ua.edu.ratos.service.transformer.StudMinMapper;
+import ua.edu.ratos.service.transformer.WeeklyAchievementsMapper;
 
+@Deprecated
 @Component
 public class WeeklyGamerDtoTransformer {
 
     private StudMinMapper studMinMapper;
 
-    private WeeklyAchievementsDtoTransformer weeklyAchievementsDtoTransformer;
+    private WeeklyAchievementsMapper weeklyAchievementsMapper;
 
     @Autowired
     public void setStudMinDtoTransformer(StudMinMapper studMinMapper) {
@@ -20,13 +22,13 @@ public class WeeklyGamerDtoTransformer {
     }
 
     @Autowired
-    public void setWeeklyAchievementsDtoTransformer(WeeklyAchievementsDtoTransformer weeklyAchievementsDtoTransformer) {
-        this.weeklyAchievementsDtoTransformer = weeklyAchievementsDtoTransformer;
+    public void setWeeklyAchievementsDtoTransformer(WeeklyAchievementsMapper weeklyAchievementsMapper) {
+        this.weeklyAchievementsMapper = weeklyAchievementsMapper;
     }
 
     public WeeklyGamerOutDto toDto(@NonNull final Week entity) {
         return new WeeklyGamerOutDto()
                 .setStudent(studMinMapper.toDto(entity.getStud()))
-                .setWeeklyAchievements(weeklyAchievementsDtoTransformer.toDto(entity));
+                .setWeeklyAchievements(weeklyAchievementsMapper.toDto(entity));
     }
 }

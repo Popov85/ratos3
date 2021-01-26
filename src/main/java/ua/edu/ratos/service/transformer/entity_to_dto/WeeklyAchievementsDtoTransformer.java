@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.service.dto.out.game.WeeklyAchievementsOutDto;
 
+@Deprecated
 @Component
 public class WeeklyAchievementsDtoTransformer {
 

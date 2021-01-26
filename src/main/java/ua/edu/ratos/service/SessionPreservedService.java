@@ -16,7 +16,7 @@ import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.out.SessionPreservedOutDto;
 import ua.edu.ratos.service.session.SessionDataSerializerService;
 import ua.edu.ratos.service.session.TimingService;
-import ua.edu.ratos.service.transformer.entity_to_dto.SessionPreservedDtoTransformer;
+import ua.edu.ratos.service.transformer.SessionPreservedMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -35,7 +35,7 @@ public class SessionPreservedService {
 
     private final SessionPreservedRepository sessionPreservedRepository;
 
-    private final SessionPreservedDtoTransformer sessionPreservedDtoTransformer;
+    private final SessionPreservedMapper sessionPreservedMapper;
 
     private final SessionDataSerializerService serializer;
 
@@ -87,7 +87,7 @@ public class SessionPreservedService {
     //----------------------------------------------------User table----------------------------------------------------
     @Transactional(readOnly = true)
     public Slice<SessionPreservedOutDto> findAllByUserId(@NonNull final Pageable pageable) {
-       return sessionPreservedRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(sessionPreservedDtoTransformer::toDto);
+       return sessionPreservedRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(sessionPreservedMapper::toDto);
     }
 
     @Transactional(readOnly = true)

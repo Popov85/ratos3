@@ -7,6 +7,7 @@ import ua.edu.ratos.dao.entity.game.Wins;
 import ua.edu.ratos.service.dto.out.game.WinnerOutDto;
 import ua.edu.ratos.service.transformer.StudMinMapper;
 
+@Deprecated
 @Component
 public class WinnerDtoTransformer {
 

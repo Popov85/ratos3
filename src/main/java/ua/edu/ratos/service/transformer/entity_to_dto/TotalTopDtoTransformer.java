@@ -7,7 +7,9 @@ import ua.edu.ratos.dao.entity.game.Game;
 import ua.edu.ratos.service.dto.out.game.AllTimesGamerOutDto;
 import ua.edu.ratos.service.session.GameLabelResolver;
 import ua.edu.ratos.service.transformer.StudMinMapper;
+import ua.edu.ratos.service.transformer.TotalAchievementsMapper;
 
+@Deprecated
 @Component
 public class TotalTopDtoTransformer {
 
@@ -15,7 +17,7 @@ public class TotalTopDtoTransformer {
 
     private GameLabelResolver gameLabelResolver;
 
-    private TotalAchievementsDtoTransformer totalAchievementsDtoTransformer;
+    private TotalAchievementsMapper totalAchievementsMapper;
 
     @Autowired
     public void setStudMinDtoTransformer(StudMinMapper studMinMapper) {
@@ -28,14 +30,14 @@ public class TotalTopDtoTransformer {
     }
 
     @Autowired
-    public void setTotalAchievementsDtoTransformer(TotalAchievementsDtoTransformer totalAchievementsDtoTransformer) {
-        this.totalAchievementsDtoTransformer = totalAchievementsDtoTransformer;
+    public void setTotalAchievementsDtoTransformer(TotalAchievementsMapper totalAchievementsMapper) {
+        this.totalAchievementsMapper = totalAchievementsMapper;
     }
 
     public AllTimesGamerOutDto toDto(@NonNull final Game entity) {
         return new AllTimesGamerOutDto()
                 .setStudent(studMinMapper.toDto(entity.getStud()))
                 .setLabel(gameLabelResolver.getLabel(entity.getTotalWins()))
-                .setTotalAchievements(totalAchievementsDtoTransformer.toDto(entity));
+                .setTotalAchievements(totalAchievementsMapper.toDto(entity));
     }
 }

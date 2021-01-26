@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.dao.entity.SessionPreserved;
 import ua.edu.ratos.service.dto.out.SessionPreservedOutDto;
 
+@Deprecated
 @Component
 public class SessionPreservedDtoTransformer {
 

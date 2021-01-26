@@ -9,13 +9,11 @@ import ua.edu.ratos.dao.entity.game.Week;
 import ua.edu.ratos.service.dto.out.StudMinOutDto;
 import ua.edu.ratos.service.dto.out.game.GamerOutDto;
 import ua.edu.ratos.service.session.GameLabelResolver;
-import ua.edu.ratos.service.transformer.ClassMinMapper;
-import ua.edu.ratos.service.transformer.FacultyMinMapper;
-import ua.edu.ratos.service.transformer.OrganisationMinMapper;
-import ua.edu.ratos.service.transformer.UserMinMapper;
+import ua.edu.ratos.service.transformer.*;
 
 import java.util.Optional;
 
+@Deprecated
 @Component
 public class GamerDtoTransformer {
 
@@ -29,9 +27,9 @@ public class GamerDtoTransformer {
 
     private GameLabelResolver gameLabelResolver;
 
-    private TotalAchievementsDtoTransformer totalAchievementsDtoTransformer;
+    private TotalAchievementsMapper totalAchievementsMapper;
 
-    private WeeklyAchievementsDtoTransformer weeklyAchievementsDtoTransformer;
+    private WeeklyAchievementsMapper weeklyAchievementsMapper;
 
     @Autowired
     public void setClassMinDtoTransformer(ClassMinMapper classMinMapper) {
@@ -59,13 +57,13 @@ public class GamerDtoTransformer {
     }
 
     @Autowired
-    public void setTotalAchievementsDtoTransformer(TotalAchievementsDtoTransformer totalAchievementsDtoTransformer) {
-        this.totalAchievementsDtoTransformer = totalAchievementsDtoTransformer;
+    public void setTotalAchievementsDtoTransformer(TotalAchievementsMapper totalAchievementsMapper) {
+        this.totalAchievementsMapper = totalAchievementsMapper;
     }
 
     @Autowired
-    public void setWeeklyAchievementsDtoTransformer(WeeklyAchievementsDtoTransformer weeklyAchievementsDtoTransformer) {
-        this.weeklyAchievementsDtoTransformer = weeklyAchievementsDtoTransformer;
+    public void setWeeklyAchievementsDtoTransformer(WeeklyAchievementsMapper weeklyAchievementsMapper) {
+        this.weeklyAchievementsMapper = weeklyAchievementsMapper;
     }
 
     public GamerOutDto toDto(@NonNull final Gamer entity) {
@@ -74,9 +72,9 @@ public class GamerDtoTransformer {
         GamerOutDto dto = new GamerOutDto().setStudent(getStud(entity));
         if (game.isPresent()) {
             dto.setLabel(gameLabelResolver.getLabel(game.get().getTotalWins()));
-            dto.setTotal(totalAchievementsDtoTransformer.toDto(game.get()));
+            dto.setTotal(totalAchievementsMapper.toDto(game.get()));
         }
-        if (week.isPresent()) dto.setWeekly(weeklyAchievementsDtoTransformer.toDto(week.get()));
+        if (week.isPresent()) dto.setWeekly(weeklyAchievementsMapper.toDto(week.get()));
         return dto;
     }
 
