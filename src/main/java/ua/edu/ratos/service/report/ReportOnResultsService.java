@@ -16,7 +16,7 @@ import ua.edu.ratos.service.dto.in.report.ReportOnResultsInDto;
 import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForReportOutDto;
 import ua.edu.ratos.service.dto.out.report.ReportOnResults;
-import ua.edu.ratos.service.transformer.entity_to_dto.ResultOfStudentForReportDtoTransformer;
+import ua.edu.ratos.service.transformer.ResultOfStudentForReportMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ReportOnResultsService {
 
     private final ResultOfStudentRepository resultOfStudentRepository;
 
-    private final ResultOfStudentForReportDtoTransformer resultOfStudentForReportDtoTransformer;
+    private final ResultOfStudentForReportMapper resultOfStudentForReportMapper;
 
     private final StaffService staffService;
 
@@ -103,7 +103,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +112,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -121,7 +121,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +130,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -139,7 +139,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -148,7 +148,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -157,7 +157,7 @@ public class ReportOnResultsService {
         List<ResultOfStudent> results = resultOfStudentRepository.findAll(specs);
         return results
                 .stream()
-                .map(resultOfStudentForReportDtoTransformer::toDto)
+                .map(resultOfStudentForReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 

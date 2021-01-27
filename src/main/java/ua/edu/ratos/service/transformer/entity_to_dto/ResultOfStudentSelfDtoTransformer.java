@@ -9,6 +9,7 @@ import ua.edu.ratos.service.session.GameService;
 import ua.edu.ratos.service.transformer.DepartmentMinMapper;
 import ua.edu.ratos.service.transformer.SchemeWithCourseMinMapper;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class ResultOfStudentSelfDtoTransformer {

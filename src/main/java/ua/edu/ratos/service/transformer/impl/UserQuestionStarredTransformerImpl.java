@@ -1,42 +1,31 @@
-package ua.edu.ratos.service.transformer.entity_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.UserQuestionStarred;
 import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionMinOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
 import ua.edu.ratos.service.transformer.QuestionMapper;
 import ua.edu.ratos.service.transformer.QuestionMinMapper;
+import ua.edu.ratos.service.transformer.UserQuestionStarredTransformer;
 
-@Deprecated
 @Component
-public class UserQuestionStarredDtoTransformer {
+@AllArgsConstructor
+public class UserQuestionStarredTransformerImpl implements UserQuestionStarredTransformer {
 
-    private QuestionMapper questionMapper;
+    private final QuestionMapper questionMapper;
 
-    private QuestionMinMapper questionMinMapper;
+    private final QuestionMinMapper questionMinMapper;
 
-    @Autowired
-    public void setQuestionDomainTransformer(QuestionMapper questionMapper) {
-        this.questionMapper = questionMapper;
-    }
-
-    @Autowired
-    public void setQuestionMinDtoTransformer(QuestionMinMapper questionMinMapper) {
-        this.questionMinMapper = questionMinMapper;
-    }
-
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public QuestionSessionMinOutDto toDto(@NonNull final UserQuestionStarred entity) {
         Question question = entity.getQuestion();
         return questionMinMapper.toDto(question);
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Override
     public QuestionSessionOutDto toDtoExt(@NonNull final UserQuestionStarred entity) {
         Question question = entity.getQuestion();
         String abbr = question.getType().getAbbreviation();

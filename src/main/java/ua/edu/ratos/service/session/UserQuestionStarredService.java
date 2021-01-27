@@ -14,7 +14,7 @@ import ua.edu.ratos.dao.repository.UserQuestionStarredRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionMinOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
-import ua.edu.ratos.service.transformer.entity_to_dto.UserQuestionStarredDtoTransformer;
+import ua.edu.ratos.service.transformer.UserQuestionStarredTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -32,7 +32,7 @@ public class UserQuestionStarredService {
 
     private final UserQuestionStarredRepository userQuestionStarredRepository;
 
-    private final UserQuestionStarredDtoTransformer userQuestionStarredDtoTransformer;
+    private final UserQuestionStarredTransformer userQuestionStarredTransformer;
 
     private final SecurityUtils securityUtils;
 
@@ -65,7 +65,7 @@ public class UserQuestionStarredService {
         Long userId = securityUtils.getAuthUserId();
         UserQuestionStarred userQuestionStarred = userQuestionStarredRepository.findById(new UserQuestionStarredId(userId, questionId))
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND));
-        return userQuestionStarredDtoTransformer.toDtoExt(userQuestionStarred);
+        return userQuestionStarredTransformer.toDtoExt(userQuestionStarred);
     }
 
     //------------------------------------------------User short table--------------------------------------------------
@@ -73,7 +73,7 @@ public class UserQuestionStarredService {
     @Transactional(readOnly = true)
     // Only questions without answers
     public Page<QuestionSessionMinOutDto> findAllByUserId(@NonNull final Pageable pageable) {
-        return userQuestionStarredRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(userQuestionStarredDtoTransformer::toDto);
+        return userQuestionStarredRepository.findAllByUserId(securityUtils.getAuthUserId(), pageable).map(userQuestionStarredTransformer::toDto);
     }
 
     // To check if limit is overflowed

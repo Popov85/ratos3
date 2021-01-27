@@ -6,6 +6,7 @@ import ua.edu.ratos.dao.entity.ResultOfStudentTheme;
 import ua.edu.ratos.service.dto.session.ResultPerThemeOutDto;
 import ua.edu.ratos.service.transformer.ThemeMinMapper;
 
+@Deprecated
 @Service
 @AllArgsConstructor
 public class ResultOfStudentPerThemeDtoTransformer {

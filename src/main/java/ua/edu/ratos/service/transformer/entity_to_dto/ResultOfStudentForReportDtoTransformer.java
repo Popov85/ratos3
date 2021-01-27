@@ -11,6 +11,7 @@ import ua.edu.ratos.service.transformer.SchemeWithCourseMinMapper;
 import ua.edu.ratos.service.transformer.StudMinMapper;
 import ua.edu.ratos.service.utils.DataFormatter;
 
+@Deprecated
 @Component
 @AllArgsConstructor
 public class ResultOfStudentForReportDtoTransformer {
