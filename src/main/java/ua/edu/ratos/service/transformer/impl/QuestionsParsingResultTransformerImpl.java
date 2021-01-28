@@ -1,4 +1,4 @@
-package ua.edu.ratos.service.transformer.domain_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -11,20 +11,21 @@ import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
 import ua.edu.ratos.service.parsers.QuestionsParsingResult;
 import ua.edu.ratos.service.transformer.QuestionMapper;
 import ua.edu.ratos.service.transformer.QuestionsParsingIssueMapper;
+import ua.edu.ratos.service.transformer.QuestionsParsingResultTransformer;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Deprecated
 @Component
 @AllArgsConstructor
-public class QuestionsParsingResultDtoTransformer {
+public class QuestionsParsingResultTransformerImpl implements QuestionsParsingResultTransformer {
 
     private final QuestionsParsingIssueMapper questionsParsingIssueMapper;
 
     private final QuestionMapper questionMapper;
 
+    @Override
     public QuestionsParsingResultOutDto toDto(@NonNull final QuestionsParsingResult parsingResult, boolean saved) {
         QuestionsParsingResultOutDto dto = new QuestionsParsingResultOutDto()
                 .setCharset(parsingResult.getCharset())
@@ -47,6 +48,4 @@ public class QuestionsParsingResultDtoTransformer {
     private Set<QuestionMCQOutDto> toListOfQuestionsDto(@NonNull final List<QuestionMCQ> questions) {
         return questions.stream().map(questionMapper::toDto).collect(Collectors.toSet());
     }
-
-
 }

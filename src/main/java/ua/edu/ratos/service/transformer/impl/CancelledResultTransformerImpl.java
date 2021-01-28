@@ -1,15 +1,15 @@
-package ua.edu.ratos.service.transformer.domain_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.domain.ResultDomain;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
+import ua.edu.ratos.service.transformer.ResultTransformer;
 
-@Deprecated
-@Service
+@Component
 @Qualifier("cancelled")
-public class CancelledResultDomainDtoTransformerImpl implements ResultDomainDtoTransformer {
+public class CancelledResultTransformerImpl implements ResultTransformer {
 
     @Override
     public ResultOutDto toDto(@NonNull final ResultDomain r) {

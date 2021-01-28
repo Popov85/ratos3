@@ -5,6 +5,7 @@ import ua.edu.ratos.service.domain.ResultPerTheme;
 import ua.edu.ratos.service.dto.out.ThemeMinOutDto;
 import ua.edu.ratos.service.dto.session.ResultPerThemeOutDto;
 
+@Deprecated
 @Service
 public class ResultPerThemeDtoTransformer {
 

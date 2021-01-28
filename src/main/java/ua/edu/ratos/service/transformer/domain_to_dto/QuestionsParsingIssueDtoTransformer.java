@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.dto.out.QuestionsParsingIssueOutDto;
 import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
 
+@Deprecated
 @Component
 public class QuestionsParsingIssueDtoTransformer {
 

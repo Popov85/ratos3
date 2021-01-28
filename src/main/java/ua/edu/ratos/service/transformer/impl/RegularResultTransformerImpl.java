@@ -1,10 +1,9 @@
-package ua.edu.ratos.service.transformer.domain_to_dto;
+package ua.edu.ratos.service.transformer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
@@ -12,6 +11,7 @@ import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import ua.edu.ratos.service.dto.session.ResultPerThemeOutDto;
 import ua.edu.ratos.service.session.EvaluatorPostProcessor;
 import ua.edu.ratos.service.transformer.ResultPerThemeMapper;
+import ua.edu.ratos.service.transformer.ResultTransformer;
 import ua.edu.ratos.service.utils.DataFormatter;
 
 import java.time.Duration;
@@ -21,12 +21,10 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-@Deprecated
-@Slf4j
-@Service
-@Qualifier("regular")
+@Component
 @AllArgsConstructor
-public class RegularResultDomainDtoTransformerImpl implements ResultDomainDtoTransformer {
+@Qualifier("regular")
+public class RegularResultTransformerImpl implements ResultTransformer {
 
     private final ResultPerThemeMapper resultPerThemeMapper;
 
@@ -95,5 +93,4 @@ public class RegularResultDomainDtoTransformerImpl implements ResultDomainDtoTra
     private String toTimestamp(long secSpent) {
         return Duration.of(secSpent, SECONDS).toString();
     }
-
 }
