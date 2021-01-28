@@ -11,8 +11,8 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FacultyInDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyOutDto;
-import ua.edu.ratos.service.transformer.FacultyMapper;
-import ua.edu.ratos.service.transformer.FacultyMinMapper;
+import ua.edu.ratos.service.transformer.mapper.FacultyMapper;
+import ua.edu.ratos.service.transformer.mapper.FacultyMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;

@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import ua.edu.ratos.service.transformer.mapper.SchemeInfoMapper;
 
 /**
  * See also:
- * {@link ua.edu.ratos.service.transformer.SchemeInfoMapper}
+ * {@link SchemeInfoMapper}
  */
 
 @Getter

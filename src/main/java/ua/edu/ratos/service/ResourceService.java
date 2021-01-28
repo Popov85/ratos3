@@ -11,7 +11,7 @@ import ua.edu.ratos.dao.repository.ResourceRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ResourceInDto;
 import ua.edu.ratos.service.dto.out.ResourceOutDto;
-import ua.edu.ratos.service.transformer.ResourceMapper;
+import ua.edu.ratos.service.transformer.mapper.ResourceMapper;
 import ua.edu.ratos.service.transformer.ResourceTransformer;
 
 import javax.persistence.EntityNotFoundException;

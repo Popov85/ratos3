@@ -8,7 +8,7 @@ import ua.edu.ratos.dao.entity.Position;
 import ua.edu.ratos.dao.repository.PositionRepository;
 import ua.edu.ratos.service.dto.in.PositionInDto;
 import ua.edu.ratos.service.dto.out.PositionOutDto;
-import ua.edu.ratos.service.transformer.PositionMapper;
+import ua.edu.ratos.service.transformer.mapper.PositionMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;

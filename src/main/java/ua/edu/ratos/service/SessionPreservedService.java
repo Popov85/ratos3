@@ -16,7 +16,7 @@ import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.out.SessionPreservedOutDto;
 import ua.edu.ratos.service.session.SessionDataSerializerService;
 import ua.edu.ratos.service.session.TimingService;
-import ua.edu.ratos.service.transformer.SessionPreservedMapper;
+import ua.edu.ratos.service.transformer.mapper.SessionPreservedMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;

@@ -11,7 +11,7 @@ import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.sequence.QuestionLoader;
 import ua.edu.ratos.service.session.sequence.SequenceFactory;
 import ua.edu.ratos.service.session.sequence.SequenceProducer;
-import ua.edu.ratos.service.transformer.QuestionMapper;
+import ua.edu.ratos.service.transformer.mapper.QuestionMapper;
 
 import java.util.ArrayList;
 import java.util.List;

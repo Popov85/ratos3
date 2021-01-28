@@ -12,7 +12,7 @@ import ua.edu.ratos.dao.repository.PhraseRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.PhraseInDto;
 import ua.edu.ratos.service.dto.out.PhraseOutDto;
-import ua.edu.ratos.service.transformer.PhraseMapper;
+import ua.edu.ratos.service.transformer.mapper.PhraseMapper;
 import ua.edu.ratos.service.transformer.PhraseTransformer;
 
 import javax.persistence.EntityManager;

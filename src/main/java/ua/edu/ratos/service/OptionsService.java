@@ -11,7 +11,7 @@ import ua.edu.ratos.dao.repository.OptionsRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.OptionsInDto;
 import ua.edu.ratos.service.dto.out.OptionsOutDto;
-import ua.edu.ratos.service.transformer.OptionsMapper;
+import ua.edu.ratos.service.transformer.mapper.OptionsMapper;
 import ua.edu.ratos.service.transformer.OptionsTransformer;
 
 import javax.persistence.EntityNotFoundException;

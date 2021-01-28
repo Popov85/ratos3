@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.ClazzRepository;
 import ua.edu.ratos.service.dto.out.ClassMinOutDto;
-import ua.edu.ratos.service.transformer.ClassMinMapper;
+import ua.edu.ratos.service.transformer.mapper.ClassMinMapper;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.repository.SchemeThemeSettingsRepository;
 import ua.edu.ratos.service.dto.in.SchemeThemeSettingsInDto;
-import ua.edu.ratos.service.transformer.SchemeThemeSettingsMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeThemeSettingsMapper;
 
 import java.util.Set;
 

@@ -9,7 +9,7 @@ import ua.edu.ratos.dao.repository.TwoPointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.TwoPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
-import ua.edu.ratos.service.transformer.TwoPointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.TwoPointGradingMapper;
 import ua.edu.ratos.service.transformer.TwoPointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;

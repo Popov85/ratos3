@@ -15,8 +15,8 @@ import ua.edu.ratos.service.dto.in.CourseInDto;
 import ua.edu.ratos.service.dto.in.LMSCourseInDto;
 import ua.edu.ratos.service.dto.out.CourseMinOutDto;
 import ua.edu.ratos.service.dto.out.CourseOutDto;
-import ua.edu.ratos.service.transformer.CourseMapper;
-import ua.edu.ratos.service.transformer.CourseMinMapper;
+import ua.edu.ratos.service.transformer.mapper.CourseMapper;
+import ua.edu.ratos.service.transformer.mapper.CourseMinMapper;
 import ua.edu.ratos.service.transformer.CourseTransformer;
 
 import javax.persistence.EntityManager;

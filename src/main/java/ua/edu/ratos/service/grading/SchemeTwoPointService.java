@@ -6,7 +6,7 @@ import ua.edu.ratos.dao.entity.grading.SchemeTwoPoint;
 import ua.edu.ratos.dao.entity.grading.TwoPointGrading;
 import ua.edu.ratos.dao.repository.SchemeTwoPointRepository;
 import ua.edu.ratos.service.dto.out.grading.TwoPointGradingOutDto;
-import ua.edu.ratos.service.transformer.TwoPointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.TwoPointGradingMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

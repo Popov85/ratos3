@@ -24,10 +24,10 @@ import ua.edu.ratos.service.dto.out.game.AllTimesGamerOutDto;
 import ua.edu.ratos.service.dto.out.game.GamerOutDto;
 import ua.edu.ratos.service.dto.out.game.WeeklyGamerOutDto;
 import ua.edu.ratos.service.dto.out.game.WinnerOutDto;
-import ua.edu.ratos.service.transformer.GamerMapper;
-import ua.edu.ratos.service.transformer.TotalTopMapper;
-import ua.edu.ratos.service.transformer.WeeklyGamerMapper;
-import ua.edu.ratos.service.transformer.WinnerMapper;
+import ua.edu.ratos.service.transformer.mapper.GamerMapper;
+import ua.edu.ratos.service.transformer.mapper.TotalTopMapper;
+import ua.edu.ratos.service.transformer.mapper.WeeklyGamerMapper;
+import ua.edu.ratos.service.transformer.mapper.WinnerMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

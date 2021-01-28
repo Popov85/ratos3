@@ -16,8 +16,8 @@ import ua.edu.ratos.service.dto.in.StaffInDto;
 import ua.edu.ratos.service.dto.in.StaffUpdInDto;
 import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 import ua.edu.ratos.service.dto.out.StaffOutDto;
-import ua.edu.ratos.service.transformer.StaffMapper;
-import ua.edu.ratos.service.transformer.StaffMinMapper;
+import ua.edu.ratos.service.transformer.mapper.StaffMapper;
+import ua.edu.ratos.service.transformer.mapper.StaffMinMapper;
 import ua.edu.ratos.service.transformer.StaffTransformer;
 
 import javax.persistence.EntityNotFoundException;

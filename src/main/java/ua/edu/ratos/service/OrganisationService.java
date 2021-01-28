@@ -9,8 +9,8 @@ import ua.edu.ratos.dao.entity.Organisation;
 import ua.edu.ratos.dao.repository.OrganisationRepository;
 import ua.edu.ratos.service.dto.in.OrganisationInDto;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
-import ua.edu.ratos.service.transformer.OrganisationMapper;
-import ua.edu.ratos.service.transformer.OrganisationMinMapper;
+import ua.edu.ratos.service.transformer.mapper.OrganisationMapper;
+import ua.edu.ratos.service.transformer.mapper.OrganisationMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;

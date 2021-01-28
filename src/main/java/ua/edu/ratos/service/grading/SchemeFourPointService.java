@@ -6,7 +6,7 @@ import ua.edu.ratos.dao.entity.grading.FourPointGrading;
 import ua.edu.ratos.dao.entity.grading.SchemeFourPoint;
 import ua.edu.ratos.dao.repository.SchemeFourPointRepository;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
-import ua.edu.ratos.service.transformer.FourPointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.FourPointGradingMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

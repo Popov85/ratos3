@@ -10,7 +10,7 @@ import ua.edu.ratos.dao.repository.SettingsFBRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsFBInDto;
 import ua.edu.ratos.service.dto.out.SettingsFBOutDto;
-import ua.edu.ratos.service.transformer.SettingsFBMapper;
+import ua.edu.ratos.service.transformer.mapper.SettingsFBMapper;
 import ua.edu.ratos.service.transformer.SettingsFBTransformer;
 
 import javax.persistence.EntityNotFoundException;

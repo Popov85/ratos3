@@ -18,6 +18,8 @@ import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMinOutDto;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
 import ua.edu.ratos.service.transformer.*;
+import ua.edu.ratos.service.transformer.mapper.ThemeMapper;
+import ua.edu.ratos.service.transformer.mapper.ThemeMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;

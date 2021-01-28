@@ -16,7 +16,7 @@ import ua.edu.ratos.service.dto.in.report.ReportOnResultsInDto;
 import ua.edu.ratos.service.dto.out.StaffMinOutDto;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForReportOutDto;
 import ua.edu.ratos.service.dto.out.report.ReportOnResults;
-import ua.edu.ratos.service.transformer.ResultOfStudentForReportMapper;
+import ua.edu.ratos.service.transformer.mapper.ResultOfStudentForReportMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.dao.repository.lms.LTIVersionRepository;
 import ua.edu.ratos.service.dto.out.LTIVersionOutDto;
-import ua.edu.ratos.service.transformer.LTIVersionMapper;
+import ua.edu.ratos.service.transformer.mapper.LTIVersionMapper;
 
 import java.util.Set;
 import java.util.stream.Collectors;

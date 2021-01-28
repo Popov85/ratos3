@@ -8,7 +8,7 @@ import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
 import ua.edu.ratos.dao.repository.answer.AnswerMCQRepository;
 import ua.edu.ratos.service.dto.in.AnswerMCQInDto;
 import ua.edu.ratos.service.dto.out.answer.AnswerMCQOutDto;
-import ua.edu.ratos.service.transformer.AnswerMapper;
+import ua.edu.ratos.service.transformer.mapper.AnswerMapper;
 import ua.edu.ratos.service.transformer.AnswerTransformer;
 
 import javax.persistence.EntityNotFoundException;

@@ -16,8 +16,8 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.GroupInDto;
 import ua.edu.ratos.service.dto.out.GroupExtendedOutDto;
 import ua.edu.ratos.service.dto.out.GroupOutDto;
-import ua.edu.ratos.service.transformer.GroupExtMapper;
-import ua.edu.ratos.service.transformer.GroupMapper;
+import ua.edu.ratos.service.transformer.mapper.GroupExtMapper;
+import ua.edu.ratos.service.transformer.mapper.GroupMapper;
 import ua.edu.ratos.service.transformer.GroupTransformer;
 
 import javax.persistence.EntityManager;

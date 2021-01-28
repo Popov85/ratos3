@@ -6,7 +6,7 @@ import ua.edu.ratos.dao.entity.grading.FreePointGrading;
 import ua.edu.ratos.dao.entity.grading.SchemeFreePoint;
 import ua.edu.ratos.dao.repository.SchemeFreePointRepository;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
-import ua.edu.ratos.service.transformer.FreePointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.FreePointGradingMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

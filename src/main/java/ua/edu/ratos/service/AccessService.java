@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ratos.dao.repository.AccessRepository;
 import ua.edu.ratos.service.dto.out.AccessOutDto;
-import ua.edu.ratos.service.transformer.AccessMapper;
+import ua.edu.ratos.service.transformer.mapper.AccessMapper;
 
 import java.util.Comparator;
 import java.util.List;

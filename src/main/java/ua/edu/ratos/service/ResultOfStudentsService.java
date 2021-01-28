@@ -13,8 +13,8 @@ import ua.edu.ratos.dao.repository.specs.SpecsFilter;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentForStaffOutDto;
 import ua.edu.ratos.service.dto.out.criteria.ResultOfStudentSelfOutDto;
-import ua.edu.ratos.service.transformer.ResultOfStudentForStaffMapper;
-import ua.edu.ratos.service.transformer.ResultOfStudentSelfMapper;
+import ua.edu.ratos.service.transformer.mapper.ResultOfStudentForStaffMapper;
+import ua.edu.ratos.service.transformer.mapper.ResultOfStudentSelfMapper;
 
 import java.util.Map;
 

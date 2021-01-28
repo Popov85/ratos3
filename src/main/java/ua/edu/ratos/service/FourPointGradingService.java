@@ -9,7 +9,7 @@ import ua.edu.ratos.dao.repository.FourPointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FourPointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FourPointGradingOutDto;
-import ua.edu.ratos.service.transformer.FourPointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.FourPointGradingMapper;
 import ua.edu.ratos.service.transformer.FourPointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;

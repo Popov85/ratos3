@@ -13,7 +13,7 @@ import ua.edu.ratos.dao.repository.HelpRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.HelpInDto;
 import ua.edu.ratos.service.dto.out.HelpOutDto;
-import ua.edu.ratos.service.transformer.HelpMapper;
+import ua.edu.ratos.service.transformer.mapper.HelpMapper;
 import ua.edu.ratos.service.transformer.HelpTransformer;
 
 import javax.persistence.EntityManager;

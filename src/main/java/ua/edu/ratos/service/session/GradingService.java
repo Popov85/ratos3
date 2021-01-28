@@ -11,7 +11,7 @@ import ua.edu.ratos.service.dto.out.GradingOutDto;
 import ua.edu.ratos.service.session.grade.GradedResult;
 import ua.edu.ratos.service.session.grade.Grader;
 import ua.edu.ratos.service.session.grade.GradingFactory;
-import ua.edu.ratos.service.transformer.GradingMapper;
+import ua.edu.ratos.service.transformer.mapper.GradingMapper;
 
 import java.util.Comparator;
 import java.util.List;

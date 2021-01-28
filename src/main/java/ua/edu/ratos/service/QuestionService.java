@@ -13,7 +13,7 @@ import ua.edu.ratos.dao.entity.question.*;
 import ua.edu.ratos.dao.repository.QuestionRepository;
 import ua.edu.ratos.service.dto.in.*;
 import ua.edu.ratos.service.dto.out.question.*;
-import ua.edu.ratos.service.transformer.QuestionMapper;
+import ua.edu.ratos.service.transformer.mapper.QuestionMapper;
 import ua.edu.ratos.service.transformer.QuestionTransformer;
 
 import javax.persistence.EntityManager;

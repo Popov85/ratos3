@@ -17,6 +17,10 @@ import ua.edu.ratos.service.dto.out.SchemeOutDto;
 import ua.edu.ratos.service.dto.out.SchemeShortOutDto;
 import ua.edu.ratos.service.grading.SchemeGradingManagerService;
 import ua.edu.ratos.service.transformer.*;
+import ua.edu.ratos.service.transformer.mapper.SchemeInfoMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeMinMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeShortMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;

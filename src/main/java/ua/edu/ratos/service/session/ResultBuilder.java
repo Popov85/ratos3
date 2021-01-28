@@ -12,7 +12,7 @@ import ua.edu.ratos.dao.repository.UserRepository;
 import ua.edu.ratos.service.domain.*;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.session.grade.GradedResult;
-import ua.edu.ratos.service.transformer.UserMapper;
+import ua.edu.ratos.service.transformer.mapper.UserMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

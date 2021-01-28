@@ -14,7 +14,7 @@ import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.repository.ComplaintRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.out.ComplaintOutDto;
-import ua.edu.ratos.service.transformer.ComplaintMapper;
+import ua.edu.ratos.service.transformer.mapper.ComplaintMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

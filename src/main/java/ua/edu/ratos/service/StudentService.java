@@ -12,7 +12,7 @@ import ua.edu.ratos.dao.repository.StudentRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.StudOutDto;
-import ua.edu.ratos.service.transformer.StudMapper;
+import ua.edu.ratos.service.transformer.mapper.StudMapper;
 import ua.edu.ratos.service.transformer.StudTransformer;
 
 import javax.persistence.EntityNotFoundException;

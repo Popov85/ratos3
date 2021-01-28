@@ -11,7 +11,7 @@ import ua.edu.ratos.dao.repository.ModeRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.ModeInDto;
 import ua.edu.ratos.service.dto.out.ModeOutDto;
-import ua.edu.ratos.service.transformer.ModeMapper;
+import ua.edu.ratos.service.transformer.mapper.ModeMapper;
 import ua.edu.ratos.service.transformer.ModeTransformer;
 
 import javax.persistence.EntityNotFoundException;

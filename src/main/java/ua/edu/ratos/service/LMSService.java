@@ -13,8 +13,8 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.LMSInDto;
 import ua.edu.ratos.service.dto.out.LMSMinOutDto;
 import ua.edu.ratos.service.dto.out.LMSOutDto;
-import ua.edu.ratos.service.transformer.LMSMapper;
-import ua.edu.ratos.service.transformer.LMSMinMapper;
+import ua.edu.ratos.service.transformer.mapper.LMSMapper;
+import ua.edu.ratos.service.transformer.mapper.LMSMinMapper;
 import ua.edu.ratos.service.transformer.LMSTransformer;
 
 import javax.persistence.EntityNotFoundException;

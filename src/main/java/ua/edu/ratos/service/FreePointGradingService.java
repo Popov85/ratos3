@@ -9,7 +9,7 @@ import ua.edu.ratos.dao.repository.FreePointGradingRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FreePointGradingInDto;
 import ua.edu.ratos.service.dto.out.grading.FreePointGradingOutDto;
-import ua.edu.ratos.service.transformer.FreePointGradingMapper;
+import ua.edu.ratos.service.transformer.mapper.FreePointGradingMapper;
 import ua.edu.ratos.service.transformer.FreePointGradingTransformer;
 
 import javax.persistence.EntityNotFoundException;

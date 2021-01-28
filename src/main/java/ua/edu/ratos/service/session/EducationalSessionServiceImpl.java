@@ -21,7 +21,7 @@ import ua.edu.ratos.service.dto.session.ResultPerQuestionOutDto;
 import ua.edu.ratos.service.dto.session.StarredInDto;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
 import ua.edu.ratos.service.dto.session.question.QuestionSessionOutDto;
-import ua.edu.ratos.service.transformer.HelpMapper;
+import ua.edu.ratos.service.transformer.mapper.HelpMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

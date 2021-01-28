@@ -11,7 +11,7 @@ import ua.edu.ratos.dao.repository.SettingsRepository;
 import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.SettingsInDto;
 import ua.edu.ratos.service.dto.out.SettingsOutDto;
-import ua.edu.ratos.service.transformer.SettingsMapper;
+import ua.edu.ratos.service.transformer.mapper.SettingsMapper;
 import ua.edu.ratos.service.transformer.SettingsTransformer;
 
 import javax.persistence.EntityNotFoundException;

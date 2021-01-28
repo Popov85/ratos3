@@ -9,7 +9,7 @@ import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.dao.repository.SchemeThemeRepository;
 import ua.edu.ratos.service.dto.in.SchemeThemeInDto;
 import ua.edu.ratos.service.dto.out.SchemeThemeOutDto;
-import ua.edu.ratos.service.transformer.SchemeThemeMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeThemeMapper;
 import ua.edu.ratos.service.transformer.SchemeThemeTransformer;
 
 import java.util.Set;

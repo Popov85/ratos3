@@ -12,7 +12,7 @@ import ua.edu.ratos.service.domain.SchemeDomain;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.domain.question.QuestionDomain;
 import ua.edu.ratos.service.dto.session.batch.BatchOutDto;
-import ua.edu.ratos.service.transformer.SchemeMapper;
+import ua.edu.ratos.service.transformer.mapper.SchemeMapper;
 
 import java.util.List;
 
