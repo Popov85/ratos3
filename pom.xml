@@ -30,7 +30,7 @@
         <char.detector>1.0.3</char.detector>
         <hibernate-jcache.version>5.2.17.Final</hibernate-jcache.version>
         <ehcache.version>3.6.0</ehcache.version>
-        <jackson.jsr310>2.9.7</jackson.jsr310>
+        <jackson.jsr310>2.9.8</jackson.jsr310>
         <jackson.xml>2.9.7</jackson.xml>
         <jsonassert>1.5.0</jsonassert>
         <metamodel>5.4.1.Final</metamodel>
