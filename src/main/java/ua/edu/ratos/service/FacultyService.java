@@ -11,9 +11,8 @@ import ua.edu.ratos.security.SecurityUtils;
 import ua.edu.ratos.service.dto.in.FacultyInDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoFacultyTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FacultyDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.FacultyMinDtoTransformer;
+import ua.edu.ratos.service.transformer.mapper.FacultyMapper;
+import ua.edu.ratos.service.transformer.mapper.FacultyMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -28,11 +27,9 @@ public class FacultyService {
 
     private final FacultyRepository facultyRepository;
 
-    private final DtoFacultyTransformer dtoFacultyTransformer;
+    private final FacultyMapper facultyMapper;
 
-    private final FacultyDtoTransformer facultyDtoTransformer;
-
-    private final FacultyMinDtoTransformer facultyMinDtoTransformer;
+    private final FacultyMinMapper facultyMinMapper;
 
     private final SecurityUtils securityUtils;
 
@@ -40,9 +37,9 @@ public class FacultyService {
     @Transactional
     public FacultyOutDto save(@NonNull final FacultyInDto dto) {
         checkModificationPossibility(dto.getOrgId());
-        Faculty faculty = dtoFacultyTransformer.toEntity(dto);
+        Faculty faculty = facultyMapper.toEntity(dto);
         faculty = facultyRepository.save(faculty);
-        return facultyDtoTransformer.toDto(faculty);
+        return facultyMapper.toDto(faculty);
     }
 
     @Transactional
@@ -50,9 +47,9 @@ public class FacultyService {
         if (dto.getFacId()==null)
             throw new RuntimeException("Failed to update, nullable facId field");
         checkModificationPossibility(dto.getOrgId());
-        Faculty faculty = dtoFacultyTransformer.toEntity(dto);
+        Faculty faculty = facultyMapper.toEntity(dto);
         faculty = facultyRepository.save(faculty);
-        return facultyDtoTransformer.toDto(faculty);
+        return facultyMapper.toDto(faculty);
     }
 
     @Transactional
@@ -90,7 +87,7 @@ public class FacultyService {
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown() {
         return facultyRepository.findAllByOrgIdForDropDown(securityUtils.getAuthOrgId())
                 .stream()
-                .map(facultyMinDtoTransformer::toDto)
+                .map(facultyMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -100,7 +97,7 @@ public class FacultyService {
     public Set<FacultyMinOutDto> findAllByOrgIdForDropDown(@NonNull final Long orgId) {
         return facultyRepository.findAllByOrgIdForDropDown(orgId)
                 .stream()
-                .map(facultyMinDtoTransformer::toDto)
+                .map(facultyMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -111,7 +108,7 @@ public class FacultyService {
     public Set<FacultyOutDto> findAllByOrgIdForTable() {
         return facultyRepository.findAllByOrgIdForTable(securityUtils.getAuthOrgId())
                 .stream()
-                .map(facultyDtoTransformer::toDto)
+                .map(facultyMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -121,7 +118,7 @@ public class FacultyService {
     public Set<FacultyOutDto> findAllByOrgIdForTable(@NonNull final Long orgId) {
         return facultyRepository.findAllByOrgIdForTable(orgId)
                 .stream()
-                .map(facultyDtoTransformer::toDto)
+                .map(facultyMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -129,7 +126,7 @@ public class FacultyService {
     public Set<FacultyOutDto> findAllByRatosForTable() {
         return facultyRepository.findAllByRatosForTable()
                 .stream()
-                .map(facultyDtoTransformer::toDto)
+                .map(facultyMapper::toDto)
                 .collect(Collectors.toSet());
     }
 }

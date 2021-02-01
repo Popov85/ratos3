@@ -13,7 +13,7 @@ import ua.edu.ratos.service.dto.in.StudentInDto;
 import ua.edu.ratos.service.dto.out.ClassMinOutDto;
 import ua.edu.ratos.service.dto.out.FacultyMinOutDto;
 import ua.edu.ratos.service.dto.out.OrganisationMinOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoStudentTransformer;
+import ua.edu.ratos.service.transformer.StudTransformer;
 
 import java.util.Optional;
 import java.util.Set;
@@ -32,7 +32,7 @@ public class SelfRegistrationService {
 
     private final ClazzService classService;
 
-    private final DtoStudentTransformer dtoStudentTransformer;
+    private final StudTransformer studTransformer;
 
     private final LMSRepository lmsRepository;
 
@@ -44,7 +44,7 @@ public class SelfRegistrationService {
         String email = dto.getUser().getEmail();
         if (userRepository.findByEmail(email).isPresent())
                 throw new RuntimeException("Such email is already present in e-RATOS");
-        Student entity = dtoStudentTransformer.toEntity(dto);
+        Student entity = studTransformer.toEntity(dto);
         return studentRepository.save(entity).getStudId();
     }
 

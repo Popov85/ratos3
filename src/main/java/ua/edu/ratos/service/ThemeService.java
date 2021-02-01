@@ -17,11 +17,9 @@ import ua.edu.ratos.service.dto.out.ThemeExtOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMapOutDto;
 import ua.edu.ratos.service.dto.out.ThemeMinOutDto;
 import ua.edu.ratos.service.dto.out.ThemeOutDto;
-import ua.edu.ratos.service.transformer.dto_to_entity.DtoThemeTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ThemeDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ThemeExtDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ThemeMapDtoTransformer;
-import ua.edu.ratos.service.transformer.entity_to_dto.ThemeMinDtoTransformer;
+import ua.edu.ratos.service.transformer.*;
+import ua.edu.ratos.service.transformer.mapper.ThemeMapper;
+import ua.edu.ratos.service.transformer.mapper.ThemeMinMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -38,15 +36,15 @@ public class ThemeService {
 
     private final QuestionRepository questionRepository;
 
-    private final DtoThemeTransformer dtoThemeTransformer;
+    private final ThemeTransformer themeTransformer;
 
-    private final ThemeDtoTransformer themeDtoTransformer;
+    private final ThemeMapper themeMapper;
 
-    private final ThemeMinDtoTransformer themeMinDtoTransformer;
+    private final ThemeMinMapper themeMinMapper;
 
-    private final ThemeExtDtoTransformer themeExtDtoTransformer;
+    private final ThemeExtTransformer themeExtTransformer;
 
-    private final ThemeMapDtoTransformer themeMapDtoTransformer;
+    private final ThemeMapTransformer themeMapTransformer;
 
     private final AccessChecker accessChecker;
 
@@ -55,9 +53,9 @@ public class ThemeService {
     //---------------------------------------------------CRUD-----------------------------------------------------------
     @Transactional
     public ThemeOutDto save(@NonNull final ThemeInDto dto) {
-        Theme theme = dtoThemeTransformer.toEntity(dto);
+        Theme theme = themeTransformer.toEntity(dto);
         theme = themeRepository.save(theme);
-        return themeDtoTransformer.toDto(theme);
+        return themeMapper.toDto(theme);
     }
 
     @Transactional
@@ -65,9 +63,9 @@ public class ThemeService {
         if (dto.getThemeId()==null)
             throw new RuntimeException("Failed to update, themeId is nullable!");
         Theme theme = checkModificationPossibility(dto.getThemeId());
-        theme = dtoThemeTransformer.toEntity(theme, dto);
+        theme = themeTransformer.toEntity(theme, dto);
         Theme result = themeRepository.save(theme);
-        return themeDtoTransformer.toDto(result);
+        return themeMapper.toDto(result);
     }
 
     @Transactional
@@ -100,7 +98,7 @@ public class ThemeService {
     public Set<ThemeMinOutDto> findAllForDropdownByStaffId() {
         return themeRepository.findAllForDropDownByStaffId(securityUtils.getAuthStaffId())
                 .stream()
-                .map(themeMinDtoTransformer::toDto)
+                .map(themeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -108,7 +106,7 @@ public class ThemeService {
     public Set<ThemeMinOutDto> findAllForDropdownByDepartmentId() {
         return themeRepository.findAllForDropDownByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(themeMinDtoTransformer::toDto)
+                .map(themeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -117,7 +115,7 @@ public class ThemeService {
     public Set<ThemeMinOutDto> findAllForDropdownByDepartmentId(@NonNull final Long depId) {
         return themeRepository.findAllForDropDownByDepartmentId(depId)
                 .stream()
-                .map(themeMinDtoTransformer::toDto)
+                .map(themeMinMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -126,7 +124,7 @@ public class ThemeService {
     public Set<ThemeOutDto> findAllForTableByDepartment() {
         return themeRepository.findAllForTableByDepartmentId(securityUtils.getAuthDepId())
                 .stream()
-                .map(themeDtoTransformer::toDto)
+                .map(themeMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -134,7 +132,7 @@ public class ThemeService {
     public Set<ThemeOutDto> findAllForTableByDepartmentId(@NonNull Long depId) {
         return themeRepository.findAllForTableByDepartmentId(depId)
                 .stream()
-                .map(themeDtoTransformer::toDto)
+                .map(themeMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
@@ -144,20 +142,20 @@ public class ThemeService {
         Set<Question> questions = questionRepository.findAllForTypeLevelMapByThemeId(themeId);
         if (questions==null || questions.isEmpty())
             throw new IllegalStateException("No questions in this theme!");
-        return themeMapDtoTransformer.toDto(themeId, questions);
+        return themeMapTransformer.toDto(themeId, questions);
     }
 
     //-------------------Experimental (+details on how many questions of which type the theme contains)-----------------
     @Transactional(readOnly = true)
     public ThemeExtOutDto findByIdForQuestionsDetails(@NonNull final Long themeId) {
-        return themeExtDtoTransformer.toDto(themeRepository.findById(themeId)
+        return themeExtTransformer.toDto(themeRepository.findById(themeId)
                 .orElseThrow(()->new EntityNotFoundException(THEME_NOT_FOUND+themeId)));
     }
 
     // -----------------------------------------------Admin table-------------------------------------------------------
     @Transactional(readOnly = true)
     public Page<ThemeOutDto> findAll(@NonNull final Pageable pageable) {
-        return themeRepository.findAll(pageable).map(themeDtoTransformer::toDto);
+        return themeRepository.findAll(pageable).map(themeMapper::toDto);
     }
 
 }

@@ -13,15 +13,16 @@ import ua.edu.ratos.dao.entity.Theme;
 import ua.edu.ratos.dao.entity.question.Question;
 import ua.edu.ratos.dao.entity.question.QuestionMCQ;
 import ua.edu.ratos.security.SecurityUtils;
-import ua.edu.ratos.service.dto.in.FileInDto;
 import ua.edu.ratos.service.dto.out.QuestionsParsingResultOutDto;
-import ua.edu.ratos.service.parsers.*;
-import ua.edu.ratos.service.transformer.domain_to_dto.QuestionsParsingResultDtoTransformer;
+import ua.edu.ratos.service.parsers.ParserFactory;
+import ua.edu.ratos.service.parsers.QuestionsFileParser;
+import ua.edu.ratos.service.parsers.QuestionsParsingIssue;
+import ua.edu.ratos.service.parsers.QuestionsParsingResult;
+import ua.edu.ratos.service.transformer.QuestionsParsingResultTransformer;
 import ua.edu.ratos.service.utils.CharsetDetector;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class QuestionsFileParserService {
 
     private final QuestionService questionService;
 
-    private final QuestionsParsingResultDtoTransformer transformer;
+    private final QuestionsParsingResultTransformer questionsParsingResultTransformer;
 
     private final CharsetDetector charsetDetector;
 
@@ -68,14 +69,14 @@ public class QuestionsFileParserService {
             if (confirmed) {
                 save(parsingResult.getQuestions(), themeId);
                 log.debug("Saved questions into the DB after confirmation, {}", quantity);
-                return transformer.toDto(parsingResult, true);
+                return questionsParsingResultTransformer.toDto(parsingResult, true);
             }
             if (parsingResult.issuesOf(QuestionsParsingIssue.Severity.MAJOR)==0) {
                 save(parsingResult.getQuestions(), themeId);
                 log.debug("Saved questions into the DB with no major issues, {}", quantity);
-                return transformer.toDto(parsingResult, true);
+                return questionsParsingResultTransformer.toDto(parsingResult, true);
             } else {
-                return transformer.toDto(parsingResult, false);
+                return questionsParsingResultTransformer.toDto(parsingResult, false);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to perform parsing and saving!", e);

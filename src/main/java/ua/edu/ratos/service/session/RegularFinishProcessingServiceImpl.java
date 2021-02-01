@@ -1,17 +1,16 @@
 package ua.edu.ratos.service.session;
 
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ua.edu.ratos.service.domain.ResultDomain;
 import ua.edu.ratos.service.domain.SessionData;
 import ua.edu.ratos.service.dto.session.ResultOutDto;
-import ua.edu.ratos.service.transformer.domain_to_dto.RegularResultDomainDtoTransformerImpl;
+import ua.edu.ratos.service.transformer.ResultTransformer;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class RegularFinishProcessingServiceImpl implements FinishProcessingService {
 
     private final Timeout timeout;
@@ -22,8 +21,19 @@ public class RegularFinishProcessingServiceImpl implements FinishProcessingServi
 
     private final AsyncFinishProcessingService asyncFinishProcessingService;
 
-    private final RegularResultDomainDtoTransformerImpl resultDomainDtoTransformer;
+    private final ResultTransformer resultTransformer;
 
+    public RegularFinishProcessingServiceImpl(Timeout timeout,
+                                              SessionDataService sessionDataService,
+                                              ResultBuilder resultBuilder,
+                                              AsyncFinishProcessingService asyncFinishProcessingService,
+                                              @Qualifier("regular") ResultTransformer resultTransformer) {
+        this.timeout = timeout;
+        this.sessionDataService = sessionDataService;
+        this.resultBuilder = resultBuilder;
+        this.asyncFinishProcessingService = asyncFinishProcessingService;
+        this.resultTransformer = resultTransformer;
+    }
 
     @Override
     public ResultOutDto finish(@NonNull final SessionData sessionData) {
@@ -37,7 +47,7 @@ public class RegularFinishProcessingServiceImpl implements FinishProcessingServi
         ResultDomain resultDomain = resultBuilder.build(sessionData, timeOuted, false);
         // Do regular async db finish operations + gamification processing
         asyncFinishProcessingService.saveResults(resultDomain, sessionData);
-        return resultDomainDtoTransformer.toDto(resultDomain);
+        return resultTransformer.toDto(resultDomain);
     }
 
     @Override
