@@ -1,8 +1,8 @@
 package ua.edu.ratos.service;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,10 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PasswordResetService {
+
+    private static final String PASSWORD_RESET_URL="/password-reset/";
 
     private final EmailService emailService;
 
@@ -27,15 +30,6 @@ public class PasswordResetService {
     private final UserSelfService userSelfService;
 
     private final PasswordResetRepository passwordResetRepository;
-
-    @Autowired
-    public PasswordResetService(EmailService emailService, UserRepository userRepository,
-                                UserSelfService userSelfService, PasswordResetRepository passwordResetRepository) {
-        this.emailService = emailService;
-        this.userRepository = userRepository;
-        this.userSelfService=userSelfService;
-        this.passwordResetRepository = passwordResetRepository;
-    }
 
     @Value("${sendgrid.template.resetPassword}")
     private String resetPasswordTemplate;
@@ -55,8 +49,8 @@ public class PasswordResetService {
         PasswordReset passwordReset = new PasswordReset(toEmail, generatedSecret, "PENDING");
         passwordResetRepository.save(passwordReset);
         // Send email to a user with a link
-        String passwordResetUrl = baseUrl + "/self-registration/"
-                + toEmail + "/" + generatedSecret + "/do-password-reset";
+        String passwordResetUrl = baseUrl + PASSWORD_RESET_URL
+                + toEmail + "/" + generatedSecret + "/confirm";
         Map<String, Object> params = new HashMap<>();
         params.put("name", fullName);
         params.put("password_reset_url", passwordResetUrl);
