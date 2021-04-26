@@ -26,7 +26,7 @@
         <h2.version>1.4.197</h2.version>
         <mysql.version>8.0.22</mysql.version>
         <mapper.version>2.1.0</mapper.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <char.detector>1.0.3</char.detector>
         <hibernate-jcache.version>5.2.17.Final</hibernate-jcache.version>
         <ehcache.version>3.6.0</ehcache.version>
