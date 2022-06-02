@@ -13,7 +13,7 @@ as well as directly from within Intranet or Internet network via a browser.
 #### Stack of technologies:
 ##### Backend:
 
-- Java 8;
+- Java 8+;
 - Spring Boot;
 - Hibernate;
 - RDBMS (MySql);
