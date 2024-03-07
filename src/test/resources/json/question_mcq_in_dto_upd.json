@@ -1,0 +1,39 @@
+{
+  "questionId": 1,
+  "question":"Question #1 (upd)",
+  "level":2,
+  "themeId":1,
+  "helpId":null,
+  "resourceId":1,
+  "required":false,
+  "answers":[
+    {
+      "answerId":2,
+      "answer":"answer #22",
+      "percent":0,
+      "required":false
+    },
+    {
+      "answerId":3,
+      "answer":"answer #33",
+      "percent":0,
+      "required":false
+    },
+    {
+      "answerId":4,
+      "answer":"answer #44",
+      "percent":0,
+      "required":false
+    },
+    {
+      "answer":"answer #5",
+      "percent":0,
+      "required":false
+    },
+    {
+      "answer":"answer #6",
+      "percent":100,
+      "required":true
+    }
+  ]
+}

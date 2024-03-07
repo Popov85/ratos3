@@ -1,0 +1,3 @@
+/**
+ * It uses production DB (currently MySQL), fills it with some initial data
+ */

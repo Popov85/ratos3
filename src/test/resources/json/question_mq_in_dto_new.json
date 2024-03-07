@@ -1,0 +1,21 @@
+{
+  "question":"Question #1",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":4,
+  "langId":1,
+  "answers":[
+    {
+      "leftPhraseId":1,
+      "rightPhraseId":2
+    },
+    {
+      "leftPhraseId":3,
+      "rightPhraseId":4
+    },
+    {
+      "leftPhraseId":5,
+      "rightPhraseId":6
+    }
+  ]
+}

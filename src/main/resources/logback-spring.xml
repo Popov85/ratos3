@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <property name="PATH_HOME" value="logs" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${PATH_HOME}/ratos-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="ua.edu.ratos" additivity="false" level="WARN">
+            <appender-ref ref="FILE"/>
+        </logger>
+        <logger name="org.springframework" additivity="false" level="ERROR">
+            <appender-ref ref="FILE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="stage">
+        <root level="ERROR">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework" additivity="false" level="WARN">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework.security" additivity="false" level="DEBUG">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.jdbc" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework.session" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.web" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.security" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.cache" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.data.redis" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.validator" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" additivity="false" level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.flywaydb" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="h2, mysql">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <logger name="ua.edu.ratos" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.jdbc" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework.session" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.web" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.test" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.security" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.flywaydb" additivity="false" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+</configuration>

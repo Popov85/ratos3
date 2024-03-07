@@ -1,0 +1,7 @@
+{
+  "answerId":1,
+  "phrase":"Updated phrase",
+  "occurrence":2,
+  "setId":2,
+  "phrasesIds":[1,2,3]
+}

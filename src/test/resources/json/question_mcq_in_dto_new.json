@@ -1,0 +1,30 @@
+{
+  "question":"Question #1",
+  "level":1,
+  "themeId":1,
+  "helpId":1,
+  "resourceId":null,
+  "required":false,
+  "answers":[
+    {
+      "answer":"answer #1",
+      "percent":100,
+      "isRequired":true
+    },
+    {
+      "answer":"answer #2",
+      "percent":0,
+      "isRequired":false
+    },
+    {
+      "answer":"answer #3",
+      "percent":0,
+      "isRequired":false
+    },
+    {
+      "answer":"answer #4",
+      "percent":0,
+      "isRequired":false
+    }
+  ]
+}

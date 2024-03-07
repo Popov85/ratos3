@@ -1,0 +1,10 @@
+{
+  "questionId":1,
+  "question":"Updated question",
+  "level":2,
+  "themeId":1,
+  "questionTypeId":2,
+  "langId":1,
+  "helpId":1,
+  "resourcesIds":[1, 2]
+}

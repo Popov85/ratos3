@@ -1,0 +1,14 @@
+{
+  "question":"Question #1",
+  "level":1,
+  "themeId":1,
+  "questionTypeId":2,
+  "helpId":1,
+  "resourceId":1,
+  "required":true,
+  "answer":
+  {
+    "setId":1,
+    "phrasesIds": [1,2,3]
+  }
+}
