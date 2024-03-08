@@ -1,0 +1,78 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: ${SERVLET_SESSION_TIMEOUT}
+  tomcat:
+    max-threads: ${TOMCAT_MAX_THREADS}
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?serverTimezone=UTC&rewriteBatchedStatements=true&useSSL=false
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: ${HIBERNATE_ENABLE_2LC}
+          use_query_cache: ${HIBERNATE_ENABLE_2LC}
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          javax:
+            cache:
+              provider: org.ehcache.jsr107.EhcacheCachingProvider
+        javax:
+          persistence:
+            sharedCache:
+              mode: ENABLE_SELECTIVE
+          cache:
+            uri: classpath:ehcache.xml
+  cache:
+    type: ${SPRING_CACHE_TYPE}
+    cache-names: question
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=1d
+  session:
+    store-type: ${SPRING_SESSION_STORE_TYPE}
+    redis:
+      cleanup-cron: 0 * * * * *
+      flush-mode: on_save
+      namespace: spring:session
+  redis:
+    host: ${REDIS_HOST}
+    password: ${REDIS_SECRET}
+    port: ${REDIS_PORT}
+
+ratos:
+  init:
+    re_init: false
+    cache: ${RATOS_INIT_CACHE}
+    cache_threads: ${RATOS_INIT_CACHE_THREADS}
+  session:
+    include_groups: ${RATOS_SESSION_INCLUDE_GROUPS}
+    shuffle_enabled: ${RATOS_SESSION_SHUFFLE_ENABLED}
+    random_algorithm: ${RATOS_SESSION_RANDOM_ALGORITHM}
+    preserved_limit: ${RATOS_SESSION_PRESERVED_LIMIT}
+    starred_limit: ${RATOS_SESSION_STARRED_LIMIT}
+    save_timeouted_results: ${RATOS_SESSION_SAVE_TIMEOUTED_RESULTS}
+    save_cancelled_results: ${RATOS_SESSION_SAVE_CANCELLED_RESULTS}
+    save_abandoned_results: ${RATOS_SESSION_SAVE_ABANDONED_RESULTS}
+    timeout_penalty: ${RATOS_SESSION_TIMEOUT_PENALTY}
+    tiemout_leeway: ${RATOS_SESSION_TIMEOUT_LEEWAY}
+  result:
+    clean_on: ${RATOS_RESULT_CLEAN_ON}
+    period: ${RATOS_RESULT_PERIOD}
+    clean_hour: 23
+    clean_minute: 59
+  security:
+    lms-registration: ${RATOS_SECURITY_LMS_REGISTRATION}
+    non-lms-registration: ${RATOS_SECURITY_NON_LMS_REGISTRATION}
+  lti:
+    launch_url: ${RATOS_LTI_LAUNCH_URL}
+    launch_path: /lti/1p0/launch
+    launch_url_fix: ${RATOS_LTI_LAUNCH_URL_FIX}

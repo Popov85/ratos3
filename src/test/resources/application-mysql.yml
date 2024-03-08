@@ -1,0 +1,19 @@
+server:
+  port: 8092
+
+spring:
+  test:
+    database:
+      replace: none
+  datasource:
+    url: jdbc:mysql://localhost:3306/ratos3?rewriteBatchedStatements=true&useSSL=false
+    username: spring
+    password: sP3gxP2V
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        show_sql: false
+        format_sql: true
+        generate_statistics: false

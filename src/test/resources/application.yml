@@ -1,0 +1,116 @@
+server:
+  servlet:
+    session:
+      timeout: 200m
+  tomcat:
+    max-threads: 200
+
+spring:
+  application:
+    name: ratos
+  profiles:
+    active: h2
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: false
+          use_query_cache: false
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          javax:
+            cache:
+              provider: org.ehcache.jsr107.EhcacheCachingProvider
+        javax:
+          persistence:
+            sharedCache:
+              mode: ENABLE_SELECTIVE
+          cache:
+            uri: classpath:ehcache.xml
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+      indent_output: true
+  quartz:
+    job-store-type: memory
+    properties:
+      org.quartz.threadPool.threadCount: 4
+  cache:
+    type: none
+    cache-names: question
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=14d
+  session:
+    store-type: none
+    jdbc:
+      cleanup-cron: 0 * * * * *
+      initialize-schema: embedded
+      schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
+      table-name: SPRING_SESSION
+    redis:
+      cleanup-cron: 0 * * * * *
+      flush-mode: on_save
+      namespace: spring:session
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 30d
+  flyway:
+    enabled: true
+
+ratos:
+  init:
+    re_init: false
+    populate: false
+    locale: EN
+    cache: NONE
+    cache_threads: 4
+  session:
+    timeout_penalty: 50
+    tiemout_leeway: 3
+    include_groups: true
+    shuffle_enabled: true
+    random_algorithm: CACHED
+    preserved_limit: 5
+    starred_limit: 100
+    save_timeouted_results: true
+    save_cancelled_results: true
+    save_abandoned_results: true
+  result:
+    clean_on: true
+    period: DAILY
+    clean_hour: 23
+    clean_minute: 59
+  game:
+    game_on: true
+    low_boundary_from: 80.0
+    low_boundary_to: 84.99
+    middle_boundary_from: 85.0
+    middle_boundary_to: 94.99
+    high_boundary_from: 95.0
+    high_boundary_to: 100.0
+    low_boundary_points: 1
+    middle_boundary_points: 3
+    high_boundary_points: 5
+    bonus_strike: 3
+    bonus_size: 10
+    top_weekly: 10
+    reset_weekly_day: SUNDAY
+    reset_weekly_hour: 23
+    reset_weekly_minute: 59
+    user_label:
+      0: Novice
+      1: Beginner
+      2: Smart
+      3: Mature
+      5: Professional
+      20: Expert
+      100: Genius
+    process_timeouted_results: true
+    process_cancelled_results: true
+  lti:
+    launch_url: http://localhost:8090/lti/1p0/launch
+    launch_path: /lti/1p0/launch
+    launch_url_fix: true

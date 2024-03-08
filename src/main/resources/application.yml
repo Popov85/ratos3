@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: ratos
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+      indent_output: true
+  quartz:
+    job-store-type: memory
+    properties:
+      org.quartz.threadPool.threadCount: 4
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 30d
+  flyway:
+    enabled: true
+
+ratos:
+  init:
+    locale: EN
+  game:
+    game_on: false
+    low_boundary_from: 80.0
+    low_boundary_to: 84.99
+    middle_boundary_from: 85.0
+    middle_boundary_to: 94.99
+    high_boundary_from: 95.0
+    high_boundary_to: 100.0
+    low_boundary_points: 1
+    middle_boundary_points: 3
+    high_boundary_points: 5
+    bonus_strike: 3
+    bonus_size: 10
+    top_weekly: 10
+    reset_weekly_day: SUNDAY
+    reset_weekly_hour: 23
+    reset_weekly_minute: 59
+    user_label:
+      0: Novice
+      1: Beginner
+      2: Smart
+      3: Mature
+      5: Professional
+      20: Expert
+      100: Genius
+    process_timeouted_results: true
+    process_cancelled_results: true
