@@ -13,10 +13,10 @@ as well as directly from within Intranet or Internet network via a browser.
 #### Stack of technologies:
 ##### Backend:
 
-- Java 8+;
-- Spring Boot;
+- Java 8;
+- Spring Boot 2;
 - Hibernate;
-- RDBMS (MySql);
+- RDBMS (MySql 5.7);
 - Maven.
 
 ##### Frontend:
@@ -30,9 +30,95 @@ minimal requirement is the following:
 - Single quad core CPU;
 
 #### Most recent Docker build:
+
 [Here](https://hub.docker.com/repository/docker/gelever85/ratos3)<br>
-You need to create a Docker hub account to access.
 
-#### TODO:
-1. Correct controllers/services for all implemented frontend features, described [here](https://github.com/Popov85/ratos3-frontend#todo)
+**Warning!**
 
+You need to create a Docker hub account to access the image.
+
+#### Build and push fresh docker image
+
+Docker file creation with Jib Maven plugin info:
+
+ - Set application.yml -> profile=stage/prod
+ - `./mvnw clean compile`  [Jib requires compiled project]
+ - `./mvnw jib:build -Djib.to.auth.username=${DOCKER_HUB_USERNAME} -Djib.to.auth.password=${DOCKER_HUB_PASSWORD}`
+
+(Specify you credentials from DockerHub)
+
+#### Local run
+
+##### IDE Intellij:
+
+- Make sure to use JDK 8 in the project;
+- Install [EnvFile](https://github.com/Ashald/EnvFile/blob/develop/README.md) plugin;
+
+**SpringBoot config**
+- Add SpringBoot configuration
+- Enable env. variable file
+- Add env file as the .env file
+- Set up MySql database locally (v 5.7)
+- Run locally
+
+**Docker-compose config [info](https://www.jetbrains.com/help/idea/docker-compose.html):**
+- Add Docker-compose configuration
+- Specify docker-compose.yml
+- Specify .env variables file
+- Run locally
+
+##### IDE agnostic:
+
+- Install Docker [runtime](https://docs.docker.com/engine/)
+- Install [Docker-compose](https://github.com/docker/compose/releases)
+- Put .env file with all required environment variables into the same folder where docker-compose.yaml is located.
+- Run `docker-compose up -d` to start the app;
+- Run `docker-compose down` to stop the app;
+
+#### Run tests
+
+(Make sure to use Java 8 as default system JDK)
+
+`export JAVA_HOME=/usr/lib/jvm/java-${JDK_VERSION_PACKAGE}`
+
+`export PATH=$JAVA_HOME/bin:$PATH`
+
+`java -version`
+
+**Unit tests**
+
+`./mvnw clean test`
+
+**IT tests**
+
+`./mvnw clean verify`
+
+**Local Terminal run**
+
+ - Export env. variables from .env file
+
+`export $(grep -v '^#' .env | xargs)`
+
+ - Run the app via Maven
+
+`./mvnw spring-boot:run`
+
+**Important!**
+
+By default, h2 profile is used to launch IT tests.
+To execute IT tests with MySql RDBMS, change the profile to mysql in core application.yml in test section.
+
+Additionally, change the value of ua.edu.ratos.ActiveProfile NOW=mysql
+
+
+#### Run DB operations
+
+`./mvnw flyway:clean -Dflyway.user=${DATABASE_USER} -Dflyway.password=${DATABASE_PASSWORD}` - clean local DB
+
+`./mvnw flyway:migrate -Dflyway.user=${DATABASE_USER} -Dflyway.password=${DATABASE_PASSWORD}` - migrate local DB
+
+`./mvnw flyway:validate -Dflyway.user=${DATABASE_USER} -Dflyway.password=${DATABASE_PASSWORD}` - validate local DB
+
+(Specify you credentials from DB)
+
+Alternatively, locate settings.xml (with DB credentials) in .m2 folder on local PC

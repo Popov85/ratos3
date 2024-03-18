@@ -1,0 +1,18 @@
+<!--Put this file into ~/.m2 folder on your dev PC-->
+<settings>
+    <servers>
+        <server>
+            <!-- By default Flyway will look for the server with the id 'flyway-db' -->
+            <!-- This can be customized by configuring the 'serverId' property -->
+            <id>flyway-db</id>
+            <username></username>
+            <password></password>
+        </server>
+        <server>
+            <!-- By default Jib will look for the server with the id 'registry.hub.docker.com' -->
+            <id>registry.hub.docker.com</id>
+            <username></username>
+            <password></password>
+        </server>
+    </servers>
+</settings>

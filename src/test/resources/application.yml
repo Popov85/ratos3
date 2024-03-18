@@ -1,4 +1,5 @@
 server:
+  port: 8091
   servlet:
     session:
       timeout: 200m
@@ -78,11 +79,6 @@ ratos:
     save_timeouted_results: true
     save_cancelled_results: true
     save_abandoned_results: true
-  result:
-    clean_on: true
-    period: DAILY
-    clean_hour: 23
-    clean_minute: 59
   game:
     game_on: true
     low_boundary_from: 80.0
@@ -110,7 +106,15 @@ ratos:
       100: Genius
     process_timeouted_results: true
     process_cancelled_results: true
+  result:
+    clean_on: true
+    period: DAILY
+    clean_hour: 23
+    clean_minute: 59
+  security:
+    lms-registration: false
+    non-lms-registration: false
   lti:
-    launch_url: http://localhost:8090/lti/1p0/launch
+    launch_url: http://localhost:8091/lti/1p0/launch
     launch_path: /lti/1p0/launch
     launch_url_fix: true

@@ -1,12 +1,16 @@
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    session:
+      timeout: ${SERVLET_SESSION_TIMEOUT}
+  tomcat:
+    max-threads: ${TOMCAT_MAX_THREADS}
+
 spring:
   application:
     name: ratos
   profiles:
-    active: dev
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: none
+    active: ${SPRING_ACTIVE_PROFILE} # For logging settings (see logback-spring.xml)
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -21,10 +25,75 @@ spring:
         max-age: 30d
   flyway:
     enabled: true
+  datasource:
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?serverTimezone=UTC&rewriteBatchedStatements=true&useSSL=false
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: ${HIBERNATE_ENABLE_2LC}
+          use_query_cache: ${HIBERNATE_ENABLE_2LC}
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          javax:
+            cache:
+              provider: org.ehcache.jsr107.EhcacheCachingProvider
+        javax:
+          persistence:
+            sharedCache:
+              mode: ENABLE_SELECTIVE
+          cache:
+            uri: classpath:ehcache.xml
+          show_sql: false
+          format_sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  cache:
+    type: ${SPRING_CACHE_TYPE}
+    cache-names: question
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=1d
+  session:
+    store-type: ${SPRING_SESSION_STORE_TYPE}
+    jdbc:
+      cleanup-cron: "0 * * * * *"
+      initialize-schema: embedded
+      schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
+      table-name: SPRING_SESSION
+    redis:
+      cleanup-cron: "0 * * * * *"
+      flush-mode: on_save
+      namespace: spring:session
+  redis:
+    host: ${REDIS_HOST}
+    password: ${REDIS_SECRET}
+    port: ${REDIS_PORT}
 
 ratos:
   init:
     locale: EN
+    re_init: false
+    populate: false
+    cache: ${RATOS_INIT_CACHE}
+    cache_threads: ${RATOS_INIT_CACHE_THREADS}
+  session:
+    include_groups: ${RATOS_SESSION_INCLUDE_GROUPS}
+    shuffle_enabled: ${RATOS_SESSION_SHUFFLE_ENABLED}
+    random_algorithm: ${RATOS_SESSION_RANDOM_ALGORITHM}
+    preserved_limit: ${RATOS_SESSION_PRESERVED_LIMIT}
+    starred_limit: ${RATOS_SESSION_STARRED_LIMIT}
+    save_timeouted_results: ${RATOS_SESSION_SAVE_TIMEOUTED_RESULTS}
+    save_cancelled_results: ${RATOS_SESSION_SAVE_CANCELLED_RESULTS}
+    save_abandoned_results: ${RATOS_SESSION_SAVE_ABANDONED_RESULTS}
+    timeout_penalty: ${RATOS_SESSION_TIMEOUT_PENALTY}
+    tiemout_leeway: ${RATOS_SESSION_TIMEOUT_LEEWAY}
   game:
     game_on: false
     low_boundary_from: 80.0
@@ -52,3 +121,15 @@ ratos:
       100: Genius
     process_timeouted_results: true
     process_cancelled_results: true
+  result:
+    clean_on: ${RATOS_RESULT_CLEAN_ON}
+    period: ${RATOS_RESULT_PERIOD}
+    clean_hour: 23
+    clean_minute: 59
+  security:
+    lms-registration: ${RATOS_SECURITY_LMS_REGISTRATION}
+    non-lms-registration: ${RATOS_SECURITY_NON_LMS_REGISTRATION}
+  lti:
+    launch_url: ${RATOS_LTI_LAUNCH_URL}
+    launch_path: /lti/1p0/launch
+    launch_url_fix: ${RATOS_LTI_LAUNCH_URL_FIX}

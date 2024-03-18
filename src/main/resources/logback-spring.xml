@@ -24,12 +24,11 @@
     <springProfile name="prod">
         <root level="ERROR">
             <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
         </root>
         <logger name="ua.edu.ratos" additivity="false" level="WARN">
             <appender-ref ref="FILE"/>
-        </logger>
-        <logger name="org.springframework" additivity="false" level="ERROR">
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
 
@@ -38,15 +37,7 @@
             <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
-            <appender-ref ref="FILE"/>
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-        <logger name="org.springframework" additivity="false" level="WARN">
-            <appender-ref ref="FILE"/>
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-        <logger name="org.springframework.security" additivity="false" level="DEBUG">
+        <logger name="ua.edu.ratos" additivity="false" level="INFO">
             <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
         </logger>
@@ -56,7 +47,7 @@
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
+        <logger name="ua.edu.ratos" additivity="false" level="INFO">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -107,7 +98,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.flywaydb" additivity="false" level="DEBUG">
+        <logger name="org.flywaydb" additivity="false" level="INFO">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
@@ -156,7 +147,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
 
-        <logger name="org.flywaydb" additivity="false" level="DEBUG">
+        <logger name="org.flywaydb" additivity="false" level="WARN">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>

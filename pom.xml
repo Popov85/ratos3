@@ -268,6 +268,24 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.basedir}/.env</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>${jib-maven-plugin.version}</version>
@@ -276,7 +294,7 @@
                         <image>openjdk:alpine</image>
                     </from>
                     <to>
-                        <image>registry.hub.docker.com/gelever85/ratos3:stage</image>
+                        <image>registry.hub.docker.com/gelever85/ratos3:latest</image>
                     </to>
                 </configuration>
             </plugin>
@@ -285,11 +303,20 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/ratos3?useSsl=false</url>
-                    <user>spring</user>
-                    <password>sP3gxP2V</password>
                 </configuration>
             </plugin>
         </plugins>
+
+       <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+
     </build>
 
 </project>

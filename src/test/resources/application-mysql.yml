@@ -1,14 +1,12 @@
-server:
-  port: 8092
-
+#see https://github.com/spring-projects/spring-boot/issues/10271
 spring:
   test:
     database:
       replace: none
   datasource:
     url: jdbc:mysql://localhost:3306/ratos3?rewriteBatchedStatements=true&useSSL=false
-    username: spring
-    password: sP3gxP2V
+    username: @DATABASE_USER@
+    password: @DATABASE_PASSWORD@
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
