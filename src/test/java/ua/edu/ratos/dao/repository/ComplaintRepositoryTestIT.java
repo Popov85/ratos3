@@ -32,7 +32,7 @@ public class ComplaintRepositoryTestIT {
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAllByDepartmentIdTest() {
         Page<Complaint> page = complaintRepository.findAllByDepartmentId(1L,
-                PageRequest.of(0, 50, new Sort(Sort.Direction.DESC, Arrays.asList("timesComplained"))));
+                PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "timesComplained")));
         assertThat("Page of Complaints is not as expected", page, allOf(
                 hasProperty("content", hasSize(5)),
                 hasProperty("totalPages", equalTo(1)),

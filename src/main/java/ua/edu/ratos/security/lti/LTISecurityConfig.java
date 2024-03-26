@@ -91,5 +91,4 @@ public class LTISecurityConfig extends WebSecurityConfigurerAdapter {
             .headers()
                 .frameOptions().disable();
     }
-
 }

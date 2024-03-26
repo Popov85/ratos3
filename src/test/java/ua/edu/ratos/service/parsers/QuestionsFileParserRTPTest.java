@@ -17,6 +17,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
+
 @Slf4j
 @RunWith(JUnit4.class)
 public class QuestionsFileParserRTPTest {

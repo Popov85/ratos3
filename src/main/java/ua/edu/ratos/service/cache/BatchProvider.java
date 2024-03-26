@@ -14,7 +14,7 @@ public interface BatchProvider extends NamedService<String> {
     Slice<Scheme> getBatch(Pageable pageable, Object... params);
 
     default Pageable getPageable() {
-        Sort sort = new Sort(Sort.Direction.ASC, "schemeId");
+        Sort sort = Sort.by(Sort.Direction.ASC, "schemeId");
         return PageRequest.of(0, BATCH_SIZE, sort);
     }
 

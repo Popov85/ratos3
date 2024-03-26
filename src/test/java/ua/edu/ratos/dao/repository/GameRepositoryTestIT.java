@@ -43,7 +43,7 @@ public class GameRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/game_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findBestGamersTest() {
-        Page<Game> page = gameRepository.findBestGamers(PageRequest.of(0, 50, new Sort(Sort.Direction.DESC, Arrays.asList("totalPoints"))));
+        Page<Game> page = gameRepository.findBestGamers(PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "totalPoints")));
         assertThat("Best gamers page is not of size = 2",  page.getContent(), hasSize(2));
     }
 

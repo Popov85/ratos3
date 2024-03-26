@@ -61,6 +61,15 @@ spring:
   flyway:
     enabled: true
 
+springdoc:
+  pi-docs.path: /api-docs
+  swagger-ui.path: /swagger-ui.html
+
+management:
+  health:
+    redis:
+      enabled: false
+
 ratos:
   init:
     re_init: false

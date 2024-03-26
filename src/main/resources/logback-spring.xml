@@ -47,7 +47,7 @@
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="ua.edu.ratos" additivity="false" level="INFO">
+        <logger name="ua.edu.ratos" additivity="false" level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </logger>
 
@@ -75,6 +75,10 @@
         </logger>
 
         <logger name="org.springframework.data.redis" additivity="false" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework.boot.autoconfigure.flyway" additivity="false" level="WARN">
             <appender-ref ref="CONSOLE"/>
         </logger>
 

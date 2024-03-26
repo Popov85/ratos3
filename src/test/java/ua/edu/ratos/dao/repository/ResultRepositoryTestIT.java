@@ -52,7 +52,7 @@ public class ResultRepositoryTestIT {
     @Sql(scripts = {"/scripts/init.sql", "/scripts/results_test_data_many.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/scripts/test_data_clear_"+ ActiveProfile.NOW+".sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findLatestTakenSchemesIdsTest() {
-        Slice<Long> slice = resultRepository.findLatestTakenSchemesIds(PageRequest.of(0, 5, new Sort(Sort.Direction.DESC, "resultId")));
+        Slice<Long> slice = resultRepository.findLatestTakenSchemesIds(PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "resultId")));
         assertThat("Long list is not of size = 5",  slice.getContent(), hasSize(5));
     }
 }

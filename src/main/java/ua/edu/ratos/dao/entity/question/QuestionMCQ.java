@@ -3,13 +3,15 @@ package ua.edu.ratos.dao.entity.question;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import java.util.*;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import ua.edu.ratos.dao.entity.answer.AnswerMCQ;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -17,7 +19,6 @@ import javax.persistence.*;
 @ToString(callSuper = true, exclude = {"answers"})
 @Entity
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DiscriminatorValue(value = "1")
 @DynamicUpdate
 public class QuestionMCQ extends Question {

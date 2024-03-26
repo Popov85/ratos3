@@ -1,6 +1,5 @@
 package ua.edu.ratos.service._it;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +101,7 @@ public class QuestionsFileParserServiceTestIT {
         assertThat("Result of saving object is not as expected", result, allOf(
                 hasProperty("questions", equalTo(10)),
                 hasProperty("issues", equalTo(0)),
-                //hasProperty("charset", equalTo("WINDOWS-1251")),
+                hasProperty("charset", equalTo("WINDOWS-1251")),
                 hasProperty("majorIssues", equalTo(0)),
                 hasProperty("mediumIssues", equalTo(0)),
                 hasProperty("minorIssues", equalTo(0)),

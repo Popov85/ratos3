@@ -53,8 +53,10 @@ public class SecurityConfig {
                 .cors().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/login*").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .antMatchers("/sign-up*", "/access-denied*").permitAll()
                 .antMatchers("/actuator/**", "/self-registration/**").permitAll()
+                .antMatchers("/**/*.js", "/**/*.css", "/**/*.map", "/**/*.png").permitAll()
                 .antMatchers("/user/**", "/student/**", "/session/**", "/info/**").hasAnyRole("LMS-USER", "STUDENT", "LAB-ASSISTANT", "INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
                 .antMatchers("/department/**").hasAnyRole("LAB-ASSISTANT","INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
                 .antMatchers("/instructor/**").hasAnyRole("INSTRUCTOR", "DEP-ADMIN", "FAC-ADMIN", "ORG-ADMIN", "GLOBAL-ADMIN")
@@ -64,6 +66,7 @@ public class SecurityConfig {
                 .antMatchers("/global-admin/**").hasRole("GLOBAL-ADMIN")
                 .antMatchers("/lti/**").hasAnyRole("LTI")
                 .antMatchers("/lms/**").hasRole("LMS-USER")
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                     .loginPage("/login")
@@ -83,12 +86,6 @@ public class SecurityConfig {
         @Override
         public UserDetailsService userDetailsServiceBean() {
             return authenticatedUserDetailsService;
-        }
-
-        // Make sure fetching .js/.css files not going through security chain
-        @Override
-        public void configure(WebSecurity web) {
-            web.ignoring().antMatchers("/**/*.js", "/**/*.css", "/**/*.map", "/**/*.png");
         }
     }
 

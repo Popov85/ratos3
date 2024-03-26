@@ -13,8 +13,8 @@ as well as directly from within Intranet or Internet network via a browser.
 #### Stack of technologies:
 ##### Backend:
 
-- Java 8;
-- Spring Boot 2;
+- Java 17;
+- Spring Boot 2.5.x;
 - Hibernate;
 - RDBMS (MySql 5.7);
 - Maven.
@@ -51,7 +51,7 @@ Docker file creation with Jib Maven plugin info:
 
 ##### IDE Intellij:
 
-- Make sure to use JDK 8 in the project;
+- Make sure to use JDK 17 in the project;
 - Install [EnvFile](https://github.com/Ashald/EnvFile/blob/develop/README.md) plugin;
 
 **SpringBoot config**
@@ -77,7 +77,7 @@ Docker file creation with Jib Maven plugin info:
 
 #### Run tests
 
-(Make sure to use Java 8 as default system JDK)
+(Make sure to use Java 17 as default system JDK)
 
 `export JAVA_HOME=/usr/lib/jvm/java-${JDK_VERSION_PACKAGE}`
 

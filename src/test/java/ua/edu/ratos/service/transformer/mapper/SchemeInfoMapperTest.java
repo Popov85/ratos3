@@ -5,7 +5,6 @@ import ua.edu.ratos.dao.entity.Scheme;
 import ua.edu.ratos.dao.entity.SchemeTheme;
 import ua.edu.ratos.dao.entity.SchemeThemeSettings;
 import ua.edu.ratos.service.dto.out.SchemeInfoOutDto;
-import ua.edu.ratos.service.transformer.mapper.SchemeInfoMapper;
 
 import java.util.Arrays;
 import java.util.HashSet;

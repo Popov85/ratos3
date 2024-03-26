@@ -8,6 +8,7 @@ import org.junit.runners.JUnit4;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
@@ -15,6 +16,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.isEmptyString;
+
 
 @Slf4j
 @RunWith(JUnit4.class)
@@ -70,7 +72,7 @@ public class QuestionsFileParserTXTTest {
         File file = ResourceUtils.getFile(WIN1251_CASE);
         QuestionsParsingResult result = parser.parseFile(file, "windows-1251");
         assertThat("Result of parsing object is not as expected", result, allOf(
-                //hasProperty("charset", equalTo("windows-1251")),
+                hasProperty("charset", equalTo("windows-1251")),
                 hasProperty("header", isEmptyString()),
                 hasProperty("questions", hasSize(equalTo(10))),
                 hasProperty("issues", hasSize(equalTo(0))),

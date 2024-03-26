@@ -45,7 +45,7 @@ class LatestCachePopulator {
 
     void loadMany() {
         log.debug("Latest schemes will be computed based on {} latest results", LATEST_RESULT_SIZE);
-        Sort sort = new Sort(Sort.Direction.DESC, "resultId");
+        Sort sort = Sort.by(Sort.Direction.DESC, "resultId");
         Pageable pageable = PageRequest.of(0, LATEST_RESULT_SIZE, sort);
         // Select latest N schemes Ids from Results
         Slice<Long> schemes = resultRepository.findLatestTakenSchemesIds(pageable);
@@ -65,7 +65,7 @@ class LatestCachePopulator {
 
     void loadManyInParallel(int threads) {
         log.info("Latest schemes will be computed based on {} latest results", LATEST_RESULT_SIZE);
-        Sort sort = new Sort(Sort.Direction.DESC, "resultId");
+        Sort sort = Sort.by(Sort.Direction.DESC, "resultId");
         Pageable pageable = PageRequest.of(0, LATEST_RESULT_SIZE, sort);
         // Select latest N schemes Ids from Results
         Slice<Long> schemes = resultRepository.findLatestTakenSchemesIds(pageable);

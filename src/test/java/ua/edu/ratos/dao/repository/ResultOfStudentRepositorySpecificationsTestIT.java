@@ -18,7 +18,6 @@ import ua.edu.ratos.dao.repository.specs.SpecsFilter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static ua.edu.ratos.dao.repository.specs.ResultPredicatesUtils.hasSpecs;
 
@@ -55,7 +53,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     public void findAllByDepartmentId1Test() {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L);
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(6)),
                 hasProperty("totalPages", equalTo(1)),
@@ -76,7 +74,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
     public void findAllByDepartmentId2Test() {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L);
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(7)),
                 hasProperty("totalPages", equalTo(1)),
@@ -103,7 +101,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(6)),
                 hasProperty("totalPages", equalTo(1)),
@@ -122,7 +120,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(1L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(2)),
                 hasProperty("totalPages", equalTo(1)),
@@ -141,7 +139,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -160,7 +158,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -180,7 +178,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         page.getContent().forEach(System.out::println);
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
@@ -200,7 +198,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(7)),
                 hasProperty("totalPages", equalTo(1)),
@@ -219,7 +217,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(7)),
                 hasProperty("totalPages", equalTo(1)),
@@ -238,7 +236,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -261,7 +259,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("sessionEnded"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "sessionEnded")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -283,7 +281,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -305,7 +303,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(4)),
                 hasProperty("totalPages", equalTo(1)),
@@ -327,7 +325,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(4)),
                 hasProperty("totalPages", equalTo(1)),
@@ -346,7 +344,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(7)),
                 hasProperty("totalPages", equalTo(1)),
@@ -365,7 +363,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(0)),
                 hasProperty("totalPages", equalTo(0)),
@@ -384,7 +382,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(7)),
                 hasProperty("totalPages", equalTo(1)),
@@ -404,7 +402,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(6)),
                 hasProperty("totalPages", equalTo(1)),
@@ -424,7 +422,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),
@@ -443,7 +441,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(6)),
                 hasProperty("totalPages", equalTo(1)),
@@ -462,7 +460,7 @@ public class ResultOfStudentRepositorySpecificationsTestIT {
         Specification<ResultOfStudent> specs = ResultOfStudentStaffSpecs.ofDepartment(2L)
                 .and(hasSpecs(specsMap));
         Page<ResultOfStudent> page = resultOfStudentRepository.findAll(specs,
-                PageRequest.of(0, 100, new Sort(Sort.Direction.ASC, Arrays.asList("grade"))));
+                PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "grade")));
         assertThat("Page of Students Results is not as expected", page, allOf(
                 hasProperty("content", hasSize(1)),
                 hasProperty("totalPages", equalTo(1)),

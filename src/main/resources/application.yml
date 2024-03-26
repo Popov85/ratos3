@@ -24,6 +24,7 @@ spring:
       cachecontrol:
         max-age: 30d
   flyway:
+    locations: classpath:db/migration
     enabled: true
   datasource:
     url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?serverTimezone=UTC&rewriteBatchedStatements=true&useSSL=false
@@ -61,7 +62,7 @@ spring:
     caffeine:
       spec: maximumSize=10000,expireAfterAccess=1d
   session:
-    store-type: ${SPRING_SESSION_STORE_TYPE}
+    store-type: ${SPRING_SESSION_STORE_TYPE:none}
     jdbc:
       cleanup-cron: "0 * * * * *"
       initialize-schema: embedded
@@ -75,6 +76,15 @@ spring:
     host: ${REDIS_HOST}
     password: ${REDIS_SECRET}
     port: ${REDIS_PORT}
+
+springdoc:
+  pi-docs.path: /api-docs
+  swagger-ui.path: /swagger-ui.html
+
+management:
+  health:
+    redis:
+      enabled: false
 
 ratos:
   init:
